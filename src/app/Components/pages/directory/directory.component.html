@@ -1,0 +1,38 @@
+
+<mat-tab-group>
+  <mat-tab label="Advisors">
+    <div class="directory">
+      <mat-card *ngFor="let alum of advisorList" class="alum-card">
+        <div class="alum-info">
+          <img src="images\{{alum.imageName}}.png" alt="alumni" />
+          <h3>{{ alum.name }}</h3>
+          <p>{{ alum.designation }}</p>
+          <div class="alum-details">
+            <p>{{ alum.comDesignation }}</p>
+            <p><mat-icon>email</mat-icon> {{ alum.email }}</p>
+            <p><mat-icon>calendar_today</mat-icon> {{ alum.year }}</p>
+            <p><mat-icon>location_city</mat-icon> {{ alum.city }}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </mat-tab>
+  
+  <mat-tab label="Members">
+    <div class="directory">
+      <mat-card *ngFor="let alum of memberList" class="alum-card">
+        <div class="alum-info">
+          <img src="images\{{alum.imageName}}.png" alt="alumni" />
+          <h3>{{ alum.name }}</h3>
+          <p>{{ alum.designation }}</p>
+          <div class="alum-details">
+            <p>{{ alum.comDesignation }}</p>
+            <p><mat-icon>email</mat-icon> {{ alum.email }}</p>
+            <p><mat-icon>calendar_today</mat-icon> {{ alum.year }}</p>
+            <p><mat-icon>location_city</mat-icon> {{ alum.city }}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>

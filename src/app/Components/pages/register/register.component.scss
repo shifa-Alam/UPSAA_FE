@@ -1,0 +1,27 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+.register-card {
+  max-width: 500px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 16px;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #333;
+  text-align: center;
+}
+
+.avatar img {
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
