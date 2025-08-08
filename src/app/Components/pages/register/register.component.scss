@@ -1,27 +1,54 @@
 .register-container {
+  margin-top: 0; /* removes top margin */
+  padding-top: 0;
   display: flex;
   justify-content: center;
-  padding: 3rem 1rem;
+  align-items: center;
+  min-height: 100vh; /* to center vertically */
+  background: none; /* or set a background if needed */
 }
+
 
 .register-card {
   max-width: 500px;
   width: 100%;
-  padding: 2rem;
+  padding: 30px;
   border-radius: 16px;
-  backdrop-filter: blur(15px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  background: rgba(255, 255, 255, 0.1);
-  color: #333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background-color: white;
   text-align: center;
 }
-
-.avatar img {
-  width: 80px;
-  border-radius: 50%;
-  margin-bottom: 1rem;
+.logo-img {
+  display: block;
+  margin: 0 auto;
+  max-width: 200px;  /* or any size you prefer */
+  height: auto;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-.full-width {
+
+
+
+h2 {
+  font-weight: 600;
+  margin-bottom: 25px;
+  font-size: 22px;
+  color: #3f3f3f;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+mat-form-field {
   width: 100%;
+}
+
+.submit-btn {
+  margin-top: 20px;
+  width: 100%;
+  font-weight: bold;
 }

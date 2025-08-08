@@ -17,7 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/ups-alumni-fe",
+            "outputPath": "dist/UPSAA_FE",
+            "baseHref": "/UPSAA_FE/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
