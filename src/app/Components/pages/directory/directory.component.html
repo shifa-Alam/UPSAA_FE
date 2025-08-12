@@ -1,38 +1,28 @@
+<div class="directory">
+  <mat-card *ngFor="let alum of memberList" class="alum-card">
+    <div class="alum-info">
+      <img src="images/female.png" alt="alumni" *ngIf="alum.gender=='Female'"/>
+      <img src="images/male.png" alt="alumni" *ngIf="alum.gender=='Male'" />
+      <h3>{{ alum.fullName }}</h3>
 
-<mat-tab-group>
-  <mat-tab label="Advisors">
-    <div class="directory">
-      <mat-card *ngFor="let alum of advisorList" class="alum-card">
-        <div class="alum-info">
-          <img src="images\{{alum.imageName}}.png" alt="alumni" />
-          <h3>{{ alum.name }}</h3>
-          <p>{{ alum.designation }}</p>
-          <div class="alum-details">
-            <p>{{ alum.comDesignation }}</p>
-            <p><mat-icon>email</mat-icon> {{ alum.email }}</p>
-            <p><mat-icon>calendar_today</mat-icon> {{ alum.year }}</p>
-            <p><mat-icon>location_city</mat-icon> {{ alum.city }}</p>
-          </div>
-        </div>
-      </mat-card>
+      <div class="alum-details">
+        <!-- Job / Current Designation -->
+        <p><mat-icon>work</mat-icon> {{ alum.currentDesignation }}</p>
+
+        <p><mat-icon>business</mat-icon> {{ alum.institute }}</p>
+
+
+        <!-- Email -->
+        <p><mat-icon>mail_outline</mat-icon> {{ alum.email }}</p>
+
+        <!-- Graduation Year / Batch -->
+        <p><mat-icon>school</mat-icon> {{ alum.batch }}</p>
+
+
+        <!-- Current City -->
+        <p><mat-icon>location_on</mat-icon> {{ alum.currentCity }}</p>
+      </div>
+
     </div>
-  </mat-tab>
-  
-  <mat-tab label="Members">
-    <div class="directory">
-      <mat-card *ngFor="let alum of memberList" class="alum-card">
-        <div class="alum-info">
-          <img src="images\{{alum.imageName}}.png" alt="alumni" />
-          <h3>{{ alum.name }}</h3>
-          <p>{{ alum.designation }}</p>
-          <div class="alum-details">
-            <p>{{ alum.comDesignation }}</p>
-            <p><mat-icon>email</mat-icon> {{ alum.email }}</p>
-            <p><mat-icon>calendar_today</mat-icon> {{ alum.year }}</p>
-            <p><mat-icon>location_city</mat-icon> {{ alum.city }}</p>
-          </div>
-        </div>
-      </mat-card>
-    </div>
-  </mat-tab>
-</mat-tab-group>
+  </mat-card>
+</div>
