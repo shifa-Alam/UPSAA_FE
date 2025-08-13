@@ -1,0 +1,221 @@
+.wave-background {
+  position: relative;
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  min-height: 100vh;
+  padding-bottom: 150px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-container {
+  max-width: 960px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  z-index: 2;
+  position: relative;
+  font-family: 'Sulaiman Lipi', sans-serif;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  color: #023e8a;
+  margin-bottom: 20px;
+}
+
+.intro-text {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  color: #03045e;
+}
+
+.highlight-card {
+  background-color: #ffffffd9;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px auto;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.highlight-card h2 {
+  font-size: 1.5rem;
+  color: #0077b6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.list-style {
+  padding-left: 20px;
+}
+
+.team-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.team-member {
+  text-align: center;
+}
+
+.team-member img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid #0077b6;
+  object-fit: cover;
+}
+
+.news-article {
+  background: #f0f9ff;
+  border-left: 4px solid #0077b6;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 1;
+  animation: waveMove 10s ease-in-out infinite;
+}
+
+@keyframes waveMove {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-50px);
+  }
+}
+
+/* Make main title smaller */
+.page-title {
+  font-size: 28px; /* was likely 36px+ */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Section titles smaller */
+.highlight-card h2 {
+  font-size: 20px; /* was 24px+ */
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Intro text size adjustment */
+.intro-text {
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* List items smaller */
+.list-style li {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Team member names */
+.team-member h4 {
+  font-size: 14px;
+  margin-top: 5px;
+}
+.team-member p {
+  font-size: 13px;
+  color: #666;
+}
+
+
+
+.registration-btn-container {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.registration-btn-link {
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(270deg, #0d1b2a, #1976d2, #0d1b2a);
+  background-size: 600% 600%;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 10;
+  animation: waveBlink 6s ease-in-out infinite, pulseShadow 2s infinite alternate;
+  box-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.celebration-text {
+  position: relative;
+  z-index: 10;
+}
+
+/* Emoji celebration effect */
+.celebration-emojis {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.celebration-emojis span {
+  position: absolute;
+  font-size: 16px;
+  opacity: 0;
+  animation: emojiBlast 4s linear infinite;
+}
+
+/* Randomize positions and delays */
+.celebration-emojis span:nth-child(1) { left: 10%; animation-delay: 0s; top: 20%; }
+.celebration-emojis span:nth-child(2) { left: 30%; animation-delay: 0.5s; top: 40%; }
+.celebration-emojis span:nth-child(3) { left: 50%; animation-delay: 1s; top: 10%; }
+.celebration-emojis span:nth-child(4) { left: 70%; animation-delay: 1.5s; top: 30%; }
+.celebration-emojis span:nth-child(5) { left: 90%; animation-delay: 2s; top: 50%; }
+.celebration-emojis span:nth-child(6) { left: 20%; animation-delay: 2.5s; top: 60%; }
+.celebration-emojis span:nth-child(7) { left: 40%; animation-delay: 3s; top: 20%; }
+.celebration-emojis span:nth-child(8) { left: 60%; animation-delay: 3.5s; top: 40%; }
+
+/* Animation: appear, float, fade out */
+@keyframes emojiBlast {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  20% { transform: translateY(-10px) scale(1); opacity: 1; }
+  50% { transform: translateY(-30px) scale(1.2); opacity: 1; }
+  80% { transform: translateY(-50px) scale(1); opacity: 0.7; }
+  100% { transform: translateY(-70px) scale(0); opacity: 0; }
+}
+
+/* Background wave blink */
+@keyframes waveBlink {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Subtle pulsing shadow */
+@keyframes pulseShadow {
+  0% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.6); }
+  100% { box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+}

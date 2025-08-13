@@ -1,0 +1,28 @@
+html, body {
+  
+  height: 100%;
+  margin: 0;
+  overflow: hidden; // prevents scrollbars on the body
+}
+
+.sidenav-container {
+  height: 100vh;
+  overflow: auto; // now only this container scrolls
+}
+@font-face {
+  font-family: 'SolaimanLipi';
+  src: url('/fonts/SolaimanLipi.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+/* styles.scss or styles.css */
+
+.snackbar-success {
+  background-color: #4caf50 !important; /* green */
+  color: white !important;
+}
+
+.snackbar-error {
+  background-color: #f44336 !important; /* red */
+  color: white !important;
+}

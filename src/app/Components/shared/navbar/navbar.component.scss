@@ -1,0 +1,98 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.sidenav-container {
+  height: 100vh;
+}
+
+/* Make sidenav-content behave like full height column layout */
+.main-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sky-glass {
+  background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.logo-img {
+  height: 115px;
+  margin-right: 8px;
+}
+
+.logo {
+  flex-grow: 1;
+  font-weight: bold;
+  font-size: 18px;
+  color: black;
+}
+
+/* Responsive */
+.desktop-menu {
+  display: flex;
+  gap: 12px;
+}
+.menu-button {
+  display: none;
+}
+@media (max-width: 768px) {
+  .desktop-menu {
+    display: none;
+  }
+  .menu-button {
+    display: inline-flex;
+  }
+  .logo {
+    font-size: 16px;
+  }
+}
+
+.mobile-menu {
+  width: 250px;
+  padding: 10px;
+  background: white;
+}
+.mobile-menu a {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.active-link {
+  font-weight: bold;
+  color: #ffeb3b;
+}
+
+/* Sticky Footer Support */
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  justify-content: space-between;
+}
+
+// router-outlet {
+//   flex-grow: 1;
+// }
+
+// app-footer {
+//   flex-shrink: 0;
+//   background: #222;
+//   color: #fff;
+//   text-align: center;
+//   padding: 16px;
+// }

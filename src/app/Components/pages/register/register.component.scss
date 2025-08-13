@@ -1,0 +1,225 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 15px;
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+}
+
+.register-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  text-align: center;
+}
+
+
+
+
+/* Form fields compact */
+mat-form-field {
+  width: 100%;
+  margin-bottom: 6px;
+  /* smaller spacing between fields */
+}
+
+mat-form-field .mat-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+mat-form-field .mat-form-field-flex {
+  min-height: 32px;
+  /* smaller input height */
+}
+
+mat-form-field .mat-input-element {
+  padding: 4px 8px;
+  /* smaller input padding */
+  font-size: 13px;
+}
+
+mat-form-field .mat-form-field-label {
+  font-size: 12px;
+  /* smaller labels */
+  transform: translateY(-2px);
+}
+
+mat-error,
+mat-hint {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+/* Multi-column layout for compact fields */
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  /* smaller horizontal/vertical gaps */
+}
+
+.flex-field {
+  flex: 1 1 48%;
+  /* two-column for compact fields */
+}
+
+.full-width {
+  flex: 1 1 100%;
+}
+
+.submit-btn {
+  width: 100%;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(135deg,  #958ffe, #ddf3e8);
+  background-size: 300% 300%;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 16px;
+  transition: all 0.4s ease;
+  animation: gradientMove 4s ease infinite;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Hover effect */
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Disabled state */
+.submit-btn:disabled {
+  background: #ccc;
+  color: #888;
+  box-shadow: none;
+  animation: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+
+
+
+
+
+
+.celebration-container {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  background: #0d1b2a;
+  /* dark background to highlight emojis */
+  border-radius: 8px;
+  position: relative;
+  display: inline-block;
+  // background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  color: white;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: medium;
+}
+
+
+
+.celebration-emojis {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.celebration-emojis span {
+  position: absolute;
+  font-size: 20px;
+  opacity: 0;
+  animation: emojiBlast 4s linear infinite;
+}
+
+/* Randomize positions and delays */
+.celebration-emojis span:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+  top: 20%;
+}
+
+.celebration-emojis span:nth-child(2) {
+  left: 30%;
+  animation-delay: 0.5s;
+  top: 40%;
+}
+
+.celebration-emojis span:nth-child(3) {
+  left: 50%;
+  animation-delay: 1s;
+  top: 10%;
+}
+
+.celebration-emojis span:nth-child(4) {
+  left: 70%;
+  animation-delay: 1.5s;
+  top: 30%;
+}
+
+.celebration-emojis span:nth-child(5) {
+  left: 90%;
+  animation-delay: 2s;
+  top: 50%;
+}
+
+.celebration-emojis span:nth-child(6) {
+  left: 20%;
+  animation-delay: 2.5s;
+  top: 60%;
+}
+
+.celebration-emojis span:nth-child(7) {
+  left: 40%;
+  animation-delay: 3s;
+  top: 20%;
+}
+
+.celebration-emojis span:nth-child(8) {
+  left: 60%;
+  animation-delay: 3.5s;
+  top: 40%;
+}
+
+/* Animation: appear, float, fade out */
+@keyframes emojiBlast {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+
+  20% {
+    transform: translateY(-20px) scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(-50px) scale(1.2);
+    opacity: 1;
+  }
+
+  80% {
+    transform: translateY(-70px) scale(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(-100px) scale(0);
+    opacity: 0;
+  }
+}

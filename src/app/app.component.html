@@ -1,0 +1,45 @@
+
+<mat-sidenav-container class="sidenav-container">
+  <!-- Side Nav -->
+  <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
+    <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/about" routerLinkActive="active-link">About</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">Events</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
+  </mat-sidenav>
+
+  <!-- Full Page Layout -->
+  <mat-sidenav-content class="layout-container">
+    <!-- Top Toolbar -->
+    <mat-toolbar class="sky-glass">
+      <div class="toolbar-content">
+        <img src="logo.png" alt="Logo" class="logo-img" />
+        <span class="logo">UPS Alumni Association</span>
+
+        <!-- Hamburger Icon -->
+        <button class="menu-button" mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <!-- Desktop Menu -->
+        <div class="desktop-menu">
+          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <a mat-button routerLink="/about" routerLinkActive="active-link">About</a>
+          <a mat-button routerLink="/events" routerLinkActive="active-link">Events</a>
+          <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
+          <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a>
+          <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
+        </div>
+      </div>
+    </mat-toolbar>
+
+    <!-- Content + Footer -->
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+    <app-footer></app-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>
