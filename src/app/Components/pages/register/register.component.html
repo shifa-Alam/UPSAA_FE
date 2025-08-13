@@ -1,7 +1,20 @@
 <div class="register-container">
   <mat-card class="register-card">
     <!-- <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'" /> -->
-    <h2>Join Our Alumni Network</h2>
+    <div class="celebration-container">
+      <h2>Join Our Alumni Network</h2>
+      <div class="celebration-emojis">
+        <span>✨</span>
+        <span>🎉</span>
+        <span>⭐</span>
+        <span>🎊</span>
+        <span>✨</span>
+        <span>🎉</span>
+        <span>⭐</span>
+        <span>🎊</span>
+      </div>
+    </div>
+
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
 
@@ -23,10 +36,10 @@
         <mat-form-field appearance="outline">
           <mat-label>Gender</mat-label>
           <mat-select formControlName="gender" required>
-              <mat-option value="0" disabled="true" >Select One</mat-option>
+            <mat-option value="0" disabled="true">Select One</mat-option>
             <mat-option value="Male">Male</mat-option>
             <mat-option value="Female">Female</mat-option>
-           
+
           </mat-select>
         </mat-form-field>
 

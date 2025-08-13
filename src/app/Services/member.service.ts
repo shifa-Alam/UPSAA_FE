@@ -21,7 +21,8 @@ export interface MemberCreateDto {
   providedIn: 'root'
 })
 export class MemberService {
-  private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+  private apiUrl = 'http://103.119.23.50/api/member'; // Your backend API URL
+// private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
 
   constructor(private http: HttpClient) {}
 

@@ -1,17 +1,6 @@
-// .about{
-//     position: relative;
-//   background: linear-gradient(135deg, #eef8fa, #c4f2fa);
-//   min-height: 100vh;
-//   padding-bottom: 150px;
-//   overflow: hidden;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
-
 .hero {
   text-align: center;
-  background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
+  // background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
   padding: 40px 20px;
   color: #000;
 }
@@ -44,4 +33,54 @@
 
 .about-content ul {
   padding-left: 20px;
+}
+
+.about {
+  font-family: 'Noto Sans Bengali', sans-serif;
+  /* or a Bengali-friendly font */
+  line-height: 1.6;
+  color: #333;
+  background: linear-gradient(135deg, white, #c4f2fa);
+}
+
+.about h1 {
+  font-size: 24px;
+  /* Main title */
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.about .tagline {
+  font-size: 14px;
+  font-style: italic;
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.about h2 {
+  font-size: 18px;
+  /* Section headings */
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.about p {
+  font-size: 13px;
+  /* Paragraph text */
+  margin-bottom: 15px;
+  text-align: justify;
+}
+
+.about ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.about ul li {
+  font-size: 13px;
+  margin-bottom: 6px;
 }
