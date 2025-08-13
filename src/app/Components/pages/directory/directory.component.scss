@@ -1,10 +1,20 @@
 .directory {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 1rem;
   justify-content: center;
-  padding: 20px;
+  position: relative; /* important for absolute centering */
+  min-height: 300px; /* keeps area visible while loading */
 }
+
+.loader-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
 
 .alum-card {
   width: 300px;

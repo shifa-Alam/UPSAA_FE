@@ -12,6 +12,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { SnackbarService } from '../../../Services/snackbar.service';
 import { Gender } from '../../../Enums/gender.enum';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatNativeDateModule,
     MatOption,
     MatSelectModule
-],
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 
@@ -38,7 +39,9 @@ export class RegisterComponent implements OnInit {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private fb: FormBuilder, private memberService: MemberService, private snackbarService: SnackbarService) { }
+  constructor(private fb: FormBuilder,
+    private memberService: MemberService,
+    private snackbarService: SnackbarService, private router: Router) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -85,6 +88,8 @@ export class RegisterComponent implements OnInit {
         this.snackbarService.showSuccess('Registration successful! 🎉');
         this.form.reset();  // optional: clear the form
         this.isSubmitting = false;
+
+        this.router.navigate(['/directory']);
       },
       error: (err) => {
         this.snackbarService.showError('Registration failed. Please try again.');

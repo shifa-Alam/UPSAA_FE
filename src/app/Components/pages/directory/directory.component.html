@@ -1,28 +1,28 @@
 <div class="directory">
+  <!-- Loader (absolute center) -->
+  <div *ngIf="isLoading" class="loader-overlay">
+    <mat-progress-spinner
+      mode="indeterminate"
+      diameter="50"
+      strokeWidth="4"
+      color="primary">
+    </mat-progress-spinner>
+  </div>
+
+  <!-- Member Cards -->
   <mat-card *ngFor="let alum of memberList" class="alum-card">
     <div class="alum-info">
-      <img src="images/female.png" alt="alumni" *ngIf="alum.gender=='Female'"/>
-      <img src="images/male.png" alt="alumni" *ngIf="alum.gender=='Male'" />
+      <img src="images/female.png" alt="alumni" *ngIf="alum.gender === 'Female'" />
+      <img src="images/male.png" alt="alumni" *ngIf="alum.gender === 'Male'" />
+
       <h3>{{ alum.fullName }}</h3>
-
       <div class="alum-details">
-        <!-- Job / Current Designation -->
         <p><mat-icon>work</mat-icon> {{ alum.currentDesignation }}</p>
-
         <p><mat-icon>business</mat-icon> {{ alum.institute }}</p>
-
-
-        <!-- Email -->
         <p><mat-icon>mail_outline</mat-icon> {{ alum.email }}</p>
-
-        <!-- Graduation Year / Batch -->
         <p><mat-icon>school</mat-icon> {{ alum.batch }}</p>
-
-
-        <!-- Current City -->
         <p><mat-icon>location_on</mat-icon> {{ alum.currentCity }}</p>
       </div>
-
     </div>
   </mat-card>
 </div>
