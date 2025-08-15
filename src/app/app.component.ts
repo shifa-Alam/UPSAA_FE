@@ -6,20 +6,27 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBar, MatProgressBarModule } from "@angular/material/progress-bar";
+import { LoadingService } from './Services/loading-service.service';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FooterComponent, MatToolbarModule, MatButtonModule, RouterModule, MatSidenavModule, MatIconModule, FooterComponent],
+  imports: [RouterOutlet,CommonModule, FooterComponent, MatToolbarModule, MatButtonModule, RouterModule, MatSidenavModule, MatIconModule, FooterComponent, MatProgressBarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+  isLoading = false;
   title = 'upsaa';
   @ViewChild('sidenav') sidenav!: MatSidenav;
-  
-    toggleSidenav() {
-      this.sidenav.toggle();
-    }
+
+  toggleSidenav() {
+    this.sidenav.toggle();
+  }
+  constructor(public loadingService: LoadingService) {
+    
+  }
 }

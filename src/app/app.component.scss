@@ -109,3 +109,10 @@ app-footer {
   text-align: center;
   
 }
+.top-progress-bar {
+  position: fixed;
+  top: 64px;   // adjust if your navbar height is different
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}

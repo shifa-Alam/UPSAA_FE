@@ -4,25 +4,35 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface MemberEducationDto {
+  degreeId: number;
+  degreeName?: string;
+  isCompleted: boolean;
+  instituteName?: string;
+  subject?: string;
+}
+
 export interface MemberCreateDto {
   fullName: string;
-  gender:string;
+  bloodGroup:string;
+  gender: string;
   email: string;
   phone: string;
   batch: number;
   currentDesignation?: string;
-  institute?: string;
-  heighestEducation?: string;
-  currentCity:string;
+  employer?: string;
+  currentCity: string;
   dob?: string | null;
+  educationRecords?: MemberEducationDto[]; // added
 }
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
   private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
-// private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+//  private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
 
   constructor(private http: HttpClient) {}
 

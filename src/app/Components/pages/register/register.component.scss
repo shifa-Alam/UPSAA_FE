@@ -1,106 +1,213 @@
+/* =======================
+   Container & Card
+======================= */
 .register-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
   padding: 15px;
-  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+   background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .register-card {
   width: 100%;
-  max-width: 500px;
-  padding: 15px 20px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  text-align: center;
+   max-width: 900px; /* smaller card width */
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
+/* =======================
+   Form Headings
+======================= */
+.section-title {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+}
 
-
-
-/* Form fields compact */
+/* =======================
+   Form Fields
+======================= */
 mat-form-field {
   width: 100%;
-  margin-bottom: 6px;
-  /* smaller spacing between fields */
+  margin-bottom: 8px;
 }
 
-mat-form-field .mat-form-field-wrapper {
-  padding-bottom: 0;
-}
-
-mat-form-field .mat-form-field-flex {
-  min-height: 32px;
-  /* smaller input height */
-}
-
-mat-form-field .mat-input-element {
-  padding: 4px 8px;
-  /* smaller input padding */
+mat-label {
+  font-weight: 500;
+  color: #555;
   font-size: 13px;
 }
 
-mat-form-field .mat-form-field-label {
-  font-size: 12px;
-  /* smaller labels */
-  transform: translateY(-2px);
+.mat-input-element {
+  font-size: 13px;
+  padding: 6px 10px;
 }
 
-mat-error,
+mat-error {
+  font-size: 11px;
+  color: #e53935;
+}
+
 mat-hint {
   font-size: 11px;
-  line-height: 1.2;
-  margin-top: 2px;
+  color: #888;
 }
 
-/* Multi-column layout for compact fields */
+/* =======================
+   Multi-column layout for desktop
+======================= */
 .form-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  /* smaller horizontal/vertical gaps */
+  gap: 10px;
 }
 
 .flex-field {
   flex: 1 1 48%;
-  /* two-column for compact fields */
 }
 
 .full-width {
   flex: 1 1 100%;
 }
 
+/* =======================
+   Submit Button
+======================= */
 .submit-btn {
   width: 100%;
-  font-weight: bold;
+  font-weight: 600;
   color: white;
-  background: linear-gradient(135deg,  #958ffe, #ddf3e8);
-  background-size: 300% 300%;
+  background-color: #4a90e2;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 10px 0;
-  font-size: 16px;
-  transition: all 0.4s ease;
-  animation: gradientMove 4s ease infinite;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  font-size: 15px;
+  transition: background 0.3s ease;
 }
 
-/* Hover effect */
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  background-color: #357abd;
 }
 
-/* Disabled state */
 .submit-btn:disabled {
   background: #ccc;
   color: #888;
-  box-shadow: none;
-  animation: none;
   cursor: not-allowed;
-  transform: none;
 }
+
+/* =======================
+   Education Section
+======================= */
+.education-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.education-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.edu-checkbox {
+  flex: 1 1 100%;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.edu-input {
+  flex: 1 1 100%;
+  font-size: 13px;
+}
+
+/* Desktop Layout for Education Section */
+@media(min-width: 768px) {
+  .education-row {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .edu-checkbox {
+    flex: 0 0 160px;
+  }
+
+  .edu-input {
+    flex: 1 1 45%;
+  }
+}
+
+/* =======================
+   Mobile Responsive
+======================= */
+@media(max-width: 767px) {
+  .form-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .flex-field {
+    flex: 1 1 100%;
+  }
+
+  .education-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .edu-checkbox, .edu-input {
+    flex: 1 1 100%;
+  }
+
+  .submit-btn {
+    font-size: 14px;
+    padding: 10px 0;
+  }
+}
+
+/* =======================
+   Small Mobile
+======================= */
+@media(max-width: 480px) {
+  .register-card {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  mat-form-field {
+    margin-bottom: 6px;
+  }
+
+  .section-title {
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    font-size: 13px;
+    padding: 8px 0;
+  }
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -110,116 +217,33 @@ mat-hint {
 
 
 .celebration-container {
-  position: relative;
   text-align: center;
-  overflow: hidden;
-  background: #0d1b2a;
-  /* dark background to highlight emojis */
+  padding: 6px 8px;          /* very small padding */
+  margin-bottom: 12px;       /* less spacing */
   border-radius: 8px;
+  background: linear-gradient(135deg,  #c4f2fa,#eef8fa,);
+  color: #0d0d0d;
+  font-weight: 600;
+  font-size: 14px;           /* smaller font */
   position: relative;
-  display: inline-block;
-  // background: linear-gradient(135deg, #eef8fa, #c4f2fa);
-  color: white;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: medium;
-}
-
-
-
-.celebration-emojis {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
   overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
 }
 
-.celebration-emojis span {
-  position: absolute;
-  font-size: 20px;
-  opacity: 0;
-  animation: emojiBlast 4s linear infinite;
+.accent-bar {
+  width: 25px;               /* smaller bar */
+  height: 2px;
+  background: #fff;
+  margin: 4px auto 0;
+  border-radius: 2px;
 }
 
-/* Randomize positions and delays */
-.celebration-emojis span:nth-child(1) {
-  left: 10%;
-  animation-delay: 0s;
-  top: 20%;
-}
-
-.celebration-emojis span:nth-child(2) {
-  left: 30%;
-  animation-delay: 0.5s;
-  top: 40%;
-}
-
-.celebration-emojis span:nth-child(3) {
-  left: 50%;
-  animation-delay: 1s;
-  top: 10%;
-}
-
-.celebration-emojis span:nth-child(4) {
-  left: 70%;
-  animation-delay: 1.5s;
-  top: 30%;
-}
-
-.celebration-emojis span:nth-child(5) {
-  left: 90%;
-  animation-delay: 2s;
-  top: 50%;
-}
-
-.celebration-emojis span:nth-child(6) {
-  left: 20%;
-  animation-delay: 2.5s;
-  top: 60%;
-}
-
-.celebration-emojis span:nth-child(7) {
-  left: 40%;
-  animation-delay: 3s;
-  top: 20%;
-}
-
-.celebration-emojis span:nth-child(8) {
-  left: 60%;
-  animation-delay: 3.5s;
-  top: 40%;
-}
-
-/* Animation: appear, float, fade out */
-@keyframes emojiBlast {
-  0% {
-    transform: translateY(0) scale(0);
-    opacity: 0;
+@media (max-width: 767px) {
+  .celebration-container {
+    font-size: 13px;
+    padding: 5px 6px;
   }
-
-  20% {
-    transform: translateY(-20px) scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: translateY(-50px) scale(1.2);
-    opacity: 1;
-  }
-
-  80% {
-    transform: translateY(-70px) scale(1);
-    opacity: 0.7;
-  }
-
-  100% {
-    transform: translateY(-100px) scale(0);
-    opacity: 0;
+  .accent-bar {
+    width: 20px;
   }
 }

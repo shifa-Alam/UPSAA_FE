@@ -1,0 +1,40 @@
+<div class="congrats-container">
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <mat-card class="congrats-card">
+    <div class="icon-circle">🎉</div>
+    <h2 class="title">Congratulations!</h2>
+    <p class="message">Your registration was completed successfully.</p>
+
+    <!-- User Information -->
+    <div class="user-info">
+      <div class="info-grid">
+        <div><strong>Full Name:</strong> {{ data?.fullName }}</div>
+        <div><strong>Email:</strong> {{ data?.email }}</div>
+        <div><strong>Blood Group:</strong> {{ data?.bloodGroup }}</div>
+        <div><strong>Gender:</strong> {{ data?.gender }}</div>
+        <div><strong>Phone:</strong> {{ data?.phone }}</div>
+        <div><strong>Batch:</strong> {{ data?.batch }}</div>
+        <div><strong>Designation:</strong> {{ data?.currentDesignation || 'N/A' }}</div>
+        <div><strong>Company:</strong> {{ data?.employer || 'N/A' }}</div>
+        <div><strong>City:</strong> {{ data?.currentCity }}</div>
+        <div><strong>DOB:</strong> {{ data?.dob | date:'mediumDate' }}</div>
+      </div>
+      <br>
+      <p>Education Records</p>
+      <ul class="edu-list">
+        <li *ngFor="let edu of data?.educationRecords">
+          {{ edu.degreeName }} - {{ edu.instituteName }} ({{ edu.subject || 'N/A' }})
+        </li>
+      </ul>
+    </div>
+
+    <!-- Celebration Progress Circle -->
+    <div class="progress-circle">
+      <div class="circle">🥳</div>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="goHome()">Go Back Home</button>
+  </mat-card>
+</div>

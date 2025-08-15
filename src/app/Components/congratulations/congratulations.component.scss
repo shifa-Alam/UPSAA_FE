@@ -1,0 +1,121 @@
+.congrats-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  min-height: 100vh;
+  canvas#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .congrats-card {
+    max-width: 480px;
+    width: 100%;
+    padding: 20px 25px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+    .icon-circle {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    .title {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .message {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .user-info {
+      text-align: left;
+      margin-bottom: 20px;
+
+      h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        font-size: 14px;
+        color: #333;
+
+        div {
+          line-height: 1.4;
+        }
+      }
+
+      .edu-list {
+        list-style: disc inside;
+        padding-left: 0;
+        font-size: 14px;
+        color: #333;
+        margin-top: 8px;
+      }
+    }
+
+    .progress-circle {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+
+      .circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #e0f7fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+      }
+    }
+
+    button {
+      width: 100%;
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .congrats-card {
+      padding: 15px 18px;
+
+      .icon-circle {
+        font-size: 40px;
+      }
+
+      .title {
+        font-size: 20px;
+      }
+
+      .message {
+        font-size: 14px;
+      }
+
+      .user-info .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-circle .circle {
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+      }
+    }
+  }
+}

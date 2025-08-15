@@ -1,8 +1,8 @@
-
 <mat-sidenav-container class="sidenav-container">
   <!-- Side Nav -->
   <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
-    <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }">Home</a>
     <a mat-button (click)="sidenav.close()" routerLink="/about" routerLinkActive="active-link">About</a>
     <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">Events</a>
     <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
@@ -25,9 +25,10 @@
 
         <!-- Desktop Menu -->
         <div class="desktop-menu">
-          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-          <a mat-button routerLink="/about" routerLinkActive="active-link">About</a>
-          <a mat-button routerLink="/events" routerLinkActive="active-link">Events</a>
+          <a mat-button routerLink="/" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <!-- <a mat-button routerLink="/about" routerLinkActive="active-link">About</a> -->
+          <!-- <a mat-button routerLink="/events" routerLinkActive="active-link">Events</a> -->
           <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
           <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a>
           <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
@@ -37,6 +38,9 @@
 
     <!-- Content + Footer -->
     <div class="content-area">
+      <mat-progress-bar *ngIf="loadingService.loading$ | async" mode="indeterminate" color="accent"
+        class="top-progress-bar">
+      </mat-progress-bar>
       <router-outlet></router-outlet>
     </div>
 

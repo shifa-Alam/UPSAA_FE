@@ -1,97 +1,138 @@
 <div class="register-container">
   <mat-card class="register-card">
-    <!-- <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'" /> -->
     <div class="celebration-container">
-      <h2>Join Our Alumni Network</h2>
-      <div class="celebration-emojis">
-        <span>✨</span>
-        <span>🎉</span>
-        <span>⭐</span>
-        <span>🎊</span>
-        <span>✨</span>
-        <span>🎉</span>
-        <span>⭐</span>
-        <span>🎊</span>
-      </div>
+      <span class="btn-text">
+        আবেদন ফর্ম
+      </span>
+      <div class="accent-bar"></div>
+      <p class="form-hint">
+        “অবশ্যই, সকল তথ্য ইংরেজিতে দিবেন।”
+
+      </p>
     </div>
+
+
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
+        <!-- Education Records -->
 
-        <mat-form-field appearance="outline" class="full-width">
+        <!-- Full Name -->
+        <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Full Name</mat-label>
           <input matInput formControlName="fullName" required />
           <mat-error *ngIf="form.controls['fullName'].invalid && form.controls['fullName'].touched">
             Full Name is required
           </mat-error>
         </mat-form-field>
+        <!-- Blood Group -->
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>Blood Group</mat-label>
+          <mat-select formControlName="bloodGroup" required>
+            <mat-option value="">-- Select --</mat-option>
+            <mat-option *ngFor="let group of bloodGroups" [value]="group">
+              {{ group }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.controls['bloodGroup'].invalid && form.controls['bloodGroup'].touched">
+            Blood Group is required
+          </mat-error>
+        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" required />
           <mat-error *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
             Valid Email is required
           </mat-error>
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <!-- Phone -->
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>Phone Number</mat-label>
+          <input matInput formControlName="phone" placeholder="019xxxxxxxx" required />
+          <mat-error *ngIf="form.controls['phone'].invalid && form.controls['phone'].touched">
+            Phone Number is required
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Gender -->
+        <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Gender</mat-label>
           <mat-select formControlName="gender" required>
-            <mat-option value="0" disabled="true">Select One</mat-option>
+            <mat-option value="0" disabled>Select One</mat-option>
             <mat-option value="Male">Male</mat-option>
             <mat-option value="Female">Female</mat-option>
-
+            <mat-option value="Others">I don't want to disclose</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Phone Number</mat-label>
-          <input matInput formControlName="phone" />
-        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Batch (Passing Year)</mat-label>
+        <!-- Batch -->
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>SSC Batch (Passing Year)</mat-label>
           <input matInput type="number" formControlName="batch" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
+        <!-- Current Designation -->
+        <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Current Designation</mat-label>
           <input matInput formControlName="currentDesignation" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Institute</mat-label>
-          <input matInput formControlName="institute" />
+        <!-- Company/Institute -->
+        <mat-form-field appearance="outline" class="flex-field">
+          <mat-label>Company / Institute</mat-label>
+          <input matInput formControlName="employer" />
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Highest Education</mat-label>
-          <input matInput formControlName="heighestEducation" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="full-width">
+        <!-- Current City -->
+        <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Current City</mat-label>
           <input matInput formControlName="currentCity" />
         </mat-form-field>
 
+        <!-- Date of Birth -->
         <mat-form-field appearance="outline" class="flex-field" (click)="picker.open()">
           <mat-label>Date of Birth</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="dob" placeholder="Choose a date" readonly
             (click)="$event.stopPropagation()" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
-
           <mat-hint *ngIf="!form.controls['dob'].value">
             🎉 Provide your Date of Birth to get a birthday wish from us!
           </mat-hint>
         </mat-form-field>
 
-
-
-
-
       </div>
 
-      <button mat-raised-button color="primary" class="submit-btn" [disabled]="form.invalid">
+      <!-- Education Records -->
+      <h3 class="section-title">Education Records</h3>
+      <div formArrayName="educationRecords" class="education-section">
+        <div *ngFor="let eduCtrl of educationRecords.controls; let i = index" [formGroupName]="i" class="education-row">
+
+          <!-- Checkbox -->
+          <mat-checkbox formControlName="isCompleted" class="edu-checkbox">
+            {{ eduCtrl.value.degreeName }}
+          </mat-checkbox>
+
+          <!-- Institute / College / University -->
+          <mat-form-field appearance="outline" class="edu-input">
+            <mat-label>Institute / College / University</mat-label>
+            <input matInput formControlName="instituteName">
+          </mat-form-field>
+
+          <!-- Subject -->
+          <mat-form-field appearance="outline" class="edu-input">
+            <mat-label>Subject / Group</mat-label>
+            <input matInput formControlName="subject">
+          </mat-form-field>
+
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button mat-raised-button color="primary" class="submit-btn" [disabled]="form.invalid || isSubmitting">
         Submit
       </button>
     </form>
