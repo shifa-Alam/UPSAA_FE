@@ -9,8 +9,8 @@ import { RegisterComponent } from './Components/pages/register/register.componen
 import { CongratulationsComponent } from './Components/congratulations/congratulations.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
+  
   { path: 'about', component: AboutComponent },
   { path: 'events', component: EventsComponent },
   { path: 'register', component: RegisterComponent },
