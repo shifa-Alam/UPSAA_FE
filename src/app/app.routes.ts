@@ -9,13 +9,13 @@ import { RegisterComponent } from './Components/pages/register/register.componen
 import { CongratulationsComponent } from './Components/congratulations/congratulations.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent, pathMatch: 'full' },
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'about', component: AboutComponent, pathMatch: 'full' },
-  { path: 'events', component: EventsComponent, pathMatch: 'full' },
-  { path: 'register', component: RegisterComponent, pathMatch: 'full' },
-  { path: 'directory', component: DirectoryComponent, pathMatch: 'full' },
-  { path: 'congratulations', component: CongratulationsComponent, pathMatch: 'full' },
-  { path: 'contact', component: ContactComponent, pathMatch: 'full' },
-  { path: '**', redirectTo: '/home', pathMatch: 'full' }
+  { path: '', component: HomeComponent },
+  { path: 'home', redirectTo: '', pathMatch: 'full' },
+  { path: 'about', component: AboutComponent },
+  { path: 'events', component: EventsComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'directory', component: DirectoryComponent },
+  { path: 'congratulations', component: CongratulationsComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: '**', redirectTo: '' }
 ];
