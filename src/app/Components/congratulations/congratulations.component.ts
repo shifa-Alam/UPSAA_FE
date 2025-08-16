@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti';
 import { MatButtonModule } from '@angular/material/button';
 import { DataService } from '../../Services/data.service';
 import { MatCardModule } from '@angular/material/card';
-import { MemberCreateDto } from '../../Services/member.service';
+import { MemberCreateDto, MemberFeeDto } from '../../Services/member.service';
 
 @Component({
   selector: 'app-congratulations',
@@ -16,7 +16,7 @@ import { MemberCreateDto } from '../../Services/member.service';
 })
 export class CongratulationsComponent implements OnInit {
 
-  data: MemberCreateDto | undefined 
+  data: MemberCreateDto | undefined |null
 
   constructor(
     private router: Router,
@@ -26,6 +26,7 @@ export class CongratulationsComponent implements OnInit {
 
   ngOnInit(): void {
      this.data = this.dataService.getMemberData();
+
     // Only launch confetti if running in browser
     if (isPlatformBrowser(this.platformId)) {
       this.launchConfetti();
@@ -35,7 +36,13 @@ export class CongratulationsComponent implements OnInit {
   goHome() {
     this.router.navigate(['/home']);
   }
-
+// ✅ Method to calculate total fees
+  calculateTotalFees(): number {
+    if (!this.data?.fees || this.data.fees.length === 0) {
+      return 0;
+    }
+    return this.data.fees.reduce((sum: number, fee: MemberFeeDto) => sum + fee.amount, 0);
+  }
   private launchConfetti() {
     const duration = 5 * 1000;
     const end = Date.now() + duration;

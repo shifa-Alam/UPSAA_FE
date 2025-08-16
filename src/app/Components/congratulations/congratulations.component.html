@@ -5,7 +5,7 @@
   <mat-card class="congrats-card">
     <div class="icon-circle">🎉</div>
     <h2 class="title">Congratulations!</h2>
-    <p class="message">Your registration was completed successfully.</p>
+    <p class="message">Your registration has been successfully completed.</p>
 
     <!-- User Information -->
     <div class="user-info">
@@ -28,12 +28,38 @@
           {{ edu.degreeName }} - {{ edu.instituteName }} ({{ edu.subject || 'N/A' }})
         </li>
       </ul>
+      <div class="fees-invoice" *ngIf="data?.fees?.length">
+        <h3>Fees Invoice</h3>
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Fee Type</th>
+              <th class="amount-col">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let fee of data?.fees; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ fee.feeType }}</td>
+              <td class="amount-col">{{ fee.amount | currency:'BDT':'symbol' }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="2"><strong>Total</strong></td>
+              <td class="amount-col"><strong>{{ calculateTotalFees() | currency:'BDT':'symbol' }}</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- Instructional notice after fees -->
+      <p class="instruction-blue">
+        এই টাকা ব্যাচ রিপ্রেজেন্টেটিভের কাছে দিয়ে অ্যাকাউন্ট সক্রিয় করুন।
+      </p>
+
     </div>
 
-    <!-- Celebration Progress Circle -->
-    <div class="progress-circle">
-      <div class="circle">🥳</div>
-    </div>
 
     <button mat-raised-button color="primary" (click)="goHome()">Go Back Home</button>
   </mat-card>

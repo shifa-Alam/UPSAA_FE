@@ -2,7 +2,7 @@
   <mat-card class="register-card">
     <div class="celebration-container">
       <span class="btn-text">
-        আবেদন ফর্ম
+        রেজিস্ট্রেশন ফর্ম
       </span>
       <div class="accent-bar"></div>
       <p class="form-hint">
@@ -60,7 +60,7 @@
         <mat-form-field appearance="outline" class="flex-field">
           <mat-label>Gender</mat-label>
           <mat-select formControlName="gender" required>
-            <mat-option value="0" disabled>Select One</mat-option>
+            <mat-option value="" disabled>Select One</mat-option>
             <mat-option value="Male">Male</mat-option>
             <mat-option value="Female">Female</mat-option>
             <mat-option value="Others">I don't want to disclose</mat-option>
@@ -71,8 +71,26 @@
         <!-- Batch -->
         <mat-form-field appearance="outline" class="flex-field">
           <mat-label>SSC Batch (Passing Year)</mat-label>
-          <input matInput type="number" formControlName="batch" />
+          <mat-select formControlName="batch" required>
+
+            <!-- CORRECT: ngx-mat-select-search must be inside a disabled mat-option -->
+            <!-- <mat-option disabled>
+              <ngx-mat-select-search [formControl]="batchFilterCtrl" placeholderLabel="Search..."
+                noEntriesFoundLabel="No results found"></ngx-mat-select-search>
+            </mat-option> -->
+
+            <!-- Filtered options -->
+            <mat-option value="">-- Select --</mat-option>
+            <mat-option *ngFor="let batch of filteredBatches | async" [value]="batch">
+              {{ batch }}
+            </mat-option>
+
+          </mat-select>
         </mat-form-field>
+
+
+
+
 
         <!-- Current Designation -->
         <mat-form-field appearance="outline" class="flex-field">
@@ -100,14 +118,18 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
           <mat-hint *ngIf="!form.controls['dob'].value">
-            🎉 Provide your Date of Birth to get a birthday wish from us!
+            🎉 Share your DOB for a wish from us!
           </mat-hint>
         </mat-form-field>
 
       </div>
 
       <!-- Education Records -->
+
       <h3 class="section-title">Education Records</h3>
+      <p class="education-instruction">
+        চলমান বা সম্পন্ন ডিগ্রীগুলো টিক(✔️)দিয়ে উল্লেখ করুন।
+      </p>
       <div formArrayName="educationRecords" class="education-section">
         <div *ngFor="let eduCtrl of educationRecords.controls; let i = index" [formGroupName]="i" class="education-row">
 
@@ -130,6 +152,67 @@
 
         </div>
       </div>
+
+
+      <h3 class="section-title">Member Fees</h3>
+      <!-- Registration Fee Section -->
+      <div class="fee-info-box">
+        <p>
+          তথ্যগুলো সাবমিট করার পর আপনার ব্যাচ এর ব্যাচ রিপ্রেজেন্টেটিভ এর কাছে রেজিস্ট্রেশন ফী জমা করে রেজিস্ট্রেশন
+          সম্পন্ন করুন।
+        </p>
+
+        <p>
+          এক্ষেত্রে উল্লেখ্য যে, মোস্ট জুনিয়র প্রায় ৮/১০ টি ব্যাচ, যারা এখনও পড়াশোনার সাথে জড়িত আছেন বা চাকুরী জন্য
+          পড়াশোনা করছেন সবার কথা মাথায় রেখে UPSAA এর সদস্য ফি নির্ধারিত হয়েছে।
+        </p>
+
+        <ul>
+          <li>সদস্য ফিঃ ১০০ টাকা</li>
+          <li>বাৎসরিক ফিঃ ৩০০ টাকা</li>
+        </ul>
+
+        <p>
+          তবে এই সুদূরপ্রসারী সংগঠনের সকল কার্যক্রম পরিচালনা এর জন্য এই ফান্ড যথেষ্ট নয় এবং এই অবস্থায় এগিয়ে আসতে হবে
+          আমাদেরকেই।
+          এই জন্য এখানে ১০০ টাকা ফি এর পাশাপাশি একটি অনুদান প্রদানের সুযোগ রাখা হয়েছে।
+          সদস্যগণ যার যার আর্থিক অবস্থান থেকে স্বেচ্ছায় যেকোনো পরিমান অনুদান প্রদান করবেন এই প্রত্যাশা থাকবে।
+        </p>
+      </div>
+
+
+      <div class="fee-amount-box">
+        <div formArrayName="memberFees" class="fees-invoice">
+          <div class="invoice-header">
+            <div class="header-type">Fee Type</div>
+            <div class="header-amount">Amount (BDT)</div>
+          </div>
+
+          <div *ngFor="let feeCtrl of memberFees.controls; let i = index" [formGroupName]="i" class="fee-row"
+            [ngClass]="{'odd-row': i % 2 === 0, 'even-row': i % 2 !== 0}">
+            <div class="fee-type">{{ feeCtrl.value.feeType }}</div>
+            <div class="fee-amount-wrapper">
+              <span *ngIf="feeCtrl.value.feeType !== 'Donation'" class="fixed-amount">
+                {{ feeCtrl.value.amount }}
+              </span>
+              <mat-form-field *ngIf="feeCtrl.value.feeType === 'Donation'" appearance="outline" class="fee-amount">
+                <mat-label>Amount</mat-label>
+                <input matInput type="number" formControlName="amount" placeholder="Amount">
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="invoice-total">
+            <div class="total-label">Total</div>
+            <div class="total-amount">
+              {{ totalAmount | currency:'BDT':'symbol' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
 
       <!-- Submit Button -->
       <button mat-raised-button color="primary" class="submit-btn" [disabled]="form.invalid || isSubmitting">

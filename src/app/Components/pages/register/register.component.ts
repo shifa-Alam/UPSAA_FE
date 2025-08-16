@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray, FormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,10 +16,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LoadingService } from '../../../Services/loading-service.service';
 import { DataService } from '../../../Services/data.service';
 
+import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
+    FormsModule,
     ReactiveFormsModule,
     CommonModule,
     MatFormFieldModule,
@@ -31,12 +34,13 @@ import { DataService } from '../../../Services/data.service';
     MatOption,
     MatSelectModule,
     MatCheckboxModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isSubmitting = false;
 
@@ -60,17 +64,43 @@ export class RegisterComponent implements OnInit {
     'O-'
   ];
 
+  batchYears: number[] = [];
+  filteredBatches: ReplaySubject<number[]> = new ReplaySubject<number[]>(1);
+  batchFilterCtrl: FormControl = new FormControl('', { nonNullable: true });
+
+  totalAmount = 0;
+
+  private _onDestroy = new Subject<void>();
+
   constructor(
     private fb: FormBuilder,
     private memberService: MemberService,
     private snackbarService: SnackbarService,
     private loadingService: LoadingService,
     private router: Router,
-    private dataService:DataService
+    private dataService: DataService
   ) { }
 
   ngOnInit() {
-    // this.loadingService.show();
+    const currentYear = new Date().getFullYear();
+    for (let y = 2003; y <= currentYear; y++) {
+      this.batchYears.push(y);
+    }
+
+
+    this.filteredBatches.next(this.batchYears.slice());
+
+    this.batchFilterCtrl.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => {
+        this.filterBatchYears();
+      });
+
+
+
+
+
+
     this.form = this.fb.group({
       fullName: ['', Validators.required],
       bloodGroup: ['', Validators.required],
@@ -114,16 +144,51 @@ export class RegisterComponent implements OnInit {
 
           return group;
         })
-      )
+      ),
+      // Member Fees
+      memberFees: this.fb.array([
+        this.fb.group({
+          feeType: ['Membership'],
+          amount: [100, [Validators.required, Validators.min(0)]]
+        }),
 
+        this.fb.group({
+          feeType: ['Donation'],
+          amount: [0, [Validators.required, Validators.min(0)]]
+        }),
+      ])
     });
+
+    // Calculate total dynamically
+    this.memberFees.valueChanges
+      .pipe(takeUntil(this._onDestroy))
+      .subscribe(() => this.calculateTotal());
+
+    this.calculateTotal();
   }
 
   get educationRecords(): FormArray {
     return this.form.get('educationRecords') as FormArray;
   }
+  get memberFees(): FormArray {
+    return this.form.get('memberFees') as FormArray;
+  }
 
+  private filterBatchYears() {
+    const search = this.batchFilterCtrl.value?.toString()?.trim();
+    if (search && this.batchYears.includes(+search)) {
+      this.form.get('batch')?.setValue(+search);
+    }
 
+    this.filteredBatches.next(
+      this.batchYears.filter(batch => batch.toString().toLowerCase().includes(search))
+    );
+  }
+  calculateTotal() {
+    this.totalAmount = this.memberFees.controls.reduce((sum, ctrl) => {
+      return sum + Number(ctrl.value.amount || 0);
+    }, 0);
+  }
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -134,7 +199,6 @@ export class RegisterComponent implements OnInit {
     this.loadingService.show();
     const formValue = this.form.value;
 
-    const selectedEducation = formValue.educationRecords.filter((edu: any) => edu.isCompleted);
 
     const memberData: MemberCreateDto = {
       fullName: formValue.fullName,
@@ -147,8 +211,11 @@ export class RegisterComponent implements OnInit {
       employer: formValue.employer || undefined, // updated
       currentCity: formValue.currentCity,
       dob: formValue.dob ? new Date(formValue.dob).toISOString() : undefined,
-      educationRecords: selectedEducation
+      educationRecords: this.getCompletedEducationRecords(),
+      fees: this.getSelectedFees()
     };
+    console.log(`member data: ${JSON.stringify(memberData)}`);
+
 
     this.memberService.registerMember(memberData).subscribe({
       next: () => {
@@ -163,10 +230,20 @@ export class RegisterComponent implements OnInit {
       },
       error: (err) => {
         this.loadingService.hide();
-        this.snackbarService.showError('Registration failed. Please try again.');
+        this.snackbarService.showError(err.error.message);
 
         this.isSubmitting = false;
       }
     });
+  }
+  private getCompletedEducationRecords(): any[] {
+    return this.form.value.educationRecords.filter((edu: any) => edu.isCompleted);
+  }
+  private getSelectedFees(): any[] {
+    return this.form.value.memberFees;
+  }
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
   }
 }

@@ -5,19 +5,20 @@
   display: flex;
   justify-content: center;
   padding: 15px;
-   background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
   min-height: 100vh;
   box-sizing: border-box;
 }
 
 .register-card {
   width: 100%;
-   max-width: 900px; /* smaller card width */
+  max-width: 900px;
+  /* smaller card width */
   padding: 20px;
   border-radius: 10px;
   background-color: #ffffff;
   text-align: left;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* =======================
@@ -168,7 +169,8 @@ mat-hint {
     gap: 6px;
   }
 
-  .edu-checkbox, .edu-input {
+  .edu-checkbox,
+  .edu-input {
     flex: 1 1 100%;
   }
 
@@ -218,20 +220,25 @@ mat-hint {
 
 .celebration-container {
   text-align: center;
-  padding: 6px 8px;          /* very small padding */
-  margin-bottom: 12px;       /* less spacing */
+  padding: 6px 8px;
+  /* very small padding */
+  margin-bottom: 12px;
+  /* less spacing */
   border-radius: 8px;
-  background: linear-gradient(135deg,  #c4f2fa,#eef8fa,);
+  background: linear-gradient(135deg, #c4f2fa, #eef8fa, );
   color: #0d0d0d;
   font-weight: 600;
-  font-size: 14px;           /* smaller font */
+  font-size: 14px;
+  /* smaller font */
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* subtle shadow */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  /* subtle shadow */
 }
 
 .accent-bar {
-  width: 25px;               /* smaller bar */
+  width: 25px;
+  /* smaller bar */
   height: 2px;
   background: #fff;
   margin: 4px auto 0;
@@ -243,7 +250,188 @@ mat-hint {
     font-size: 13px;
     padding: 5px 6px;
   }
+
   .accent-bar {
     width: 20px;
   }
+}
+
+
+.search-input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  background-color: #f9f9f9;
+}
+
+.search-input:focus {
+  border-color: #4a90e2;
+  background-color: #fff;
+}
+
+
+.education-instruction {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
+  padding: 8px 12px;
+  border-left: 4px solid #4a90e2; // accent border
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); // subtle shadow
+}
+
+
+
+.fee-info-box {
+  background: #ffffff;
+  /* পরিষ্কার সাদা ব্যাকগ্রাউন্ড */
+  border: 1px solid #cce7f0;
+  /* হালকা নীল বর্ডার */
+  border-left: 6px solid #007acc;
+  /* প্রফেশনাল নীল লাইন */
+  padding: 15px 20px;
+  margin: 15px 0;
+  border-radius: 8px;
+  font-family: 'SulaimanLipi', sans-serif;
+  /* SulaimanLipi font */
+  font-size: 14px;
+  color: #034f84;
+  line-height: 1.5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fee-info-box:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.fee-info-box ul {
+  list-style-type: disc;
+  margin: 8px 0 8px 18px;
+  padding: 0;
+}
+
+.fee-info-box li {
+  margin-bottom: 4px;
+}
+
+@media (max-width: 768px) {
+  .fee-info-box {
+    padding: 12px 15px;
+    font-size: 13px;
+  }
+}
+
+.fee-amount-box {
+  max-width: 500px;
+  margin: 20px auto;
+  font-family: 'Roboto', sans-serif;
+}
+
+.fees-invoice {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
+  color:black;
+}
+
+.header-type {
+  flex: 1;
+}
+
+.header-amount {
+  width: 120px;
+  text-align: right;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.odd-row {
+  background-color: #f9f9f9;
+}
+
+.even-row {
+  background-color: #fff;
+}
+
+.fee-type {
+  flex: 1;
+  font-weight: 500;
+  color: #333;
+}
+
+.fee-amount-wrapper {
+  width: 120px;
+  text-align: right;
+}
+
+.fixed-amount {
+  font-weight: 500;
+  color: #2c3e50;
+  line-height: 32px;
+}
+
+::ng-deep .fee-amount .mat-form-field-wrapper {
+  padding: 0;
+}
+
+::ng-deep .fee-amount .mat-form-field-flex {
+  height: 32px;
+  align-items: center;
+}
+
+::ng-deep .fee-amount input.mat-input-element {
+  font-size: 14px;
+  padding: 0 6px;
+}
+
+::ng-deep .fee-amount .mat-form-field-label {
+  font-size: 12px;
+  float: left;
+  color: #555;
+}
+
+.invoice-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: #e3f2fd;
+  font-weight: 600;
+  font-size: 15px;
+  border-top: 2px solid #90caf9;
+}
+
+.total-label {
+  flex: 1;
+  text-align: left;
+  color: #1a237e;
+}
+
+.total-amount {
+  width: 120px;
+  text-align: right;
+  color: #1a237e;
 }
