@@ -17,8 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/UPSAA_FE",
-            "baseHref": "/UPSAA_FE/",
+            "outputPath": "dist",
+            "baseHref": "/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -106,5 +106,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "8082b831-7486-480c-8578-0869e4cb1dd6"
   }
 }
