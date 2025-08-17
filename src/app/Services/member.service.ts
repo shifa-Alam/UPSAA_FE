@@ -86,8 +86,8 @@ export interface PaginatedMembersResponse {
   providedIn: 'root'
 })
 export class MemberService {
-  private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
-  //private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+  //private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
+  private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
 
   constructor(private http: HttpClient) { }
 

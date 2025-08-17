@@ -14,17 +14,18 @@ html, body {
 
 /* ===== Main Layout ===== */
 .layout-container {
-  flex: 1; /* fill space between toolbar and footer */
+  // flex: 1; /* fill space between toolbar and footer */
+  // display: flex;
+  // flex-direction: column;
   display: flex;
   flex-direction: column;
+  min-height: 100vh; /* fill viewport */
 }
 
 /* ===== Content Area ===== */
 .content-area {
-  flex: 1; /* stretch content */
-  display: flex;
-  flex-direction: column;
-  overflow: auto; /* scroll if content is long */
+  flex: 1 0 auto; /* allow content to grow but not force footer down */
+  overflow: auto; /* scroll content if long */
 }
 
 /* router-outlet grows to fill remaining space */
@@ -95,7 +96,7 @@ content-area router-outlet {
 /* ===== Active Link ===== */
 .active-link {
   font-weight: bold;
-  color: #ffeb3b;
+  color: #3b96ff;
 }
 .mobile-menu a.active-link {
   background-color: #e0f7fa;
@@ -104,13 +105,25 @@ content-area router-outlet {
 }
 
 /* ===== Footer ===== */
-// app-footer {
-//   flex-shrink: 0;
-//   background: #222;
-//   color: #fff;
-//   text-align: center;
-//   padding: 12px 0;
-// }
+.app-footer {
+  position: fixed; /* always at bottom */
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #003d5c;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+/* Hide footer on mobile */
+@media (max-width: 768px) {
+  .app-footer {
+    display: none;
+  }
+}
+
 
 /* ===== Loading Progress Bar ===== */
 .top-progress-bar {
@@ -119,6 +132,7 @@ content-area router-outlet {
   left: 0;
   width: 100%;
   z-index: 1000;
+  
 }
 
 /* Optional: smooth scrolling for content */

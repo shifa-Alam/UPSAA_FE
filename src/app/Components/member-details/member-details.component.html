@@ -1,19 +1,31 @@
-<div class="dialog-container">
-  <h2>{{ member.fullName }}</h2>
+<mat-card class="member-dialog-card">
+  <mat-card-header>
+    <mat-card-title>{{ member.fullName }}</mat-card-title>
+    <mat-card-subtitle>Batch: {{ member.batch }}</mat-card-subtitle>
+  </mat-card-header>
 
-  <div class="member-info">
-    <p><strong>Batch:</strong> {{ member.batch }}</p>
-    <p><strong>Phone:</strong> {{ member.phone }}</p>
-    <p><strong>Email:</strong> {{ member.email }}</p>
-    <p><strong>City:</strong> {{ member.currentCity }}</p>
-    <p><strong>Blood Group:</strong> {{ member.bloodGroup }}</p>
-    <p><strong>Membership Fee:</strong> {{ member.fees | memberFeeAmount:'Membership' }}</p>
-    <p><strong>Donation:</strong> {{ member.fees | memberFeeAmount:'Donation' }}</p>
-    <p><strong>Total:</strong> {{ member.fees | memberFeeAmount:'Total' }}</p>
-    <!-- Add more fields as needed -->
-  </div>
+  <mat-card-content>
+    <!-- Personal Info -->
+    <div class="info-section">
+      <div class="info-item"><mat-icon>phone</mat-icon><span>{{ member.phone }}</span></div>
+      <div class="info-item"><mat-icon>email</mat-icon><span>{{ member.email }}</span></div>
+      <div class="info-item"><mat-icon>location_city</mat-icon><span>{{ member.currentCity }}</span></div>
+      <div class="info-item"><mat-icon>bloodtype</mat-icon><span>{{ member.bloodGroup }}</span></div>
+      <div class="info-item"><mat-icon>payments</mat-icon><span>Membership: {{ member.fees | memberFeeAmount:'Membership' }}</span></div>
+      <div class="info-item"><mat-icon>card_giftcard</mat-icon><span>Donation: {{ member.fees | memberFeeAmount:'Donation' }}</span></div>
+      <div class="info-item total-item"><mat-icon>attach_money</mat-icon><span>Total: {{ member.fees | memberFeeAmount:'Total' }}</span></div>
+    </div>
 
-  <div class="dialog-actions">
-    <button mat-button color="primary" (click)="close()">Close</button>
-  </div>
-</div>
+    <!-- Education Info -->
+    <!-- <div class="education-section" *ngIf="member.educationRecords?.length">
+      <h4>Education</h4>
+      <div *ngFor="let edu of member.educationRecords" class="education-item">
+        <span>{{ edu.degreeID }} - {{ edu.instituteName }} ({{ edu.subject }})</span>
+      </div>
+    </div> -->
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-raised-button color="primary" (click)="close()">Close</button>
+  </mat-card-actions>
+</mat-card>
