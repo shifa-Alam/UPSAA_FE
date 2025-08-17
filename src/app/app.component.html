@@ -3,8 +3,9 @@
   <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
     <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/about" routerLinkActive="active-link">About</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">Events</a>
+    <!-- <a mat-button (click)="sidenav.close()" routerLink="/about" routerLinkActive="active-link">About</a> -->
+     <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
+    <!-- <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">Events</a> -->
     <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
     <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a>
     <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
@@ -27,6 +28,7 @@
         <div class="desktop-menu">
           <a mat-button routerLink="/" routerLinkActive="active-link"
             [routerLinkActiveOptions]="{ exact: true }">Home</a>
+            <a mat-button routerLink="/members" routerLinkActive="active-link">Dashboard</a>
           <!-- <a mat-button routerLink="/about" routerLinkActive="active-link">About</a> -->
           <!-- <a mat-button routerLink="/events" routerLinkActive="active-link">Events</a> -->
           <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>

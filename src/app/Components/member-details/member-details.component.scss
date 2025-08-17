@@ -1,0 +1,33 @@
+.dialog-container {
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.dialog-container h2 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+.member-info p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #333;
+}
+
+.dialog-actions {
+  text-align: right;
+  margin-top: 15px;
+}
+
+.dialog-actions button {
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 14px;
+  transition: background 0.2s;
+}
+
+.dialog-actions button:hover {
+  background: #0056b3;
+}

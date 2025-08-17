@@ -1,32 +1,38 @@
+/* ===== Reset & Full Height ===== */
 html, body {
   height: 100%;
   margin: 0;
+  font-family: Arial, sans-serif;
 }
 
+/* ===== Sidenav Container ===== */
 .sidenav-container {
-  height: 100%;
+  height: 100vh; /* full viewport height */
   display: flex;
   flex-direction: column;
 }
 
+/* ===== Main Layout ===== */
 .layout-container {
-  flex: 1; /* take remaining space between toolbar and footer */
+  flex: 1; /* fill space between toolbar and footer */
   display: flex;
   flex-direction: column;
 }
 
+/* ===== Content Area ===== */
 .content-area {
-  flex: 1; /* make content stretch */
+  flex: 1; /* stretch content */
+  display: flex;
+  flex-direction: column;
   overflow: auto; /* scroll if content is long */
 }
 
-/* Make sidenav-content behave like full height column layout */
-.main-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+/* router-outlet grows to fill remaining space */
+content-area router-outlet {
+  flex-grow: 1;
 }
 
+/* ===== Toolbar ===== */
 .sky-glass {
   background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
   color: white;
@@ -40,14 +46,15 @@ html, body {
 .toolbar-content {
   display: flex;
   align-items: center;
+  justify-content: space-between; /* logo left, menu right */
   width: 100%;
 }
 
+/* Logo */
 .logo-img {
-  height: 115px;
+  height: 50px;
   margin-right: 8px;
 }
-
 .logo {
   flex-grow: 1;
   font-weight: bold;
@@ -55,64 +62,66 @@ html, body {
   color: black;
 }
 
-/* Responsive */
+/* ===== Desktop Menu ===== */
 .desktop-menu {
   display: flex;
   gap: 12px;
 }
 .menu-button {
-  display: none;
-}
-@media (max-width: 768px) {
-  .desktop-menu {
-    display: none;
-  }
-  .menu-button {
-    display: inline-flex;
-  }
-  .logo {
-    font-size: 16px;
-  }
+  display: none; /* hide hamburger on desktop */
 }
 
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .desktop-menu { display: none; }
+  .menu-button { display: inline-flex; }
+  .logo { font-size: 16px; }
+  .logo-img { height: 40px; }
+}
+
+/* ===== Mobile Sidenav ===== */
 .mobile-menu {
   width: 250px;
   padding: 10px;
   background: white;
+  height: 100%;
 }
 .mobile-menu a {
   display: block;
   width: 100%;
   text-align: left;
 }
+
+/* ===== Active Link ===== */
 .active-link {
   font-weight: bold;
   color: #ffeb3b;
 }
-
-/* Sticky Footer Support */
-.content-area {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  justify-content: space-between;
+.mobile-menu a.active-link {
+  background-color: #e0f7fa;
+  border-radius: 4px;
+  padding: 4px 8px;
 }
 
-router-outlet {
-  flex-grow: 1;
-}
+/* ===== Footer ===== */
+// app-footer {
+//   flex-shrink: 0;
+//   background: #222;
+//   color: #fff;
+//   text-align: center;
+//   padding: 12px 0;
+// }
 
-app-footer {
-  flex-shrink: 0;
-  background: #222;
-  color: #fff;
-  text-align: center;
-  
-}
+/* ===== Loading Progress Bar ===== */
 .top-progress-bar {
   position: fixed;
-  top: 64px;   // adjust if your navbar height is different
+  top: 0; /* adjust if toolbar height changes */
   left: 0;
   width: 100%;
   z-index: 1000;
+}
+
+/* Optional: smooth scrolling for content */
+.content-area {
+  scroll-behavior: smooth;
 }
