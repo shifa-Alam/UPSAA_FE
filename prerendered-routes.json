@@ -1,0 +1,12 @@
+{
+  "routes": [
+    "/",
+    "/about",
+    "/congratulations",
+    "/contact",
+    "/directory",
+    "/events",
+    "/members",
+    "/register"
+  ]
+}
