@@ -1,0 +1,81 @@
+import { Component, OnInit } from '@angular/core';
+import { Member, MemberService, MemberFilterDto } from '../../Services/member.service';
+import { CommonModule } from '@angular/common';
+import { MemberFeeAmountPipe } from '../../Pipes/member-fee-amount.pipe';
+import { FormsModule } from '@angular/forms';
+import { MemberDetailsComponent } from '../member-details/member-details.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+
+
+@Component({
+
+  selector: 'app-member-landing',
+  standalone: true,
+  imports: [CommonModule, FormsModule, MemberFeeAmountPipe, MatProgressSpinnerModule, MatCardModule],
+  templateUrl: './member-landing.component.html',
+  styleUrls: ['./member-landing.component.scss']
+})
+export class MemberLandingComponent implements OnInit {
+  members: Member[] = [];
+  totalItems = 0;
+  totalPages = 0;
+  pageNumber = 1;
+  pageSize = 10;
+  totalMembershipAmount = 0;
+  totalDonationAmount = 0;
+  totalAmount = 0;
+  // For filters
+  filter: MemberFilterDto = { pageNumber: 1, pageSize: 10 ,gender:null,bloodGroup:""};
+  bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+  // ✅ Loader state
+  loading: boolean = false;
+  constructor(private memberService: MemberService, private dialog: MatDialog) { }
+
+  ngOnInit() {
+   
+    this.loadMembers();
+  }
+
+  loadMembers(page: number = 1) {
+
+    this.loading = true; // Show loader
+    this.filter.pageNumber = page;
+    console.log(this.filter);
+    this.memberService.filterMembers(this.filter).subscribe({
+      next: (res) => {
+        this.members = res.members;
+        this.totalItems = res.totalItems;
+        this.totalPages = res.totalPages;
+        this.pageNumber = res.pageNumber;
+        this.totalMembershipAmount = res.totalMembershipAmount;
+        this.totalDonationAmount = res.totalDonationAmount;
+        this.totalAmount = res.totalAmount;
+        this.loading = false; // Hide loader
+      },
+      error: () => {
+        this.loading = false; // Hide loader even on error
+      }
+    });
+  }
+
+  onPageChange(page: number) {
+    this.loadMembers(page);
+  }
+  applyFilter() {
+    this.loadMembers(1); // Reset to first page whenever filter changes
+  }
+  // ✅ Add this method
+  resetFilters() {
+    this.filter = { pageNumber: 1, pageSize: this.pageSize };
+    this.loadMembers(1);
+  }
+  viewMemberDetails(member: any) {
+    this.dialog.open(MemberDetailsComponent, {
+      data: member,
+      width: '500px'
+    });
+  }
+
+}

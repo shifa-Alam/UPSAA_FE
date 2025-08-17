@@ -1,0 +1,249 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.dashboard-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* ===== Summary Cards ===== */
+.dashboard-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+
+.summary-card {
+  flex: 1 1 200px;
+  min-width: 160px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  transition: transform 0.2s;
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card .icon {
+  font-size: 36px;
+  margin-right: 12px;
+}
+
+.summary-card .content h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #555;
+}
+
+.summary-card .content p {
+  margin: 5px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== Filter Section ===== */
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.filter-item {
+  flex: 1 1 200px;
+  min-width: 140px;
+}
+
+.filter-item input,
+.filter-item select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.filter-item input:focus,
+.filter-item select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.reset-button button {
+  background: #ff4d4f;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.reset-button button:hover {
+  background: #d9363e;
+}
+
+/* ===== Loader Overlay ===== */
+.loader-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 500;
+  border-radius: 12px;
+}
+
+/* ===== Members Table ===== */
+.table-container {
+  overflow-x: auto;
+}
+
+.members-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 700px;
+}
+
+.members-table th,
+.members-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.members-table th {
+  background: #007bff;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.member-row:hover {
+  background: #f1f9ff;
+}
+
+.details-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.details-btn:hover {
+  background: #0056b3;
+}
+
+/* ===== Pagination ===== */
+.pagination-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.pagination {
+  list-style: none;
+  padding: 0;
+  display: inline-flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination li button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.2s;
+}
+
+.pagination li.active button {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.pagination li.disabled button {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.pagination li button:hover:not(.disabled) {
+  background: #007bff;
+  color: #fff;
+}
+
+/* ===== Mobile adjustments ===== */
+@media (max-width: 768px) {
+
+  .dashboard-summary {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filters-container {
+    flex-direction: column;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .filter-item {
+    flex: 1 1 100%;
+  }
+
+  .members-table {
+    font-size: 13px;
+    min-width: 0;
+  }
+
+  .details-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -37,13 +37,56 @@ export interface MemberCreateDto {
   educationRecords: MemberEducationDto[]; // added
   fees: MemberFeeDto[];
 }
+export interface MemberFilterDto {
+  pageNumber: number;
+  pageSize: number;
 
+  
+  batch?: number;
+  fullName?: string;
+  phoneOrEmail?: string;
+  currentCity?: string;
+  gender?: string |null;
+  bloodGroup?: string;
+  degreeId?: number;
+}
+
+export interface Member {
+  id: number;
+  fullName: string;
+  gender: string;
+  batch: number;
+  currentDesignation: string;
+  bloodGroup: string;
+  employer: string;
+  dob: string;
+  photo: string | null;
+  email: string;
+  phone: string;
+  currentCity: string;
+  educationRecords: any[];
+  fees: any[];
+  active: boolean;
+  createdDate: string;
+  modifiedDate: string | null;
+}
+
+export interface PaginatedMembersResponse {
+  members: Member[];
+  totalItems: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+  totalMembershipAmount: number;
+  totalDonationAmount: number;
+  totalAmount: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
-    private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
+  private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
   //private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
 
   constructor(private http: HttpClient) { }
@@ -55,5 +98,9 @@ export class MemberService {
   getMembers(): Observable<MemberCreateDto[]> {
     return this.http.get<MemberCreateDto[]>(`${this.apiUrl}/GetAllMembers`);
     // Adjust the endpoint as per your API route
+  }
+  filterMembers(filter: MemberFilterDto): Observable<PaginatedMembersResponse> {
+    console.log(filter)
+    return this.http.post<PaginatedMembersResponse>(`${this.apiUrl}/FilterMembers`, filter);
   }
 }

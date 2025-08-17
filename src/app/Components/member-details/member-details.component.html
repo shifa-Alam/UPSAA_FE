@@ -1,0 +1,19 @@
+<div class="dialog-container">
+  <h2>{{ member.fullName }}</h2>
+
+  <div class="member-info">
+    <p><strong>Batch:</strong> {{ member.batch }}</p>
+    <p><strong>Phone:</strong> {{ member.phone }}</p>
+    <p><strong>Email:</strong> {{ member.email }}</p>
+    <p><strong>City:</strong> {{ member.currentCity }}</p>
+    <p><strong>Blood Group:</strong> {{ member.bloodGroup }}</p>
+    <p><strong>Membership Fee:</strong> {{ member.fees | memberFeeAmount:'Membership' }}</p>
+    <p><strong>Donation:</strong> {{ member.fees | memberFeeAmount:'Donation' }}</p>
+    <p><strong>Total:</strong> {{ member.fees | memberFeeAmount:'Total' }}</p>
+    <!-- Add more fields as needed -->
+  </div>
+
+  <div class="dialog-actions">
+    <button mat-button color="primary" (click)="close()">Close</button>
+  </div>
+</div>
