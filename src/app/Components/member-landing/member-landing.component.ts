@@ -69,7 +69,7 @@ export class MemberLandingComponent implements OnInit {
 
   setPageSize() {
     if (typeof window !== 'undefined') {
-      this.pageSize = window.innerWidth < 768 ? 8 : 20;
+      this.pageSize = window.innerWidth < 768 ? 5 : 20;
     }
   }
   onPageChange(page: number) {

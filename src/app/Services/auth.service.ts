@@ -21,7 +21,7 @@ interface JwtPayload {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = environment.baseUrl+'/auth';
+  private apiUrl = environment.baseUrl + '/auth';
   private tokenKey = 'authToken';
   private userSubject = new BehaviorSubject<JwtPayload | null>(null);
   user$ = this.userSubject.asObservable();
@@ -31,6 +31,8 @@ export class AuthService {
     if (token) this.userSubject.next(this.decodeToken(token));
   }
 
+
+  
   login(email: string, password: string) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       map(res => {
@@ -67,6 +69,21 @@ export class AuthService {
 
   getCurrentUser(): JwtPayload | null {
     return this.userSubject.value;
+  }
+  hasRole(role: string): boolean {
+    const roles = this.getRoles(); // e.g., ['Admin', 'Representative']
+    return roles.includes(role);
+  }
+  getRoles(): string[] {
+    const user = this.getCurrentUser();
+    if (!user) return [];
+
+    // If role is a comma-separated string (like "Admin,Representative")
+    if (user.role) {
+      return user.role.split(',').map(r => r.trim());
+    }
+
+    return [];
   }
 
   private decodeToken(token: string): JwtPayload {

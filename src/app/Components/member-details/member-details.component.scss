@@ -81,6 +81,14 @@
     }
   }
 }
+mat-card-actions {
+  display: flex;
+  align-items: center;
+}
+
+.spacer {
+  flex: 1 1 auto; /* Takes remaining space between buttons */
+}
 
 @media (max-width: 480px) {
   .member-dialog-card {
