@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./Components/shared/navbar/navbar.component";
 import { FooterComponent } from "./Components/shared/footer/footer.component";
 import { MatButtonModule } from '@angular/material/button';
@@ -9,12 +9,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBar, MatProgressBarModule } from "@angular/material/progress-bar";
 import { LoadingService } from './Services/loading-service.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './Services/auth.service';
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,CommonModule, FooterComponent, MatToolbarModule, MatButtonModule, RouterModule, MatSidenavModule, MatIconModule, FooterComponent, MatProgressBarModule],
+  imports: [RouterOutlet, CommonModule, MatToolbarModule, MatButtonModule, RouterModule, MatSidenavModule, MatIconModule, MatProgressBarModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -26,7 +27,14 @@ export class AppComponent {
   toggleSidenav() {
     this.sidenav.toggle();
   }
-  constructor(public loadingService: LoadingService) {
-    
+  constructor(
+    public loadingService: LoadingService,
+    public authService: AuthService, // for login/logout
+    private router: Router) {
+
+  }
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

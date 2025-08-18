@@ -3,6 +3,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface MemberEducationDto {
   degreeId: number;
@@ -87,7 +88,8 @@ export interface PaginatedMembersResponse {
 })
 export class MemberService {
   //private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
-  private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+  // private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+  private apiUrl = environment.baseUrl+'/member';
 
   constructor(private http: HttpClient) { }
 

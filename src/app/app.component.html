@@ -3,52 +3,65 @@
   <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
     <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
       [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    <!-- <a mat-button (click)="sidenav.close()" routerLink="/about" routerLinkActive="active-link">About</a> -->
-     <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
-    <!-- <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">Events</a> -->
+    <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
     <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
     <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a>
     <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
+
+    <!-- Login / Logout -->
+    <ng-container *ngIf="authService.isLoggedIn(); else loginBtnMobile">
+      <button mat-button (click)="logout(); sidenav.close()">Logout</button>
+    </ng-container>
+    <ng-template #loginBtnMobile>
+      <a mat-button (click)="sidenav.close()" routerLink="/login">Login</a>
+    </ng-template>
   </mat-sidenav>
 
-  <!-- Full Page Layout -->
+  <!-- Main Content -->
   <mat-sidenav-content class="layout-container">
-    <!-- Top Toolbar -->
-    <mat-toolbar class="sky-glass">
-      <div class="toolbar-content">
-        <img src="logo.png" alt="Logo" class="logo-img" />
-        <span class="logo">UPS Alumni Association</span>
+    <div class="page-wrapper">
+      <!-- Top Toolbar -->
+      <mat-toolbar class="sky-glass">
+        <div class="toolbar-content">
+          <img src="logo.png" alt="Logo" class="logo-img" />
+          <span class="logo">UPS Alumni Association</span>
 
-        <!-- Hamburger Icon -->
-        <button class="menu-button" mat-icon-button (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
+          <!-- Hamburger Icon -->
+          <button class="menu-button" mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
 
-        <!-- Desktop Menu -->
-        <div class="desktop-menu">
-          <a mat-button routerLink="/" routerLinkActive="active-link"
-            [routerLinkActiveOptions]="{ exact: true }">Home</a>
+          <!-- Desktop Menu -->
+          <div class="desktop-menu">
+            <a mat-button routerLink="/" routerLinkActive="active-link"
+              [routerLinkActiveOptions]="{ exact: true }">Home</a>
             <a mat-button routerLink="/members" routerLinkActive="active-link">Dashboard</a>
-          <!-- <a mat-button routerLink="/about" routerLinkActive="active-link">About</a> -->
-          <!-- <a mat-button routerLink="/events" routerLinkActive="active-link">Events</a> -->
-          <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
-          <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a>
-          <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
+            <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
+            <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a>
+            <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
+
+            <!-- Login / Logout -->
+            <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
+              <button mat-button (click)="logout()">Logout</button>
+            </ng-container>
+            <ng-template #loginBtn>
+              <a mat-button routerLink="/login">Login</a>
+            </ng-template>
+          </div>
         </div>
+      </mat-toolbar>
+
+      <!-- Scrollable Content -->
+      <div class="content-area">
+        <mat-progress-bar *ngIf="loadingService.loading$ | async" mode="indeterminate" color="accent"
+          class="top-progress-bar"></mat-progress-bar>
+        <router-outlet></router-outlet>
       </div>
-    </mat-toolbar>
 
-    <!-- Content + Footer -->
-    <div class="content-area">
-      <mat-progress-bar *ngIf="loadingService.loading$ | async" mode="indeterminate" color="accent"
-        class="top-progress-bar">
-      </mat-progress-bar>
-      <router-outlet></router-outlet>
+      <!-- Footer -->
+      <footer class="app-footer">
+        © 2025 UPSAA
+      </footer>
     </div>
-
-    <!-- <app-footer></app-footer> -->
-     <footer class="app-footer">
-      © 2025 UPSAA
-    </footer>
   </mat-sidenav-content>
 </mat-sidenav-container>

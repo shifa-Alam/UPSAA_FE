@@ -1,0 +1,134 @@
+/* ===== Full Page Background ===== */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+
+  /* Gradient + subtle abstract shapes */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional: abstract circles in background */
+.login-container::before,
+.login-container::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  width: 400px;
+  height: 400px;
+  z-index: 0;
+}
+
+.login-container::before {
+  top: -100px;
+  left: -100px;
+}
+
+.login-container::after {
+  bottom: -150px;
+  right: -150px;
+}
+
+/* ===== Login Box ===== */
+.login-box {
+  position: relative; /* above background shapes */
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  padding: 50px 35px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+.login-box h2 {
+  margin-bottom: 10px;
+  font-size: 28px;
+  color: #222;
+}
+
+.login-box p {
+  margin-bottom: 30px;
+  color: #555;
+  font-size: 14px;
+}
+
+/* ===== Input Fields ===== */
+.login-box input {
+  width: 100%;
+  padding: 14px 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #764ba2;
+  box-shadow: 0 0 8px rgba(118, 75, 162, 0.4);
+}
+
+.login-box input.invalid {
+  border-color: #e74c3c;
+}
+
+/* ===== Error Messages ===== */
+.error {
+  color: #e74c3c;
+  font-size: 12px;
+  text-align: left;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+/* ===== Button ===== */
+.login-box button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  background: #764ba2;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-box button:hover {
+  background: #5e3790;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.login-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 480px) {
+  .login-box {
+    padding: 35px 20px;
+  }
+
+  .login-box h2 {
+    font-size: 24px;
+  }
+
+  .login-box p {
+    font-size: 13px;
+  }
+}

@@ -106,22 +106,30 @@ content-area router-outlet {
 
 /* ===== Footer ===== */
 .app-footer {
-  position: fixed; /* always at bottom */
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #003d5c;
-  color: #fff;
+  flex-shrink: 0;       /* don’t shrink */
   text-align: center;
   padding: 10px 0;
-  z-index: 1000;
+  background: #003d5c;
+  color: #fff;
+}
+
+/* ===== Layout container ===== */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* fill viewport height */
+}
+
+.content-area {
+  flex: 1 0 auto; /* takes remaining space, pushes footer down */
+  overflow: auto;
 }
 
 /* Hide footer on mobile */
 @media (max-width: 768px) {
-  .app-footer {
-    display: none;
-  }
+  // .app-footer {
+  //   display: none;
+  // }
 }
 
 

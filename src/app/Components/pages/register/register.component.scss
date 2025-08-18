@@ -6,7 +6,7 @@
   justify-content: center;
   padding: 15px;
   background: linear-gradient(135deg, #eef8fa, #c4f2fa);
-  min-height: 100vh;
+  min-height: 100%;
   box-sizing: border-box;
 }
 
@@ -349,7 +349,7 @@ mat-hint {
   padding: 10px 16px;
   font-weight: 600;
   background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
-  color:black;
+  color: black;
 }
 
 .header-type {

@@ -1,0 +1,39 @@
+<div class="login-container">
+  <div class="login-box">
+    <h2>Login</h2>
+    <p>Access your alumni dashboard</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="Email"
+        [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+      />
+      <div class="error" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+        Email is required
+      </div>
+      <div class="error" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+        Invalid email
+      </div>
+
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Password"
+        [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+      />
+      <div class="error" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+        Password is required
+      </div>
+
+      <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+   
+  </div>
+</div>

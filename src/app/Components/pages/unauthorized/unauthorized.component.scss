@@ -1,0 +1,47 @@
+.unauthorized-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #f2709c, #ff9472);
+  color: #fff;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.card {
+  background: rgba(0,0,0,0.6);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+h1 {
+  font-size: 6rem;
+  margin: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  margin: 10px 0 20px 0;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+button {
+  background-color: #ff9472;
+  border: none;
+  padding: 12px 25px;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
