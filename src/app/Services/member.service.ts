@@ -53,6 +53,7 @@ export interface MemberFilterDto {
 }
 
 export interface Member {
+  statusId: any;
   id: number;
   fullName: string;
   gender: string;
@@ -70,6 +71,13 @@ export interface Member {
   active: boolean;
   createdDate: string;
   modifiedDate: string | null;
+
+  reqById?: string;
+  reqDate?: any;
+  approvedOrRejectById?: string;
+
+  approvedOrRejectDate?: any;
+
 }
 
 export interface PaginatedMembersResponse {
@@ -97,7 +105,7 @@ export interface MemberActivationRequest {
   providedIn: 'root'
 })
 export class MemberService {
-  
+
   private apiUrl = environment.baseUrl + '/member';
   private authApiUrl = environment.baseUrl + '/auth'; // Auth controller
   constructor(private http: HttpClient) { }
@@ -119,20 +127,17 @@ export class MemberService {
     return this.http.post(`${this.apiUrl}/RequestActivation/${memberId}`, {});
   }
 
-  getPendingRequests(): Observable<MemberActivationRequest[]> {
-    return this.http.get<MemberActivationRequest[]>(`${this.apiUrl}/PendingActivations`);
+
+  approveRequest(memberId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/ApproveActivation/${memberId}`, {});
   }
 
-  approveRequest(requestId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/ApproveActivation/${requestId}`, {});
-  }
-
-  rejectRequest(requestId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/RejectActivation`, { requestId });
+  rejectRequest(memberId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/RejectActivation/${memberId}`, {});
   }
 
   activateMemberDirectly(memberId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/ActivateDirect`, { memberId });
+    return this.http.post(`${this.apiUrl}/ActivateDirectly/${memberId}`, {});
   }
 
 

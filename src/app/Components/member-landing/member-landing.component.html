@@ -48,7 +48,7 @@
                 <input type="text" placeholder="Phone Or Email" [(ngModel)]="filter.phoneOrEmail"
                     (ngModelChange)="applyFilter()" />
             </div>
-            
+
             <div class="filter-item">
                 <input type="number" placeholder="Batch" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
             </div>
@@ -90,6 +90,7 @@
                         <th class="col-city">City</th>
                         <th class="col-blood">Blood</th>
                         <th class="col-total">Total</th>
+                        <th class="col-total">Operation</th>
                         <th class="col-action">Action</th>
                     </tr>
                 </thead>
@@ -101,6 +102,27 @@
                         <td class="col-city">{{ member.currentCity }}</td>
                         <td class="col-blood">{{ member.bloodGroup }}</td>
                         <td class="col-total">{{ member.fees | memberFeeAmount:'Total' }}</td>
+                        <td class="col-name"
+                            *ngIf="isRepresentative() && (member.statusId==0 || member.statusId==null)">
+                            <button class="operation-btn" (click)="sendActiveReq(member.id)">
+                                Activate
+                            </button>
+                        </td>
+                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId==1">
+                            <button class="operation-btn" (click)="approveRequest(member.id)">
+                                Approve
+                            </button>
+                        </td>
+                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId==null">
+                            <button class="operation-btn" (click)="activeDirectly(member.id)">
+                                Active
+                            </button>
+                        </td>
+                        <td class="col-name" *ngIf="member.active">
+                           
+                                Activated
+                           
+                        </td>
                         <td class="col-action">
                             <button class="details-btn" (click)="viewMemberDetails(member)">Details</button>
                         </td>

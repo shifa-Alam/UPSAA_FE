@@ -178,6 +178,22 @@
 .details-btn:hover {
   background: #0056b3;
 }
+.operation-btn {
+  background: green;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.operation-btn:hover {
+  background: #0056b3;
+}
+
 
 /* ===== Pagination ===== */
 .pagination-container {

@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from "@angular/material/select";
 import { MatOptionModule } from '@angular/material/core';
+import { AuthService } from '../../Services/auth.service';
 
 
 @Component({
@@ -34,7 +35,9 @@ export class MemberLandingComponent implements OnInit {
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
   // ✅ Loader state
   loading: boolean = false;
-  constructor(private memberService: MemberService, private dialog: MatDialog) { }
+  constructor(private memberService: MemberService, private dialog: MatDialog,
+    public authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.setPageSize();
@@ -49,6 +52,7 @@ export class MemberLandingComponent implements OnInit {
     this.memberService.filterMembers(this.filter).subscribe({
       next: (res) => {
         this.members = res.members;
+        console.log(this.members);
         this.totalItems = res.totalItems;
         this.totalPages = res.totalPages;
         this.pageNumber = res.pageNumber;
@@ -61,6 +65,12 @@ export class MemberLandingComponent implements OnInit {
         this.loading = false; // Hide loader even on error
       }
     });
+  }
+  isRepresentative(): boolean {
+    return this.authService.hasRole('Representative');
+  }
+  isSuperAdmin(): boolean {
+    return this.authService.hasRole('SuperAdmin');
   }
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -100,5 +110,42 @@ export class MemberLandingComponent implements OnInit {
 
     return pages;
   }
+  sendActiveReq(memberId: number) {
+    this.loading = true; // Show loader
+    this.memberService.requestActivation(memberId).subscribe({
+      next: (res) => {
+        this.loadMembers(1);
+        this.loading = false; // Hide loader
+      },
+      error: () => {
+        this.loading = false; // Hide loader even on error
+      }
+    });
+  }
+  approveRequest(memberId: number) {
+    this.loading = true; // Show loader
+    this.memberService.approveRequest(memberId).subscribe({
+      next: (res) => {
+        this.loadMembers(1);
+        this.loading = false; // Hide loader
+      },
+      error: () => {
+        this.loading = false; // Hide loader even on error
+      }
+    });
+  }
 
+
+  activeDirectly(memberId: number) {
+    this.loading = true; // Show loader
+    this.memberService.activateMemberDirectly(memberId).subscribe({
+      next: (res) => {
+        this.loadMembers(1);
+        this.loading = false; // Hide loader
+      },
+      error: () => {
+        this.loading = false; // Hide loader even on error
+      }
+    });
+  }
 }
