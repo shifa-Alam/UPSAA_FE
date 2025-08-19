@@ -97,8 +97,7 @@ export interface MemberActivationRequest {
   providedIn: 'root'
 })
 export class MemberService {
-  //private apiUrl = 'https://test.kghdhaka.online/api/member'; // Your backend API URL
-  // private apiUrl = 'http://localhost:5219/api/member'; // Your backend API URL
+  
   private apiUrl = environment.baseUrl + '/member';
   private authApiUrl = environment.baseUrl + '/auth'; // Auth controller
   constructor(private http: HttpClient) { }
