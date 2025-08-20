@@ -32,7 +32,7 @@ export class AuthService {
   }
 
 
-  
+
   login(email: string, password: string) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       map(res => {
@@ -84,6 +84,13 @@ export class AuthService {
     }
 
     return [];
+  }
+  getBatch(){
+    const user = this.getCurrentUser();
+    if (user && user.Batch != null) {
+      return user.Batch;
+    }
+    return null;
   }
 
   private decodeToken(token: string): JwtPayload {

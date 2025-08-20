@@ -1,14 +1,18 @@
 <div class="register-container">
     <mat-card class="register-card">
 
-        <!-- <h2 class="dashboard-title">Alumni Members Overview</h2> -->
+        <h3 class="dashboard-title">
+            Overview
+            <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span>
+        </h3>
+
 
         <!-- Summary Cards -->
         <div class="dashboard-summary">
             <div class="summary-card total-members">
                 <div class="icon">👥</div>
                 <div class="content">
-                    <h3>Total Members</h3>
+                    <h3>Members</h3>
                     <p>{{ totalItems }}</p>
                 </div>
             </div>
@@ -17,15 +21,15 @@
                 <div class="icon">💳</div>
                 <div class="content">
                     <h3>Membership</h3>
-                    <p>{{ totalMembershipAmount | currency:'BDT':'symbol':'1.0-0' }}</p>
+                    <p>৳ {{ totalMembershipAmount | number:'1.0-0' }}</p>
                 </div>
             </div>
 
             <div class="summary-card donation-amount">
-                <div class="icon">🎁</div>
+                <div class="icon">💖</div>
                 <div class="content">
                     <h3>Donations</h3>
-                    <p>{{ totalDonationAmount | currency:'BDT':'symbol':'1.0-0' }}</p>
+                    <p>৳ {{ totalDonationAmount | number:'1.0-0' }}</p>
                 </div>
             </div>
 
@@ -33,7 +37,7 @@
                 <div class="icon">💰</div>
                 <div class="content">
                     <h3>Total Amount</h3>
-                    <p>{{ totalAmount | currency:'BDT':'symbol':'1.0-0' }}</p>
+                    <p>৳ {{ totalAmount | number:'1.0-0' }}</p>
                 </div>
             </div>
         </div>
@@ -49,7 +53,7 @@
                     (ngModelChange)="applyFilter()" />
             </div>
 
-            <div class="filter-item">
+            <div class="filter-item" *ngIf="!isRepresentative()">
                 <input type="number" placeholder="Batch" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
             </div>
             <div class="filter-item">
@@ -84,7 +88,7 @@
             <table class="members-table">
                 <thead>
                     <tr>
-                        <th class="col-batch">Batch</th>
+                        <th class="batch-column" *ngIf="!isMobile || !isRepresentative()">Batch</th>
                         <th class="col-name">Name</th>
                         <th class="col-phone">Phone</th>
                         <th class="col-city">City</th>
@@ -96,35 +100,51 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let member of members" class="member-row">
-                        <td class="col-batch">{{ member.batch }}</td>
+                        <!-- Table Row -->
+                        <td class="batch-column" *ngIf="!isMobile || !isRepresentative()">
+                            {{ member.batch }}
+                        </td>
                         <td class="col-name">{{ member.fullName }}</td>
                         <td class="col-phone">{{ member.phone }}</td>
                         <td class="col-city">{{ member.currentCity }}</td>
                         <td class="col-blood">{{ member.bloodGroup }}</td>
                         <td class="col-total">{{ member.fees | memberFeeAmount:'Total' }}</td>
                         <td class="col-name"
-                            *ngIf="isRepresentative() && (member.statusId==0 || member.statusId==null)">
-                            <button class="operation-btn" (click)="sendActiveReq(member.id)">
-                                Activate
+                            *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)">
+                            <button class="req-btn" (click)="sendActiveReq(member.id)" title="Request Activation">
+                                <mat-icon class="btn-icon">send</mat-icon>
                             </button>
                         </td>
-                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId==1">
-                            <button class="operation-btn" (click)="approveRequest(member.id)">
-                                Approve
+                        <td class="col-name" *ngIf="isRepresentative() && member.statusId == 'Pending'">
+                            <mat-icon color="warn">hourglass_empty</mat-icon>
+                        </td>
+
+                        <!-- Accept button with check icon -->
+                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
+                            <button class="accept-btn" (click)="approveRequest(member.id)" mat-icon-button
+                                color="primary" matTooltip="Accept">
+                                <mat-icon class="btn-icon">check_circle</mat-icon>
                             </button>
                         </td>
-                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId==null">
-                            <button class="operation-btn" (click)="activeDirectly(member.id)">
-                                Active
+
+                        <!-- Activate button with bolt icon -->
+                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == null">
+                            <button class="active-btn" (click)="activeDirectly(member.id)" mat-icon-button
+                                color="accent" matTooltip="Active">
+                                <mat-icon>bolt</mat-icon>
                             </button>
                         </td>
+
                         <td class="col-name" *ngIf="member.active">
-                           
-                                Activated
-                           
+                            <mat-icon color="primary">check_circle</mat-icon>
                         </td>
+
+
                         <td class="col-action">
-                            <button class="details-btn" (click)="viewMemberDetails(member)">Details</button>
+                            <button class="detail-btn" mat-icon-button color="primary"
+                                (click)="viewMemberDetails(member)" matTooltip="Details">
+                                <mat-icon class="btn-icon">visibility</mat-icon>
+                            </button>
                         </td>
                     </tr>
                 </tbody>

@@ -10,14 +10,23 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from "@angular/material/select";
 import { MatOptionModule } from '@angular/material/core';
 import { AuthService } from '../../Services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @Component({
 
   selector: 'app-member-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, MemberFeeAmountPipe,
-    MatProgressSpinnerModule, MatCardModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MemberFeeAmountPipe,
+    MatProgressSpinnerModule,
+    MatCardModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
   templateUrl: './member-landing.component.html',
   styleUrls: ['./member-landing.component.scss']
 })
@@ -35,15 +44,24 @@ export class MemberLandingComponent implements OnInit {
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
   // ✅ Loader state
   loading: boolean = false;
+  isMobile = false;
+  batch: number | null | undefined;
+ 
   constructor(private memberService: MemberService, private dialog: MatDialog,
     public authService: AuthService
   ) { }
 
   ngOnInit() {
+    this.checkScreenSize();
+    window.addEventListener('resize', this.checkScreenSize.bind(this));
     this.setPageSize();
     this.loadMembers();
+    // Get batch from JWT
+    this.batch = this.authService.getBatch();
   }
-
+  checkScreenSize(): void {
+    this.isMobile = window.innerWidth <= 768; // You can adjust the breakpoint
+  }
   loadMembers(page: number = 1) {
 
     this.loading = true; // Show loader
@@ -111,40 +129,48 @@ export class MemberLandingComponent implements OnInit {
     return pages;
   }
   sendActiveReq(memberId: number) {
-    this.loading = true; // Show loader
+    const confirmed = confirm('Proceed with this action?');
+
+    if (!confirmed) return;
     this.memberService.requestActivation(memberId).subscribe({
       next: (res) => {
+        console.log(res);
         this.loadMembers(1);
-        this.loading = false; // Hide loader
+
       },
-      error: () => {
-        this.loading = false; // Hide loader even on error
+      error: (err) => {
+        console.log("Error:", JSON.stringify(err.error, null, 2));
+
+        this.loadMembers(1);
+
       }
     });
   }
   approveRequest(memberId: number) {
-    this.loading = true; // Show loader
+    const confirmed = confirm('Proceed with this action?');
+    if (!confirmed) return;
     this.memberService.approveRequest(memberId).subscribe({
       next: (res) => {
         this.loadMembers(1);
-        this.loading = false; // Hide loader
+
       },
       error: () => {
-        this.loading = false; // Hide loader even on error
+
       }
     });
   }
 
 
   activeDirectly(memberId: number) {
-    this.loading = true; // Show loader
+    const confirmed = confirm('Proceed with this action?');
+    if (!confirmed) return;
     this.memberService.activateMemberDirectly(memberId).subscribe({
       next: (res) => {
         this.loadMembers(1);
-        this.loading = false; // Hide loader
+
       },
       error: () => {
-        this.loading = false; // Hide loader even on error
+
       }
     });
   }
