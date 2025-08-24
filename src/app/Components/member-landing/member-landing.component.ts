@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { Member, MemberService, MemberFilterDto } from '../../Services/member.service';
+import { Member, MemberService, MemberFilterDto, BatchSummary } from '../../Services/member.service';
 import { CommonModule } from '@angular/common';
 import { MemberFeeAmountPipe } from '../../Pipes/member-fee-amount.pipe';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +12,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { AuthService } from '../../Services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from "@angular/material/tabs";
 
 
 @Component({
@@ -26,9 +27,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCardModule,
     MatIconModule,
     MatTooltipModule,
+    MatTabsModule
   ],
   templateUrl: './member-landing.component.html',
-  styleUrls: ['./member-landing.component.scss']
+  styleUrls: ['./member-landing.component.scss'],
+
 })
 export class MemberLandingComponent implements OnInit {
   members: Member[] = [];
@@ -46,7 +49,9 @@ export class MemberLandingComponent implements OnInit {
   loading: boolean = false;
   isMobile = false;
   batch: number | null | undefined;
- 
+  batchSummaries: BatchSummary[] = [];
+  currentYear = new Date().getFullYear();
+
   constructor(private memberService: MemberService, private dialog: MatDialog,
     public authService: AuthService
   ) { }
@@ -55,18 +60,24 @@ export class MemberLandingComponent implements OnInit {
     this.checkScreenSize();
     window.addEventListener('resize', this.checkScreenSize.bind(this));
     this.setPageSize();
+    this.initFilter();
     this.loadMembers();
     // Get batch from JWT
     this.batch = this.authService.getBatch();
+    this.loadBatchSummary(); // ✅ Add this here to load data on startup
+
+  }
+  initFilter() {
+    this.filter.pageNumber = 1;
+
   }
   checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768; // You can adjust the breakpoint
   }
-  loadMembers(page: number = 1) {
+  loadMembers() {
 
     this.loading = true; // Show loader
-    this.filter.pageNumber = page;
-    console.log(this.filter);
+
     this.memberService.filterMembers(this.filter).subscribe({
       next: (res) => {
         this.members = res.members;
@@ -84,6 +95,18 @@ export class MemberLandingComponent implements OnInit {
       }
     });
   }
+
+  loadBatchSummary(): void {
+    this.memberService.getBatchSummary().subscribe({
+      next: (res) => {
+        this.batchSummaries = res;
+      },
+      error: () => {
+        console.error('Failed to load batch summary.');
+      }
+    });
+  }
+
   isRepresentative(): boolean {
     return this.authService.hasRole('Representative');
   }
@@ -101,15 +124,16 @@ export class MemberLandingComponent implements OnInit {
     }
   }
   onPageChange(page: number) {
-    this.loadMembers(page);
+    this.filter.pageNumber = page;
+    this.loadMembers();
   }
   applyFilter() {
-    this.loadMembers(1); // Reset to first page whenever filter changes
+    this.loadMembers(); // Reset to first page whenever filter changes
   }
   // ✅ Add this method
   resetFilters() {
     this.filter = { pageNumber: 1, pageSize: this.pageSize, gender: null, bloodGroup: "" };
-    this.loadMembers(1);
+    this.loadMembers();
   }
   viewMemberDetails(member: any) {
     this.dialog.open(MemberDetailsComponent, {
@@ -135,13 +159,13 @@ export class MemberLandingComponent implements OnInit {
     this.memberService.requestActivation(memberId).subscribe({
       next: (res) => {
         console.log(res);
-        this.loadMembers(1);
+        this.loadMembers();
 
       },
       error: (err) => {
         console.log("Error:", JSON.stringify(err.error, null, 2));
 
-        this.loadMembers(1);
+       
 
       }
     });
@@ -151,11 +175,11 @@ export class MemberLandingComponent implements OnInit {
     if (!confirmed) return;
     this.memberService.approveRequest(memberId).subscribe({
       next: (res) => {
-        this.loadMembers(1);
+        this.loadMembers();
 
       },
       error: () => {
-
+        
       }
     });
   }
@@ -166,7 +190,7 @@ export class MemberLandingComponent implements OnInit {
     if (!confirmed) return;
     this.memberService.activateMemberDirectly(memberId).subscribe({
       next: (res) => {
-        this.loadMembers(1);
+        this.loadMembers();
 
       },
       error: () => {

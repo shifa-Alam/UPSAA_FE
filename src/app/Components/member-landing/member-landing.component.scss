@@ -202,25 +202,19 @@
 
 
 .accept-btn {
-  background: linear-gradient(135deg, #5bf17c, #05720e);
-  /* blue gradient */
+  background: rgb(16, 208, 77);
   color: #fff;
   border: none;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+  font-size: 14px;
+  transition: background 0.2s;
+  width: 100%;
 }
 
 .accept-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.4);
+  background: #0bac08;
 }
 
 .active-btn {
@@ -240,25 +234,19 @@
 }
 
 .req-btn {
-  background: linear-gradient(135deg, #00c6ff, #0072ff);
-  /* blue gradient */
+  background: rgb(196, 209, 52);
   color: #fff;
   border: none;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+  font-size: 14px;
+  transition: background 0.2s;
+  width: 100%;
 }
 
 .req-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.4);
+  background: #54520f;
 }
 
 /* Optional icon sizing */
@@ -267,25 +255,19 @@
 }
 
 .detail-btn {
-  background: linear-gradient(135deg, #16758f, #0072ff);
-  /* blue gradient */
+  background: rgb(45, 186, 246);
   color: #fff;
   border: none;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+  font-size: 14px;
+  transition: background 0.2s;
+  width: 100%;
 }
 
 .detail-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.4);
+  background: #0b225d;
 }
 
 /* ===== Pagination ===== */
@@ -401,3 +383,33 @@
     /* optional: make mobile table look better */
   }
 }
+
+::ng-deep .mat-tab-group {
+  .mat-tab-label {
+    background-color: #e6f0ff; /* Light blue for normal state */
+    color: #333;
+    font-weight: 500;
+    padding: 12px 24px;
+    margin-right: 4px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+      background-color: #007bff;   /* Full blue on hover */
+      color: #fff;                 /* White text on hover */
+    }
+  }
+
+  .mat-tab-label.mat-tab-label-active {
+    background-color: #007bff;     /* Full blue for active tab */
+    color: #fff !important;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .mat-ink-bar {
+    display: none !important; /* Optional: remove underline */
+  }
+}
+

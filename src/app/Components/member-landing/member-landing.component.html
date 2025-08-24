@@ -1,194 +1,243 @@
-<div class="register-container">
-    <mat-card class="register-card">
 
-        <h3 class="dashboard-title">
-            Overview
-            <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span>
-        </h3>
+    <mat-tab-group>
+        <!-- Overview Tab -->
+        <mat-tab label="Overview">
+            <div class="register-container">
+                <mat-card class="register-card">
+
+                    <h3 class="dashboard-title">
+                        Overview
+                        <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span>
+                    </h3>
 
 
-        <!-- Summary Cards -->
-        <div class="dashboard-summary">
-            <div class="summary-card total-members">
-                <div class="icon">👥</div>
-                <div class="content">
-                    <h3>Members</h3>
-                    <p>{{ totalItems }}</p>
-                </div>
+                    <!-- Summary Cards -->
+                    <div class="dashboard-summary">
+                        <div class="summary-card total-members">
+                            <div class="icon">👥</div>
+                            <div class="content">
+                                <h3>Members</h3>
+                                <p>{{ totalItems }}</p>
+                            </div>
+                        </div>
+
+                        <div class="summary-card membership-amount">
+                            <div class="icon">💳</div>
+                            <div class="content">
+                                <h3>Membership</h3>
+                                <p>৳ {{ totalMembershipAmount | number:'1.0-0' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="summary-card donation-amount">
+                            <div class="icon">💖</div>
+                            <div class="content">
+                                <h3>Donations</h3>
+                                <p>৳ {{ totalDonationAmount | number:'1.0-0' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="summary-card total-amount">
+                            <div class="icon">💰</div>
+                            <div class="content">
+                                <h3>Total Amount</h3>
+                                <p>৳ {{ totalAmount | number:'1.0-0' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Section -->
+                    <div class="filters-container">
+                        <div class="filter-item">
+                            <input type="text" placeholder="Search Name" [(ngModel)]="filter.fullName"
+                                (ngModelChange)="applyFilter()" />
+                        </div>
+                        <div class="filter-item">
+                            <input type="text" placeholder="Phone Or Email" [(ngModel)]="filter.phoneOrEmail"
+                                (ngModelChange)="applyFilter()" />
+                        </div>
+
+                        <div class="filter-item" *ngIf="!isRepresentative()">
+                            <input type="number" placeholder="Batch" [(ngModel)]="filter.batch"
+                                (ngModelChange)="applyFilter()" />
+                        </div>
+                        <div class="filter-item">
+                            <input type="text" placeholder="City" [(ngModel)]="filter.currentCity"
+                                (ngModelChange)="applyFilter()" />
+                        </div>
+                        <div class="filter-item gender">
+                            <select [(ngModel)]="filter.gender" (ngModelChange)="applyFilter()">
+                                <option [ngValue]="null" selected>All Genders</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="filter-item blood-group">
+                            <select [(ngModel)]="filter.bloodGroup" (ngModelChange)="applyFilter()">
+                                <option value="" selected>All Blood Groups</option>
+                                <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+                            </select>
+                        </div>
+                        <div class="filter-item reset-button">
+                            <button type="button" (click)="resetFilters()">Reset Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Loader Overlay -->
+                    <div class="loader-overlay" *ngIf="loading">
+                        <mat-progress-spinner color="primary" mode="indeterminate" diameter="60"></mat-progress-spinner>
+                    </div>
+
+                    <!-- Members Table -->
+                    <div class="table-container">
+                        <table class="members-table">
+                            <thead>
+                                <tr>
+                                    <th class="batch-column" *ngIf="!isMobile || !isRepresentative()">Batch</th>
+                                    <th class="col-name">Name</th>
+                                    <th class="col-phone">Phone</th>
+                                    <th class="col-city">City</th>
+                                    <th class="col-blood">Blood</th>
+                                    <th class="col-total">Total</th>
+                                    <th class="col-total">Operation</th>
+                                    <th class="col-action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let member of members" class="member-row">
+                                    <!-- Table Row -->
+                                    <td class="batch-column" *ngIf="!isMobile || !isRepresentative()">
+                                        {{ member.batch }}
+                                    </td>
+                                    <td class="col-name">{{ member.fullName }}</td>
+                                    <td class="col-phone">{{ member.phone }}</td>
+                                    <td class="col-city">{{ member.currentCity }}</td>
+                                    <td class="col-blood">{{ member.bloodGroup }}</td>
+                                    <td class="col-total">{{ member.fees | memberFeeAmount:'Total' }}</td>
+                                    <td class="col-name"
+                                        *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)">
+                                        <button class="req-btn" (click)="sendActiveReq(member.id)"
+                                            title="Request Activation">
+                                            <mat-icon class="btn-icon">send</mat-icon>
+                                        </button>
+                                    </td>
+                                    <td class="col-name" *ngIf="isRepresentative() && member.statusId == 'Pending'">
+                                        <mat-icon color="warn">hourglass_empty</mat-icon>
+                                    </td>
+
+                                    <!-- Accept button with check icon -->
+                                    <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
+                                        <button class="accept-btn" (click)="approveRequest(member.id)" mat-icon-button
+                                            color="primary" matTooltip="Accept">
+                                            <mat-icon class="btn-icon">check_circle</mat-icon>
+                                        </button>
+                                    </td>
+
+                                    <!-- Activate button with bolt icon -->
+                                    <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == null">
+                                        <button class="active-btn" (click)="activeDirectly(member.id)" mat-icon-button
+                                            color="accent" matTooltip="Active">
+                                            <mat-icon>bolt</mat-icon>
+                                        </button>
+                                    </td>
+
+                                    <td class="col-name" *ngIf="member.active">
+                                        <mat-icon style="color: green;">check_circle</mat-icon>
+                                    </td>
+
+
+                                    <td class="col-action">
+                                        <button class="detail-btn" mat-icon-button color="primary"
+                                            (click)="viewMemberDetails(member)" matTooltip="Details">
+                                            <mat-icon class="btn-icon">visibility</mat-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav class="pagination-container" *ngIf="totalPages > 1">
+                        <ul class="pagination">
+
+                            <!-- Previous -->
+                            <li [class.disabled]="pageNumber === 1">
+                                <button (click)="onPageChange(pageNumber - 1)">‹ Previous</button>
+                            </li>
+
+                            <!-- First page -->
+                            <li [class.active]="pageNumber === 1">
+                                <button (click)="onPageChange(1)">1</button>
+                            </li>
+
+                            <!-- Ellipsis before middle pages -->
+                            <li *ngIf="pageNumber > 3"><span>...</span></li>
+
+                            <!-- Middle pages -->
+                            <li *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p">
+                                <button (click)="onPageChange(p)">{{ p }}</button>
+                            </li>
+
+                            <!-- Ellipsis after middle pages -->
+                            <li *ngIf="pageNumber < totalPages - 2"><span>...</span></li>
+
+                            <!-- Last page -->
+                            <li [class.active]="pageNumber === totalPages">
+                                <button (click)="onPageChange(totalPages)">{{ totalPages }}</button>
+                            </li>
+
+                            <!-- Next -->
+                            <li [class.disabled]="pageNumber === totalPages">
+                                <button (click)="onPageChange(pageNumber + 1)">Next ›</button>
+                            </li>
+
+                        </ul>
+                    </nav>
+
+
+                </mat-card>
+
             </div>
+        </mat-tab>
 
-            <div class="summary-card membership-amount">
-                <div class="icon">💳</div>
-                <div class="content">
-                    <h3>Membership</h3>
-                    <p>৳ {{ totalMembershipAmount | number:'1.0-0' }}</p>
-                </div>
+        <!-- Batch Summary Tab -->
+        <mat-tab label="Batch Summary">
+            <div class="register-container">
+                <mat-card class="register-card">
+                    <h3 class="dashboard-title">
+                        Batch Summary
+                        <span class="dashboard-subtitle">(2003 - {{ currentYear }})</span>
+                    </h3>
+
+                    <div class="table-container">
+                        <table class="members-table" *ngIf="batchSummaries.length > 0">
+                            <thead>
+                                <tr>
+                                    <th>Batch</th>
+                                    <th>Registered</th>
+                                    <th>Total (৳)</th>
+                                    <!-- <th>Paid (৳)</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let b of batchSummaries">
+                                    <td>{{ b.batch }}</td>
+                                    <td>{{ b.registeredMembers }}</td>
+                                    <td>{{ b.totalAmount | number: '1.0-0' }}</td>
+                                    <!-- <td>{{ b.paidAmount | number: '1.0-0' }}</td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Optional message when no data -->
+                        <div *ngIf="batchSummaries.length === 0" style="text-align:center; padding: 20px; color: gray;">
+                            No batch summary data available.
+                        </div>
+                    </div>
+                </mat-card>
             </div>
+        </mat-tab>
 
-            <div class="summary-card donation-amount">
-                <div class="icon">💖</div>
-                <div class="content">
-                    <h3>Donations</h3>
-                    <p>৳ {{ totalDonationAmount | number:'1.0-0' }}</p>
-                </div>
-            </div>
+    </mat-tab-group>
 
-            <div class="summary-card total-amount">
-                <div class="icon">💰</div>
-                <div class="content">
-                    <h3>Total Amount</h3>
-                    <p>৳ {{ totalAmount | number:'1.0-0' }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Filter Section -->
-        <div class="filters-container">
-            <div class="filter-item">
-                <input type="text" placeholder="Search Name" [(ngModel)]="filter.fullName"
-                    (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-item">
-                <input type="text" placeholder="Phone Or Email" [(ngModel)]="filter.phoneOrEmail"
-                    (ngModelChange)="applyFilter()" />
-            </div>
-
-            <div class="filter-item" *ngIf="!isRepresentative()">
-                <input type="number" placeholder="Batch" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-item">
-                <input type="text" placeholder="City" [(ngModel)]="filter.currentCity"
-                    (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-item gender">
-                <select [(ngModel)]="filter.gender" (ngModelChange)="applyFilter()">
-                    <option [ngValue]="null" selected>All Genders</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-            <div class="filter-item blood-group">
-                <select [(ngModel)]="filter.bloodGroup" (ngModelChange)="applyFilter()">
-                    <option value="" selected>All Blood Groups</option>
-                    <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
-                </select>
-            </div>
-            <div class="filter-item reset-button">
-                <button type="button" (click)="resetFilters()">Reset Filters</button>
-            </div>
-        </div>
-
-        <!-- Loader Overlay -->
-        <div class="loader-overlay" *ngIf="loading">
-            <mat-progress-spinner color="primary" mode="indeterminate" diameter="60"></mat-progress-spinner>
-        </div>
-
-        <!-- Members Table -->
-        <div class="table-container">
-            <table class="members-table">
-                <thead>
-                    <tr>
-                        <th class="batch-column" *ngIf="!isMobile || !isRepresentative()">Batch</th>
-                        <th class="col-name">Name</th>
-                        <th class="col-phone">Phone</th>
-                        <th class="col-city">City</th>
-                        <th class="col-blood">Blood</th>
-                        <th class="col-total">Total</th>
-                        <th class="col-total">Operation</th>
-                        <th class="col-action">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let member of members" class="member-row">
-                        <!-- Table Row -->
-                        <td class="batch-column" *ngIf="!isMobile || !isRepresentative()">
-                            {{ member.batch }}
-                        </td>
-                        <td class="col-name">{{ member.fullName }}</td>
-                        <td class="col-phone">{{ member.phone }}</td>
-                        <td class="col-city">{{ member.currentCity }}</td>
-                        <td class="col-blood">{{ member.bloodGroup }}</td>
-                        <td class="col-total">{{ member.fees | memberFeeAmount:'Total' }}</td>
-                        <td class="col-name"
-                            *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)">
-                            <button class="req-btn" (click)="sendActiveReq(member.id)" title="Request Activation">
-                                <mat-icon class="btn-icon">send</mat-icon>
-                            </button>
-                        </td>
-                        <td class="col-name" *ngIf="isRepresentative() && member.statusId == 'Pending'">
-                            <mat-icon color="warn">hourglass_empty</mat-icon>
-                        </td>
-
-                        <!-- Accept button with check icon -->
-                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
-                            <button class="accept-btn" (click)="approveRequest(member.id)" mat-icon-button
-                                color="primary" matTooltip="Accept">
-                                <mat-icon class="btn-icon">check_circle</mat-icon>
-                            </button>
-                        </td>
-
-                        <!-- Activate button with bolt icon -->
-                        <td class="col-name" *ngIf="isSuperAdmin() && member.statusId == null">
-                            <button class="active-btn" (click)="activeDirectly(member.id)" mat-icon-button
-                                color="accent" matTooltip="Active">
-                                <mat-icon>bolt</mat-icon>
-                            </button>
-                        </td>
-
-                        <td class="col-name" *ngIf="member.active">
-                            <mat-icon color="primary">check_circle</mat-icon>
-                        </td>
-
-
-                        <td class="col-action">
-                            <button class="detail-btn" mat-icon-button color="primary"
-                                (click)="viewMemberDetails(member)" matTooltip="Details">
-                                <mat-icon class="btn-icon">visibility</mat-icon>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        <nav class="pagination-container" *ngIf="totalPages > 1">
-            <ul class="pagination">
-
-                <!-- Previous -->
-                <li [class.disabled]="pageNumber === 1">
-                    <button (click)="onPageChange(pageNumber - 1)">‹ Previous</button>
-                </li>
-
-                <!-- First page -->
-                <li [class.active]="pageNumber === 1">
-                    <button (click)="onPageChange(1)">1</button>
-                </li>
-
-                <!-- Ellipsis before middle pages -->
-                <li *ngIf="pageNumber > 3"><span>...</span></li>
-
-                <!-- Middle pages -->
-                <li *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p">
-                    <button (click)="onPageChange(p)">{{ p }}</button>
-                </li>
-
-                <!-- Ellipsis after middle pages -->
-                <li *ngIf="pageNumber < totalPages - 2"><span>...</span></li>
-
-                <!-- Last page -->
-                <li [class.active]="pageNumber === totalPages">
-                    <button (click)="onPageChange(totalPages)">{{ totalPages }}</button>
-                </li>
-
-                <!-- Next -->
-                <li [class.disabled]="pageNumber === totalPages">
-                    <button (click)="onPageChange(pageNumber + 1)">Next ›</button>
-                </li>
-
-            </ul>
-        </nav>
-
-
-    </mat-card>
-</div>

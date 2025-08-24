@@ -99,6 +99,12 @@ export interface MemberActivationRequest {
   approvedAt?: Date;
   reason?: string;
 }
+export interface BatchSummary {
+  batch: number;
+  registeredMembers: number;
+  totalAmount: number;
+  paidAmount: number;
+}
 
 
 @Injectable({
@@ -122,7 +128,9 @@ export class MemberService {
     console.log(filter)
     return this.http.post<PaginatedMembersResponse>(`${this.apiUrl}/FilterMembers`, filter);
   }
-
+  getBatchSummary(): Observable<BatchSummary[]> {
+    return this.http.get<BatchSummary[]>(`${this.apiUrl}/BatchSummary`);
+  }
   requestActivation(memberId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/RequestActivation/${memberId}`, {});
   }
