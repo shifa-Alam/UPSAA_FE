@@ -7,12 +7,12 @@ import { MemberDetailsComponent } from '../member-details/member-details.compone
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from "@angular/material/select";
-import { MatOptionModule } from '@angular/material/core';
+
 import { AuthService } from '../../Services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
 
 
 @Component({
@@ -27,8 +27,9 @@ import { MatTabsModule } from "@angular/material/tabs";
     MatCardModule,
     MatIconModule,
     MatTooltipModule,
-    MatTabsModule
-  ],
+    MatTabsModule,
+    MatProgressBarModule
+],
   templateUrl: './member-landing.component.html',
   styleUrls: ['./member-landing.component.scss'],
 
@@ -113,6 +114,8 @@ export class MemberLandingComponent implements OnInit {
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
   }
+
+  
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.setPageSize();

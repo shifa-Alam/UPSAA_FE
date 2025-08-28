@@ -56,6 +56,7 @@ export interface Member {
   statusId: any;
   id: number;
   fullName: string;
+  memberCode:string;
   gender: string;
   batch: number;
   currentDesignation: string;
@@ -100,6 +101,12 @@ export interface MemberActivationRequest {
   reason?: string;
 }
 export interface BatchSummary {
+pendingMembersCount: any;
+paidMembersCount: any;
+progressColor: string|null|undefined;
+statusBadge: any;
+motivationalMessage: any;
+percentagePaid: any;
   batch: number;
   registeredMembers: number;
   totalAmount: number;
