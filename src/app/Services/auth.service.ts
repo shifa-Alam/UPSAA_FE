@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../environments/environment';
 
@@ -21,6 +21,7 @@ interface JwtPayload {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  
   private apiUrl = environment.baseUrl + '/auth';
   private tokenKey = 'authToken';
   private userSubject = new BehaviorSubject<JwtPayload | null>(null);
@@ -92,7 +93,9 @@ export class AuthService {
     }
     return null;
   }
-
+ changePassword(data: { currentPassword: string; newPassword: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/change-password`, data);
+  }
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);
   }

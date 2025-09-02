@@ -147,3 +147,112 @@ content-area router-outlet {
 .content-area {
   scroll-behavior: smooth;
 }
+.user-avatar-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.name-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #3f51b5; /* you can use accent color */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+
+
+
+
+
+
+
+
+.mobile-menu {
+  width: 250px;
+  background: #ffffff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mobile-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar-img-mobile,
+.name-avatar-mobile {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #1976d2;
+  color: white;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.mobile-username {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.profile-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: #1976d2;
+  transition: 0.3s;
+}
+
+.profile-link:hover {
+  text-decoration: underline;
+  color: #1565c0;
+}
+
+.mobile-nav-links a {
+  width: 100%;
+  justify-content: flex-start;
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.mobile-nav-links a:hover {
+  background: #f0f0f0;
+}
+
+.mobile-logout {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.logout-btn {
+  width: 100%;
+}

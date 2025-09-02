@@ -1,0 +1,174 @@
+
+.wave-background {
+  position: relative;
+  background: linear-gradient(135deg, #eef8fa, #c4f2fa);
+  min-height: 100vh;
+  // padding-bottom: 150px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alumni-profile-card {
+
+  // max-width: 600px;
+  // margin: 2rem auto;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* avatar/info left, button right */
+    flex-wrap: wrap; /* allow wrapping on mobile */
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .avatar-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+
+    .avatar,
+    .initials-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      color: white;
+    }
+
+    .camera-icon {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #007bff;
+      color: white;
+      border-radius: 50%;
+      padding: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .header-info {
+    flex: 1; /* take space between avatar and button */
+    min-width: 150px;
+
+    .name {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .designation {
+      margin: 4px 0;
+      color: #777;
+    }
+
+    .batch {
+      font-size: 14px;
+      color: #555;
+    }
+  }
+
+  /* Premium Change Password Button */
+  .change-password-btn {
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .change-password-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  }
+
+  .change-password-btn mat-icon {
+    font-size: 16px;
+  }
+
+  .cropper-box {
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+    text-align: center;
+  }
+
+  .info-section {
+    margin-top: 1.5rem;
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 0.8rem;
+      border-left: 4px solid #007bff;
+      padding-left: 0.6rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+
+      p {
+        margin: 0;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+
+    .list-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 14px;
+    }
+
+    .status {
+      font-weight: bold;
+      &.paid {
+        color: green;
+      }
+      &.unpaid {
+        color: crimson;
+      }
+    }
+  }
+
+  /* Responsive: Mobile view */
+  @media (max-width: 480px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .change-password-btn {
+      width: 100%;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  }
+}

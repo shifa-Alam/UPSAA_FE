@@ -1,21 +1,48 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- Side Nav -->
   <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
-    <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
-      [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a>
-    <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
 
-    <!-- Login / Logout -->
-    <ng-container *ngIf="authService.isLoggedIn(); else loginBtnMobile">
-      <button mat-button (click)="logout(); sidenav.close()">Logout</button>
-    </ng-container>
+    <!-- Profile Section -->
+
+    <div class="mobile-profile" *ngIf="authService.isLoggedIn(); ">
+      <ng-container *ngIf="profileImageUrl; else initialsMobile">
+        <img [src]="profileImageUrl" alt="User" class="avatar-img-mobile">
+      </ng-container>
+      <ng-template #initialsMobile>
+        <div class="name-avatar-mobile">{{ userInitial }}</div>
+      </ng-template>
+      <div class="mobile-profile-info">
+        <!-- <span class="mobile-username">{{ member?.fullName }}</span> -->
+        <a mat-button class="profile-link" routerLink="/profile" (click)="sidenav.close()">View Profile</a>
+      </div>
+    </div>
+
+
+    <!-- Menu Links -->
+    <nav class="mobile-nav-links">
+      <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="mobile-logout">
+      <ng-container *ngIf="authService.isLoggedIn(); else loginBtnMobile">
+        <button mat-stroked-button color="warn" class="logout-btn" (click)="logout(); sidenav.close()">Logout</button>
+      </ng-container>
+    </div>
+
     <ng-template #loginBtnMobile>
       <a mat-button (click)="sidenav.close()" routerLink="/login">Login</a>
     </ng-template>
+
   </mat-sidenav>
+
+
+
 
   <!-- Main Content -->
   <mat-sidenav-content class="layout-container">
@@ -41,12 +68,41 @@
             <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
 
             <!-- Login / Logout -->
-            <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
+            <!-- <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
               <button mat-button (click)="logout()">Logout</button>
             </ng-container>
             <ng-template #loginBtn>
               <a mat-button routerLink="/login">Login</a>
+            </ng-template> -->
+            <!-- User Menu -->
+            <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
+              <button mat-button [matMenuTriggerFor]="userMenu" class="user-avatar-button">
+                <ng-container *ngIf="profileImageUrl; else nameAvatar">
+                  <img [src]="profileImageUrl" alt="User" class="avatar-img">
+                </ng-container>
+                <ng-template #nameAvatar>
+                  <div class="name-avatar">{{ userInitial }}</div>
+                </ng-template>
+                <!-- <mat-icon>arrow_drop_down</mat-icon> -->
+              </button>
+
+              <mat-menu #userMenu="matMenu">
+                <button mat-menu-item routerLink="/profile">
+                  <mat-icon>person</mat-icon>
+                  <span>Profile</span>
+                </button>
+                <button mat-menu-item (click)="logout()">
+                  <mat-icon>logout</mat-icon>
+                  <span>Logout</span>
+                </button>
+              </mat-menu>
+            </ng-container>
+
+
+            <ng-template #loginBtn>
+              <a mat-button routerLink="/login">Login</a>
             </ng-template>
+
           </div>
         </div>
       </mat-toolbar>

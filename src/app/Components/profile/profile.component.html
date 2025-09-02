@@ -1,0 +1,85 @@
+
+<div class="wave-background">
+<div class="alumni-profile-card" *ngIf="member">
+  <!-- Header -->
+<div class="header">
+  <div class="avatar-wrapper" (click)="fileInput.click()">
+    <img
+      *ngIf="croppedImage || profileImageUrl; else initialsAvatar"
+      [src]="croppedImage || profileImageUrl"
+      alt="Profile"
+      class="avatar"
+    />
+    <ng-template #initialsAvatar>
+      <div class="initials-avatar">{{ getInitial(member.fullName) }}</div>
+    </ng-template>
+    <div class="camera-icon">
+      <mat-icon>photo_camera</mat-icon>
+    </div>
+  </div>
+
+  <div class="header-info">
+    <h2 class="name">{{ member.fullName }}</h2>
+    <p class="designation">{{ member.currentDesignation || 'Member' }}</p>
+    <p class="batch">Batch of {{ member.batch }}</p>
+  </div>
+
+  
+</div>
+
+
+  <!-- Hidden File Input -->
+  <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+
+  <!-- Cropper -->
+  <div class="cropper-box" *ngIf="imageChangedEvent">
+    <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1"
+      [resizeToWidth]="400"
+      format="png"
+      (imageCropped)="imageCropped($event)">
+    </image-cropper>
+    <button mat-raised-button color="primary" (click)="uploadImage()" [disabled]="uploading || !croppedImage">
+      {{ uploading ? 'Uploading...' : 'Upload' }}
+    </button>
+  </div>
+
+  <!-- Sections -->
+  <div class="info-section">
+    <h3>Contact Info</h3>
+    <div class="info-grid">
+      <p><mat-icon>call</mat-icon> {{ member.phone }}</p>
+      <p><mat-icon>email</mat-icon> {{ member.email }}</p>
+      <p><mat-icon>location_city</mat-icon> {{ member.currentCity }}</p>
+      <p><mat-icon>favorite</mat-icon> {{ member.bloodGroup || 'N/A' }}</p>
+    </div>
+  </div>
+
+  <div class="info-section" *ngIf="member.educationRecords.length">
+    <h3>Education</h3>
+    <div class="list-box">
+      <div *ngFor="let edu of member.educationRecords">
+        🎓 <strong>{{ edu.degreeName }}</strong> at {{ edu.instituteName }}
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section" *ngIf="member.fees.length">
+    <h3>Fee Summary</h3>
+    <div class="list-box">
+      <div *ngFor="let fee of member.fees">
+        💳 {{ fee.feeType }} - Tk {{ fee.amount }} -
+        <span class="status" [class.paid]="fee.isPaid" [class.unpaid]="!fee.isPaid">
+          {{ fee.isPaid ? 'Paid' : 'Unpaid' }}
+        </span>
+      </div>
+    </div>
+  </div>
+<button mat-stroked-button class="change-password-btn" (click)="openChangePasswordDialog()">
+    <mat-icon>lock</mat-icon> Change Password
+  </button>
+</div>
+  
+</div>

@@ -11,6 +11,7 @@ export interface MemberEducationDto {
   isCompleted: boolean;
   instituteName?: string;
   subject?: string;
+
 }
 export enum FeeType {
   Membership = 'Membership',
@@ -25,6 +26,7 @@ export interface MemberFeeDto {
 }
 
 export interface MemberCreateDto {
+  photo?: string;
   fullName: string;
   bloodGroup: string;
   gender: string;
@@ -56,7 +58,7 @@ export interface Member {
   statusId: any;
   id: number;
   fullName: string;
-  memberCode:string;
+  memberCode: string;
   gender: string;
   batch: number;
   currentDesignation: string;
@@ -101,12 +103,12 @@ export interface MemberActivationRequest {
   reason?: string;
 }
 export interface BatchSummary {
-pendingMembersCount: any;
-paidMembersCount: any;
-progressColor: string|null|undefined;
-statusBadge: any;
-motivationalMessage: any;
-percentagePaid: any;
+  pendingMembersCount: any;
+  paidMembersCount: any;
+  progressColor: string | null | undefined;
+  statusBadge: any;
+  motivationalMessage: any;
+  percentagePaid: any;
   batch: number;
   registeredMembers: number;
   totalAmount: number;
@@ -118,6 +120,8 @@ percentagePaid: any;
   providedIn: 'root'
 })
 export class MemberService {
+
+
 
   private apiUrl = environment.baseUrl + '/member';
   private authApiUrl = environment.baseUrl + '/auth'; // Auth controller
@@ -159,4 +163,18 @@ export class MemberService {
   createUserFromMember(memberId: number, role: string = 'Representative'): Observable<any> {
     return this.http.post(`${this.authApiUrl}/CreateUserFromMember/${memberId}?role=${role}`, {});
   }
+  // At the bottom of MemberService class
+
+  getProfile(): Observable<MemberCreateDto> {
+    return this.http.get<MemberCreateDto>(`${this.apiUrl}/GetProfile`);
+  }
+
+  // Upload new profile photo and update in Member table
+  uploadProfileImage(file: File) {
+    const formData = new FormData();
+    formData.append('File', file); // Must match the property name in DTO
+
+    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/UploadProfileImage`, formData);
+  }
+ 
 }
