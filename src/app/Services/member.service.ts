@@ -165,8 +165,8 @@ export class MemberService {
   }
   // At the bottom of MemberService class
 
-  getProfile(): Observable<MemberCreateDto> {
-    return this.http.get<MemberCreateDto>(`${this.apiUrl}/GetProfile`);
+  getProfile(): Observable<Member> {
+    return this.http.get<Member>(`${this.apiUrl}/GetProfile`);
   }
 
   // Upload new profile photo and update in Member table
