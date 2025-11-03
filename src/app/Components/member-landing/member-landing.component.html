@@ -6,7 +6,7 @@
 
                 <h3 class="dashboard-title">
                     Overview
-                    <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span>
+                    <!-- <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span> -->
                 </h3>
 
 
@@ -97,8 +97,8 @@
                                 <th class="col-phone">Member Code</th>
                                 <th class="col-city">City</th>
                                 <th class="col-blood">Blood</th>
-                                <th class="col-total">Total</th>
-                                <th class="col-total">Operation</th>
+                                <th class="col-total" *ngIf="isSuperAdmin()">Total</th>
+                                <th class="col-total" *ngIf="isSuperAdmin()">Operation</th>
                                 <th class="col-action">Action</th>
                             </tr>
                         </thead>
@@ -118,7 +118,7 @@
                                 <td class="col-phone">{{ member.memberCode }}</td>
                                 <td class="col-city">{{ member.currentCity }}</td>
                                 <td class="col-blood">{{ member.bloodGroup }}</td>
-                                <td class="col-total">{{ member.fees | memberFeeAmount:'Total' }}</td>
+                                <td class="col-total" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}</td>
                                 <td class="col-name"
                                     *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)">
                                     <button class="req-btn" (click)="sendActiveReq(member.id)"
@@ -146,7 +146,7 @@
                                     </button>
                                 </td>
 
-                                <td class="col-name" *ngIf="member.active">
+                                <td class="col-name" *ngIf="member.active &&  isSuperAdmin()">
                                     <mat-icon style="color: green;">check_circle</mat-icon>
                                 </td>
 

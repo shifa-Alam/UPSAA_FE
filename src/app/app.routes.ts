@@ -24,7 +24,7 @@ export const routes: Routes = [
   {
     path: 'directory', component: DirectoryComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Representative'] } // only these roles
+    data: { roles: ['SuperAdmin', 'Admin', 'Representative','Member'] } // only these roles
 
   },
   { path: 'login', component: LoginComponent },
@@ -32,7 +32,7 @@ export const routes: Routes = [
     path: 'members',
     component: MemberLandingComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Representative'] } // only these roles
+    data: { roles: ['SuperAdmin', 'Admin', 'Representative','Member'] } // only these roles
   },
   { path: 'congratulations', component: CongratulationsComponent },
   { path: 'contact', component: ContactComponent },

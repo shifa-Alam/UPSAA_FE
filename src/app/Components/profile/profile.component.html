@@ -82,23 +82,59 @@
 
     </mat-tab>
 
-    <mat-tab label="🎓 Education" *ngIf="member.educationRecords.length">
-      <div class="tab-card education-card">
-        <div *ngFor="let edu of member.educationRecords; let last = last" class="education-item">
-          <p>
-            <mat-icon>school</mat-icon>
-            <strong class="label">Degree:</strong> {{ edu.degreeName }}
-          </p>
-          <p>
-            <mat-icon>apartment</mat-icon>
-            <strong class="label">Institute:</strong> {{ edu.instituteName }}
-          </p>
-          <hr *ngIf="!last">
-        </div>
-      </div>
+<mat-tab label="🎓 Education">
+  <div class="tab-card education-card">
+
+    <!-- Header with title + Add button -->
+    <div class="tab-card-header">
+      <h3 class="card-title">Educations</h3>
+      <button class="action-btn" (click)="addEducation()">
+        <mat-icon>add</mat-icon> Add Education
+      </button>
+    </div>
+
+    <div class="table-container" *ngIf="member.educationRecords.length; else noEdu">
+      <table class="members-table education-table">
+        <thead>
+          <tr>
+            <th>Degree</th>
+            <th>Institute</th>
+            <th>Subject</th>
+            
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let edu of member.educationRecords">
+            <td>{{ edu.degreeName }}</td>
+            <td>{{ edu.instituteName }}</td>
+            <td>{{ edu.subject }}</td>
+            
+            <td>
+              <button class="edit-btn" mat-icon-button color="primary" (click)="editEducation(edu)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="delete-btn" mat-icon-button color="warn" (click)="deleteEducation(edu)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #noEdu>
+      <p class="no-records">No education records found. Click "Add Education" to create one.</p>
+    </ng-template>
+
+  </div>
+</mat-tab>
 
 
-    </mat-tab>
+
+
+
+
 
     <mat-tab label="💳 Fees" *ngIf="member.fees.length">
       <div class="tab-card fees-card">

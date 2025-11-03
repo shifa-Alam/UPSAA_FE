@@ -408,3 +408,81 @@ mat-icon {
   font-size: 18px;
 }
 
+.education-card {
+  padding: 20px;
+  margin-top: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.tab-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  border: none;
+  background: linear-gradient(135deg, #6a82fb, #845ec2);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  background: linear-gradient(135deg, #7f7fff, #9b5de5);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.education-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.education-table th,
+.education-table td {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+.education-table th {
+  font-weight: 600;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.education-table tr:hover {
+  background: #f0f4ff;
+}
+
+.completed {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.not-completed {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.edit-btn, .delete-btn {
+  margin-right: 6px;
+}

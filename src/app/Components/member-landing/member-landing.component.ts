@@ -82,7 +82,7 @@ export class MemberLandingComponent implements OnInit {
     this.memberService.filterMembers(this.filter).subscribe({
       next: (res) => {
         this.members = res.members;
-        console.log(this.members);
+        
         this.totalItems = res.totalItems;
         this.totalPages = res.totalPages;
         this.pageNumber = res.pageNumber;

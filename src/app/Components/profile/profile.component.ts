@@ -6,11 +6,13 @@ import { MatIcon } from "@angular/material/icon";
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import { MatTabsModule } from "@angular/material/tabs";
+import {   MatTableModule } from '@angular/material/table';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ImageCropperModule, MatIcon, MatTabsModule],
+  imports: [CommonModule, ImageCropperModule, MatIcon, MatTabsModule,MatTableModule,MatIconButton],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
@@ -32,6 +34,7 @@ export class ProfileComponent implements OnInit {
   loading = false;
   passwordError = '';
   passwordSuccess = '';
+displayedColumns: string[] = ['degree', 'institute', 'subject', 'actions'];
 
   upsaaSpans: { rotate: string; size: number }[] = [];
   constructor(private memberService: MemberService, private dialog: MatDialog) { }
@@ -72,6 +75,10 @@ export class ProfileComponent implements OnInit {
       this.fileInput.nativeElement.value = '';
     }
   }
+addEducation() {
+  // Open dialog or navigate to education form
+  console.log("Add Education clicked!");
+}
 
 
   onFileSelected(event: Event) {
@@ -123,6 +130,20 @@ export class ProfileComponent implements OnInit {
       width: '90%'
     });
   }
+
+  editEducation(edu: any) {
+  // Open a dialog or navigate to edit form
+  console.log('Edit:', edu);
+}
+
+deleteEducation(edu: any) {
+  if (confirm(`Are you sure you want to delete the degree: ${edu.degreeName}?`)) {
+    // Call your service to delete the record
+    console.log('Delete:', edu);
+    // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
+  }
+}
+
   private dataURLtoBlob(dataurl: string): Blob {
     const arr = dataurl.split(',');
     const mime = arr[0].match(/:(.*?);/)![1];

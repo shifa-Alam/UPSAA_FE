@@ -16,9 +16,9 @@
       <div class="info-item"><mat-icon>email</mat-icon><span>{{ member.email }}</span></div>
       <div class="info-item"><mat-icon>location_city</mat-icon><span>{{ member.currentCity }}</span></div>
       <div class="info-item"><mat-icon>bloodtype</mat-icon><span>{{ member.bloodGroup }}</span></div>
-      <div class="info-item"><mat-icon>payments</mat-icon><span>Membership: {{ member.fees | memberFeeAmount:'Membership' }}</span></div>
-      <div class="info-item"><mat-icon>card_giftcard</mat-icon><span>Donation: {{ member.fees | memberFeeAmount:'Donation' }}</span></div>
-      <div class="info-item total-item"><mat-icon>attach_money</mat-icon><span>Total: {{ member.fees | memberFeeAmount:'Total' }}</span></div>
+      <div class="info-item" *ngIf="isSuperAdmin()"><mat-icon>payments</mat-icon><span>Membership: {{ member.fees | memberFeeAmount:'Membership' }}</span></div>
+      <div class="info-item" *ngIf="isSuperAdmin()"><mat-icon>card_giftcard</mat-icon><span>Donation: {{ member.fees | memberFeeAmount:'Donation' }}</span></div>
+      <div class="info-item total-item" *ngIf="isSuperAdmin()"><mat-icon>attach_money</mat-icon><span>Total: {{ member.fees | memberFeeAmount:'Total' }}</span></div>
     </div>
   </mat-card-content>
 
