@@ -13,6 +13,8 @@ import { RoleGuard } from './Guards/role.guard.ts';
 import { UnauthorizedComponent } from './Components/pages/unauthorized/unauthorized.component';
 import { LoginComponent } from './Components/pages/login/login.component';
 import { ProfileComponent } from './Components/profile/profile.component';
+import { ResetPasswordComponent } from './Components/reset-password/reset-password.component';
+import { ForgetPasswordComponent } from './Components/forget-password/forget-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -28,6 +30,8 @@ export const routes: Routes = [
 
   },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgetPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'members',
     component: MemberLandingComponent,

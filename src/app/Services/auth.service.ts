@@ -21,7 +21,7 @@ interface JwtPayload {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  
+
   private apiUrl = environment.baseUrl + '/auth';
   private tokenKey = 'authToken';
   private userSubject = new BehaviorSubject<JwtPayload | null>(null);
@@ -86,16 +86,24 @@ export class AuthService {
 
     return [];
   }
-  getBatch(){
+  getBatch() {
     const user = this.getCurrentUser();
     if (user && user.Batch != null) {
       return user.Batch;
     }
     return null;
   }
- changePassword(data: { currentPassword: string; newPassword: string }): Observable<any> {
+  changePassword(data: { currentPassword: string; newPassword: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/change-password`, data);
   }
+  forgotPassword(email: string) {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(email: string, token: string, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password`, { email, token, newPassword });
+  }
+
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);
   }
