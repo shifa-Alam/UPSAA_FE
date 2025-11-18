@@ -1,0 +1,94 @@
+  <div class="voting-root" *ngIf="ballot">
+    <header class="voting-header">
+      <h1>{{ ballot.title }}</h1>
+      <div class="voter-info">
+        <div *ngIf="voterName">Hello, {{ voterName }} (Batch {{ voterBatch }})</div>
+        <div *ngIf="hasVoted" class="voted-badge">You have already voted</div>
+      </div>
+    </header>
+
+    <main class="voting-main">
+      <section class="positions">
+        <div *ngFor="let pos of ballot.positions; let i = index" class="position-card" [attr.aria-labelledby]="'pos-'+pos.id">
+          <div class="position-header">
+            <h2 id="{{'pos-'+pos.id}}">{{ pos.title }}</h2>
+            <div class="select-info">Choose {{ pos.maxSelect === 1 ? '1' : 'up to ' + pos.maxSelect }}</div>
+          </div>
+
+          <div class="candidates" role="list">
+            <label *ngFor="let c of pos.candidates" class="candidate-card"
+                   [class.selected]="isSelected(pos.id, c.id)"
+                   tabindex="0">
+              <input
+                type="{{ pos.maxSelect === 1 ? 'radio' : 'checkbox' }}"
+                name="pos-{{pos.id}}"
+                [checked]="isSelected(pos.id, c.id)"
+               (change)="toggleSelection(pos, c, $any($event.target).checked)"
+
+
+                [attr.aria-checked]="isSelected(pos.id, c.id) ? 'true' : 'false'"/>
+
+              <div class="candidate-body">
+                <!-- <img *ngIf="c.photoUrl" [src]="c.photoUrl" alt="{{c.name}}" class="candidate-photo" /> -->
+                  <img  src="images/washimBhai.png" alt="{{c.name}}" class="candidate-photo" />
+                <div class="candidate-info">
+                  <div class="cand-name">{{ c.name }}</div>
+                  <div class="cand-bio" *ngIf="c.batch">{{ c.batch }}</div>
+                  <div class="cand-bio" *ngIf="c.bio">{{ c.bio }}</div>
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div class="position-footer">
+            <button type="button" class="btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">Clear</button>
+            <div class="position-status">{{ selectedCount(pos.id) }} selected</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="summary">
+        <h3>Ballot Summary</h3>
+        <div *ngIf="!hasSelections()">No selections yet</div>
+        <ul>
+          <li *ngFor="let pos of ballot.positions">
+            <strong>{{ pos.title }}:</strong>
+            {{ getSelectedNamesForPosition(pos) }}
+
+            <ng-template #none><em>—</em></ng-template>
+          </li>
+        </ul>
+
+        <div class="submit-area">
+          <button class="btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">Submit Vote</button>
+          <div *ngIf="submitting">Submitting...</div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Confirm modal -->
+    <div class="modal-backdrop" *ngIf="showConfirm">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <h4 id="confirm-title">Confirm your vote</h4>
+        <p>You're about to submit your ballot. This action cannot be changed. Please review:</p>
+        <ul>
+          <li *ngFor="let pos of ballot.positions">
+            <strong>{{ pos.title }}:</strong>
+            {{ getSelectedNamesForPosition(pos) }}
+
+            <ng-template #abstain><em>Abstain / no selection</em></ng-template>
+          </li>
+        </ul>
+
+        <div class="modal-actions">
+          <button (click)="submitVote()" [disabled]="submitting">Confirm & Submit</button>
+          <button (click)="showConfirm=false" [disabled]="submitting">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- success -->
+    <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
+  </div>
+
+  <div *ngIf="!ballot" class="loading">Loading ballot...</div>

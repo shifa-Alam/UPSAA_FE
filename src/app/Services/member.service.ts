@@ -59,6 +59,7 @@ export interface Member {
   id: number;
   fullName: string;
   memberCode: string;
+  isSensitiveHidden: boolean;
   gender: string;
   batch: number;
   currentDesignation: string;
@@ -123,6 +124,7 @@ export class MemberService {
 
 
 
+
   private apiUrl = environment.baseUrl + '/member';
   private authApiUrl = environment.baseUrl + '/auth'; // Auth controller
   constructor(private http: HttpClient) { }
@@ -168,6 +170,9 @@ export class MemberService {
   getProfile(): Observable<Member> {
     return this.http.get<Member>(`${this.apiUrl}/GetProfile`);
   }
+  getProfileImage(fileName: string) {
+    return this.http.get(`${this.apiUrl}/GetProfileImageFile/${fileName}`);
+  }
 
   // Upload new profile photo and update in Member table
   uploadProfileImage(file: File) {
@@ -176,5 +181,7 @@ export class MemberService {
 
     return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/UploadProfileImage`, formData);
   }
- 
+  updateMember(member: Member) {
+    return this.http.post(`${this.apiUrl}/UpdateMember`, member);
+  }
 }

@@ -6,13 +6,14 @@ import { MatIcon } from "@angular/material/icon";
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordComponent } from '../change-password/change-password.component';
 import { MatTabsModule } from "@angular/material/tabs";
-import {   MatTableModule } from '@angular/material/table';
-import { MatIconButton } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { MemberEditComponent } from '../member-edit/member-edit.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ImageCropperModule, MatIcon, MatTabsModule,MatTableModule,MatIconButton],
+  imports: [CommonModule, ImageCropperModule, MatIcon, MatTabsModule, MatTableModule, MatButtonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
@@ -34,7 +35,7 @@ export class ProfileComponent implements OnInit {
   loading = false;
   passwordError = '';
   passwordSuccess = '';
-displayedColumns: string[] = ['degree', 'institute', 'subject', 'actions'];
+  displayedColumns: string[] = ['degree', 'institute', 'subject', 'actions'];
 
   upsaaSpans: { rotate: string; size: number }[] = [];
   constructor(private memberService: MemberService, private dialog: MatDialog) { }
@@ -75,10 +76,10 @@ displayedColumns: string[] = ['degree', 'institute', 'subject', 'actions'];
       this.fileInput.nativeElement.value = '';
     }
   }
-addEducation() {
-  // Open dialog or navigate to education form
-  console.log("Add Education clicked!");
-}
+  addEducation() {
+    // Open dialog or navigate to education form
+    console.log("Add Education clicked!");
+  }
 
 
   onFileSelected(event: Event) {
@@ -130,19 +131,43 @@ addEducation() {
       width: '90%'
     });
   }
+  openEditInfoDialog() {
+    const dialogRef = this.dialog.open(MemberEditComponent, {
+      width: '90%',
+      data: this.member, // pass current member data
+    });
 
-  editEducation(edu: any) {
-  // Open a dialog or navigate to edit form
-  console.log('Edit:', edu);
-}
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // result contains updated member info
+        console.log('Updated member:', result);
+        // call API to save changes
+        this.memberService.updateMember(result).subscribe({
+          next: res => {
 
-deleteEducation(edu: any) {
-  if (confirm(`Are you sure you want to delete the degree: ${edu.degreeName}?`)) {
-    // Call your service to delete the record
-    console.log('Delete:', edu);
-    // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
+            this.uploading = false;
+
+          },
+          error: () => {
+
+            this.uploading = false;
+          }
+        });
+      }
+    });
   }
-}
+  editEducation(edu: any) {
+    // Open a dialog or navigate to edit form
+    console.log('Edit:', edu);
+  }
+
+  deleteEducation(edu: any) {
+    if (confirm(`Are you sure you want to delete the degree: ${edu.degreeName}?`)) {
+      // Call your service to delete the record
+      console.log('Delete:', edu);
+      // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
+    }
+  }
 
   private dataURLtoBlob(dataurl: string): Blob {
     const arr = dataurl.split(',');

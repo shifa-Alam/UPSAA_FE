@@ -56,7 +56,7 @@
                             (ngModelChange)="applyFilter()" />
                     </div>
 
-                    <div class="filter-item" *ngIf="!isRepresentative()">
+                    <div class="filter-item">
                         <input type="number" placeholder="Batch" [(ngModel)]="filter.batch"
                             (ngModelChange)="applyFilter()" />
                     </div>
@@ -92,7 +92,7 @@
                     <table class="members-table">
                         <thead>
                             <tr>
-                                <th class="batch-column" *ngIf="!isMobile || !isRepresentative()">Batch</th>
+                                <th class="batch-column" *ngIf="!isMobile">Batch</th>
                                 <th class="col-name">Name</th>
                                 <th class="col-phone">Member Code</th>
                                 <th class="col-city">City</th>
@@ -105,7 +105,7 @@
                         <tbody>
                             <tr *ngFor="let member of members" class="member-row">
                                 <!-- Table Row -->
-                                <td class="batch-column" *ngIf="!isMobile || !isRepresentative()">
+                                <td class="batch-column" *ngIf="!isMobile">
                                     {{ member.batch }}
                                 </td>
                                 <td class="col-name">
@@ -120,7 +120,7 @@
                                 <td class="col-blood">{{ member.bloodGroup }}</td>
                                 <td class="col-total" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}</td>
                                 <td class="col-name"
-                                    *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)">
+                                    *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)&& (member.batch==batch)">
                                     <button class="req-btn" (click)="sendActiveReq(member.id)"
                                         title="Request Activation">
                                         <mat-icon class="btn-icon">send</mat-icon>

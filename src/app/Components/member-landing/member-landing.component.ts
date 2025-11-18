@@ -29,7 +29,7 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
     MatTooltipModule,
     MatTabsModule,
     MatProgressBarModule
-],
+  ],
   templateUrl: './member-landing.component.html',
   styleUrls: ['./member-landing.component.scss'],
 
@@ -65,6 +65,7 @@ export class MemberLandingComponent implements OnInit {
     this.loadMembers();
     // Get batch from JWT
     this.batch = this.authService.getBatch();
+    console.log(this.batch);
     this.loadBatchSummary(); // ✅ Add this here to load data on startup
 
   }
@@ -82,7 +83,7 @@ export class MemberLandingComponent implements OnInit {
     this.memberService.filterMembers(this.filter).subscribe({
       next: (res) => {
         this.members = res.members;
-        
+
         this.totalItems = res.totalItems;
         this.totalPages = res.totalPages;
         this.pageNumber = res.pageNumber;
@@ -111,11 +112,12 @@ export class MemberLandingComponent implements OnInit {
   isRepresentative(): boolean {
     return this.authService.hasRole('Representative');
   }
+  
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
   }
 
-  
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.setPageSize();
@@ -168,7 +170,7 @@ export class MemberLandingComponent implements OnInit {
       error: (err) => {
         console.log("Error:", JSON.stringify(err.error, null, 2));
 
-       
+
 
       }
     });
@@ -182,7 +184,7 @@ export class MemberLandingComponent implements OnInit {
 
       },
       error: () => {
-        
+
       }
     });
   }

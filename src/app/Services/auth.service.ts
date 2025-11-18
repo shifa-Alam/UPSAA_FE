@@ -78,7 +78,7 @@ export class AuthService {
   getRoles(): string[] {
     const user = this.getCurrentUser();
     if (!user) return [];
-
+   
     // If role is a comma-separated string (like "Admin,Representative")
     if (user.role) {
       return user.role.split(',').map(r => r.trim());

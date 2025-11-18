@@ -62,7 +62,7 @@
         <div class="contact-item">
           <p class="member-code">
             <mat-icon>badge</mat-icon>
-            <strong>Member Code:</strong>
+            <strong>M Code:</strong>
             <span class="code-value">{{ member.memberCode }}</span>
           </p>
 
@@ -72,63 +72,72 @@
           <p><mat-icon>location_city</mat-icon> <strong>City:</strong> {{ member.currentCity }}</p>
           <p><mat-icon>favorite</mat-icon> <strong>Blood Group:</strong> {{ member.bloodGroup || 'N/A' }}</p>
         </div>
-        <div class="change-password-wrapper">
-          <button class="change-password-btn" (click)="openChangePasswordDialog()">
-            <mat-icon>lock</mat-icon> Change Password
+        <div class="action-buttons">
+          <!-- Edit Info Button -->
+          <button mat-flat-button color="primary" class="edit-btn" (click)="openEditInfoDialog()">
+            <mat-icon>edit</mat-icon>
+            Edit Info
+          </button>
+
+          <!-- Change Password Button -->
+          <button mat-stroked-button color="warn" class="change-password-btn" (click)="openChangePasswordDialog()">
+            <mat-icon>lock</mat-icon>
+            Change Password
           </button>
         </div>
+
       </div>
 
 
     </mat-tab>
 
-<mat-tab label="🎓 Education">
-  <div class="tab-card education-card">
+    <mat-tab label="🎓 Education">
+      <div class="tab-card education-card">
 
-    <!-- Header with title + Add button -->
-    <div class="tab-card-header">
-      <h3 class="card-title">Educations</h3>
-      <button class="action-btn" (click)="addEducation()">
-        <mat-icon>add</mat-icon> Add Education
-      </button>
-    </div>
+        <!-- Header with title + Add button -->
+        <div class="tab-card-header">
+          <h3 class="card-title">Educations</h3>
+          <button class="action-btn" (click)="addEducation()">
+            <mat-icon>add</mat-icon> Add Education
+          </button>
+        </div>
 
-    <div class="table-container" *ngIf="member.educationRecords.length; else noEdu">
-      <table class="members-table education-table">
-        <thead>
-          <tr>
-            <th>Degree</th>
-            <th>Institute</th>
-            <th>Subject</th>
-            
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let edu of member.educationRecords">
-            <td>{{ edu.degreeName }}</td>
-            <td>{{ edu.instituteName }}</td>
-            <td>{{ edu.subject }}</td>
-            
-            <td>
-              <button class="edit-btn" mat-icon-button color="primary" (click)="editEducation(edu)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button class="delete-btn" mat-icon-button color="warn" (click)="deleteEducation(edu)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        <div class="table-container" *ngIf="member.educationRecords.length; else noEdu">
+          <table class="members-table education-table">
+            <thead>
+              <tr>
+                <th>Degree</th>
+                <th>Institute</th>
+                <th>Subject</th>
 
-    <ng-template #noEdu>
-      <p class="no-records">No education records found. Click "Add Education" to create one.</p>
-    </ng-template>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let edu of member.educationRecords">
+                <td>{{ edu.degreeName }}</td>
+                <td>{{ edu.instituteName }}</td>
+                <td>{{ edu.subject }}</td>
 
-  </div>
-</mat-tab>
+                <td>
+                  <button class="edit-btn" mat-icon-button color="primary" (click)="editEducation(edu)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button class="delete-btn" mat-icon-button color="warn" (click)="deleteEducation(edu)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ng-template #noEdu>
+          <p class="no-records">No education records found. Click "Add Education" to create one.</p>
+        </ng-template>
+
+      </div>
+    </mat-tab>
 
 
 

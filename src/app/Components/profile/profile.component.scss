@@ -377,35 +377,78 @@ mat-icon {
   margin-right: 8px;
 }
 
-.change-password-wrapper {
-  margin-top: 15px;
-  text-align: left; /* aligns button to the right side of the card */
-}
+// .change-password-wrapper {
+//   margin-top: 15px;
+//   text-align: left; /* aligns button to the right side of the card */
+// }
 
-.change-password-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 18px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, #ff6f91, #845ec2, #6a82fb);
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
+// .change-password-btn {
+//   display: inline-flex;
+//   align-items: center;
+//   gap: 6px;
+//   padding: 8px 18px;
+//   font-size: 14px;
+//   font-weight: 600;
+//   color: #fff;
+//   background: linear-gradient(135deg, #ff6f91, #845ec2, #6a82fb);
+//   border: none;
+//   border-radius: 30px;
+//   cursor: pointer;
+//   transition: all 0.3s ease;
+//   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+// }
 
-.change-password-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-  background: linear-gradient(135deg, #ff8fa3, #9b5de5, #7f7fff);
-}
+// .change-password-btn:hover {
+//   transform: translateY(-2px);
+//   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+//   background: linear-gradient(135deg, #ff8fa3, #9b5de5, #7f7fff);
+// }
 
-.change-password-btn mat-icon {
-  font-size: 18px;
+// .change-password-btn mat-icon {
+//   font-size: 18px;
+// }
+.action-buttons {
+  display: flex;
+  gap: 1rem; /* space between buttons */
+  margin-top: 1rem;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* space between icon and text */
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    mat-icon {
+      font-size: 1.2rem;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  .edit-btn {
+    background-color: green;
+    color: #fff;
+
+    &:hover {
+      background-color:#1f3b8b;
+    }
+  }
+
+  .change-password-btn {
+    background-color: #9b5de5;
+    color: #fff;
+
+    &:hover {
+      background-color: #6a82fb
+    }
+  }
 }
 
 .education-card {
