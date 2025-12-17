@@ -65,7 +65,7 @@ export class MemberLandingComponent implements OnInit {
     this.loadMembers();
     // Get batch from JWT
     this.batch = this.authService.getBatch();
-    console.log(this.batch);
+    
     this.loadBatchSummary(); // ✅ Add this here to load data on startup
 
   }

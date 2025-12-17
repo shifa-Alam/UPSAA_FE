@@ -39,7 +39,12 @@ export class LoginComponent {
     this.authService.login(email!, password!).subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/members']); // redirect after login
+       
+      if ( this.authService.hasRole('SuperAdmin')) {
+        this.router.navigate(['/dashboard']); // admin dashboard
+      } else {
+        this.router.navigate(['/members']); // regular member
+      }
       },
       error: (err) => {
         this.loading = false;

@@ -1,0 +1,28 @@
+<div class="dashboard-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      UPSAA Admin
+      <button class="toggle-btn" (click)="collapsed = !collapsed">
+        {{ collapsed ? '▶' : '◀' }}
+      </button>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a *ngFor="let item of menuItems"
+         (click)="navigate(item.route)"
+         [class.active]="activeRoute === item.route">
+        <span class="icon">{{item.icon}}</span>
+        <span class="label" *ngIf="!collapsed">{{item.label}}</span>
+      </a>
+    </nav>
+
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

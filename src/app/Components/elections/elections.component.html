@@ -1,0 +1,65 @@
+<div class="elections-container">
+
+  <!-- Header with Search and Add Button -->
+  <div class="header">
+    <input type="text" placeholder="Search elections..." [(ngModel)]="searchTerm">
+    <button class="add-btn" (click)="openAddElectionModal()">+ Add Election</button>
+  </div>
+
+  <!-- Election Table -->
+  <div class="table-wrapper">
+    <table class="elections-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Title</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let election of pagedElections; let i = index">
+          <td>{{i + 1 + (currentPage - 1) * pageSize}}</td>
+          <td>{{election.title}}</td>
+          <td>{{election.startTime | date:'shortDate'}}</td>
+          <td>{{election.endTime | date:'shortDate'}}</td>
+          <td>
+            <button class="edit-btn" (click)="editElection(election)">Edit</button>
+            <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
+    <span>Page {{currentPage}} of {{totalPages}}</span>
+    <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+  </div>
+
+  <!-- Add/Edit Election Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2>{{editMode ? 'Edit' : 'Add'}} Election</h2>
+      <form (ngSubmit)="submitElection()">
+        <label>Title</label>
+        <input type="text" [(ngModel)]="modalElection.title" name="title" placeholder="Election Title" required>
+
+        <label>Start Date</label>
+        <input type="date" [(ngModel)]="modalElection.startTime" name="startTime" required>
+
+        <label>End Date</label>
+        <input type="date" [(ngModel)]="modalElection.endTime" name="endTime" required>
+
+        <div class="modal-actions">
+          <button type="submit" class="save-btn">{{editMode ? 'Update' : 'Add'}}</button>
+          <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

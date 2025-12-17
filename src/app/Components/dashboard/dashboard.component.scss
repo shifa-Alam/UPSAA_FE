@@ -1,0 +1,76 @@
+/* Container */
+.dashboard-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f4f4;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background-color: #1e3a8a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-header {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2947b3;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Menu */
+.sidebar-menu {
+  flex: 1;
+  padding: 10px 0;
+}
+
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.sidebar-menu a:hover {
+  background-color: #2e4eb3;
+}
+
+.sidebar-menu a.active {
+  background-color: #162c61;
+  font-weight: bold;
+}
+
+.sidebar-menu .icon {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
