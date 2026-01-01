@@ -11,6 +11,9 @@ import { Election, ElectionService } from '../../Services/election.service';
   styleUrl: './elections.component.scss'
 })
 export class ElectionsComponent implements OnInit {
+viewDetails(_t20: Election) {
+throw new Error('Method not implemented.');
+}
   elections: Election[] = [];
   pagedElections: Election[] = [];
   searchTerm = '';

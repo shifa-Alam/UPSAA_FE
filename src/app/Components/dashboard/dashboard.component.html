@@ -1,23 +1,52 @@
 <div class="dashboard-container">
 
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      UPSAA Admin
-      <button class="toggle-btn" (click)="collapsed = !collapsed">
-        {{ collapsed ? '▶' : '◀' }}
-      </button>
-    </div>
+  <aside class="sidebar" [class.collapsed]="collapsed">
 
     <nav class="sidebar-menu">
-      <a *ngFor="let item of menuItems"
-         (click)="navigate(item.route)"
-         [class.active]="activeRoute === item.route">
-        <span class="icon">{{item.icon}}</span>
-        <span class="label" *ngIf="!collapsed">{{item.label}}</span>
-      </a>
-    </nav>
 
+      <ng-container *ngFor="let item of menuItems">
+
+        <!-- Parent -->
+        <div class="menu-group">
+
+          <a class="menu-item parent"
+             (click)="toggleMenu(item)"
+             [class.active]="item.expanded">
+
+            <span class="icon">{{ item.icon }}</span>
+            <span class="label" *ngIf="!collapsed">{{ item.label }}</span>
+
+            <span class="arrow"
+                  *ngIf="item.children && !collapsed"
+                  [class.open]="item.expanded">
+              ▸
+            </span>
+
+          </a>
+
+          <!-- Children -->
+          <div class="submenu"
+               [class.open]="item.expanded"
+               *ngIf="item.children && !collapsed">
+
+            <a class="submenu-item"
+               *ngFor="let child of item.children"
+               (click)="navigate(child.route)"
+               [class.active]="activeRoute === child.route">
+
+              <span class="icon">{{ child.icon }}</span>
+              <span class="label">{{ child.label }}</span>
+
+            </a>
+
+          </div>
+
+        </div>
+
+      </ng-container>
+
+    </nav>
   </aside>
 
   <!-- Main content -->
