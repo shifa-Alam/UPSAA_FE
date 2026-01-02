@@ -1,0 +1,119 @@
+<div>
+    <h2 class="page-title">Positions</h2>
+
+    <!-- Header -->
+    <div class="header">
+        <input type="text" placeholder="Search positions" [(ngModel)]="searchTerm" />
+
+        <button class="add-btn" (click)="openAddPositionModal()">
+            + Add
+        </button>
+    </div>
+    <div *ngIf="loading" class="loading-wrapper">
+        <div class="spinner"></div>
+        <p>Loading positions...</p>
+    </div>
+    <div *ngIf="!loading">
+        <!-- Desktop Table -->
+        <div class="table-wrapper desktop-only">
+            <table class="positions-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Election</th>
+                        <th>Title</th>
+                        <th>Max Select</th>
+                         <th>Priority</th>
+                        
+
+                        <th style="width: 180px;">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let position of pagedPositions; let i = index">
+                        <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+                        <td>{{ position.electionTitle }}</td>
+                        <td>{{ position.name }}</td>
+                        <td>{{ position.maxSelect }}</td>
+                        <td>{{ position.priority }}</td>
+                        
+
+                        <td>
+                            <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
+                            <button class="edit-btn" (click)="editPosition(position)">Edit</button>
+                            <button class="delete-btn" (click)="deletePosition(position)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-only">
+            <div class="position-card" *ngFor="let position of pagedPositions; let i = index">
+
+                <div class="card-header">
+                    <span class="index">#{{ i + 1 }}</span>
+                    <span class="title">{{ position.name }}</span>
+
+                </div>
+                <div class="card-dates">
+                    <!-- <span>Election: {{ position.electionTitle }}</span> -->
+                    <span>Max: {{ position.maxSelect }}</span>
+                    <span>Priority: {{ position.priority }}</span>
+                   
+                </div>
+                <div class="card-actions">
+                    <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
+                    <button class="edit-btn" (click)="editPosition(position)">Edit</button>
+                    <button class="delete-btn" (click)="deletePosition(position)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" *ngIf="showModal">
+        <div class="modal-content">
+            <h2>{{ editMode ? 'Edit' : 'Add' }} Position</h2>
+
+            <form (ngSubmit)="submitPosition()">
+                <label>Election</label>
+                <select [(ngModel)]="modalPosition.electionId" name="electionId" required>
+                    <option value="" disabled>Select election</option>
+                    <option *ngFor="let e of elections" [value]="e.id">
+                        {{ e.title }}
+                    </option>
+                </select>
+                <label>Position Title</label>
+                <input type="text" [(ngModel)]="modalPosition.name" name="title" required />
+
+                <label>Max Select</label>
+                <input type="number" [(ngModel)]="modalPosition.maxSelect" name="maxSelect" required />
+
+                <label>Priority</label>
+                <input type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
+
+
+                <div class="modal-actions">
+                    <button type="submit" class="save-btn">
+                        {{ editMode ? 'Update' : 'Create' }}
+                    </button>
+                    <button type="button" class="cancel-btn" (click)="closeModal()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

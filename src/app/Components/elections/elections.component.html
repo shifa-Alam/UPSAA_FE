@@ -1,15 +1,19 @@
-<div >
-<h2 class="page-title">UPSAA Elections</h2>
+<div>
+  <h2 class="page-title">UPSAA Elections</h2>
 
   <!-- Header -->
   <div class="header">
     <input type="text" placeholder="Search elections" [(ngModel)]="searchTerm" />
 
     <button class="add-btn" (click)="openAddElectionModal()">
-      + Add 
+      + Add
     </button>
   </div>
-
+  <div *ngIf="loading" class="loading-wrapper">
+    <div class="spinner"></div>
+    <p>Loading elections...</p>
+  </div>
+  <div *ngIf="!loading">
   <!-- Desktop Table -->
   <div class="table-wrapper desktop-only">
     <table class="elections-table">
@@ -59,6 +63,8 @@
       </div>
     </div>
   </div>
+  </div>
+
 
   <!-- Pagination -->
   <div class="pagination">

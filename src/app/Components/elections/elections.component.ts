@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Election, ElectionService } from '../../Services/election.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-elections',
@@ -11,9 +12,10 @@ import { Election, ElectionService } from '../../Services/election.service';
   styleUrl: './elections.component.scss'
 })
 export class ElectionsComponent implements OnInit {
-viewDetails(_t20: Election) {
-throw new Error('Method not implemented.');
-}
+  viewDetails(_t20: Election) {
+    throw new Error('Method not implemented.');
+  }
+  loading = false;
   elections: Election[] = [];
   pagedElections: Election[] = [];
   searchTerm = '';
@@ -39,7 +41,10 @@ throw new Error('Method not implemented.');
     this.calculatePages();
   }
   loadElections() {
-    this.electionService.getElections().subscribe({
+    this.loading = true;
+    this.electionService.getElections()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
       next: (data) => {
         this.elections = data.map((el, i) => ({
           id: el.id,

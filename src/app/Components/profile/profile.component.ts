@@ -9,6 +9,7 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MemberEditComponent } from '../member-edit/member-edit.component';
+import { CandidateAddComponent } from '../candidate-add/candidate-add.component';
 
 @Component({
   selector: 'app-profile',
@@ -57,6 +58,7 @@ export class ProfileComponent implements OnInit {
     return name ? name.charAt(0).toUpperCase() : '';
   }
   loadProfile() {
+    this.loading = true
     this.memberService.getProfile().subscribe({
       next: res => {
         this.profileImageUrl = res?.photo ? res.photo + '?t=' + new Date().getTime() : '';
@@ -64,7 +66,8 @@ export class ProfileComponent implements OnInit {
       },
       error: () => {
         this.profileImageUrl = '';
-      }
+      },
+      complete: () => this.loading = false
     });
   }
   cancelCrop() {
@@ -140,19 +143,19 @@ export class ProfileComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // result contains updated member info
-        console.log('Updated member:', result);
+        this.member = result;
         // call API to save changes
-        this.memberService.updateMember(result).subscribe({
-          next: res => {
+        // this.memberService.updateMember(result).subscribe({
+        //   next: res => {
 
-            this.uploading = false;
+        //     this.uploading = false;
 
-          },
-          error: () => {
+        //   },
+        //   error: () => {
 
-            this.uploading = false;
-          }
-        });
+        //     this.uploading = false;
+        //   }
+        // });
       }
     });
   }
@@ -167,6 +170,15 @@ export class ProfileComponent implements OnInit {
       console.log('Delete:', edu);
       // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
     }
+  }
+  openCandidateForm() {
+    // Option 1: open Angular Material dialog
+    this.dialog.open(CandidateAddComponent, { width: '90%' });
+
+    // Option 2: navigate to route
+    // this.router.navigate(['/candidate-form', this.member.id]);
+
+    console.log('Buy Nomination clicked');
   }
 
   private dataURLtoBlob(dataurl: string): Blob {

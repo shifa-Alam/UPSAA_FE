@@ -1,58 +1,84 @@
 import { Component, OnInit } from '@angular/core';
 import { Position, PositionService } from '../../Services/position.service';
+import { finalize } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Election, ElectionService } from '../../Services/election.service';
 
 @Component({
   selector: 'app-positions',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './positions.component.html',
   styleUrl: './positions.component.scss'
 })
 export class PositionsComponent implements OnInit {
+  viewDetails(_t20: Position) {
+    throw new Error('Method not implemented.');
+  }
+  loading = false;
   positions: Position[] = [];
   pagedPositions: Position[] = [];
   searchTerm = '';
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 10;
   totalPages = 1;
 
   showModal = false;
   editMode = false;
-  modalPosition: Position ={
-    id: 0,
-    name: '',
-    electionId: 0,
-    electionTitle: ''
+  modalPosition: Position = {
+    id: 0, name: '',
+    electionTitle: '',
+    electionId: 0, maxSelect: 0,
+    priority: 0,
+    candidates:[]
   };
-
-  constructor(private positionService: PositionService) {
+  elections: Election[] = [];
+  constructor(private positionService: PositionService, private electionService: ElectionService) {
 
   }
 
   ngOnInit() {
     // Dummy data
-    this.loadPositions();
+    this.loadPositionss();
+    this.loadElections();
   }
-
-  filterPositions() {
+  loadElections() {
+    this.electionService.getElections().subscribe({
+      next: res => this.elections = res,
+      error: err => console.error(err)
+    });
+  }
+  filterPositionss() {
     this.currentPage = 1;
     this.calculatePages();
   }
-  loadPositions() {
-    this.positionService.getPositions().subscribe({
-      next: (data) => {
-        this.positions = data;
-        this.calculatePages(); // pagination
-      },
-      error: (err) => {
-        console.error('Failed to fetch positions:', err);
-        alert('Failed to load positions. Please try again.');
-      }
-    });
+  loadPositionss() {
+    this.loading = true;
+    this.positionService.getPositions()
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (data) => {
+          this.positions = data.map((el, i) => ({
+            id: el.id,
+            name: el.name,
+            electionTitle: el.electionTitle,
+            electionId: el.electionId,
+            maxSelect: el.maxSelect,
+             priority: el.priority,
+              candidates:[]
+          }));
+          this.calculatePages(); // pagination
+        },
+        error: (err) => {
+          console.error('Failed to fetch positions:', err);
+          alert('Failed to load positions. Please try again.');
+        }
+      });
   }
   calculatePages() {
     const filtered = this.positions.filter(e =>
-      e.electionTitle.toLowerCase().includes(this.searchTerm.toLowerCase())
+      e.name.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
     this.totalPages = Math.ceil(filtered.length / this.pageSize);
     this.pagedPositions = filtered.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
@@ -74,19 +100,16 @@ export class PositionsComponent implements OnInit {
 
   openAddPositionModal() {
     this.editMode = false;
-    this.modalPosition = {  id: 0,
-    name: '',
-    electionId: 0,
-    electionTitle: '' };
+    this.modalPosition = { id: 0, name: '', electionTitle: '', electionId: 0, maxSelect: 0,priority: 0 , candidates:[]};
     this.showModal = true;
   }
 
   editPosition(e: Position) {
-    console.log(e);
+
     this.editMode = true;
     this.modalPosition = { ...e };
 
-    
+
     this.showModal = true;
   }
 
@@ -100,10 +123,10 @@ export class PositionsComponent implements OnInit {
   }
 
   submitPosition() {
-    //if (!this.modalPosition.title || !this.modalPosition.startTime || !this.modalPosition.endTime) return;
+    if (!this.modalPosition.name || !this.modalPosition.electionId || !this.modalPosition.maxSelect) return;
 
     if (this.editMode) {
-      // Update existing election
+      // Update existing position
       this.positionService.updatePosition(this.modalPosition).subscribe({
         next: (updated) => {
           const index = this.positions.findIndex(el => el.id === updated.id);
@@ -113,11 +136,11 @@ export class PositionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update failed:', err);
-          alert('Failed to update election.');
+          alert('Failed to update position.');
         }
       });
     } else {
-      // Add new election
+      // Add new position
       this.positionService.addPosition(this.modalPosition).subscribe({
         next: (created) => {
           this.positions.push(created);
@@ -126,7 +149,7 @@ export class PositionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Add failed:', err);
-          alert('Failed to add election.');
+          alert('Failed to add position.');
         }
       });
     }

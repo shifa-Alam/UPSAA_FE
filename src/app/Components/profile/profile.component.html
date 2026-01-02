@@ -1,4 +1,9 @@
-<div class="profile-container" *ngIf="member">
+
+  <div *ngIf="loading" class="loading-wrapper">
+    <div class="spinner"></div>
+    <p>Profile Loading ...</p>
+  </div>
+<div class="profile-container" *ngIf="member && !loading">
 
   <!-- Cover + Avatar -->
   <div class="cover-avatar-section">
@@ -64,7 +69,11 @@
             <mat-icon>badge</mat-icon>
             <strong>M Code:</strong>
             <span class="code-value">{{ member.memberCode }}</span>
+
+
           </p>
+
+
 
           <p><mat-icon>calendar_today</mat-icon> <strong>Batch:</strong> {{ member.batch }}</p>
           <p><mat-icon>call</mat-icon> <strong>Phone:</strong> {{ member.phone }}</p>
@@ -83,6 +92,13 @@
           <button mat-stroked-button color="warn" class="change-password-btn" (click)="openChangePasswordDialog()">
             <mat-icon>lock</mat-icon>
             Change Password
+          </button>
+        </div>
+        <div  style="width: 100%; text-align:center;">
+          <button mat-raised-button color="accent" class="buy-nomination-btn pulse-button"
+            (click)="openCandidateForm()">
+            <mat-icon>how_to_vote</mat-icon>
+            Apply For Nomination
           </button>
         </div>
 

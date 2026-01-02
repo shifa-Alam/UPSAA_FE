@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 export interface Candidate {
   id: number;
-  candidateId: number;
-  candidateName: string;
+  positionId: number;
+  positionName: string;
 
   memberId: number;
   memberName: string;

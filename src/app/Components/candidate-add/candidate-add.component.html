@@ -1,0 +1,46 @@
+<div class="nomination-card">
+  <mat-progress-bar
+      *ngIf="loading"
+      mode="indeterminate">
+    </mat-progress-bar>
+  <form (ngSubmit)="submitNomination()" #nominationForm="ngForm" class="nomination-form">
+
+    <h2 class="form-title">📝 Apply for Nomination</h2>
+
+    <!-- Election & Position -->
+    <div class="form-row">
+     
+
+      <div class="form-group">
+        <label for="positionId">Position</label>
+        <select [(ngModel)]="candidate.positionId" name="positionId" id="positionId" required>
+          <option value="" disabled>Select position</option>
+          <option *ngFor="let p of positions" [value]="p.id">{{ p.name }}</option>
+        </select>
+      </div>
+
+      
+    </div>
+
+   
+
+    <!-- Application Reason -->
+    <div class="form-group">
+      <label for="applicationReason">Why are you applying?</label>
+      <textarea
+        [(ngModel)]="candidate.applicationReason"
+        name="applicationReason"
+        id="applicationReason"
+        rows="4"
+        placeholder="Write your reason here..."></textarea>
+    </div>
+
+   
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button type="submit" class="save-btn blinking-btn">Apply</button>
+      <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+    </div>
+
+  </form>
+</div>

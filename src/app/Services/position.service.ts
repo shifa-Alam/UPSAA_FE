@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Candidate } from './candidate.service';
 
 export interface Position {
   id: number;
   name: string;
   electionId: number;
   electionTitle: string;
+ maxSelect: number;
+  priority:number;
+  candidates: Candidate[];
 }
 @Injectable({
   providedIn: 'root'
