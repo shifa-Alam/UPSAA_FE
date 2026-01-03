@@ -12,6 +12,8 @@ import { MatOptionModule } from "@angular/material/core";
 import { Position, PositionService } from '../../Services/position.service';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { SnackbarService } from '../../Services/snackbar.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'app-candidate-add',
@@ -25,8 +27,7 @@ import { SnackbarService } from '../../Services/snackbar.service';
     MatDialogModule,
     MatOptionModule,
     MatProgressBarModule,
-
-  ],
+    MatSelectModule, MatIconModule],
   templateUrl: './candidate-add.component.html',
   styleUrl: './candidate-add.component.scss'
 })
@@ -71,7 +72,7 @@ export class CandidateAddComponent implements OnInit {
 
 
     this.loading = true;
-    this.candidateService.addCandidate(this.candidate).subscribe({
+    this.candidateService.applyNomination(this.candidate).subscribe({
       next: () => {
 
         this.snackbarService.showSuccess('Nomination submitted successfully 🎉');

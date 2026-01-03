@@ -4,12 +4,8 @@
     <p>Access your alumni dashboard</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="submit()">
-      <input
-        type="email"
-        formControlName="email"
-        placeholder="Email"
-        [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
-      />
+      <input type="email" formControlName="email" placeholder="Email"
+        [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
       <div class="error" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
         Email is required
       </div>
@@ -17,12 +13,16 @@
         Invalid email
       </div>
 
-      <input
-        type="password"
-        formControlName="password"
-        placeholder="Password"
-        [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
-      />
+      <div class="password-container">
+        <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
+
+        <!-- <button mat-icon-button type="button" (click)="togglePassword()" class="toggle-password"
+          [attr.aria-label]="'Hide or show password'">
+          <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button> -->
+      </div>
+
       <div class="error" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
         Password is required
       </div>
@@ -34,7 +34,7 @@
       </button>
     </form>
 
-   <!-- 👇 Added Forgot Password link -->
+    <!-- 👇 Added Forgot Password link -->
     <div class="forgot-password-link">
       <a routerLink="/forgot-password">Forgot your password?</a>
     </div>

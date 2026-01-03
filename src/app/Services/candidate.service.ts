@@ -17,24 +17,27 @@ export interface Candidate {
   providedIn: 'root'
 })
 export class CandidateService {
-private apiUrl = environment.baseUrl + '/Candidate';
- 
+  private apiUrl = environment.baseUrl + '/Candidate';
+
   constructor(private http: HttpClient) { }
 
   // Add new candidate
+  applyNomination(candidate: Candidate): Observable<Candidate> {
+    return this.http.post<Candidate>(`${this.apiUrl}/ApplyNomination`, candidate);
+
+  }
   addCandidate(candidate: Candidate): Observable<Candidate> {
     return this.http.post<Candidate>(`${this.apiUrl}/CreateCandidate`, candidate);
-     
-  }
 
+  }
   // Update existing candidate
   updateCandidate(candidate: Candidate): Observable<Candidate> {
     return this.http.put<Candidate>(`${this.apiUrl}/${candidate.id}`, candidate);
   }
 
   // Get all candidates
-  getCandidates(): Observable<Candidate[]> {
-    return this.http.get<Candidate[]>(`${this.apiUrl}/GetAllCandidates`);
+  getCandidates(electionId:number): Observable<Candidate[]> {
+    return this.http.get<Candidate[]>(`${this.apiUrl}/${electionId}/GetAllCandidates`);
   }
 
   // Delete candidate
