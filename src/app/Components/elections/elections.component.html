@@ -14,55 +14,55 @@
     <p>Loading elections...</p>
   </div>
   <div *ngIf="!loading">
-  <!-- Desktop Table -->
-  <div class="table-wrapper desktop-only">
-    <table class="elections-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Title</th>
-          <th>Start Date</th>
-          <th>End Date</th>
-          <th style="width: 180px;">Actions</th>
-        </tr>
-      </thead>
+    <!-- Desktop Table -->
+    <div class="table-wrapper desktop-only">
+      <table class="elections-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th style="width: 180px;">Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let election of pagedElections; let i = index">
-          <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
-          <td>{{ election.title }}</td>
-          <td>{{ election.startTime }}</td>
-          <td>{{ election.endTime }}</td>
-          <td>
-            <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button>
-            <button class="edit-btn" (click)="editElection(election)">Edit</button>
-            <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <tbody>
+          <tr *ngFor="let election of pagedElections; let i = index">
+            <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+            <td>{{ election.title }}</td>
+            <td>{{ election.startTime | date:'d MMMM y' }}</td>
+            <td>{{ election.endTime | date:'d MMMM y' }}</td>
+            <td>
+              <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
+              <button class="edit-btn" (click)="editElection(election)">Edit</button>
+              <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Mobile Cards -->
-  <div class="mobile-only">
-    <div class="election-card" *ngFor="let election of pagedElections; let i = index">
+    <!-- Mobile Cards -->
+    <div class="mobile-only">
+      <div class="election-card" *ngFor="let election of pagedElections; let i = index">
 
-      <div class="card-header">
-        <span class="index">#{{ i + 1 }}</span>
-        <span class="title">{{ election.title }}</span>
+        <div class="card-header">
+          <span class="index">#{{ i + 1 }}</span>
+          <span class="title">{{ election.title }}</span>
 
-      </div>
-      <div class="card-dates">
-        <span>Start: {{ election.startTime | date:'shortDate' }}</span>
-        <span>End: {{ election.endTime | date:'shortDate' }}</span>
-      </div>
-      <div class="card-actions">
-        <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button>
-        <button class="edit-btn" (click)="editElection(election)">Edit</button>
-        <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+        </div>
+        <div class="card-dates">
+          <span>Start: {{ election.startTime | date:'d MMMM y' }}</span>
+          <span>End: {{ election.endTime | date:'d MMMM y' }}</span>
+        </div>
+        <div class="card-actions">
+          <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
+          <button class="edit-btn" (click)="editElection(election)">Edit</button>
+          <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
 
@@ -79,14 +79,31 @@
       <h2>{{ editMode ? 'Edit' : 'Add' }} Election</h2>
 
       <form (ngSubmit)="submitElection()">
-        <label>Election Title</label>
+
+        <label>
+          Election Title <span class="required">*</span>
+        </label>
         <input type="text" [(ngModel)]="modalElection.title" name="title" required />
 
-        <label>Start Date</label>
+        <label>
+          Start Date <span class="required">*</span>
+        </label>
         <input type="date" [(ngModel)]="modalElection.startTime" name="startTime" required />
 
-        <label>End Date</label>
+        <label>
+          End Date <span class="required">*</span>
+        </label>
         <input type="date" [(ngModel)]="modalElection.endTime" name="endTime" required />
+
+        <label>
+          Nomination Start Date <span class="required">*</span>
+        </label>
+        <input type="date" [(ngModel)]="modalElection.candidateStartTime" name="candidateStartTime" required />
+
+        <label>
+          Nomination End Date <span class="required">*</span>
+        </label>
+        <input type="date" [(ngModel)]="modalElection.candidateEndTime" name="candidateEndTime" required />
 
         <div class="modal-actions">
           <button type="submit" class="save-btn">
@@ -96,8 +113,10 @@
             Cancel
           </button>
         </div>
+
       </form>
     </div>
   </div>
+
 
 </div>

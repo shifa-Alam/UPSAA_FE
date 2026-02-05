@@ -25,7 +25,7 @@ export class ElectionsComponent implements OnInit {
 
   showModal = false;
   editMode = false;
-  modalElection: Election = { id: 0, title: '', startTime: '', endTime: '' };
+  modalElection: Election = { id: 0, title: '', startTime: '', endTime: '', candidateStartTime: '', candidateEndTime: '' };
 
   constructor(private electionService: ElectionService) {
 
@@ -43,22 +43,24 @@ export class ElectionsComponent implements OnInit {
   loadElections() {
     this.loading = true;
     this.electionService.getElections()
-    .pipe(finalize(() => this.loading = false))
-    .subscribe({
-      next: (data) => {
-        this.elections = data.map((el, i) => ({
-          id: el.id,
-          title: el.title,
-          startTime: el.startTime,
-          endTime: el.endTime
-        }));
-        this.calculatePages(); // pagination
-      },
-      error: (err) => {
-        console.error('Failed to fetch elections:', err);
-        alert('Failed to load elections. Please try again.');
-      }
-    });
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (data) => {
+          this.elections = data.map((el, i) => ({
+            id: el.id,
+            title: el.title,
+            startTime: el.startTime,
+            endTime: el.endTime,
+            candidateStartTime: el.candidateStartTime,
+            candidateEndTime: el.candidateEndTime
+          }));
+          this.calculatePages(); // pagination
+        },
+        error: (err) => {
+          console.error('Failed to fetch elections:', err);
+          alert('Failed to load elections. Please try again.');
+        }
+      });
   }
   calculatePages() {
     const filtered = this.elections.filter(e =>
@@ -84,7 +86,7 @@ export class ElectionsComponent implements OnInit {
 
   openAddElectionModal() {
     this.editMode = false;
-    this.modalElection = { id: 0, title: '', startTime: '', endTime: '' };
+    this.modalElection = { id: 0, title: '', startTime: '', endTime: '', candidateStartTime: '', candidateEndTime: '' };
     this.showModal = true;
   }
 
@@ -96,6 +98,8 @@ export class ElectionsComponent implements OnInit {
     // Convert dates to yyyy-MM-dd
     this.modalElection.startTime = this.formatDate(this.modalElection.startTime);
     this.modalElection.endTime = this.formatDate(this.modalElection.endTime);
+    this.modalElection.candidateStartTime = this.formatDate(this.modalElection.candidateStartTime);
+    this.modalElection.candidateEndTime = this.formatDate(this.modalElection.candidateEndTime);
     this.showModal = true;
   }
   formatDate(date: string | Date): string {
@@ -105,8 +109,17 @@ export class ElectionsComponent implements OnInit {
     return `${d.getFullYear()}-${month}-${day}`;
   }
   deleteElection(e: Election) {
-    this.elections = this.elections.filter(el => el.id !== e.id);
-    this.calculatePages();
+    this.electionService.deleteElection(e.id).subscribe({
+      next: (created) => {
+        this.elections = this.elections.filter(el => el.id !== e.id);
+        this.calculatePages();
+      },
+      error: (err) => {
+        console.error('Add failed:', err);
+        alert('Failed to add election.');
+      }
+    });
+
   }
 
   closeModal() {

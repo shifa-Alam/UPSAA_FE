@@ -1,13 +1,15 @@
 /* ===== Reset & Full Height ===== */
-html, body {
-  height: 100%;
+html,
+body {
+  //height: 100%;
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
 /* ===== Sidenav Container ===== */
 .sidenav-container {
-  height: 100vh; /* full viewport height */
+  // height: 100vh;
+  /* full viewport height */
   display: flex;
   flex-direction: column;
 }
@@ -19,13 +21,15 @@ html, body {
   // flex-direction: column;
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* fill viewport */
+  // min-height: 100vh; /* fill viewport */
 }
 
 /* ===== Content Area ===== */
 .content-area {
-  flex: 1 0 auto; /* allow content to grow but not force footer down */
-  overflow: auto; /* scroll content if long */
+  flex: 1 0 auto;
+  /* allow content to grow but not force footer down */
+  overflow: auto;
+  /* scroll content if long */
 }
 
 /* router-outlet grows to fill remaining space */
@@ -47,7 +51,8 @@ content-area router-outlet {
 .toolbar-content {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* logo left, menu right */
+  justify-content: space-between;
+  /* logo left, menu right */
   width: 100%;
 }
 
@@ -56,6 +61,7 @@ content-area router-outlet {
   height: 50px;
   margin-right: 8px;
 }
+
 .logo {
   flex-grow: 1;
   font-weight: bold;
@@ -68,16 +74,34 @@ content-area router-outlet {
   display: flex;
   gap: 12px;
 }
+
 .menu-button {
-  display: none; /* hide hamburger on desktop */
+  display: none;
+  /* hide hamburger on desktop */
 }
 
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
-  .desktop-menu { display: none; }
-  .menu-button { display: inline-flex; }
-  .logo { font-size: 16px; }
-  .logo-img { height: 40px; }
+  .desktop-menu {
+    display: none;
+  }
+
+  .content-area {
+    padding-bottom: 150px;
+    /* height of mobile footer */
+  }
+
+  .menu-button {
+    display: inline-flex;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .logo-img {
+    height: 40px;
+  }
 }
 
 /* ===== Mobile Sidenav ===== */
@@ -87,6 +111,7 @@ content-area router-outlet {
   background: white;
   height: 100%;
 }
+
 .mobile-menu a {
   display: block;
   width: 100%;
@@ -98,6 +123,7 @@ content-area router-outlet {
   font-weight: bold;
   color: #3b96ff;
 }
+
 .mobile-menu a.active-link {
   background-color: #e0f7fa;
   border-radius: 4px;
@@ -106,7 +132,8 @@ content-area router-outlet {
 
 /* ===== Footer ===== */
 .app-footer {
-  flex-shrink: 0;       /* don’t shrink */
+  flex-shrink: 0;
+  /* don’t shrink */
   text-align: center;
   padding: 10px 0;
   background: #003d5c;
@@ -117,11 +144,13 @@ content-area router-outlet {
 .layout-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* fill viewport height */
+  // min-height: 100vh;
+  /* fill viewport height */
 }
 
 .content-area {
-  flex: 1 0 auto; /* takes remaining space, pushes footer down */
+  flex: 1 0 auto;
+  /* takes remaining space, pushes footer down */
   overflow: auto;
 }
 
@@ -136,17 +165,19 @@ content-area router-outlet {
 /* ===== Loading Progress Bar ===== */
 .top-progress-bar {
   position: fixed;
-  top: 0; /* adjust if toolbar height changes */
+  top: 0;
+  /* adjust if toolbar height changes */
   left: 0;
   width: 100%;
   z-index: 1000;
-  
+
 }
 
 /* Optional: smooth scrolling for content */
 .content-area {
   scroll-behavior: smooth;
 }
+
 .user-avatar-button {
   display: flex;
   align-items: center;
@@ -159,11 +190,13 @@ content-area router-outlet {
   border-radius: 50%;
   object-fit: cover;
 }
+
 .name-avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #3f51b5; /* you can use accent color */
+  background-color: #3f51b5;
+  /* you can use accent color */
   color: white;
   display: flex;
   align-items: center;
@@ -174,9 +207,79 @@ content-area router-outlet {
 }
 
 
+.mobile-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  /* colorful gradient */
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  z-index: 1000;
+  transition: background 0.3s;
+}
 
+.mobile-footer .footer-nav {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
 
+.mobile-footer .footer-nav a {
+  display: flex;
+  flex-direction: column;
+  /* icon above text */
+  align-items: center;
+  font-size: 12px;
+  color: #fff;
+  transition: transform 0.2s, color 0.2s;
+  position: relative;
+}
 
+.mobile-footer .footer-nav a mat-icon {
+  font-size: 24px;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.mobile-footer .footer-nav a span {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.mobile-footer .footer-nav a:hover {
+  color: #ffd700;
+  /* gold on hover */
+  transform: translateY(-2px);
+}
+
+.mobile-footer .footer-nav a.active-link {
+  color: #ffeb3b;
+  /* bright yellow for active */
+}
+
+.mobile-footer .footer-nav a.active-link mat-icon {
+  animation: bounce 0.3s;
+}
+
+/* simple bounce effect for active icon */
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
 
 
 
@@ -212,7 +315,7 @@ content-area router-outlet {
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .mobile-username {

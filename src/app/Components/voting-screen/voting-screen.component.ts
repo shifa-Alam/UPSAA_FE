@@ -26,7 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 @Component({
   selector: 'app-voting-screen',
   standalone: true,
-  imports: [CommonModule, MatIconModule,MatProgressBarModule],
+  imports: [CommonModule, MatIconModule, MatProgressBarModule],
   templateUrl: './voting-screen.component.html',
   styleUrl: './voting-screen.component.scss'
 })
@@ -38,7 +38,7 @@ export class VotingScreenComponent implements OnInit {
   submitting = false;
   successMessage = '';
   hasVoted = false;
-  electionTitle:string="";
+  electionTitle: string = "";
 
   // optional: fill from JWT
   voterName: string | null = null;
@@ -46,11 +46,11 @@ export class VotingScreenComponent implements OnInit {
   voted: boolean = false;
   errorMessage: string | undefined;
 
-  constructor(private http: HttpClient,private voteService:VoteService) { }
+  constructor(private http: HttpClient, private voteService: VoteService) { }
 
   ngOnInit() {
     this.loadVoterFromJwt();
-    this.loadBallot(1);
+    this.loadBallot();
   }
 
   loadVoterFromJwt() {
@@ -65,11 +65,11 @@ export class VotingScreenComponent implements OnInit {
     } catch (e) { /* ignore decode errors */ }
   }
 
- loadBallot(electionId: number): void {
-    this.voteService.getBallot(electionId).subscribe({
+  loadBallot(): void {
+    this.voteService.getBallot().subscribe({
       next: (data) => {
         this.ballot = data;
-       
+
         // initialize empty selections
         for (const p of this.ballot.positions) {
           this.selections[p.id] = [];
@@ -166,7 +166,7 @@ export class VotingScreenComponent implements OnInit {
   submitVote() {
     if (!this.ballot) return;
     this.submitting = true;
-    
+
     const payload = {
       electionId: this.ballot.electionId,
       selections: Object.keys(this.selections).map(pid => ({
@@ -174,20 +174,20 @@ export class VotingScreenComponent implements OnInit {
         candidateIds: this.selections[Number(pid)]
       })),
     };
-   this.voteService.submitVote( payload)
-    .pipe(finalize(() => { this.submitting = false; }))
-    .subscribe({
-      next: res => {
-        this.successMessage = res?.message || 'Vote submitted';
-        this.hasVoted = true;
-        this.showConfirm = false;
-      },
-      error: err => {
-        console.error('submit failed', err);
-        alert(err?.error?.message || 'Failed to submit vote. Try again.');
+    this.voteService.submitVote(payload)
+      .pipe(finalize(() => { this.submitting = false; }))
+      .subscribe({
+        next: res => {
+          this.successMessage = res?.message || 'Vote submitted';
+          this.hasVoted = true;
+          this.showConfirm = false;
+        },
+        error: err => {
+          console.error('submit failed', err);
+          alert(err?.error?.message || 'Failed to submit vote. Try again.');
 
-      }
-    });
+        }
+      });
 
   }
 }

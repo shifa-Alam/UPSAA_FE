@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterModule,MatIconModule
+    CommonModule, ReactiveFormsModule, RouterModule, MatIconModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -18,7 +18,7 @@ export class LoginComponent {
   errorMessage = '';
   loading = false;
   loginForm: FormGroup;
-showPassword = false;
+  showPassword = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +31,7 @@ showPassword = false;
       password: ['', Validators.required]
     });
   }
- togglePassword() {
+  togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
@@ -44,12 +44,12 @@ showPassword = false;
     this.authService.login(email!, password!).subscribe({
       next: () => {
         this.loading = false;
-       
-      if ( this.authService.hasRole('SuperAdmin')) {
-        this.router.navigate(['/dashboard']); // admin dashboard
-      } else {
-        this.router.navigate(['/profile']); // regular member
-      }
+
+        if (this.authService.hasRole('SuperAdmin')) {
+          this.router.navigate(['/dashboard']); // admin dashboard
+        } else {
+          this.router.navigate(['/profile']); // regular member
+        }
       },
       error: (err) => {
         this.loading = false;

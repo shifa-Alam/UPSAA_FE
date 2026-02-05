@@ -1,68 +1,132 @@
+<div class="modal" *ngIf="showDetailsModal">
+  <div class="modal-content">
+    <h2>Candidate Details</h2>
+
+    <div class="details-wrapper">
+      <p><strong>Name:</strong> {{ selectedCandidate?.memberName }}</p>
+      <p><strong>Position:</strong> {{ selectedCandidate?.positionName }}</p>
+      <p><strong>Application Reason:</strong> {{ selectedCandidate?.applicationReason }}</p>
+      <p><strong>Ballot No:</strong> {{ selectedCandidate?.ballotNumber }}</p>
+      <p><strong>Batch:</strong> {{ selectedCandidate?.batch }}</p>
+      <p><strong>Status:</strong> {{ selectedCandidate?.nominationStatus }}</p>
+      <p><strong>Admin Note:</strong> {{ selectedCandidate?.adminNote }}</p>
+    </div>
+
+
+    <div *ngIf="showRejectNote" class="reject-note">
+      <label><strong>Rejection Note</strong></label>
+      <textarea [(ngModel)]="rejectNote" placeholder="Write rejection reason..." rows="3">
+      </textarea>
+    </div>
+
+    <div class="modal-actions">
+
+      <button *ngIf="selectedCandidate?.nominationStatus === 'Pending'&& !showRejectNote" class="approve-btn"
+        (click)="approveCandidate(selectedCandidate)">
+        Approve
+      </button>
+
+      <button *ngIf="selectedCandidate?.nominationStatus === 'Pending' && !showRejectNote" class="reject-btn"
+        (click)="showRejectNote = true">
+        Reject
+      </button>
+
+
+      <button *ngIf="showRejectNote" class="confirm-reject-btn" [disabled]="!rejectNote.trim()"
+        (click)="confirmReject(selectedCandidate)">
+        Confirm Reject
+      </button>
+
+
+      <button
+        *ngIf="selectedCandidate?.nominationStatus === 'Approved' || selectedCandidate?.nominationStatus === 'Rejected'"
+        class="undo-btn" (click)="undoAction(selectedCandidate)">
+        Undo
+      </button>
+
+      <button class="close-btn" (click)="closeDetailsModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 <div>
-  <h2 class="page-title">UPSAA Candidates</h2>
+  <h2 class="page-title">Candidates</h2>
 
   <!-- Header -->
   <div class="header">
     <input type="text" placeholder="Search candidates" [(ngModel)]="searchTerm" />
 
-    <button class="add-btn" (click)="openAddCandidateModal()">
+    <!-- <button class="add-btn" (click)="openAddCandidateModal()">
       + Add
-    </button>
+    </button> -->
   </div>
   <div *ngIf="loading" class="loading-wrapper">
     <div class="spinner"></div>
     <p>Loading candidates...</p>
   </div>
   <div *ngIf="!loading">
-  <!-- Desktop Table -->
-  <div class="table-wrapper desktop-only">
-    <table class="candidates-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Candidate Name</th>
-          <th>Position</th>
-          <th>Reason</th>
-          <th style="width: 180px;">Actions</th>
-        </tr>
-      </thead>
+    <!-- Desktop Table -->
+    <div class="table-wrapper desktop-only">
+      <table class="candidates-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Ballot No</th>
+            <th>Batch</th>
+            <!-- <th>Reason</th> -->
+            <th style="width: 180px;">Actions</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr *ngFor="let candidate of pagedCandidates; let i = index">
-          <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
-          <td>{{ candidate.memberName }}</td>
-          <td>{{ candidate.positionName }}</td>
-          <td>{{ candidate.applicationReason }}</td>
-          <td>
-            <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-            <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-            <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <tbody>
+          <tr *ngFor="let candidate of pagedCandidates; let i = index">
+            <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+            <td>{{ candidate.memberName }}
+              <span *ngIf="candidate.nominationStatus=== 'Approved'" class="approved-tick">✔</span>
+              <span *ngIf="candidate.nominationStatus=== 'Rejected'" class="rejected-tick">✖</span>
+              <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
 
-  <!-- Mobile Cards -->
-  <div class="mobile-only">
-    <div class="candidate-card" *ngFor="let candidate of pagedCandidates; let i = index">
+            </td>
+            <td>{{ candidate.positionName }}</td>
+            <td>{{ candidate.ballotNumber }}</td>
+            <td>{{ candidate.batch }}</td>
+            <!-- <td>{{ candidate.applicationReason }}</td> -->
+            <td>
+              <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
+              <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
+              <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-      <div class="card-header">
-        <span class="index">#{{ i + 1 }}</span>
-        <span class="title">{{ candidate.memberName }}</span>
+    <!-- Mobile Cards -->
+    <div class="mobile-only">
+      <div class="candidate-card" *ngFor="let candidate of pagedCandidates; let i = index">
 
-      </div>
-      <div class="card-dates">
-        <span>Position: {{ candidate.positionName  }}</span>
-        <span>End: {{ candidate.applicationReason  }}</span>
-      </div>
-      <div class="card-actions">
-        <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-        <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-        <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+        <div class="card-header">
+          <span class="index">#{{ i + 1 }}</span>
+          <span class="title">{{ candidate.memberName }}</span>
+
+        </div>
+        <div class="card-dates">
+          <span>Position: {{ candidate.positionName }}</span>
+          <span>End: {{ candidate.applicationReason }}</span>
+        </div>
+        <div class="card-actions">
+          <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
+          <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
+          <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+        </div>
       </div>
     </div>
-  </div>
   </div>
 
 
@@ -74,12 +138,12 @@
   </div>
 
   <!-- Modal -->
-  <div class="modal" *ngIf="showModal">
+  <!-- <div class="modal" *ngIf="showModal">
     <div class="modal-content">
       <h2>{{ editMode ? 'Edit' : 'Add' }} Candidate</h2>
 
       <form (ngSubmit)="submitCandidate()">
-        <!-- <label>Candidate Title</label>
+        <label>Candidate Title</label>
         <input type="text" [(ngModel)]="modalCandidate?.memberId" name="title" required />
 
         <label>Start Date</label>
@@ -95,9 +159,9 @@
           <button type="button" class="cancel-btn" (click)="closeModal()">
             Cancel
           </button>
-        </div> -->
+        </div>
       </form>
     </div>
-  </div>
+  </div> -->
 
 </div>

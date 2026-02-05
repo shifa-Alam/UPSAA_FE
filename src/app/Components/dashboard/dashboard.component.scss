@@ -1,7 +1,7 @@
 /* Layout */
 .dashboard-container {
   display: flex;
-  height: 100vh;
+  //height: 100vh;
   background: #f8fafc;
 }
 
@@ -27,7 +27,7 @@
   padding: 18px 16px;
   font-size: 18px;
   font-weight: 600;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .brand-icon {
@@ -60,12 +60,12 @@
 }
 
 .menu-item:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .menu-item.active {
   background: linear-gradient(90deg, #2563eb, #1d4ed8);
-  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
   color: #fff;
 }
 
@@ -114,11 +114,11 @@
 }
 
 .submenu-item:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .submenu-item.active {
-  background: rgba(37,99,235,0.25);
+  background: rgba(37, 99, 235, 0.25);
   color: #fff;
 }
 
@@ -136,12 +136,13 @@
   padding: 24px;
   overflow-y: auto;
 }
+
 /* Default sidebar (desktop & tablet) */
 .sidebar {
   width: 260px;
-  background: #0f172a;
-  color: #fff;
-  height: 100vh;
+  background: white;
+  color: black;
+
   transition: transform 0.3s ease;
 }
 
@@ -151,21 +152,24 @@
     display: none;
   }
 }
+
 /* 📱 Mobile View Fix */
 @media (max-width: 768px) {
 
   .sidebar {
-    display: none; /* hide sidebar completely */
+    display: none;
+    /* hide sidebar completely */
   }
 
   .dashboard-container {
-    display: block; /* stop flex layout */
+    display: block;
+    /* stop flex layout */
     height: auto;
   }
 
   .main-content {
     padding: 15px;
     width: 92%;
-    min-height: 100vh;
+    //min-height: 100vh;
   }
 }

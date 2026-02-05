@@ -8,19 +8,21 @@ export interface Election {
   title: string;
   startTime: any;
   endTime: any;
+  candidateStartTime: any;
+  candidateEndTime: any;
 }
 @Injectable({
   providedIn: 'root'
 })
 export class ElectionService {
-private apiUrl = environment.baseUrl + '/Election';
- 
+  private apiUrl = environment.baseUrl + '/Election';
+
   constructor(private http: HttpClient) { }
 
   // Add new election
   addElection(election: Election): Observable<Election> {
     return this.http.post<Election>(`${this.apiUrl}/CreateElection`, election);
-     
+
   }
 
   // Update existing election

@@ -13,6 +13,11 @@ import { AuthService } from './Services/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MemberService } from './Services/member.service';
 
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -36,6 +41,7 @@ export class AppComponent implements OnInit {
   isLoading = false;
   title = 'upsaa';
   @ViewChild('sidenav') sidenav!: MatSidenav;
+  isMobile$: Observable<boolean>;
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.memberService.getProfile().subscribe({
@@ -58,9 +64,12 @@ export class AppComponent implements OnInit {
     public loadingService: LoadingService,
     public authService: AuthService, // for login/logout
     private memberService: MemberService,
-    private router: Router) {
-
+    private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
+    this.isMobile$ = this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .pipe(map(result => result.matches));
   }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);

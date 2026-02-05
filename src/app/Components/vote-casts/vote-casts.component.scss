@@ -1,0 +1,96 @@
+.election-dashboard {
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    height: 100%;
+    overflow-y: auto;
+    /* scroll only if needed */
+}
+
+.summary-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    flex: 1 1 200px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #1e3a8a;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.progress-bar {
+    background: #eee;
+    border-radius: 8px;
+    height: 12px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.progress-bar.small {
+    height: 6px;
+    margin-top: 4px;
+}
+
+.progress {
+    background: #2563eb;
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.5s ease;
+}
+
+.position-summary {
+    margin-bottom: 30px;
+}
+
+.position-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.position-card {
+    flex: 1 1 200px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.results-table th,
+.results-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+
+.results-table th {
+    background: #1e3a8a;
+    color: #fff;
+}
+
+.charts {
+    margin-top: 30px;
+}

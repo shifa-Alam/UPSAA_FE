@@ -1,42 +1,52 @@
 <div class="login-container">
   <div class="login-box">
-    <h2>Login</h2>
-    <p>Access your alumni dashboard</p>
+    <!-- Logo -->
+    <div class="login-logo">
+      <img src="logo.png" alt="Logo" />
+      <h2>UPS Alumni Association</h2>
+      <p>Access your alumni dashboard</p>
+    </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
-      <input type="email" formControlName="email" placeholder="Email"
-        [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
-      <div class="error" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
-        Email is required
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+
+      <!-- Email -->
+      <div class="input-group">
+        <mat-icon>email</mat-icon>
+        <input type="email" formControlName="email" placeholder="Email"
+          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
       </div>
-      <div class="error" *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
-        Invalid email
+      <div class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+        <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
+        <span *ngIf="loginForm.get('email')?.hasError('email')">Invalid email</span>
       </div>
 
-      <div class="password-container">
+      <!-- Password -->
+      <div class="input-group password-group">
+        <mat-icon>lock</mat-icon>
         <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
           [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
-
-        <!-- <button mat-icon-button type="button" (click)="togglePassword()" class="toggle-password"
-          [attr.aria-label]="'Hide or show password'">
+        <button type="button" class="toggle-password" (click)="togglePassword()">
           <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button> -->
+        </button>
       </div>
-
-      <div class="error" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+      <div class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
         Password is required
       </div>
 
+      <!-- General error -->
       <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
-      <button type="submit" [disabled]="loading">
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="loading" class="login-btn">
         {{ loading ? 'Logging in...' : 'Login' }}
       </button>
-    </form>
 
-    <!-- 👇 Added Forgot Password link -->
-    <div class="forgot-password-link">
-      <a routerLink="/forgot-password">Forgot your password?</a>
-    </div>
+      <!-- Forgot Password -->
+      <div class="forgot-password-link">
+        <a routerLink="/forgot-password">Forgot your password?</a>
+      </div>
+
+    </form>
   </div>
 </div>

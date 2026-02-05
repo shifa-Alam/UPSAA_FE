@@ -31,10 +31,14 @@
     <nav class="mobile-nav-links" *ngIf="authService.hasRole('SuperAdmin');">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a mat-button (click)="sidenav.close()" routerLink="dashboard/elections" routerLinkActive="active-link">Elections</a>
-      <a mat-button (click)="sidenav.close()" routerLink="dashboard/positions" routerLinkActive="active-link">Positions</a>
-      <a mat-button (click)="sidenav.close()" routerLink="dashboard/candidates" routerLinkActive="active-link">Candidates</a>
-      <a mat-button (click)="sidenav.close()" routerLink="dashboard/vote-casts" routerLinkActive="active-link">Vote History</a>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/elections"
+        routerLinkActive="active-link">Elections</a>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/positions"
+        routerLinkActive="active-link">Positions</a>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/candidates"
+        routerLinkActive="active-link">Candidates</a>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/vote-casts" routerLinkActive="active-link">Vote
+        History</a>
       <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Members</a>
     </nav>
 
@@ -72,7 +76,8 @@
           <div class="desktop-menu">
             <a mat-button routerLink="/" routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }">Home</a>
-            <a mat-button  [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"  routerLinkActive="active-link">Election</a>
+            <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
+              routerLinkActive="active-link">Election</a>
             <a mat-button routerLink="/members" routerLinkActive="active-link">Dashboard</a>
             <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
             <!-- <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a> -->
@@ -87,7 +92,7 @@
             </ng-template> -->
             <!-- User Menu -->
             <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
-              <button mat-button [matMenuTriggerFor]="userMenu" class="user-avatar-button" >
+              <button mat-button [matMenuTriggerFor]="userMenu" class="user-avatar-button">
                 <ng-container *ngIf="profileImageUrl; else nameAvatar">
                   <img [src]="profileImageUrl" alt="User" class="avatar-img">
                 </ng-container>
@@ -125,10 +130,36 @@
         <router-outlet></router-outlet>
       </div>
 
-      <!-- Footer -->
-      <footer class="app-footer">
-        © 2025 UPSAA
+      <!-- Mobile Footer -->
+      <footer class="mobile-footer" *ngIf="isMobile$ | async">
+        <nav class="footer-nav">
+          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+            <mat-icon>home</mat-icon>
+            <span>Home</span>
+          </a>
+          <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
+            routerLinkActive="active-link">
+            <mat-icon>how_to_vote</mat-icon>
+            <span>Election</span>
+          </a>
+          <!-- Profile or Vote Result -->
+          <ng-container *ngIf="!authService.hasRole('SuperAdmin'); else voteResultLink">
+            <a mat-button routerLink="/profile" routerLinkActive="active-link">
+              <mat-icon>person</mat-icon>
+              <span>Profile</span>
+            </a>
+          </ng-container>
+
+          <ng-template #voteResultLink>
+            <a mat-button routerLink="/dashboard/vote-casts" routerLinkActive="active-link">
+              <mat-icon>analytics</mat-icon>
+              <span>Results</span>
+            </a>
+          </ng-template>
+        </nav>
       </footer>
+
+
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

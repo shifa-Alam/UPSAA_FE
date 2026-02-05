@@ -13,15 +13,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class CandidatesComponent implements OnInit {
   modalCandidate: Candidate | undefined;
-  viewDetails(_t20: Candidate) {
-    throw new Error('Method not implemented.');
-  }
+  selectedCandidate: Candidate | undefined | null;
+  showDetailsModal = false;
+  showRejectNote = false;
+  rejectNote: string = '';
+
   loading = false;
   candidates: Candidate[] = [];
   pagedCandidates: Candidate[] = [];
   searchTerm = '';
   currentPage = 1;
-  pageSize = 20;
+  pageSize = 15;
   totalPages = 1;
 
   showModal = false;
@@ -43,26 +45,28 @@ export class CandidatesComponent implements OnInit {
   loadCandidates() {
     this.loading = true;
     this.candidateService.getCandidates(1)
-    .pipe(finalize(() => this.loading = false))
-    .subscribe({
-      next: (data) => {
-        this.candidates = data.map((el, i) => ({
-          id: el.id,
-          positionName: el.positionName,
-          memberName: el.memberName,
-          ballotNumber: el.ballotNumber,
-          positionId: el.positionId,
-          memberId: el.memberId,
-          adminNote: el.adminNote,
-          applicationReason: el.applicationReason,
-        }));
-        this.calculatePages(); // pagination
-      },
-      error: (err) => {
-        console.error('Failed to fetch candidates:', err);
-        alert('Failed to load candidates. Please try again.');
-      }
-    });
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (data) => {
+          this.candidates = data.map((el, i) => ({
+            id: el.id,
+            positionName: el.positionName,
+            memberName: el.memberName,
+            ballotNumber: el.ballotNumber,
+            batch: el.batch,
+            positionId: el.positionId,
+            memberId: el.memberId,
+            adminNote: el.adminNote,
+            applicationReason: el.applicationReason,
+            nominationStatus: el.nominationStatus,
+          }));
+          this.calculatePages(); // pagination
+        },
+        error: (err) => {
+          console.error('Failed to fetch candidates:', err);
+          alert('Failed to load candidates. Please try again.');
+        }
+      });
   }
   calculatePages() {
     const filtered = this.candidates.filter(e =>
@@ -85,10 +89,92 @@ export class CandidatesComponent implements OnInit {
       this.calculatePages();
     }
   }
+  viewDetails(candidate: Candidate) {
+    this.selectedCandidate = candidate;
+    this.showDetailsModal = true;
+  }
 
+  approveCandidate(candidate: any) {
+
+    const payload: Candidate = {
+      id: candidate.id,
+      positionId: candidate.positionId,
+      positionName: candidate.positionName,
+
+      memberId: candidate.memberId,
+      memberName: candidate.memberName,
+
+      applicationReason: candidate.applicationReason,
+      ballotNumber: candidate.ballotNumber,
+      batch: candidate.batch,
+
+      nominationStatus: 'Approved',
+      adminNote: null as any
+    };
+
+    this.candidateService
+      .decideCandidate(candidate.id, payload)
+      .subscribe({
+        next: () => {
+          candidate.nominationStatus = 'Approved';
+          candidate.adminNote = '';
+          this.resetRejectState();
+        },
+        error: err => console.error(err)
+      });
+  }
+
+
+  confirmReject(candidate: any) {
+    if (!this.rejectNote.trim()) return;
+
+    const payload: Candidate = {
+      ...candidate,
+      nominationStatus: 'Rejected',
+      adminNote: this.rejectNote
+    };
+
+    this.candidateService
+      .decideCandidate(candidate.id, payload)
+      .subscribe(() => {
+        candidate.nominationStatus = 'Rejected';
+        candidate.adminNote = this.rejectNote;
+        this.resetRejectState();
+      });
+  }
+
+
+
+  undoAction(candidate: any) {
+
+    const payload: Candidate = {
+      ...candidate,
+      nominationStatus: 'Pending',
+      adminNote: null as any
+    };
+
+    this.candidateService
+      .decideCandidate(candidate.id, payload)
+      .subscribe(() => {
+        candidate.nominationStatus = 'Pending';
+        candidate.adminNote = '';
+      });
+  }
+
+
+  resetRejectState() {
+    this.showRejectNote = false;
+    this.rejectNote = '';
+  }
+
+  closeDetailsModal() {
+    this.resetRejectState();
+    this.selectedCandidate = null;
+    this.showDetailsModal = false;
+  }
   openAddCandidateModal() {
     this.editMode = false;
-   
+
     this.showModal = true;
   }
 

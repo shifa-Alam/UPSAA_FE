@@ -20,7 +20,7 @@ export interface PositionBallot {
   candidates: CandidateBallot[];
 }
 export interface Ballot {
-  
+
   electionId: number;
   title: string;
   positions: PositionBallot[];
@@ -42,8 +42,8 @@ export class VoteService {
   submitVote(payload: { electionId: number; selections: { positionId: number; candidateIds: number[]; }[]; }): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${this.apiUrl}/cast-all`, payload);
   }
-  getBallot(electionId: number): Observable<Ballot> {
-    return this.http.get<Ballot>(`${this.apiUrl}/${electionId}/ballot`);
+  getBallot(): Observable<Ballot> {
+    return this.http.get<Ballot>(`${this.apiUrl}/GetBallot`);
   }
 
   getResultsByPosition(positionId: number): Observable<any> {

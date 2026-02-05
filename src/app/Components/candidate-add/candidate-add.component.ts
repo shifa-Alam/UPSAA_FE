@@ -41,7 +41,9 @@ export class CandidateAddComponent implements OnInit {
     memberName: '',
     adminNote: '',
     applicationReason: '',
-    ballotNumber: 0
+    ballotNumber: 0,
+    batch: 0,
+    nominationStatus: '',
   };
   loading = false;
 

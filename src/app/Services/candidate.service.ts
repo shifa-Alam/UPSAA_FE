@@ -12,7 +12,12 @@ export interface Candidate {
   adminNote: string;
   applicationReason: string;
   ballotNumber: number;
+  batch: number;
+  nominationStatus: string
 }
+
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -36,12 +41,17 @@ export class CandidateService {
   }
 
   // Get all candidates
-  getCandidates(electionId:number): Observable<Candidate[]> {
+  getCandidates(electionId: number): Observable<Candidate[]> {
     return this.http.get<Candidate[]>(`${this.apiUrl}/${electionId}/GetAllCandidates`);
   }
 
   // Delete candidate
   deleteCandidate(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // ✅ Approve / Reject / Undo decision
+  decideCandidate(candidateId: number, decision: Candidate): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${candidateId}/decision`, decision);
   }
 }
