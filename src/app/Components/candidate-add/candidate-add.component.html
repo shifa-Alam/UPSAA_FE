@@ -17,10 +17,14 @@
     </div>
     <!-- Position -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Position</mat-label>
+      <mat-label>Select Position</mat-label>
       <mat-select [(ngModel)]="candidate.positionId" name="positionId" required>
-        <mat-option value="" disabled>Select position</mat-option>
-        <mat-option *ngFor="let p of positions" [value]="p.id">{{ p.name }}</mat-option>
+        <mat-option value="" disabled>-- Choose a Position --</mat-option>
+        <mat-option *ngFor="let p of positions" [value]="p.id">{{ p.name }} &nbsp;
+          <span style="float:right; font-weight:600;">
+            (Fee ৳ {{ p.fee | number }})
+          </span>
+        </mat-option>
       </mat-select>
       <mat-error *ngIf="!candidate.positionId">Position is required</mat-error>
     </mat-form-field>

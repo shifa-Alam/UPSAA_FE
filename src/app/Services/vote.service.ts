@@ -45,7 +45,9 @@ export class VoteService {
   getBallot(): Observable<Ballot> {
     return this.http.get<Ballot>(`${this.apiUrl}/GetBallot`);
   }
-
+  checkVoterStatus(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/CheckVoterStatus`);
+  }
   getResultsByPosition(positionId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/position/${positionId}/results`);
   }

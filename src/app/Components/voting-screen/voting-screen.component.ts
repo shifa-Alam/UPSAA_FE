@@ -7,6 +7,10 @@ import { Position } from '../../Services/position.service';
 import { Candidate } from '../../Services/candidate.service';
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import confetti from 'canvas-confetti';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../Services/snackbar.service';
+
 // type Candidate = {
 //   id: string;   // <-- force string
 //   name: string;
@@ -46,24 +50,85 @@ export class VotingScreenComponent implements OnInit {
   voted: boolean = false;
   errorMessage: string | undefined;
 
-  constructor(private http: HttpClient, private voteService: VoteService) { }
+  constructor(private http: HttpClient, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
-    this.loadVoterFromJwt();
+    this.launchOlympicStyleFireworks();
+    // this.loadVoterFromJwt();
     this.loadBallot();
+    this.checkVoterStatus();
+  }
+  launchOlympicStyleFireworks() {
+    const duration = 3000;
+    const end = Date.now() + duration;
+
+    // Big opening burst with cheer
+    confetti({
+      particleCount: 250,
+      spread: 120,
+      origin: { y: 0.7 },
+      startVelocity: 60,
+      colors: ['#e63946', '#f1faee', '#a8dadc', '#457b9d', '#ffbe0b']
+    });
+    this.playSound('cheer.mp3');
+
+    (function frame(self) {
+      // Side arcs with pop sounds
+      confetti({
+        particleCount: 12,
+        angle: 60,
+        spread: 60,
+        origin: { x: 0 },
+        startVelocity: 40,
+        colors: ['#ffffff', '#ffcc00', '#00bfff']
+      });
+      //self.playSound('pop.mp3');
+
+      confetti({
+        particleCount: 12,
+        angle: 120,
+        spread: 60,
+        origin: { x: 1 },
+        startVelocity: 40,
+        colors: ['#ffffff', '#ffcc00', '#00bfff']
+      });
+      //self.playSound('pop.mp3');
+
+      // Sparkle rain (no sound, keep subtle)
+      confetti({
+        particleCount: 5,
+        spread: 360,
+        startVelocity: 30,
+        origin: { y: 0.9 },
+        colors: ['#ffffff']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(() => frame(self));
+      }
+    }(this));
+  }
+  playSound(file: string) {
+    const audio = new Audio(`sounds/${file}`);
+    audio.volume = 0.3; // subtle volume
+    audio.play();
   }
 
-  loadVoterFromJwt() {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      this.voterName = payload?.name || payload?.unique_name || null;
-      this.voterBatch = payload?.Batch || null;
-      // optional: flag if already voted (can be from server)
-      // this.hasVoted = payload?.hasVoted === true;
-    } catch (e) { /* ignore decode errors */ }
-  }
+
+
+  // loadVoterFromJwt() {
+  //   try {
+  //     const token = localStorage.getItem('authToken');
+  //     if (!token) return;
+
+  //     const payload = JSON.parse(atob(token.split('.')[1]));
+  //     console.log(payload)
+  //     this.voterName = payload?.name || payload?.unique_name || null;
+  //     this.voterBatch = payload?.Batch || null;
+  //     // optional: flag if already voted (can be from server)
+  //     // this.hasVoted = payload?.hasVoted === true;
+  //   } catch (e) { /* ignore decode errors */ }
+  // }
 
   loadBallot(): void {
     this.voteService.getBallot().subscribe({
@@ -86,15 +151,20 @@ export class VotingScreenComponent implements OnInit {
   }
 
 
+  checkVoterStatus() {
 
-  checkVoterStatus(electionId: string) {
-    // optional endpoint to see if voter already voted
-    this.http.get<any>(`/api/election/${electionId}/status`).subscribe({
-      next: s => {
+    this.voteService.checkVoterStatus().subscribe({
+      next: (s) => {
         this.hasVoted = s?.hasVoted === true;
-      }, error: _ => { }
+      },
+      error: (err) => {
+        console.error(err);
+      }
     });
+
   }
+
+
 
   isSelected(posId: number, candidateId: number) {
     return this.selections[posId] && this.selections[posId].indexOf(candidateId) !== -1;
@@ -104,7 +174,7 @@ export class VotingScreenComponent implements OnInit {
     return (this.selections[posId] || []).length;
   }
 
-  toggleSelection(pos: PositionBallot, candidate: CandidateBallot, checked: boolean) {
+  toggleSelection(pos: PositionBallot, candidate: CandidateBallot, checked: boolean, event: Event) {
     if (this.hasVoted) return;
     const arr = this.selections[pos.id] || [];
     if (pos.maxSelect == 1) {
@@ -116,7 +186,13 @@ export class VotingScreenComponent implements OnInit {
     if (checked) {
       if (arr.length >= pos.maxSelect) {
         // can't select more
-        alert(`You can select up to ${pos.maxSelect} candidates for ${pos.name}.`);
+        this.snackBar.showError(
+          `You can select up to ${pos.maxSelect} candidates for ${pos.name}.`
+        );
+
+        // revert the checkbox immediately
+        (event.target as HTMLInputElement).checked = false;
+
         return;
       }
       arr.push(candidate.id);
@@ -184,7 +260,7 @@ export class VotingScreenComponent implements OnInit {
         },
         error: err => {
           console.error('submit failed', err);
-          alert(err?.error?.message || 'Failed to submit vote. Try again.');
+          this.snackBar.showError(err?.error?.message || 'Failed to submit vote. Try again.');
 
         }
       });

@@ -2,8 +2,10 @@
   <header class="voting-header">
     <h1>{{ ballot.title }}</h1>
     <div class="voter-info">
-      <div *ngIf="voterName">Hello, {{ voterName }} (Batch {{ voterBatch }})</div>
-      <div *ngIf="hasVoted" class="voted-badge">You have already voted</div>
+      <!-- <div *ngIf="voterName">Hello, {{ voterName }} (Batch {{ voterBatch }})</div> -->
+      <div *ngIf="hasVoted" class="voted-badge">
+        ✔ You have already voted
+      </div>
     </div>
   </header>
 
@@ -20,8 +22,9 @@
           <label *ngFor="let c of pos.candidates" class="candidate-card" [class.selected]="isSelected(pos.id, c.id)"
             tabindex="0">
             <input type="{{ pos.maxSelect === 1 ? 'radio' : 'checkbox' }}" name="pos-{{pos.id}}"
-              [checked]="isSelected(pos.id, c.id)" (change)="toggleSelection(pos, c, $any($event.target).checked)"
-              [attr.aria-checked]="isSelected(pos.id, c.id) ? 'true' : 'false'" />
+              [checked]="isSelected(pos.id, c.id)"
+              (change)="toggleSelection(pos, c, $any($event.target).checked,$event)"
+              [attr.aria-checked]="isSelected(pos.id, c.id) ? 'true' : 'false'" [disabled]="hasVoted" />
 
             <div class="candidate-body">
               <!-- <img *ngIf="c.photoUrl" [src]="c.photoUrl" alt="{{c.name}}" class="candidate-photo" /> -->
@@ -72,10 +75,8 @@
   <!-- Confirm modal -->
   <div class="modal-backdrop" *ngIf="showConfirm">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
-      <mat-progress-bar
-      *ngIf="submitting"
-      mode="indeterminate">
-    </mat-progress-bar>
+      <mat-progress-bar *ngIf="submitting" mode="indeterminate">
+      </mat-progress-bar>
       <h4 id="confirm-title">Confirm your vote</h4>
       <p>You're about to submit your ballot. This action cannot be changed. Please review:</p>
       <ul>

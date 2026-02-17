@@ -23,8 +23,8 @@
                         <th>Election</th>
                         <th>Title</th>
                         <th>Max Select</th>
-                         <th>Priority</th>
-                        
+                        <th>Priority</th>
+                        <th>Fee</th>
 
                         <th style="width: 180px;">Actions</th>
                     </tr>
@@ -37,7 +37,7 @@
                         <td>{{ position.name }}</td>
                         <td>{{ position.maxSelect }}</td>
                         <td>{{ position.priority }}</td>
-                        
+                        <td>{{ position.fee }}</td>
 
                         <td>
                             <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
@@ -62,7 +62,7 @@
                     <!-- <span>Election: {{ position.electionTitle }}</span> -->
                     <span>Max: {{ position.maxSelect }}</span>
                     <span>Priority: {{ position.priority }}</span>
-                   
+
                 </div>
                 <div class="card-actions">
                     <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
@@ -103,6 +103,8 @@
                 <label>Priority</label>
                 <input type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
 
+                <label>Fee</label>
+                <input type="number" [(ngModel)]="modalPosition.fee" name="fee" required />
 
                 <div class="modal-actions">
                     <button type="submit" class="save-btn">

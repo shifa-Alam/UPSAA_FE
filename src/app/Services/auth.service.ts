@@ -78,7 +78,7 @@ export class AuthService {
   getRoles(): string[] {
     const user = this.getCurrentUser();
     if (!user) return [];
-   
+
     // If role is a comma-separated string (like "Admin,Representative")
     if (user.role) {
       return user.role.split(',').map(r => r.trim());
@@ -96,13 +96,33 @@ export class AuthService {
   changePassword(data: { currentPassword: string; newPassword: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/change-password`, data);
   }
-  forgotPassword(email: string) {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
-  }
+
 
   resetPassword(email: string, token: string, newPassword: string) {
     return this.http.post(`${this.apiUrl}/reset-password`, { email, token, newPassword });
   }
+
+
+  // --------------------------
+  // OTP FORGOT PASSWORD FLOW
+  // --------------------------
+
+  // Step 1: Send OTP (phone + batch)
+  sendOtp(phone: string, batch: number) {
+    return this.http.post(`${this.apiUrl}/forgot-password-otp`, { phoneNumber: phone, batch });
+  }
+
+  // Step 2: Verify OTP
+  verifyOtp(phone: string, otp: string) {
+    return this.http.post(`${this.apiUrl}/verify-otp`, { phoneNumber: phone, otp });
+  }
+
+  // Step 3: Reset Password
+  resetPasswordWithOtp(phone: string, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password-otp`, { phoneNumber: phone, newPassword });
+  }
+
+
 
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);

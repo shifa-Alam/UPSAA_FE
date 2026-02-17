@@ -1,12 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 
+/* Error snackbar */
+.mat-mdc-snack-bar-container.snackbar-error .mat-mdc-snackbar-surface {
+  background-color: #f44336 !important;
+  /* red */
+}
+
+.mat-mdc-snack-bar-container.snackbar-error .mat-mdc-snack-bar-label {
+  color: #fff !important;
+}
+
+/* Success snackbar */
+.mat-mdc-snack-bar-container.snackbar-success .mat-mdc-snack-bar-surface {
+  background-color: #4caf50 !important;
+  /* green */
+}
+
+.mat-mdc-snack-bar-container.snackbar-success .mat-mdc-snack-bar-label {
+  color: #fff !important;
+}
+
 /* Material Icons */
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 24px;
+  /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -27,8 +48,9 @@
   font-feature-settings: 'liga';
 }
 
-html, body {
-  
+html,
+body {
+
   height: 100%;
   margin: 0;
   overflow: hidden; // prevents scrollbars on the body
@@ -38,20 +60,12 @@ html, body {
   height: 100vh;
   overflow: auto; // now only this container scrolls
 }
+
 @font-face {
   font-family: 'SolaimanLipi';
   src: url('/fonts/SolaimanLipi.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
+
 /* styles.scss or styles.css */
-
-.snackbar-success {
-  background-color: #4caf50 !important; /* green */
-  color: white !important;
-}
-
-.snackbar-error {
-  background-color: #f44336 !important; /* red */
-  color: white !important;
-}

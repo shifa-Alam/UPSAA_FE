@@ -31,7 +31,8 @@ export class PositionsComponent implements OnInit {
     electionTitle: '',
     electionId: 0, maxSelect: 0,
     priority: 0,
-    candidates:[]
+    fee: 0,
+    candidates: []
   };
   elections: Election[] = [];
   constructor(private positionService: PositionService, private electionService: ElectionService) {
@@ -65,8 +66,9 @@ export class PositionsComponent implements OnInit {
             electionTitle: el.electionTitle,
             electionId: el.electionId,
             maxSelect: el.maxSelect,
-             priority: el.priority,
-              candidates:[]
+            priority: el.priority,
+            fee: el.fee,
+            candidates: []
           }));
           this.calculatePages(); // pagination
         },
@@ -100,7 +102,7 @@ export class PositionsComponent implements OnInit {
 
   openAddPositionModal() {
     this.editMode = false;
-    this.modalPosition = { id: 0, name: '', electionTitle: '', electionId: 0, maxSelect: 0,priority: 0 , candidates:[]};
+    this.modalPosition = { id: 0, name: '', electionTitle: '', electionId: 0, maxSelect: 0, priority: 0, fee: 0, candidates: [] };
     this.showModal = true;
   }
 
@@ -114,8 +116,18 @@ export class PositionsComponent implements OnInit {
   }
 
   deletePosition(e: Position) {
-    this.positions = this.positions.filter(el => el.id !== e.id);
-    this.calculatePages();
+
+    this.positionService.deletePosition(e.id).subscribe({
+      next: (updated) => {
+        this.positions = this.positions.filter(el => el.id !== e.id);
+        this.calculatePages();
+        // Update existing position
+      },
+      error: (err) => {
+        console.error('delete failed:', err);
+        alert('Failed to delete position.');
+      }
+    });
   }
 
   closeModal() {

@@ -9,22 +9,23 @@ export interface Position {
   name: string;
   electionId: number;
   electionTitle: string;
- maxSelect: number;
-  priority:number;
+  maxSelect: number;
+  priority: number;
+  fee: number;
   candidates: Candidate[];
 }
 @Injectable({
   providedIn: 'root'
 })
 export class PositionService {
-private apiUrl = environment.baseUrl + '/Position';
- 
+  private apiUrl = environment.baseUrl + '/Position';
+
   constructor(private http: HttpClient) { }
 
   // Add new position
   addPosition(position: Position): Observable<Position> {
     return this.http.post<Position>(`${this.apiUrl}/CreatePosition`, position);
-     
+
   }
 
   // Update existing position
@@ -39,6 +40,6 @@ private apiUrl = environment.baseUrl + '/Position';
 
   // Delete position
   deletePosition(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/Delete/${id}`);
   }
 }
