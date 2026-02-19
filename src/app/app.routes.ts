@@ -21,6 +21,8 @@ import { CandidatesComponent } from './Components/candidates/candidates.componen
 import { ElectionsComponent } from './Components/elections/elections.component';
 import { PositionsComponent } from './Components/positions/positions.component';
 import { VoteCastsComponent } from './Components/vote-casts/vote-casts.component';
+import { CandidateAddComponent } from './Components/candidate-add/candidate-add.component';
+import { NominationApplicationComponent } from './Components/nomination-application/nomination-application.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -30,6 +32,11 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   {
     path: 'profile', component: ProfileComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['Representative', 'Member'] } // only these roles
+  },
+   {
+    path: 'nomination', component: NominationApplicationComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['Representative', 'Member'] } // only these roles
   },

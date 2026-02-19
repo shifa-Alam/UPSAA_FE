@@ -79,6 +79,33 @@ content-area router-outlet {
   display: none;
   /* hide hamburger on desktop */
 }
+.election-highlight {
+  position: relative;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 30px;
+  padding: 6px 18px;
+  background: #d32f2f;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.election-highlight::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 40px;
+  background: linear-gradient(90deg, #ff4d4d, #ff9900, #ff4d4d);
+  background-size: 300% 300%;
+  animation: rotateBorder 3s linear infinite;
+  z-index: -1;
+}
+
+@keyframes rotateBorder {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
 
 /* ===== Mobile ===== */
 @media (max-width: 768px) {

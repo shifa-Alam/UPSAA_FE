@@ -22,11 +22,12 @@
     <nav class="mobile-nav-links" *ngIf="!authService.hasRole('SuperAdmin');">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a mat-button (click)="sidenav.close()" routerLink="/election" routerLinkActive="active-link">Election</a>
-      <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Dashboard</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/election" routerLinkActive="active-link" class="election-highlight">Election</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Members</a>
       <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
       <!-- <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a> -->
-      <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a>
+      <!-- <a mat-button (click)="sidenav.close()" routerLink="/contact" routerLinkActive="active-link">Contact</a> -->
+      <a mat-button routerLink="/nomination" routerLinkActive="active-link" class="election-highlight">Nomination</a>
     </nav>
     <nav class="mobile-nav-links" *ngIf="authService.hasRole('SuperAdmin');">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
@@ -77,11 +78,12 @@
             <a mat-button routerLink="/" routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }">Home</a>
             <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
-              routerLinkActive="active-link">Election</a>
-            <a mat-button routerLink="/members" routerLinkActive="active-link">Dashboard</a>
+              routerLinkActive="active-link" >Election</a>
+            <a mat-button routerLink="/members" routerLinkActive="active-link">Members</a>
             <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
             <!-- <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a> -->
-            <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a>
+            <!-- <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a> -->
+             <a mat-button routerLink="/nomination" routerLinkActive="active-link" class="election-highlight">Nomination</a>
 
             <!-- Login / Logout -->
             <!-- <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
