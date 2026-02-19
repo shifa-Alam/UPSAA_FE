@@ -53,7 +53,7 @@ export class VotingScreenComponent implements OnInit {
   constructor(private http: HttpClient, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
-    this.launchOlympicStyleFireworks();
+    // this.launchOlympicStyleFireworks();
     // this.loadVoterFromJwt();
     this.loadBallot();
     this.checkVoterStatus();

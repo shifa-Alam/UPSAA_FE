@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Init } from 'node:v8';
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })
@@ -117,12 +118,16 @@ export class ForgetPasswordComponent implements OnInit {
     this.authService.resetPasswordWithOtp(this.phoneNumber, this.newPassword).subscribe({
       next: (res: any) => {
         this.loading = false;
-        this.message = res.message || "Password reset successful. Please login.";
         this.isError = false;
-        this.step = 1; // reset back to first step
-        this.otp = "";
-        this.newPassword = "";
-        this.confirmPassword = "";
+        this.message = '';
+
+        // ✅ Move to success screen
+        this.step = 4;
+
+        // Clear form fields
+        this.otp = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
       },
       error: (err) => {
         this.loading = false;

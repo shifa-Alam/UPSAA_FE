@@ -173,7 +173,7 @@ export class ProfileComponent implements OnInit {
   }
   openCandidateForm() {
     // Option 1: open Angular Material dialog
-    this.dialog.open(CandidateAddComponent, { width: '90%' });
+    this.dialog.open(CandidateAddComponent, { width: '98%' });
 
     // Option 2: navigate to route
     // this.router.navigate(['/candidate-form', this.member.id]);
