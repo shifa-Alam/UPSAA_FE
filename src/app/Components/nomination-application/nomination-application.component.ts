@@ -24,13 +24,13 @@ import { MatInputModule } from '@angular/material/input';
     MatSelectModule,
     MatButtonModule,
     MatProgressBarModule
-    ],
+  ],
   templateUrl: './nomination-application.component.html',
   styleUrl: './nomination-application.component.scss'
 })
 export class NominationApplicationComponent implements OnInit {
-showPopup=false;
- candidate: Candidate = {
+  showPopup = false;
+  candidate: Candidate = {
     id: 0,
     positionId: 0,
     positionName: '',
@@ -40,18 +40,23 @@ showPopup=false;
     applicationReason: '',
     ballotNumber: 0,
     batch: 0,
-    nominationStatus: '',
+    nominationStatus: 'Pending',
   };
   loading = false;
 
   positions: Position[] = [];
-
+  // Initialize supporter array
+  supporters = [
+    { name: '', batch: '', memberId: '' },
+    { name: '', batch: '', memberId: '' },
+    { name: '', batch: '', memberId: '' }
+  ];
   constructor(
 
     private candidateService: CandidateService,
     private snackbarService: SnackbarService,
     private positionService: PositionService,
-   
+
   ) { }
   ngOnInit(): void {
     this.loadPositions();
@@ -62,12 +67,28 @@ showPopup=false;
       error: err => console.error(err)
     });
   }
+  // Call this before submit
+  updateApplicationReason() {
+    // Filter out empty supporters
+    const filled = this.supporters.filter(s => s.name && s.batch && s.memberId);
+
+    // Join them into a single string
+    this.candidate.applicationReason = filled
+      .map(s => `${s.name}-${s.batch}-${s.memberId}`)
+      .join(', ');
+  }
+  addSupporter() {
+    if (this.supporters.length < 5) {  // max 5 supporters
+      this.supporters.push({ name: '', batch: '', memberId: '' });
+    }
+  }
   submitNomination() {
     if (!this.candidate.positionId) {
 
       this.snackbarService.showError('Please select a position.');
       return;
     }
+    this.updateApplicationReason();
 
 
     this.loading = true;
@@ -86,8 +107,8 @@ showPopup=false;
     });
   }
 
-closePopup(){
+  closePopup() {
 
-}
-  
+  }
+
 }

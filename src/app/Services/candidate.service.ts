@@ -13,7 +13,7 @@ export interface Candidate {
   applicationReason: string;
   ballotNumber: number;
   batch: number;
-  nominationStatus: string
+  nominationStatus: string;
 }
 
 

@@ -187,6 +187,27 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(0, 77, 64, 0.3);
 }
+.support-inputs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.support-inputs input {
+  flex: 1 1 30%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .support-inputs input {
+    flex: 1 1 100%;
+  }
+}
 
 /* ----------------- Responsive ----------------- */
 @media (max-width: 900px) {
