@@ -1,0 +1,107 @@
+<header class="election-header">
+  UPSAA নির্বাচন – ২০২৬
+</header>
+
+<div class="main-layout">
+
+  <!-- Left Sidebar -->
+  <div class="sidebar-left">
+
+    <div class="member-info">
+      <strong>আপনার তথ্য:</strong><br>
+      নাম: {{ candidate?.memberName }}<br>
+      ব্যাচ: {{ candidate?.batch }} |
+      ভোটার: {{ candidate?.memberId }}
+    </div>
+
+    <div class="instruction-section">
+      <h3>নির্বাচনী নির্দেশনা</h3>
+
+      <div class="info-card">
+        ১. মনোনয়ন পত্রের সকল তথ্য নির্ভুলভাবে পূরণ করতে হবে।
+      </div>
+
+      <div class="info-card">
+        ২. ডেটাবেজ তথ্যের সাথে মিল থাকা বাধ্যতামূলক।
+      </div>
+
+      <div class="info-card">
+        ৩. ভুল তথ্য প্রদান করলে আবেদন বাতিল হতে পারে।
+      </div>
+
+      <div class="commissioner-sign">
+        - প্রধান নির্বাচন কমিশনার, UPSAA
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Form -->
+  <div class="main-content">
+
+    <div class="form-container">
+
+      <h2>মনোনয়ন পত্র দাখিল</h2>
+
+      <form (ngSubmit)="submitNomination()" #nominationForm="ngForm">
+
+        <!-- Position -->
+        <div class="form-group">
+          <label>পদের নাম নির্বাচন করুন</label>
+          <select
+            [(ngModel)]="candidate.positionId"
+            name="positionId"
+            required>
+            <option value="">-- নির্বাচন করুন --</option>
+            <option *ngFor="let p of positions" [value]="p.id">
+              {{ p.name }} (৳ {{ p.fee }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Reason -->
+        <div class="form-group">
+          <label>আবেদনের কারণ লিখুন</label>
+          <textarea
+            rows="4"
+            [(ngModel)]="candidate.applicationReason"
+            name="applicationReason"
+            required>
+          </textarea>
+        </div>
+
+        <button class="submit-btn" type="submit">
+          মনোনয়ন পত্র সাবমিট করুন
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Success Popup -->
+<div class="overlay" *ngIf="showPopup"></div>
+
+<div class="popup-container" *ngIf="showPopup">
+  <div class="greeting-card">
+
+    <div class="emoji">🎉✨</div>
+
+    <h2>শুভেচ্ছা {{ candidate?.memberName }}!</h2>
+
+    <p class="post-line">
+      আপনার মনোনয়ন সফলভাবে গ্রহণ করা হয়েছে।
+    </p>
+
+    <p class="update-line">
+      যাচাই-বাছাই শেষে আপনাকে জানানো হবে।
+    </p>
+
+    <button class="popup-btn" (click)="closePopup()">
+      ফিরে যান
+    </button>
+
+  </div>
+</div>
