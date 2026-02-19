@@ -129,7 +129,10 @@ export class NominationApplicationComponent implements OnInit {
       next: () => {
         this.showPopup = true;
         // this.snackbarService.showSuccess('Nomination submitted successfully 🎉');
-        this.downloadJPG()
+        // Allow Angular to render the modal
+        setTimeout(() => {
+          this.downloadJPG(); // auto-download after modal shows
+        }, 100);
         this.loading = false;
       },
       error: (err) => {
@@ -148,17 +151,16 @@ export class NominationApplicationComponent implements OnInit {
   }
 
   downloadJPG() {
+    const card = document.getElementById('greetingCard');
+    if (!card) return;
 
-    setTimeout(() => {
-      const card = document.getElementById('greetingCard');
-      if (!card) return;
+    html2canvas(card, { scale: 4 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `${this.member?.fullName}-nomination.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 1.0);
 
-      html2canvas(card, { scale: 4 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `${this.member?.fullName}-nomination.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 1.0);
-        link.click();
-      });
-    }, 200);
+      // Automatically trigger download
+      link.click();
+    });
   }
 }

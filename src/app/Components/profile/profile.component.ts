@@ -10,11 +10,19 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MemberEditComponent } from '../member-edit/member-edit.component';
 import { CandidateAddComponent } from '../candidate-add/candidate-add.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ImageCropperModule, MatIcon, MatTabsModule, MatTableModule, MatButtonModule],
+  imports: [
+    RouterModule,// <-- Add here
+    CommonModule,
+    ImageCropperModule,
+    MatIcon,
+    MatTabsModule,
+    MatTableModule,
+    MatButtonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
