@@ -9,9 +9,9 @@
 
         <div class="member-info">
             <strong>আপনার তথ্য:</strong><br>
-            নাম: {{ candidate?.memberName }}<br>
-            ব্যাচ: {{ candidate?.batch }} |
-            ভোটার: {{ candidate?.memberId }}
+            নাম: {{ member?.fullName }}<br>
+            ব্যাচ: {{ member?.batch }} |
+            ভোটার: {{ member?.memberCode }}
         </div>
 
         <div class="instruction-section">
@@ -48,7 +48,8 @@
                 <!-- Position -->
                 <div class="form-group">
                     <label>পদের নাম নির্বাচন করুন</label>
-                    <select [(ngModel)]="candidate.positionId" name="positionId" required>
+                    <select [(ngModel)]="candidate.positionId" name="positionId"
+                        (change)="onPositionChange(candidate.positionId)" required>
                         <option value="">-- নির্বাচন করুন --</option>
                         <option *ngFor="let p of positions" [value]="p.id">
                             {{ p.name }} (৳ {{ p.fee }})
@@ -61,11 +62,11 @@
                     <label>সমর্থকগণের তথ্য</label>
 
                     <div *ngFor="let s of supporters; let i = index" class="support-inputs">
-                        <input type="text" placeholder="নাম" [(ngModel)]="s.name" name="supporterName{{i}}"
+
+
+                        <input type="text" placeholder="UPSAA Id" [(ngModel)]="s.memberId" name="supporterId{{i}}"
                             (input)="updateApplicationReason()">
-                        <input type="number" placeholder="ব্যাচ" [(ngModel)]="s.batch" name="supporterBatch{{i}}"
-                            (input)="updateApplicationReason()">
-                        <input type="text" placeholder="ভোটার আইডি" [(ngModel)]="s.memberId" name="supporterId{{i}}"
+                        <input type="text" placeholder="Phone No" [(ngModel)]="s.phone" name="supporterName{{i}}"
                             (input)="updateApplicationReason()">
                     </div>
 
@@ -89,23 +90,35 @@
 <div class="overlay" *ngIf="showPopup"></div>
 
 <div class="popup-container" *ngIf="showPopup">
-    <div class="greeting-card">
+    <div class="greeting-card" id="greetingCard">
 
         <div class="emoji">🎉✨</div>
 
-        <h2>শুভেচ্ছা {{ candidate?.memberName }}!</h2>
+        <h2>শুভেচ্ছা {{ member?.fullName }}!</h2>
 
         <p class="post-line">
-            আপনার মনোনয়ন সফলভাবে গ্রহণ করা হয়েছে।
+            {{selectedPositionName}}, পদে আপনার মনোনয়ন সফলভাবে গ্রহণ করা হয়েছে।
         </p>
 
         <p class="update-line">
-            যাচাই-বাছাই শেষে আপনাকে জানানো হবে।
+            নির্বাচন কমিশনের যাচাই বাছাইয়ের পর আপনার প্রার্থীতা সম্পর্কে আপডেট জানানো হবে।
         </p>
+        <div
+            style="background:#f0f4f7; padding:12px; border-radius:8px; width: 100%; border:1px solid #d1d9e0; box-sizing: border-box;">
+            <strong style="font-size:14px; color:#004d40;">গুরুত্বপূর্ণ তারিখ:</strong><br>
+            <div style="font-size:13px; text-align: left; display: inline-block;">
+                • ২৮ ফেব্রুয়ারি ২০২৬: প্রার্থীতা চূড়ান্ত<br>
+                • ১লা মে ২০২৬: ব্যালট নাম্বার প্রকাশ<br>
+                • ১৩ মার্চ ২০২৬: ভোট গ্রহণ ও ফল প্রকাশ
+            </div>
+        </div>
+        <p style="font-size:13px; margin-top: 15px;">সাথে থাকার জন্য ধন্যবাদ।<br><strong>- প্রধান নির্বাচন কমিশনার,
+                UPSAA.</strong></p>
 
-        <button class="popup-btn" (click)="closePopup()">
-            ফিরে যান
-        </button>
 
+    </div>
+    <div class="popup-buttons">
+        <button class="btn-back" (click)="closePopup()">ফিরে যান</button>
+        <button class="btn-download" (click)="downloadJPG()">শুভেচ্ছা বার্তা শেয়ার করুন</button>
     </div>
 </div>
