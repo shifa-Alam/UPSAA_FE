@@ -34,8 +34,8 @@ export class AuthService {
 
 
 
-  login(email: string, password: string) {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
+  login(phone: string, password: string) {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { phone, password }).pipe(
       map(res => {
         if (typeof window !== 'undefined') {
           localStorage.setItem(this.tokenKey, res.token);
