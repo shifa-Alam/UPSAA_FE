@@ -43,6 +43,15 @@ body {
   border-left: 5px solid #ffc107;
 }
 
+.bkash-info {
+  background: navy;
+  // color: white;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 25px;
+  border-left: 5px solid #ffc107;
+}
+
 .info-card {
   background: rgba(255, 255, 255, 0.1);
   padding: 12px;
@@ -109,24 +118,37 @@ body {
   outline: none;
 }
 
-/* Submit Button */
+/* Submit Button - Premium Blue Version */
 .submit-btn {
-  background: linear-gradient(135deg, #c62828, #e53935);
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+  /* deep blue to bright blue gradient */
   color: #fff;
-  padding: 14px;
+  padding: 14px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 100%;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease, transform 0.2s ease;
   letter-spacing: 0.5px;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(198, 40, 40, 0.3);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(59, 130, 246, 0.35);
+}
+
+.submit-btn:active {
+  transform: translateY(-1px) scale(0.98);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Overlay & Popup */
@@ -286,6 +308,81 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
+
+.required {
+  color: red;
+
+}
+
+.error {
+  color: red;
+  /* red text for visibility */
+  font-size: 13px;
+  /* smaller font size */
+  margin-top: 4px;
+  /* spacing between input and error */
+}
+
+
+.support-inputs {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  /* allows stacking on small screens */
+}
+
+.support-field {
+  display: flex;
+  flex-direction: column;
+  /* input + error stacked */
+  flex: 1 1 250px;
+  /* takes available space, but not smaller than 250px */
+  min-width: 200px;
+}
+
+.support-field input {
+  width: 95%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  // font-size: 14px;
+}
+
+.support-field .error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Mobile: full width fields */
+@media (max-width: 600px) {
+  .support-field {
+    flex: 1 1 100%;
+    /* stack vertically */
+  }
+}
+
+
 
 /* Animation */
 @keyframes popupFade {

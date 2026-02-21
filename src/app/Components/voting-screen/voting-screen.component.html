@@ -98,5 +98,15 @@
   <!-- success -->
   <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
 </div>
+<div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
+  <h2 class="countdown-title">ভোট গ্রহণ শুরু হতে বাকি</h2>
 
-<div *ngIf="!ballot" class="loading">Loading ballot...</div>
+  <div class="countdown">
+    <div class="time-box" *ngFor="let item of timeUnits">
+      <div class="number">
+        <span class="animate">{{ item.value }}</span>
+      </div>
+      <div class="label">{{ item.label }}</div>
+    </div>
+  </div>
+</div>

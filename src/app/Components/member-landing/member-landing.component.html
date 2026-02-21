@@ -7,7 +7,10 @@
                 <h3 class="dashboard-title">
                     Overview
                     <!-- <span class="dashboard-subtitle" *ngIf="isRepresentative()">Batch: {{batch}}</span> -->
+                    <span class="dashboard-subtitle" *ngIf="isSuperAdmin()"> <button
+                            (click)="makeUserOfAllCtiveMember()">Make user of All active member.</button></span>
                 </h3>
+
 
 
                 <!-- Summary Cards -->
@@ -118,7 +121,8 @@
                                 <td class="col-phone">{{ member.memberCode }}</td>
                                 <td class="col-city">{{ member.currentCity }}</td>
                                 <td class="col-blood">{{ member.bloodGroup }}</td>
-                                <td class="col-total" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}</td>
+                                <td class="col-total" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}
+                                </td>
                                 <td class="col-name"
                                     *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)&& (member.batch==batch)">
                                     <button class="req-btn" (click)="sendActiveReq(member.id)"
@@ -207,63 +211,59 @@
     </mat-tab>
 
     <!-- Batch Summary Tab -->
-   <mat-tab label="Batch Summary">
-  <div class="register-container">
-    <mat-card class="register-card">
-      <h3 class="dashboard-title">
-        Batch Summary
-        <span class="dashboard-subtitle">(2003 - {{ currentYear }})</span>
-      </h3>
+    <mat-tab label="Batch Summary">
+        <div class="register-container">
+            <mat-card class="register-card">
+                <h3 class="dashboard-title">
+                    Batch Summary
+                    <span class="dashboard-subtitle">(2003 - {{ currentYear }})</span>
+                </h3>
 
-      <div class="table-container" *ngIf="batchSummaries.length > 0; else noData">
-        <table class="members-table">
-          <thead>
-            <tr>
-              <th>Batch</th>
-              <th>Registered</th>
-             
-              <th>Amount(৳)</th>
-              <th>% Paid</th>
-              <th>Status</th>
-              
-            </tr>
-          </thead>
-          <tbody>
-<tr *ngFor="let batch of batchSummaries; let i = index" 
-    class="batch-row"
-    [ngClass]="{'top-1': i === 0, 'top-2': i === 1, 'top-3': i === 2}">
-  <td>{{ batch.batch }}</td>
-  <td>{{ batch.registeredMembers }}</td>
-  <td>{{ batch.totalAmount | number:'1.0-0' }}</td>
-  <td>
-    <div class="progress-container">
-      <mat-progress-bar
-        mode="determinate"
-        [value]="batch.percentagePaid"
-        [color]="batch.progressColor"
-        class="progress-bar">
-      </mat-progress-bar>
-      <span class="percentage-text">{{ batch.percentagePaid }}%</span>
-    </div>
-  </td>
-  <td>
-    <span class="status-badge" 
-          [ngClass]="{'full-paid': batch.percentagePaid===100, 'pending': batch.percentagePaid<100}">
-      {{ batch.statusBadge }}
-    </span>
-  </td>
-</tr>
+                <div class="table-container" *ngIf="batchSummaries.length > 0; else noData">
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th>Batch</th>
+                                <th>Registered</th>
 
-          </tbody>
-        </table>
-      </div>
+                                <th>Amount(৳)</th>
+                                <th>% Paid</th>
+                                <th>Status</th>
 
-      <ng-template #noData>
-        <div class="no-data">No batch summary data available.</div>
-      </ng-template>
-    </mat-card>
-  </div>
-</mat-tab>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let batch of batchSummaries; let i = index" class="batch-row"
+                                [ngClass]="{'top-1': i === 0, 'top-2': i === 1, 'top-3': i === 2}">
+                                <td>{{ batch.batch }}</td>
+                                <td>{{ batch.registeredMembers }}</td>
+                                <td>{{ batch.totalAmount | number:'1.0-0' }}</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <mat-progress-bar mode="determinate" [value]="batch.percentagePaid"
+                                            [color]="batch.progressColor" class="progress-bar">
+                                        </mat-progress-bar>
+                                        <span class="percentage-text">{{ batch.percentagePaid }}%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge"
+                                        [ngClass]="{'full-paid': batch.percentagePaid===100, 'pending': batch.percentagePaid<100}">
+                                        {{ batch.statusBadge }}
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <ng-template #noData>
+                    <div class="no-data">No batch summary data available.</div>
+                </ng-template>
+            </mat-card>
+        </div>
+    </mat-tab>
 
 
 

@@ -42,46 +42,76 @@
         <div class="form-container">
 
             <h2>মনোনয়ন পত্র দাখিল</h2>
+            <div *ngIf="candidate?.positionId" class="bkash-info"
+                style="background: #e3f2fd; padding: 15px; border-radius: 10px; border: 2px solid #64b5f6;  margin: 15px 0; font-size: 14px;">
+                <strong style="color: #1565c0; font-size: 16px;">বিকাশে টাকা পাঠানোর নির্দেশনা :</strong>
+                <p style="margin: 8px 0;">
+                    অনুগ্রহ করে <strong>{{ selectedPositionName }}</strong> পদের জন্য
+                    <strong>৳ {{ selectedPositionFee }}</strong> পাঠান।
+                </p>
+                <p style="margin: 8px 0;">
+                    <strong>বিকাশ নম্বর:</strong> 01928623875
+                </p>
+                <p style="margin: 8px 0; color: #0d47a1;">
+                    <strong>রেফারেন্স (Reference):</strong> আপনার সদস্য আইডি - <strong>{{ member?.memberCode }}</strong>
+                </p>
+                <p style="margin-top: 10px; font-size: 13px; color: #424242;">
+                    ✅ সেন্ড মানি করার সময় অবশ্যই রেফারেন্স হিসেবে আপনার সদস্য আইডি ব্যবহার করুন,
+                    যাতে আপনার আবেদন সঠিকভাবে যাচাই করা যায়।
+                </p>
+            </div>
 
             <form (ngSubmit)="submitNomination()" #nominationForm="ngForm">
 
                 <!-- Position -->
                 <div class="form-group">
-                    <label>পদের নাম নির্বাচন করুন</label>
+                    <label>পদের নাম নির্বাচন করুন <span class="required">*</span></label>
                     <select [(ngModel)]="candidate.positionId" name="positionId"
-                        (change)="onPositionChange(candidate.positionId)" required>
+                        (change)="onPositionChange(candidate.positionId)" required #positionSelect="ngModel">
                         <option value="">-- নির্বাচন করুন --</option>
                         <option *ngFor="let p of positions" [value]="p.id">
                             {{ p.name }} (৳ {{ p.fee }})
                         </option>
                     </select>
+                    <div class="error" *ngIf="positionSelect.invalid && positionSelect.touched">
+                        পদের নাম অবশ্যই নির্বাচন করতে হবে
+                    </div>
                 </div>
 
                 <!-- Supporters -->
                 <div class="form-group">
-                    <label>সমর্থকগণের তথ্য</label>
+                    <label>সমর্থকগণের তথ্য <span class="required">*</span></label>
 
                     <div *ngFor="let s of supporters; let i = index" class="support-inputs">
+                        <!-- UPSAA Id Field -->
+                        <div class="support-field">
+                            <input type="text" placeholder="UPSAA Id" [(ngModel)]="s.memberId" name="supporterId{{i}}"
+                                #memberIdInput="ngModel" required (input)="updateApplicationReason()">
+                            <div class="error" *ngIf="memberIdInput.invalid && memberIdInput.touched">
+                                UPSAA Id অবশ্যই দিতে হবে
+                            </div>
+                        </div>
 
-
-                        <input type="text" placeholder="UPSAA Id" [(ngModel)]="s.memberId" name="supporterId{{i}}"
-                            (input)="updateApplicationReason()">
-                        <input type="text" placeholder="Phone No" [(ngModel)]="s.phone" name="supporterName{{i}}"
-                            (input)="updateApplicationReason()">
+                        <!-- Phone No Field -->
+                        <div class="support-field">
+                            <input type="text" placeholder="Phone No" [(ngModel)]="s.phone" name="supporterPhone{{i}}"
+                                #phoneInput="ngModel" required (input)="updateApplicationReason()">
+                            <div class="error" *ngIf="phoneInput.invalid && phoneInput.touched">
+                                ফোন নম্বর অবশ্যই দিতে হবে
+                            </div>
+                        </div>
                     </div>
 
-                    <button type="button" class="popup-btn" (click)="addSupporter()" *ngIf="supporters.length < 5">
-                        + আরও সমর্থক যোগ করুন
-                    </button>
                 </div>
 
-                <button class="submit-btn" type="submit">
+                <button class="submit-btn" type="submit" [disabled]="nominationForm.invalid">
                     মনোনয়ন পত্র সাবমিট করুন
                 </button>
 
             </form>
 
         </div>
+
 
     </div>
 </div>
@@ -94,10 +124,10 @@
 
         <div class="emoji">🎉✨</div>
 
-        <h2>শুভেচ্ছা {{ member?.fullName }}!</h2>
+        <h2>অভিনন্দন {{ member?.fullName }}!</h2>
 
         <p class="post-line">
-            {{selectedPositionName}}, পদে আপনার মনোনয়ন সফলভাবে গ্রহণ করা হয়েছে।
+            {{selectedPositionName}} পদে আপনার মনোনয়ন পত্র সফলভাবে জমা হয়েছে।
         </p>
 
         <p class="update-line">
@@ -108,7 +138,7 @@
             <strong style="font-size:14px; color:#004d40;">গুরুত্বপূর্ণ তারিখ:</strong><br>
             <div style="font-size:13px; text-align: left; display: inline-block;">
                 • ২৮ ফেব্রুয়ারি ২০২৬: প্রার্থীতা চূড়ান্ত<br>
-                • ১লা মে ২০২৬: ব্যালট নাম্বার প্রকাশ<br>
+                • ২৮ ফেব্রুয়ারি ২০২৬: ব্যালট নম্বর প্রকাশ<br>
                 • ১৩ মার্চ ২০২৬: ভোট গ্রহণ ও ফল প্রকাশ
             </div>
         </div>

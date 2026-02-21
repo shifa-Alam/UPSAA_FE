@@ -36,6 +36,7 @@ import { SnackbarService } from '../../Services/snackbar.service';
 })
 
 export class VotingScreenComponent implements OnInit {
+
   ballot: { electionId: number, title: string, positions: PositionBallot[] } | null = null;
   selections: { [positionId: number]: number[] } = {};
   showConfirm = false;
@@ -50,14 +51,28 @@ export class VotingScreenComponent implements OnInit {
   voted: boolean = false;
   errorMessage: string | undefined;
 
+  countdown: any = {
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  };
+
+
+  showCountdown = false;
+  private countdownInterval: any;
+  timeUnits: any[] = [];
+
   constructor(private http: HttpClient, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
     // this.launchOlympicStyleFireworks();
-    // this.loadVoterFromJwt();
+
+    this.initializeCountdown();
     this.loadBallot();
     this.checkVoterStatus();
   }
+
   launchOlympicStyleFireworks() {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -114,21 +129,41 @@ export class VotingScreenComponent implements OnInit {
     audio.play();
   }
 
+  initializeCountdown() {
+    const targetDate = new Date('2026-03-13T00:00:00').getTime();
+    const now = new Date().getTime();
 
+    if (now >= targetDate) {
+      this.showCountdown = false;
+      return;
+    }
 
-  // loadVoterFromJwt() {
-  //   try {
-  //     const token = localStorage.getItem('authToken');
-  //     if (!token) return;
+    this.showCountdown = true;
 
-  //     const payload = JSON.parse(atob(token.split('.')[1]));
-  //     console.log(payload)
-  //     this.voterName = payload?.name || payload?.unique_name || null;
-  //     this.voterBatch = payload?.Batch || null;
-  //     // optional: flag if already voted (can be from server)
-  //     // this.hasVoted = payload?.hasVoted === true;
-  //   } catch (e) { /* ignore decode errors */ }
-  // }
+    this.countdownInterval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const distance = targetDate - currentTime;
+
+      if (distance <= 0) {
+        clearInterval(this.countdownInterval);
+        this.showCountdown = false;
+        return;
+      }
+
+      this.countdown.days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      this.countdown.hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      this.countdown.minutes = Math.floor((distance / (1000 * 60)) % 60);
+      this.countdown.seconds = Math.floor((distance / 1000) % 60);
+
+      this.timeUnits = [
+        { value: this.countdown.days, label: 'দিন' },
+        { value: this.countdown.hours, label: 'ঘণ্টা' },
+        { value: this.countdown.minutes, label: 'মিনিট' },
+        { value: this.countdown.seconds, label: 'সেকেন্ড' }
+      ];
+
+    }, 1000);
+  }
 
   loadBallot(): void {
     this.voteService.getBallot().subscribe({
@@ -265,5 +300,10 @@ export class VotingScreenComponent implements OnInit {
         }
       });
 
+  }
+  ngOnDestroy() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
   }
 }

@@ -50,6 +50,11 @@
 
 html,
 body {
+  font-family:
+    'SolaimanLipiBangla',
+    Roboto,
+    "Segoe UI",
+    sans-serif;
 
   height: 100%;
   margin: 0;
@@ -62,10 +67,14 @@ body {
 }
 
 @font-face {
-  font-family: 'SolaimanLipi';
-  src: url('/fonts/SolaimanLipi.ttf') format('truetype');
+  font-family: 'SolaimanLipiBangla';
+  src: url('/fonts/SolaimanLipi.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+
+  /* Only Bangla Unicode */
+  unicode-range: U+0980-09FF;
 }
 
 /* styles.scss or styles.css */

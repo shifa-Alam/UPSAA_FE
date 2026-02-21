@@ -64,6 +64,7 @@ export class NominationApplicationComponent implements OnInit {
     '১৩ মার্চ ২০২৬: ভোট গ্রহণ ও ফল প্রকাশ'
   ];
   selectedPositionName: string = '';
+  selectedPositionFee: number = 0;
 
   constructor(
 
@@ -106,15 +107,13 @@ export class NominationApplicationComponent implements OnInit {
       .map(s => `${s.phone}-${s.memberId}`)
       .join(', ');
   }
-  addSupporter() {
-    if (this.supporters.length < 5) {  // max 5 supporters
-      this.supporters.push({ phone: '', memberId: '' });
-    }
-  }
+
   onPositionChange(selectedId: any) {
     const pos = this.positions.find(p => p.id == selectedId);
     this.selectedPositionName = pos ? pos.name : '';
-  } submitNomination() {
+    this.selectedPositionFee = pos ? pos.fee : 0;
+  }
+  submitNomination() {
     if (!this.candidate.positionId) {
 
       this.snackbarService.showError('Please select a position.');

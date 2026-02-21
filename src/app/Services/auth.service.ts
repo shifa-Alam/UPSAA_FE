@@ -122,7 +122,9 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/reset-password-otp`, { phoneNumber: phone, newPassword });
   }
 
-
+  createUsersForActiveMembers() {
+    return this.http.post(`${this.apiUrl}/CreateUsersForActiveMembers`, {});
+  }
 
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);
