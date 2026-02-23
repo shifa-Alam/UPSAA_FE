@@ -23,6 +23,7 @@ import { PositionsComponent } from './Components/positions/positions.component';
 import { VoteCastsComponent } from './Components/vote-casts/vote-casts.component';
 import { CandidateAddComponent } from './Components/candidate-add/candidate-add.component';
 import { NominationApplicationComponent } from './Components/nomination-application/nomination-application.component';
+import { CandidatesV2Component } from './Components/candidates-v2/candidates-v2.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,7 +36,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['Representative', 'Member'] } // only these roles
   },
-   {
+  {
     path: 'nomination', component: NominationApplicationComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['Representative', 'Member'] } // only these roles
@@ -50,9 +51,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['SuperAdmin'] },// only these roles
     children: [
-      { path: 'candidates', component: CandidatesComponent },
+      // { path: 'candidates', component: CandidatesComponent },
+      { path: 'candidates', component: CandidatesV2Component },
       { path: 'elections', component: ElectionsComponent },
       { path: 'positions', component: PositionsComponent },
+
       { path: 'vote-casts', component: VoteCastsComponent },
       { path: '', redirectTo: 'elections', pathMatch: 'full' }
     ]

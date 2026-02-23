@@ -1,15 +1,39 @@
 <div class="modal" *ngIf="showDetailsModal">
   <div class="modal-content">
-    <h2>Candidate Details</h2>
+    <!-- Header Section -->
+    <div class="modal-header">
+      <h2>Candidate Details</h2>
+
+      <mat-slide-toggle class="payment-toggle" [checked]="selectedCandidate?.isPaid"
+        (change)="onPaymentToggle($event.checked)">
+        {{ selectedCandidate?.isPaid ? 'Paid' : 'Not Paid' }}
+      </mat-slide-toggle>
+    </div>
 
     <div class="details-wrapper">
       <p><strong>Name:</strong> {{ selectedCandidate?.memberName }}</p>
+      <p><strong>Member Code:</strong> {{ selectedCandidate?.memberCode }}</p>
       <p><strong>Position:</strong> {{ selectedCandidate?.positionName }}</p>
-      <p><strong>Application Reason:</strong> {{ selectedCandidate?.applicationReason }}</p>
+      <p><strong>Supporters:</strong> {{ selectedCandidate?.applicationReason }}</p>
       <p><strong>Ballot No:</strong> {{ selectedCandidate?.ballotNumber }}</p>
       <p><strong>Batch:</strong> {{ selectedCandidate?.batch }}</p>
       <p><strong>Status:</strong> {{ selectedCandidate?.nominationStatus }}</p>
       <p><strong>Admin Note:</strong> {{ selectedCandidate?.adminNote }}</p>
+      <p class="fee-text">
+        <strong>Fee:</strong>
+        <span class="fee-amount">৳ {{ selectedCandidate?.fee }}</span>
+      </p>
+      <p>
+        <strong>Payment Status:</strong>
+
+        <span *ngIf="selectedCandidate?.isPaid" class="paid">
+          ✔ Paid
+        </span>
+
+        <span *ngIf="!selectedCandidate?.isPaid" class="not-paid">
+          ✖ Not Paid
+        </span>
+      </p>
     </div>
 
 
@@ -55,14 +79,67 @@
 
 <div>
   <h2 class="page-title">Candidates</h2>
+    <!-- Summary Cards -->
+<div class="dashboard-summary">
+  <div class="summary-item">
+    <div class="icon">👥</div>
+    <div class="content">
+      <h3>Candidates</h3>
+      <p>{{ totalItems }}</p>
+    </div>
+  </div>
 
+  <div class="summary-item">
+    <div class="icon">💳</div>
+    <div class="content">
+      <h3>Total Fee</h3>
+      <p>৳ {{ totalFee | number:'1.0-0' }}</p>
+    </div>
+  </div>
+
+  <div class="summary-item">
+    <div class="icon">✔️</div>
+    <div class="content">
+      <h3>Paid</h3>
+      <p>৳ {{ paidFee | number:'1.0-0' }}</p>
+    </div>
+  </div>
+</div>
   <!-- Header -->
-  <div class="header">
-    <input type="text" placeholder="Search candidates" [(ngModel)]="searchTerm" />
+  <!-- Filter Section -->
+  <div class="filters-container">
+    <div class="filter-item">
+      <input type="text" placeholder="Search Name" [(ngModel)]="filter.memberName" (ngModelChange)="applyFilter()" />
+    </div>
+    <div class="filter-item">
+      <input type="text" placeholder="Member code" [(ngModel)]="filter.memberCode" (ngModelChange)="applyFilter()" />
+    </div>
 
-    <!-- <button class="add-btn" (click)="openAddCandidateModal()">
-      + Add
-    </button> -->
+    <div class="filter-item">
+      <input type="number" placeholder="Batch" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
+    </div>
+    <div class="filter-item">
+      <input type="text" placeholder="Fee" [(ngModel)]="filter.fee" (ngModelChange)="applyFilter()" />
+    </div>
+    <div class="filter-item gender">
+      <select [(ngModel)]="filter.nominationStatusId" (ngModelChange)="applyFilter()">
+        <option [ngValue]="null" selected>Nomination Status</option>
+        <option value="0">Pending</option>
+        <option value="1">Approved</option>
+        <option value="2">Rejected</option>
+      </select>
+    </div>
+
+
+    <div class="filter-item blood-group">
+      <select [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()">
+        <option value="" selected>Select Position</option>
+        <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
+      </select>
+    </div>
+    <div class="filter-item reset-button">
+      <button type="button" (click)="resetFilters()">Reset Filters</button>
+    </div>
   </div>
   <div *ngIf="loading" class="loading-wrapper">
     <div class="spinner"></div>
@@ -76,27 +153,29 @@
           <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Member Code</th>
             <th>Position</th>
             <th>Ballot No</th>
             <th>Batch</th>
-            <!-- <th>Reason</th> -->
+            <th>Fee</th>
             <th style="width: 180px;">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr *ngFor="let candidate of pagedCandidates; let i = index">
-            <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+          <tr *ngFor="let candidate of candidates; let i = index">
+            <td>{{ i + 1}} </td>
             <td>{{ candidate.memberName }}
               <span *ngIf="candidate.nominationStatus=== 'Approved'" class="approved-tick">✔</span>
               <span *ngIf="candidate.nominationStatus=== 'Rejected'" class="rejected-tick">✖</span>
               <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
 
             </td>
+            <td>{{ candidate.memberCode }}</td>
             <td>{{ candidate.positionName }}</td>
             <td>{{ candidate.ballotNumber }}</td>
             <td>{{ candidate.batch }}</td>
-            <!-- <td>{{ candidate.applicationReason }}</td> -->
+            <td>{{ candidate.fee }}</td>
             <td>
               <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
               <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
@@ -109,16 +188,27 @@
 
     <!-- Mobile Cards -->
     <div class="mobile-only">
-      <div class="candidate-card" *ngFor="let candidate of pagedCandidates; let i = index">
+      <div class="candidate-card" *ngFor="let candidate of candidates; let i = index">
 
         <div class="card-header">
-          <span class="index">#{{ i + 1 }}</span>
-          <span class="title">{{ candidate.memberName }}</span>
+          <!-- <span class="index">#{{ i + 1 }}</span> -->
+          <span class="title">{{ candidate.memberName }}
+            <span *ngIf="candidate.nominationStatus === 'Approved'" class="status-icon approved">✔</span>
+            <span *ngIf="candidate.nominationStatus === 'Rejected'" class="status-icon rejected">✖</span>
+            <span *ngIf="candidate.nominationStatus === 'Pending'" class="status-icon pending">⏳</span>
+          </span>
 
         </div>
         <div class="card-dates">
-          <span>Position: {{ candidate.positionName }}</span>
-          <span>End: {{ candidate.applicationReason }}</span>
+          <span>{{ candidate.positionName }}</span>
+          <span>batch: {{ candidate.batch }}</span>
+          <span *ngIf="candidate?.isPaid" class="paid">
+            ✔ Paid
+          </span>
+
+          <span *ngIf="!candidate?.isPaid" class="not-paid">
+            ✖ Not Paid
+          </span>
         </div>
         <div class="card-actions">
           <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
@@ -132,36 +222,46 @@
 
   <!-- Pagination -->
   <div class="pagination">
-    <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+    <!-- Pagination -->
+    <nav class="pagination-container" *ngIf="totalPages > 1">
+      <ul class="pagination">
+
+        <!-- Previous -->
+        <li [class.disabled]="pageNumber === 1">
+          <button (click)="onPageChange(pageNumber - 1)">‹ Previous</button>
+        </li>
+
+        <!-- First page -->
+        <li [class.active]="pageNumber === 1">
+          <button (click)="onPageChange(1)">1</button>
+        </li>
+
+        <!-- Ellipsis before middle pages -->
+        <li *ngIf="pageNumber > 3"><span>...</span></li>
+
+        <!-- Middle pages -->
+        <li *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p">
+          <button (click)="onPageChange(p)">{{ p }}</button>
+        </li>
+
+        <!-- Ellipsis after middle pages -->
+        <li *ngIf="pageNumber < totalPages - 2"><span>...</span></li>
+
+        <!-- Last page -->
+        <li [class.active]="pageNumber === totalPages">
+          <button (click)="onPageChange(totalPages)">{{ totalPages }}</button>
+        </li>
+
+        <!-- Next -->
+        <li [class.disabled]="pageNumber === totalPages">
+          <button (click)="onPageChange(pageNumber + 1)">Next ›</button>
+        </li>
+
+      </ul>
+    </nav>
+
   </div>
 
-  <!-- Modal -->
-  <!-- <div class="modal" *ngIf="showModal">
-    <div class="modal-content">
-      <h2>{{ editMode ? 'Edit' : 'Add' }} Candidate</h2>
 
-      <form (ngSubmit)="submitCandidate()">
-        <label>Candidate Title</label>
-        <input type="text" [(ngModel)]="modalCandidate?.memberId" name="title" required />
-
-        <label>Start Date</label>
-        <input type="date" [(ngModel)]="modalCandidate.startTime" name="startTime" required />
-
-        <label>End Date</label>
-        <input type="date" [(ngModel)]="modalCandidate.endTime" name="endTime" required />
-
-        <div class="modal-actions">
-          <button type="submit" class="save-btn">
-            {{ editMode ? 'Update' : 'Create' }}
-          </button>
-          <button type="button" class="cancel-btn" (click)="closeModal()">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div> -->
 
 </div>

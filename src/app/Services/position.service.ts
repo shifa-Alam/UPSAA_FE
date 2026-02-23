@@ -12,7 +12,7 @@ export interface Position {
   maxSelect: number;
   priority: number;
   fee: number;
-  candidates: Candidate[];
+  candidates?: Candidate[];
 }
 @Injectable({
   providedIn: 'root'

@@ -74,7 +74,7 @@ export class CandidatesComponent implements OnInit {
   }
   calculatePages() {
     const filtered = this.candidates.filter(e =>
-      e.memberName.toLowerCase().includes(this.searchTerm.toLowerCase())
+      e.memberName?.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
     this.totalPages = Math.ceil(filtered.length / this.pageSize);
     this.pagedCandidates = filtered.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
@@ -236,7 +236,7 @@ export class CandidatesComponent implements OnInit {
   onPaymentToggle(isPaid: boolean) {
     if (!this.selectedCandidate) return;
 
-    const candidateId = this.selectedCandidate.id;
+    const candidateId = this.selectedCandidate?.id;
 
     this.candidateService.updatePaymentStatus(candidateId, isPaid)
       .subscribe({

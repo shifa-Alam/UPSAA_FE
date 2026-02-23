@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
 import { Candidate, CandidateFilterDto, CandidateService } from '../../Services/candidate.service';
+import { Position, PositionService } from '../../Services/position.service';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-candidates-v2',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,MatSlideToggleModule],
   templateUrl: './candidates-v2.component.html',
   styleUrl: './candidates-v2.component.scss'
 })
 export class CandidatesV2Component implements OnInit {
+  positions: Position[] = [];
   batch: number | null | undefined;
   modalCandidate: Candidate | undefined;
   selectedCandidate: Candidate | undefined | null;
@@ -33,34 +35,54 @@ export class CandidatesV2Component implements OnInit {
     pageNumber: 1,
     pageSize: 10
   };
-  constructor(private candidateService: CandidateService) {
+  totalFee: number = 0;
+  paidFee: number = 0;
+  constructor(private candidateService: CandidateService,private positionService:PositionService) {
 
   }
 
   ngOnInit() {
     this.initFilter();
+    this.loadPositions();
     this.loadCandidates();
+  }
+   loadPositions() {
+    this.loading = true;
+    this.positionService.getPositions().subscribe({
+        next: (data) => {
+          this.positions = data.map((el, i) => ({
+            id: el.id,
+            name: el.name,
+            electionTitle: el.electionTitle,
+            electionId: el.electionId,
+            maxSelect: el.maxSelect,
+            priority: el.priority,
+            fee: el.fee,
+            
+          }));
+         
+        },
+        error: (err) => {
+          console.error('Failed to fetch positions:', err);
+          
+        }
+      });
   }
   initFilter() {
     this.filter.pageNumber = 1;
 
   }
-  filterCandidates() {
-
-    this.calculatePages();
-  }
   loadCandidates() {
     this.loading = true;
-    this.candidateService.loadCandidates(this.filter).subscribe({
+    this.candidateService.filterCandidates(this.filter).subscribe({
       next: (res) => {
         this.candidates = res.candidates;
 
         this.totalItems = res.totalItems;
         this.totalPages = res.totalPages;
         this.pageNumber = res.pageNumber;
-        this.totalMembershipAmount = res.totalMembershipAmount;
-        this.totalDonationAmount = res.totalDonationAmount;
-        this.totalAmount = res.totalAmount;
+        this.totalFee = res.totalFee;
+        this.paidFee = res.paidFee;
         this.loading = false; // Hide loader
       },
       error: () => {
@@ -68,26 +90,33 @@ export class CandidatesV2Component implements OnInit {
       }
     });
   }
-  calculatePages() {
-    const filtered = this.candidates.filter(e =>
-      e.memberName.toLowerCase().includes(this.searchTerm.toLowerCase())
-    );
-    this.totalPages = Math.ceil(filtered.length / this.pageSize);
-    this.pagedCandidates = filtered.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
-  }
+  getMiddlePages(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(2, this.pageNumber - 1);
+    const end = Math.min(this.totalPages - 1, this.pageNumber + 1);
 
-  prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.calculatePages();
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  }
+  setPageSize() {
+    if (typeof window !== 'undefined') {
+      this.pageSize = window.innerWidth < 768 ? 5 : 20;
     }
   }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.calculatePages();
-    }
+  onPageChange(page: number) {
+    this.filter.pageNumber = page;
+    this.loadCandidates();
+  }
+  applyFilter() {
+    this.loadCandidates(); // Reset to first page whenever filter changes
+  }
+  // ✅ Add this method
+  resetFilters() {
+    this.filter = { pageNumber: 1, pageSize: this.pageSize, };
+    this.loadCandidates();
   }
   viewDetails(candidate: Candidate) {
     this.selectedCandidate = candidate;
@@ -99,17 +128,7 @@ export class CandidatesV2Component implements OnInit {
     const payload: Candidate = {
       id: candidate.id,
       positionId: candidate.positionId,
-      positionName: candidate.positionName,
-
-      memberId: candidate.memberId,
-      memberName: candidate.memberName,
-
-      applicationReason: candidate.applicationReason,
-      ballotNumber: candidate.ballotNumber,
-      batch: candidate.batch,
-
       nominationStatus: 'Approved',
-      adminNote: null as any
     };
 
     this.candidateService
@@ -188,7 +207,7 @@ export class CandidatesV2Component implements OnInit {
 
   deleteCandidate(e: Candidate) {
     this.candidates = this.candidates.filter(el => el.id !== e.id);
-    this.calculatePages();
+   
   }
 
   closeModal() {
@@ -204,7 +223,7 @@ export class CandidatesV2Component implements OnInit {
         next: (updated) => {
           const index = this.candidates.findIndex(el => el.id === updated.id);
           if (index !== -1) this.candidates[index] = updated;
-          this.calculatePages();
+         
           this.closeModal();
         },
         error: (err) => {
@@ -217,7 +236,7 @@ export class CandidatesV2Component implements OnInit {
       this.candidateService.applyNomination(this.modalCandidate).subscribe({
         next: (created) => {
           this.candidates.push(created);
-          this.calculatePages();
+       
           this.closeModal();
         },
         error: (err) => {
@@ -227,5 +246,21 @@ export class CandidatesV2Component implements OnInit {
       });
     }
   }
+  onPaymentToggle(isPaid: boolean) {
+    if (!this.selectedCandidate) return;
 
+    const candidateId = this.selectedCandidate?.id;
+
+    this.candidateService.updatePaymentStatus(candidateId, isPaid)
+      .subscribe({
+        next: () => {
+          this.selectedCandidate!.isPaid = isPaid;
+        },
+        error: () => {
+          alert('Failed to update payment status');
+          // revert toggle if API fails
+          this.selectedCandidate!.isPaid = !isPaid;
+        }
+      });
+  }
 }
