@@ -34,8 +34,8 @@ export class AuthService {
 
 
 
-  login(email: string, password: string) {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
+  login(phone: string, password: string) {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { phone, password }).pipe(
       map(res => {
         if (typeof window !== 'undefined') {
           localStorage.setItem(this.tokenKey, res.token);
@@ -122,7 +122,9 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/reset-password-otp`, { phoneNumber: phone, newPassword });
   }
 
-
+  createUsersForActiveMembers() {
+    return this.http.post(`${this.apiUrl}/CreateUsersForActiveMembers`, {});
+  }
 
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);

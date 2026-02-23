@@ -6,38 +6,21 @@ export interface Candidate {
   id: number;
   positionId: number;
   positionName: string;
+
   memberId: number;
   memberName: string;
+  memberCode: string;
   adminNote: string;
   applicationReason: string;
   ballotNumber: number;
   batch: number;
   nominationStatus: string;
+  isPaid: boolean;
+  fee: number;
 }
 
-export interface CandidateFilterDto {
-  positionId?: number;
-  memberName?: string;
-  memberCode?: string;
-  nominationStatusId?: number;
 
-  ballotNumber?: number;
-  batch?: number;
-  isPaid?: boolean;
-  fee?: number;
-  active?: boolean;
 
-  pageNumber: number;
-  pageSize: number;
-}
-export interface PaginatedMembersResponse {
-  candidates: Candidate[];
-  totalItems: number;
-  totalPages: number;
-  pageNumber: number;
-  pageSize: number;
-  totalFee: number;
-}
 @Injectable({
   providedIn: 'root'
 })
@@ -75,8 +58,8 @@ export class CandidateService {
   decideCandidate(candidateId: number, decision: Candidate): Observable<any> {
     return this.http.post(`${this.apiUrl}/${candidateId}/decision`, decision);
   }
-    loadCandidates(filter: CandidateFilterDto) : Observable<PaginatedCandiatesResponse> {
-        console.log(filter)
-        return this.http.post<PaginatedCandiatesResponse>(`${this.apiUrl}/FilterCandidates`, filter);
-      }
+
+  updatePaymentStatus(candidateId: number, isPaid: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${candidateId}/payment?isPaid=${isPaid}`, {});
+  }
 }

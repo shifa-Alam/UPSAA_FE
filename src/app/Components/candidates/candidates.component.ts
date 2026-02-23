@@ -3,11 +3,12 @@ import { Candidate, CandidateService } from '../../Services/candidate.service';
 import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-candidates',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatSlideToggleModule],
   templateUrl: './candidates.component.html',
   styleUrl: './candidates.component.scss'
 })
@@ -52,6 +53,7 @@ export class CandidatesComponent implements OnInit {
             id: el.id,
             positionName: el.positionName,
             memberName: el.memberName,
+            memberCode: el.memberCode,
             ballotNumber: el.ballotNumber,
             batch: el.batch,
             positionId: el.positionId,
@@ -59,6 +61,8 @@ export class CandidatesComponent implements OnInit {
             adminNote: el.adminNote,
             applicationReason: el.applicationReason,
             nominationStatus: el.nominationStatus,
+            isPaid: el.isPaid,
+            fee: el.fee,
           }));
           this.calculatePages(); // pagination
         },
@@ -103,13 +107,15 @@ export class CandidatesComponent implements OnInit {
 
       memberId: candidate.memberId,
       memberName: candidate.memberName,
-
+      memberCode: candidate.memberCode,
       applicationReason: candidate.applicationReason,
       ballotNumber: candidate.ballotNumber,
       batch: candidate.batch,
 
       nominationStatus: 'Approved',
-      adminNote: null as any
+      adminNote: null as any,
+      isPaid: candidate.isPaid,
+      fee: candidate.fee,
     };
 
     this.candidateService
@@ -227,5 +233,21 @@ export class CandidatesComponent implements OnInit {
       });
     }
   }
+  onPaymentToggle(isPaid: boolean) {
+    if (!this.selectedCandidate) return;
 
+    const candidateId = this.selectedCandidate.id;
+
+    this.candidateService.updatePaymentStatus(candidateId, isPaid)
+      .subscribe({
+        next: () => {
+          this.selectedCandidate!.isPaid = isPaid;
+        },
+        error: () => {
+          alert('Failed to update payment status');
+          // revert toggle if API fails
+          this.selectedCandidate!.isPaid = !isPaid;
+        }
+      });
+  }
 }

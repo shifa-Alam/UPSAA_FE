@@ -27,7 +27,8 @@ export class LoginComponent {
   ) {
     // Initialize form here, after fb is available
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      // email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
@@ -39,9 +40,9 @@ export class LoginComponent {
     if (this.loginForm.invalid) return;
 
     this.loading = true;
-    const { email, password } = this.loginForm.value;
+    const { phone, password } = this.loginForm.value;
 
-    this.authService.login(email!, password!).subscribe({
+    this.authService.login(phone!, password!).subscribe({
       next: () => {
         this.loading = false;
 

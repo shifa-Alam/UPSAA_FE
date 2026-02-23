@@ -1,0 +1,5 @@
+ng build
+
+ng build --base-href /UPSAA_FE/  
+
+npx angular-cli-ghpages --dir=dist/browser --repo=https://github.com/shifa-Alam/UPSAA_FE.git --branch=gh-pages --name="Shifa Alam" --email="shifa7446@gmail.com"

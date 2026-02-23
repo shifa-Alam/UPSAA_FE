@@ -65,7 +65,7 @@ export class MemberLandingComponent implements OnInit {
     this.loadMembers();
     // Get batch from JWT
     this.batch = this.authService.getBatch();
-    
+
     this.loadBatchSummary(); // ✅ Add this here to load data on startup
 
   }
@@ -112,7 +112,7 @@ export class MemberLandingComponent implements OnInit {
   isRepresentative(): boolean {
     return this.authService.hasRole('Representative');
   }
-  
+
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
   }
@@ -196,6 +196,18 @@ export class MemberLandingComponent implements OnInit {
     this.memberService.activateMemberDirectly(memberId).subscribe({
       next: (res) => {
         this.loadMembers();
+
+      },
+      error: () => {
+
+      }
+    });
+  }
+
+  makeUserOfAllCtiveMember() {
+
+    this.authService.createUsersForActiveMembers().subscribe({
+      next: (res) => {
 
       },
       error: () => {

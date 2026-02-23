@@ -96,17 +96,23 @@ export class ElectionsComponent implements OnInit {
     this.modalElection = { ...e };
 
     // Convert dates to yyyy-MM-dd
-    this.modalElection.startTime = this.formatDate(this.modalElection.startTime);
-    this.modalElection.endTime = this.formatDate(this.modalElection.endTime);
-    this.modalElection.candidateStartTime = this.formatDate(this.modalElection.candidateStartTime);
-    this.modalElection.candidateEndTime = this.formatDate(this.modalElection.candidateEndTime);
+    this.modalElection.startTime = this.formatDateTime(this.modalElection.startTime);
+    this.modalElection.endTime = this.formatDateTime(this.modalElection.endTime);
+    this.modalElection.candidateStartTime = this.formatDateTime(this.modalElection.candidateStartTime);
+    this.modalElection.candidateEndTime = this.formatDateTime(this.modalElection.candidateEndTime);
     this.showModal = true;
   }
-  formatDate(date: string | Date): string {
+  formatDateTime(date: string | Date): string {
     const d = new Date(date);
+
+    const year = d.getFullYear();
     const month = ('0' + (d.getMonth() + 1)).slice(-2);
     const day = ('0' + d.getDate()).slice(-2);
-    return `${d.getFullYear()}-${month}-${day}`;
+
+    const hours = ('0' + d.getHours()).slice(-2);
+    const minutes = ('0' + d.getMinutes()).slice(-2);
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
   deleteElection(e: Election) {
     this.electionService.deleteElection(e.id).subscribe({

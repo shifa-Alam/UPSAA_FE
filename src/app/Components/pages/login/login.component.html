@@ -11,7 +11,7 @@
     <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
 
       <!-- Email -->
-      <div class="input-group">
+      <!-- <div class="input-group">
         <mat-icon>email</mat-icon>
         <input type="email" formControlName="email" placeholder="Email"
           [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
@@ -19,6 +19,18 @@
       <div class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
         <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
         <span *ngIf="loginForm.get('email')?.hasError('email')">Invalid email</span>
+      </div> -->
+      <!-- Phone -->
+      <div class="input-group">
+        <mat-icon>phone</mat-icon>
+        <input type="tel" formControlName="phone" placeholder="Phone Number"
+          [class.invalid]="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched" />
+      </div>
+
+      <div class="error" *ngIf="loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid">
+        <span *ngIf="loginForm.get('phone')?.hasError('required')">
+          Phone number is required
+        </span>
       </div>
 
       <!-- Password -->

@@ -521,21 +521,24 @@ mat-icon {
 
 /* 🎨 Colorful gradients */
 .edit-btn {
-  background: linear-gradient(45deg, #2196f3, #21cbf3); /* blue gradient */
+  background: linear-gradient(45deg, #2196f3, #21cbf3);
+  /* blue gradient */
 }
 
 .change-password-btn {
-  background: linear-gradient(45deg, #9c27b0, #e040fb); /* purple-pink gradient */
+  background: linear-gradient(45deg, #9c27b0, #e040fb);
+  /* purple-pink gradient */
 }
 
 .nomination-btn {
-  background: linear-gradient(45deg, #ff5722, #ff9800); /* orange-red gradient */
+  background: linear-gradient(45deg, #ff5722, #ff9800);
+  /* orange-red gradient */
 }
 
 /* Hover effects */
 .action-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 /* Pulse animation for nomination button */
@@ -544,9 +547,17 @@ mat-icon {
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.6); }
-  70% { box-shadow: 0 0 0 14px rgba(255, 87, 34, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.6);
+  }
+
+  70% {
+    box-shadow: 0 0 0 14px rgba(255, 87, 34, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 87, 34, 0);
+  }
 }
 
 /* 📱 Mobile-friendly */
@@ -627,5 +638,7 @@ mat-icon {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
