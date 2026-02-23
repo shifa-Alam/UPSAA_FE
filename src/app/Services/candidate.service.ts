@@ -6,7 +6,6 @@ export interface Candidate {
   id: number;
   positionId: number;
   positionName: string;
-
   memberId: number;
   memberName: string;
   adminNote: string;
@@ -16,12 +15,34 @@ export interface Candidate {
   nominationStatus: string;
 }
 
+export interface CandidateFilterDto {
+  positionId?: number;
+  memberName?: string;
+  memberCode?: string;
+  nominationStatusId?: number;
 
+  ballotNumber?: number;
+  batch?: number;
+  isPaid?: boolean;
+  fee?: number;
+  active?: boolean;
 
+  pageNumber: number;
+  pageSize: number;
+}
+export interface PaginatedMembersResponse {
+  candidates: Candidate[];
+  totalItems: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+  totalFee: number;
+}
 @Injectable({
   providedIn: 'root'
 })
 export class CandidateService {
+
   private apiUrl = environment.baseUrl + '/Candidate';
 
   constructor(private http: HttpClient) { }
@@ -54,4 +75,8 @@ export class CandidateService {
   decideCandidate(candidateId: number, decision: Candidate): Observable<any> {
     return this.http.post(`${this.apiUrl}/${candidateId}/decision`, decision);
   }
+    loadCandidates(filter: CandidateFilterDto) : Observable<PaginatedCandiatesResponse> {
+        console.log(filter)
+        return this.http.post<PaginatedCandiatesResponse>(`${this.apiUrl}/FilterCandidates`, filter);
+      }
 }
