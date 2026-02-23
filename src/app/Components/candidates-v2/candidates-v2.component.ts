@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-candidates-v2',
   standalone: true,
-  imports: [CommonModule, FormsModule,MatSlideToggleModule],
+  imports: [CommonModule, FormsModule, MatSlideToggleModule],
   templateUrl: './candidates-v2.component.html',
   styleUrl: './candidates-v2.component.scss'
 })
@@ -33,11 +33,14 @@ export class CandidatesV2Component implements OnInit {
   // For filters
   filter: CandidateFilterDto = {
     pageNumber: 1,
-    pageSize: 10
+    pageSize: 10,
+    isPaid: null,
+    positionId: 0,
+    nominationStatusId: null
   };
   totalFee: number = 0;
   paidFee: number = 0;
-  constructor(private candidateService: CandidateService,private positionService:PositionService) {
+  constructor(private candidateService: CandidateService, private positionService: PositionService) {
 
   }
 
@@ -46,27 +49,27 @@ export class CandidatesV2Component implements OnInit {
     this.loadPositions();
     this.loadCandidates();
   }
-   loadPositions() {
+  loadPositions() {
     this.loading = true;
     this.positionService.getPositions().subscribe({
-        next: (data) => {
-          this.positions = data.map((el, i) => ({
-            id: el.id,
-            name: el.name,
-            electionTitle: el.electionTitle,
-            electionId: el.electionId,
-            maxSelect: el.maxSelect,
-            priority: el.priority,
-            fee: el.fee,
-            
-          }));
-         
-        },
-        error: (err) => {
-          console.error('Failed to fetch positions:', err);
-          
-        }
-      });
+      next: (data) => {
+        this.positions = data.map((el, i) => ({
+          id: el.id,
+          name: el.name,
+          electionTitle: el.electionTitle,
+          electionId: el.electionId,
+          maxSelect: el.maxSelect,
+          priority: el.priority,
+          fee: el.fee,
+
+        }));
+
+      },
+      error: (err) => {
+        console.error('Failed to fetch positions:', err);
+
+      }
+    });
   }
   initFilter() {
     this.filter.pageNumber = 1;
@@ -115,7 +118,13 @@ export class CandidatesV2Component implements OnInit {
   }
   // ✅ Add this method
   resetFilters() {
-    this.filter = { pageNumber: 1, pageSize: this.pageSize, };
+    this.filter = {
+      pageNumber: 1,
+      pageSize: this.pageSize,
+      isPaid: null,
+      positionId: 0,
+      nominationStatusId: null
+    };
     this.loadCandidates();
   }
   viewDetails(candidate: Candidate) {
@@ -207,7 +216,7 @@ export class CandidatesV2Component implements OnInit {
 
   deleteCandidate(e: Candidate) {
     this.candidates = this.candidates.filter(el => el.id !== e.id);
-   
+
   }
 
   closeModal() {
@@ -223,7 +232,7 @@ export class CandidatesV2Component implements OnInit {
         next: (updated) => {
           const index = this.candidates.findIndex(el => el.id === updated.id);
           if (index !== -1) this.candidates[index] = updated;
-         
+
           this.closeModal();
         },
         error: (err) => {
@@ -236,7 +245,7 @@ export class CandidatesV2Component implements OnInit {
       this.candidateService.applyNomination(this.modalCandidate).subscribe({
         next: (created) => {
           this.candidates.push(created);
-       
+
           this.closeModal();
         },
         error: (err) => {

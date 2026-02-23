@@ -27,17 +27,17 @@ export interface PaginatedCandidatesResponse {
   pageSize: number;
   totalFee: number;
   paidFee: number;
- 
+
 }
 export interface CandidateFilterDto {
   positionId?: number;
   memberName?: string;
   memberCode?: string;
-  nominationStatusId?: number;
+  nominationStatusId?: number | null;
 
   ballotNumber?: number;
   batch?: number;
-  isPaid?: boolean;
+  isPaid?: boolean | null;
   fee?: number;
   active?: boolean;
 
@@ -49,9 +49,9 @@ export interface CandidateFilterDto {
 })
 export class CandidateService {
   filterCandidates(filter: CandidateFilterDto): Observable<PaginatedCandidatesResponse> {
-      console.log(filter)
-      return this.http.post<PaginatedCandidatesResponse>(`${this.apiUrl}/FilterCandidates`, filter);
-    }
+    console.log(filter)
+    return this.http.post<PaginatedCandidatesResponse>(`${this.apiUrl}/FilterCandidates`, filter);
+  }
 
   private apiUrl = environment.baseUrl + '/Candidate';
 
@@ -86,7 +86,7 @@ export class CandidateService {
     return this.http.post(`${this.apiUrl}/${candidateId}/decision`, decision);
   }
 
-  updatePaymentStatus(candidateId: number|null|undefined, isPaid: boolean): Observable<any> {
+  updatePaymentStatus(candidateId: number | null | undefined, isPaid: boolean): Observable<any> {
     return this.http.put(`${this.apiUrl}/${candidateId}/payment?isPaid=${isPaid}`, {});
   }
 }

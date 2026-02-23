@@ -79,32 +79,32 @@
 
 <div>
   <h2 class="page-title">Candidates</h2>
-    <!-- Summary Cards -->
-<div class="dashboard-summary">
-  <div class="summary-item">
-    <div class="icon">👥</div>
-    <div class="content">
-      <h3>Candidates</h3>
-      <p>{{ totalItems }}</p>
+  <!-- Summary Cards -->
+  <div class="dashboard-summary">
+    <div class="summary-item">
+      <div class="icon">👥</div>
+      <div class="content">
+        <h3>Candidates</h3>
+        <p>{{ totalItems }}</p>
+      </div>
     </div>
-  </div>
 
-  <div class="summary-item">
-    <div class="icon">💳</div>
-    <div class="content">
-      <h3>Total Fee</h3>
-      <p>৳ {{ totalFee | number:'1.0-0' }}</p>
+    <div class="summary-item">
+      <div class="icon">💳</div>
+      <div class="content">
+        <h3>Total Fee</h3>
+        <p>৳ {{ totalFee | number:'1.0-0' }}</p>
+      </div>
     </div>
-  </div>
 
-  <div class="summary-item">
-    <div class="icon">✔️</div>
-    <div class="content">
-      <h3>Paid</h3>
-      <p>৳ {{ paidFee | number:'1.0-0' }}</p>
+    <div class="summary-item">
+      <div class="icon">✔️</div>
+      <div class="content">
+        <h3>Paid</h3>
+        <p>৳ {{ paidFee | number:'1.0-0' }}</p>
+      </div>
     </div>
   </div>
-</div>
   <!-- Header -->
   <!-- Filter Section -->
   <div class="filters-container">
@@ -130,10 +130,17 @@
       </select>
     </div>
 
+    <div class="filter-item gender">
+      <select [(ngModel)]="filter.isPaid" (ngModelChange)="applyFilter()">
+        <option [ngValue]="null" selected>Payment Status</option>
+        <option [ngValue]="true">Paid</option>
+        <option [ngValue]="false">Not Paid</option>
+      </select>
+    </div>
 
     <div class="filter-item blood-group">
       <select [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()">
-        <option value="" selected>Select Position</option>
+        <option [ngValue]="0" selected> Position</option>
         <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
       </select>
     </div>

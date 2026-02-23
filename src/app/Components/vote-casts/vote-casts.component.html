@@ -1,81 +1,107 @@
 <div class="election-dashboard">
 
-    <h2 class="page-title">Election Results Dashboard</h2>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div>
+            <h2>UPSAA নির্বাচন ২০২৬ ফলাফল</h2>
+            <p class="subtitle">উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন এর কার্যনির্বাহী কমিটি নির্বাচন ২০২৬</p>
+            <p class="subtitle">নির্বাচনের তারিখ: {{ electionDate | date:'d MMMM y' }}</p>
+        </div>
+    </header>
 
-    <!-- Top Summary Cards -->
+    <!-- Summary Cards -->
     <div class="summary-cards">
-        <div class="card total-votes">
-            <h3>Total Votes Cast</h3>
-            <p>{{ totalVotes }}</p>
+        <div class="card">
+            <span class="card-title">Total Votes</span>
+            <h3>{{ totalVotes }}</h3>
         </div>
 
-        <div class="card total-candidates">
-            <h3>Total Candidates</h3>
-            <p>{{ candidates.length }}</p>
+        <div class="card">
+            <span class="card-title">Candidates</span>
+            <h3>{{ candidates.length }}</h3>
         </div>
 
-        <div class="card leading-candidate">
-            <h3>Leading Candidate</h3>
-            <p>{{ leadingCandidate?.memberName }}</p>
-            <p><strong>{{ leadingCandidate?.votes }}</strong> votes</p>
-            <!-- <div class="progress-bar">
-                <div class="progress" [style.width.%]="(leadingCandidate?.votes / totalVotes * 100) || 0"></div>
-            </div> -->
+        <div class="card highlight-card">
+            <span class="card-title">Leading Candidate</span>
+            <h4>{{ leadingCandidate?.memberName }}</h4>
+            <p class="vote-count">{{ leadingCandidate?.votes }} votes</p>
+            <div class="progress-bar">
+                <div class="progress" [style.width.%]="(leadingCandidate?.votes / totalVotes * 100) || 0">
+                </div>
+            </div>
         </div>
 
-        <div class="card positions-count">
-            <h3>Total Positions</h3>
-            <p>{{ positions.length }}</p>
+        <div class="card">
+            <span class="card-title">Positions</span>
+            <h3>{{ positions.length }}</h3>
         </div>
     </div>
 
-    <!-- Position-wise Top Candidates -->
-    <div class="position-summary">
-        <h3>Top Candidate by Position</h3>
-        <div class="position-cards">
+    <!-- Winners by Position -->
+    <div class="section">
+        <h3 class="section-title">Winners by Position</h3>
+
+        <div class="position-grid">
             <div class="position-card" *ngFor="let pos of positions">
                 <h4>{{ pos.positionName }}</h4>
-                <p>{{ pos.topCandidate.memberName }} ({{ pos.topCandidate.votes }} votes)</p>
-                <div class="progress-bar">
-                    <div class="progress" [style.width.%]="(pos.topCandidate.votes / totalVotes * 100) || 0"></div>
+
+                <div class="winner" *ngFor="let winner of pos.winners; let i = index">
+
+                    <div class="winner-header">
+                        <span class="winner-name">
+                            {{ winner.memberName }}
+                            <span *ngIf="i === 0">🥇</span>
+                            <span *ngIf="i === 1">🥈</span>
+                            <span *ngIf="i === 2">🥉</span>
+                        </span>
+                        <span class="winner-votes">{{ winner.votes }}</span>
+                    </div>
+
+                    <div class="progress-bar small">
+                        <div class="progress" [style.width.%]="(winner.votes / pos.totalVotes * 100) || 0">
+                        </div>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Detailed Results Table -->
-    <div class="table-wrapper">
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Candidate</th>
-                    <th>Position</th>
-                    <th>Votes</th>
-                    <th>% of Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let candidate of candidates; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ candidate.memberName }}</td>
-                    <td>{{ candidate.positionName }}</td>
-                    <td>{{ candidate.votes }}</td>
-                    <td>
-                        {{ (candidate.votes / totalVotes * 100) | number:'1.0-2' }}%
-                        <div class="progress-bar small">
-                            <div class="progress" [style.width.%]="(candidate.votes / totalVotes * 100) || 0"></div>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <!-- Results Table -->
+    <div class="section">
+        <h3 class="section-title">Detailed Results</h3>
 
-    <!-- Chart -->
-    <div class="charts">
-        <h3>Votes Distribution</h3>
-        <canvas id="voteChart"></canvas>
+        <div class="table-wrapper">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Candidate</th>
+                        <th>Position</th>
+                        <th>Votes</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let candidate of candidates; let i = index"
+                        [class.leading]="candidate.memberName === leadingCandidate?.memberName">
+
+                        <td>{{ i + 1 }}</td>
+                        <td>{{ candidate.memberName }}</td>
+                        <td>{{ candidate.positionName }}</td>
+                        <td>{{ candidate.votes }}</td>
+                        <td>
+                            {{ (candidate.votes / totalVotes * 100) | number:'1.0-2' }}%
+                            <div class="progress-bar small">
+                                <div class="progress" [style.width.%]="(candidate.votes / totalVotes * 100) || 0">
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
