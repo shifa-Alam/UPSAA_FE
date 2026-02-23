@@ -39,11 +39,14 @@ export class CandidateAddComponent implements OnInit {
     positionName: '',
     memberId: 0,
     memberName: '',
+    memberCode: '',
     adminNote: '',
     applicationReason: '',
     ballotNumber: 0,
     batch: 0,
     nominationStatus: '',
+    isPaid: false,
+    fee: 0,
   };
   loading = false;
 

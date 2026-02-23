@@ -9,11 +9,14 @@ export interface Candidate {
 
   memberId: number;
   memberName: string;
+  memberCode: string;
   adminNote: string;
   applicationReason: string;
   ballotNumber: number;
   batch: number;
   nominationStatus: string;
+  isPaid: boolean;
+  fee: number;
 }
 
 
@@ -22,6 +25,7 @@ export interface Candidate {
   providedIn: 'root'
 })
 export class CandidateService {
+
   private apiUrl = environment.baseUrl + '/Candidate';
 
   constructor(private http: HttpClient) { }
@@ -53,5 +57,9 @@ export class CandidateService {
   // ✅ Approve / Reject / Undo decision
   decideCandidate(candidateId: number, decision: Candidate): Observable<any> {
     return this.http.post(`${this.apiUrl}/${candidateId}/decision`, decision);
+  }
+
+  updatePaymentStatus(candidateId: number, isPaid: boolean): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${candidateId}/payment?isPaid=${isPaid}`, {});
   }
 }

@@ -1,15 +1,39 @@
 <div class="modal" *ngIf="showDetailsModal">
   <div class="modal-content">
-    <h2>Candidate Details</h2>
+    <!-- Header Section -->
+    <div class="modal-header">
+      <h2>Candidate Details</h2>
+
+      <mat-slide-toggle class="payment-toggle" [checked]="selectedCandidate?.isPaid"
+        (change)="onPaymentToggle($event.checked)">
+        {{ selectedCandidate?.isPaid ? 'Paid' : 'Not Paid' }}
+      </mat-slide-toggle>
+    </div>
 
     <div class="details-wrapper">
       <p><strong>Name:</strong> {{ selectedCandidate?.memberName }}</p>
+      <p><strong>Member Code:</strong> {{ selectedCandidate?.memberCode }}</p>
       <p><strong>Position:</strong> {{ selectedCandidate?.positionName }}</p>
-      <p><strong>Application Reason:</strong> {{ selectedCandidate?.applicationReason }}</p>
+      <p><strong>Supporters:</strong> {{ selectedCandidate?.applicationReason }}</p>
       <p><strong>Ballot No:</strong> {{ selectedCandidate?.ballotNumber }}</p>
       <p><strong>Batch:</strong> {{ selectedCandidate?.batch }}</p>
       <p><strong>Status:</strong> {{ selectedCandidate?.nominationStatus }}</p>
       <p><strong>Admin Note:</strong> {{ selectedCandidate?.adminNote }}</p>
+      <p class="fee-text">
+        <strong>Fee:</strong>
+        <span class="fee-amount">৳ {{ selectedCandidate?.fee }}</span>
+      </p>
+      <p>
+        <strong>Payment Status:</strong>
+
+        <span *ngIf="selectedCandidate?.isPaid" class="paid">
+          ✔ Paid
+        </span>
+
+        <span *ngIf="!selectedCandidate?.isPaid" class="not-paid">
+          ✖ Not Paid
+        </span>
+      </p>
     </div>
 
 
@@ -76,6 +100,7 @@
           <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Member Code</th>
             <th>Position</th>
             <th>Ballot No</th>
             <th>Batch</th>
@@ -93,6 +118,7 @@
               <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
 
             </td>
+            <td>{{ candidate.memberCode }}</td>
             <td>{{ candidate.positionName }}</td>
             <td>{{ candidate.ballotNumber }}</td>
             <td>{{ candidate.batch }}</td>

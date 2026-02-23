@@ -130,7 +130,7 @@ export class VotingScreenComponent implements OnInit {
   }
 
   initializeCountdown() {
-    const targetDate = new Date('2026-03-13T00:00:00').getTime();
+    const targetDate = new Date('2026-03-13T10:00:00').getTime();
     const now = new Date().getTime();
 
     if (now >= targetDate) {
