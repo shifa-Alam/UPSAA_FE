@@ -603,7 +603,7 @@
 }
 
 .fee-text {
-  font-family: 'SolaimanLipi', 'Noto Sans Bengali', sans-serif;
+  font-family: 'SolaimanLipiBangla';
   font-size: 1.1rem;
 }
 
@@ -668,11 +668,11 @@
   justify-content: space-around;
   align-items: center;
   gap: 20px;
-//   background: linear-gradient(90deg, #ffffff, #f3f6f9);
+  //   background: linear-gradient(90deg, #ffffff, #f3f6f9);
   padding: 12px 20px;
   border-radius: 16px;
-//   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  font-family: 'Segoe UI', sans-serif;
+  //   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'SolaimanLipiBangla';
   flex-wrap: wrap;
 }
 
@@ -685,13 +685,13 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 10px 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .dashboard-summary .summary-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
 .dashboard-summary .summary-item .icon {
@@ -723,6 +723,7 @@
     flex-direction: column;
     gap: 12px;
   }
+
   .dashboard-summary .summary-item {
     justify-content: flex-start;
     width: 100%;

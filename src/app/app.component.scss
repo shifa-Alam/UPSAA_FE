@@ -3,7 +3,7 @@ html,
 body {
   //height: 100%;
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'SolaimanLipiBangla';
 }
 
 /* ===== Sidenav Container ===== */
@@ -79,6 +79,7 @@ content-area router-outlet {
   display: none;
   /* hide hamburger on desktop */
 }
+
 .election-highlight {
   position: relative;
   color: #fff !important;
@@ -102,8 +103,13 @@ content-area router-outlet {
 }
 
 @keyframes rotateBorder {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
 }
 
 

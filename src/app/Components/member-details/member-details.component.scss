@@ -4,7 +4,7 @@
   padding: 12px;
   max-height: 550px;
   overflow-y: auto;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'SolaimanLipiBangla';
 
   mat-card-header {
     mat-card-title {
@@ -12,6 +12,7 @@
       font-weight: 600;
       margin-bottom: 2px;
     }
+
     mat-card-subtitle {
       font-size: 0.85rem;
       color: #666;
@@ -81,6 +82,7 @@
     }
   }
 }
+
 mat-card-actions {
   display: flex;
   align-items: center;
@@ -90,9 +92,12 @@ mat-card-actions {
 
 .member-code {
   display: inline-block;
-  padding: 4px 10px;                        /* bigger, comfortable */
-  border-radius: 16px;                       /* modern pill */
-  background: linear-gradient(135deg, #5e35b1, #8e24aa); /* deep purple gradient */
+  padding: 4px 10px;
+  /* bigger, comfortable */
+  border-radius: 16px;
+  /* modern pill */
+  background: linear-gradient(135deg, #5e35b1, #8e24aa);
+  /* deep purple gradient */
   color: #ffffff;
   font-weight: 600;
   font-size: 13px;
@@ -119,12 +124,14 @@ mat-card-actions {
 
 
 .spacer {
-  flex: 1 1 auto; /* Takes remaining space between buttons */
+  flex: 1 1 auto;
+  /* Takes remaining space between buttons */
 }
 
 @media (max-width: 480px) {
   .member-dialog-card {
     max-width: 100%;
+
     mat-card-content {
       .info-section {
         .info-item {
@@ -132,6 +139,7 @@ mat-card-actions {
           font-size: 0.8rem;
         }
       }
+
       .education-section .education-item {
         font-size: 0.75rem;
       }

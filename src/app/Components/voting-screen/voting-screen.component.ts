@@ -289,9 +289,11 @@ export class VotingScreenComponent implements OnInit {
       .pipe(finalize(() => { this.submitting = false; }))
       .subscribe({
         next: res => {
-          this.successMessage = res?.message || 'Vote submitted';
+          // this.successMessage = res?.message || 'Vote submitted';
           this.hasVoted = true;
           this.showConfirm = false;
+          this.snackBar.showSuccess(res?.message || 'Vote submitted');
+
         },
         error: err => {
           console.error('submit failed', err);

@@ -1,14 +1,3 @@
-// @font-face {
-//   font-family: 'SolaimanLipi';
-//   src: local('SolaimanLipi'), Arial, sans-serif;
-// }
-
-// body {
-//   margin: 0;
-//   font-family: 'SolaimanLipi', Arial, sans-serif;
-//   background: #f4f7f6;
-// }
-
 /* Header */
 .election-header {
   background: #001f3f;
@@ -17,6 +6,7 @@
   padding: 25px;
   font-size: 26px;
   font-weight: bold;
+  font-family: 'SolaimanLipiBangla';
 }
 
 /* Main Layout */
@@ -24,6 +14,7 @@
   display: flex;
   min-height: calc(100vh - 80px);
   flex-direction: row;
+
 }
 
 /* Sidebar */
@@ -133,6 +124,7 @@
   transition: all 0.3s ease, transform 0.2s ease;
   letter-spacing: 0.5px;
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+  font-family: 'SolaimanLipiBangla';
 }
 
 .submit-btn:hover {

@@ -21,26 +21,41 @@
         <div class="candidates" role="list">
           <label *ngFor="let c of pos.candidates" class="candidate-card" [class.selected]="isSelected(pos.id, c.id)"
             tabindex="0">
+
             <input type="{{ pos.maxSelect === 1 ? 'radio' : 'checkbox' }}" name="pos-{{pos.id}}"
               [checked]="isSelected(pos.id, c.id)"
               (change)="toggleSelection(pos, c, $any($event.target).checked,$event)"
               [attr.aria-checked]="isSelected(pos.id, c.id) ? 'true' : 'false'" [disabled]="hasVoted" />
 
             <div class="candidate-body">
-              <!-- <img *ngIf="c.photoUrl" [src]="c.photoUrl" alt="{{c.name}}" class="candidate-photo" /> -->
-              <!-- <img src="images/washimBhai.png" alt="{{c.ballotNumber}}" class="candidate-photo" /> -->
-              <!-- <img src="https://dummyimage.com/100x100/000/fff&text={{c.ballotNumber}}" alt="Ballot {{c.ballotNumber}}"
-                class="candidate-photo" /> -->
-              <div class="ballot-number">
-                {{c.ballotNumber}}
+
+              <!-- Image -->
+              <div class="candidate-image-wrapper">
+                <img *ngIf="c.photo; else noImage" [src]="'images/CandidateProfile/' + c.photo" [alt]="c.name"
+                  class="candidate-photo" />
+
+                <ng-template #noImage>
+                  <img src="images/default-user.png" alt="No Image" class="candidate-photo" />
+                </ng-template>
+
+                <!-- Ballot Badge -->
+                <!-- <span *ngIf="c.ballotNumber" class="ballot-badge">
+                  {{ c.ballotNumber }}
+                </span> -->
               </div>
 
-              <!-- <mat-icon>how_to_vote</mat-icon> -->
+              <!-- Info -->
               <div class="candidate-info">
-                <div class="cand-name">{{ c.name }}</div>
-                <div class="cand-bio" *ngIf="c.ballotNumber">Ballot No: {{ c.ballotNumber }}</div>
-                <div class="cand-bio" *ngIf="c.batch">Batch: {{ c.batch }}</div>
+                <div class="cand-name">
+                  {{ c.name }}
+                </div>
+
+                <div class="cand-meta-row" *ngIf="c.ballotNumber">
+                  <span class="ballot-label">Ballot No</span>
+                  <span class="ballot-value">#10{{ c.ballotNumber }}</span>
+                </div>
               </div>
+
             </div>
           </label>
         </div>
@@ -95,10 +110,8 @@
     </div>
   </div>
 
-  <!-- success -->
-  <div class="toast" *ngIf="successMessage">{{ successMessage }}</div>
 </div>
-<div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
+<!-- <div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
   <h2 class="countdown-title">ভোট গ্রহণ শুরু হতে বাকি</h2>
 
   <div class="countdown">
@@ -109,4 +122,4 @@
       <div class="label">{{ item.label }}</div>
     </div>
   </div>
-</div>
+</div> -->

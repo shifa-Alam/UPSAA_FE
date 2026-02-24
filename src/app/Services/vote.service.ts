@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 export interface CandidateBallot {
   id: number;
   name: string;
+  photo?: any;
   batch?: number;
   ballotNumber?: number;
   alreadyVoted?: boolean;
