@@ -1,0 +1,128 @@
+/* Root Colors */
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --text-color: #333;
+    --card-bg: #fff;
+    --card-shadow: rgba(0, 0, 0, 0.15);
+    font-family: 'SolaimanLipiBangla', sans-serif;
+}
+
+/* Container */
+#success-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    min-height: 100vh;
+    background: #f8f9fc;
+    font-family: 'SolaimanLipiBangla', sans-serif;
+}
+
+/* Card */
+.card {
+    background: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    border: 2px solid #64ffda;
+}
+
+
+/* Emoji */
+.emoji {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+/* Headings */
+.card h3 {
+    margin-top: 0;
+    font-size: 1.6rem;
+    color: white;
+    margin-bottom: 15px;
+    border-bottom: 2px solid;
+    padding-bottom: 10px;
+    font-family: 'SolaimanLipiBangla', sans-serif;
+}
+
+/* Voter Info */
+.voter-name {
+    font-size: 1.3rem;
+    margin: 10px 0;
+    color: white;
+}
+
+.voter-info {
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* Success Message */
+.success-msg {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* Extra Info */
+.extra-info {
+    font-size: 0.9rem;
+    color: wheat;
+    line-height: 1.5;
+}
+
+.extra-info span {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: whitesmoke;
+}
+
+/* Buttons */
+.card-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 450px;
+}
+
+.action-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease, transform 0.2s ease;
+}
+
+.cancel-btn {
+    background: #6c757d;
+    color: #fff;
+    font-family: 'SolaimanLipiBangla', sans-serif;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.success-btn {
+    background: green;
+    color: #fff;
+    font-family: 'SolaimanLipiBangla', sans-serif;
+}
+
+.success-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}

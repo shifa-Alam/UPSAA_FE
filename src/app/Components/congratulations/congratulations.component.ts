@@ -10,13 +10,13 @@ import { MemberCreateDto, MemberFeeDto } from '../../Services/member.service';
 @Component({
   selector: 'app-congratulations',
   standalone: true,
-  imports: [CommonModule, MatButtonModule,MatCardModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule],
   templateUrl: './congratulations.component.html',
   styleUrls: ['./congratulations.component.scss']
 })
 export class CongratulationsComponent implements OnInit {
 
-  data: MemberCreateDto | undefined |null
+  data: MemberCreateDto | undefined | null
 
   constructor(
     private router: Router,
@@ -25,7 +25,7 @@ export class CongratulationsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-     this.data = this.dataService.getMemberData();
+    this.data = this.dataService.getMemberData();
 
     // Only launch confetti if running in browser
     if (isPlatformBrowser(this.platformId)) {
@@ -36,7 +36,7 @@ export class CongratulationsComponent implements OnInit {
   goHome() {
     this.router.navigate(['/home']);
   }
-// ✅ Method to calculate total fees
+  // ✅ Method to calculate total fees
   calculateTotalFees(): number {
     if (!this.data?.fees || this.data.fees.length === 0) {
       return 0;

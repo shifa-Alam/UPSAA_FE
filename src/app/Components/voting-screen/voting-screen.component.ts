@@ -10,22 +10,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import confetti from 'canvas-confetti';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../../Services/snackbar.service';
+import { Member, MemberService } from '../../Services/member.service';
+import { Router } from '@angular/router';
 
-// type Candidate = {
-//   id: string;   // <-- force string
-//   name: string;
-//   batch: number;
-//   photoUrl?: string;
-//   bio?: string;
-//   extra?: string;
-// };
-
-// type Position = {
-//   id: string;  // <-- force string
-//   title: string;
-//   maxSelect: number; // 1 for single-choice, >1 for multi
-//   candidates: Candidate[];
-// };
 
 @Component({
   selector: 'app-voting-screen',
@@ -62,17 +49,31 @@ export class VotingScreenComponent implements OnInit {
   showCountdown = false;
   private countdownInterval: any;
   timeUnits: any[] = [];
+  loading: boolean = false;
+  member: Member | undefined;
 
-  constructor(private http: HttpClient, private voteService: VoteService, private snackBar: SnackbarService) { }
+
+  constructor(private http: HttpClient, private router: Router, private memberService: MemberService, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
     // this.launchOlympicStyleFireworks();
-
+    this.loadProfile();
     this.initializeCountdown();
     this.loadBallot();
     this.checkVoterStatus();
   }
+  loadProfile() {
 
+    this.memberService.getProfile().subscribe({
+      next: res => {
+        this.member = res;
+      },
+      error: () => {
+
+      },
+
+    });
+  }
   launchOlympicStyleFireworks() {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -166,11 +167,12 @@ export class VotingScreenComponent implements OnInit {
   }
 
   loadBallot(): void {
+    this.loading = true
     this.voteService.getBallot().subscribe({
       next: (data) => {
         this.ballot = data;
 
-        // initialize empty selections
+        //initialize empty selections
         for (const p of this.ballot.positions) {
           this.selections[p.id] = [];
         }
@@ -181,7 +183,8 @@ export class VotingScreenComponent implements OnInit {
       error: (err) => {
         this.errorMessage = 'Failed to load ballot';
         console.error(err);
-      }
+      },
+      complete: () => this.loading = false
     });
   }
 
@@ -222,7 +225,7 @@ export class VotingScreenComponent implements OnInit {
       if (arr.length >= pos.maxSelect) {
         // can't select more
         this.snackBar.showError(
-          `You can select up to ${pos.maxSelect} candidates for ${pos.name}.`
+          `আপনি ${pos.name} পদের জন্য সর্বোচ্চ ${pos.maxSelect} জন প্রার্থী নির্বাচন করতে পারবেন।`
         );
 
         // revert the checkbox immediately
@@ -275,6 +278,7 @@ export class VotingScreenComponent implements OnInit {
 
 
   submitVote() {
+
     if (!this.ballot) return;
     this.submitting = true;
 
@@ -289,10 +293,20 @@ export class VotingScreenComponent implements OnInit {
       .pipe(finalize(() => { this.submitting = false; }))
       .subscribe({
         next: res => {
-          // this.successMessage = res?.message || 'Vote submitted';
           this.hasVoted = true;
           this.showConfirm = false;
           this.snackBar.showSuccess(res?.message || 'Vote submitted');
+          // Example voter data
+          const voterData = {
+            name: this.member?.fullName,
+            batch: this.member?.batch,
+            memberCode: this.member?.memberCode,
+            voteDate: '১৩ মার্চ, ২০২৬ (বিকেল ৪:০০ টা)',
+            resultDate: '১৩ মার্চ, ২০২৬ (রাত ১০:৩০ মিনিট)'
+          };
+
+          // Navigate to votecard page with state
+          this.router.navigate(['/votecard'], { state: voterData });
 
         },
         error: err => {

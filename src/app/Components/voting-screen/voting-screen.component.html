@@ -1,10 +1,15 @@
+<div *ngIf="loading" class="loader-container">
+  <div class="spinner"></div>
+  <p>Loading ballot...</p>
+</div>
+
 <div class="voting-root" *ngIf="ballot">
   <header class="voting-header">
     <h1>{{ ballot.title }}</h1>
     <div class="voter-info">
-      <!-- <div *ngIf="voterName">Hello, {{ voterName }} (Batch {{ voterBatch }})</div> -->
+      <div *ngIf="member"> হ্যালো, {{ member.fullName }} (ব্যাচ {{ member.batch }})</div>
       <div *ngIf="hasVoted" class="voted-badge">
-        ✔ You have already voted
+        ✔ আপনি ইতোমধ্যে ভোট প্রদান করেছেন
       </div>
     </div>
   </header>
@@ -68,8 +73,8 @@
     </section>
 
     <aside class="summary">
-      <h3>Ballot Summary</h3>
-      <div *ngIf="!hasSelections()">No selections yet</div>
+      <h3>ভোটের সারাংশ</h3>
+      <div *ngIf="!hasSelections()">এখনো কোনো প্রার্থী বাছাই করা হয়নি।</div>
       <ul>
         <li *ngFor="let pos of ballot.positions">
           <strong>{{ pos.name }}:</strong>
@@ -80,9 +85,9 @@
       </ul>
 
       <div class="submit-area">
-        <button class="btn-submit" (click)="confirmSubmit()"
-          [disabled]="hasVoted || submitting || !hasSelections()">Submit Vote</button>
-        <div *ngIf="submitting">Submitting...</div>
+        <button class="btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">ভোট
+          জমা দিন</button>
+        <div *ngIf="submitting">জমা দেওয়া হচ্ছে...</div>
       </div>
     </aside>
   </main>
@@ -92,8 +97,8 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
       <mat-progress-bar *ngIf="submitting" mode="indeterminate">
       </mat-progress-bar>
-      <h4 id="confirm-title">Confirm your vote</h4>
-      <p>You're about to submit your ballot. This action cannot be changed. Please review:</p>
+      <h4 id="confirm-title">আপনি কি নিশ্চিত?</h4>
+      <p>ব্যালট পুনরায় চেক করুন। একবার জমা দিলে আর পরিবর্তন করা যাবে না।</p>
       <ul>
         <li *ngFor="let pos of ballot.positions">
           <strong>{{ pos.name }}:</strong>
@@ -104,14 +109,14 @@
       </ul>
 
       <div class="modal-actions">
-        <button (click)="submitVote()" [disabled]="submitting">Confirm & Submit</button>
-        <button (click)="showConfirm=false" [disabled]="submitting">Cancel</button>
+        <button class="submit-btn" (click)="submitVote()" [disabled]="submitting">হ্যাঁ,নিশ্চিত</button>
+        <button class="cancel-btn" (click)="showConfirm=false" [disabled]="submitting">ফিরে যান</button>
       </div>
     </div>
   </div>
 
 </div>
-<!-- <div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
+<div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
   <h2 class="countdown-title">ভোট গ্রহণ শুরু হতে বাকি</h2>
 
   <div class="countdown">
@@ -122,4 +127,4 @@
       <div class="label">{{ item.label }}</div>
     </div>
   </div>
-</div> -->
+</div>

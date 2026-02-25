@@ -24,6 +24,7 @@ import { VoteCastsComponent } from './Components/vote-casts/vote-casts.component
 import { CandidateAddComponent } from './Components/candidate-add/candidate-add.component';
 import { NominationApplicationComponent } from './Components/nomination-application/nomination-application.component';
 import { CandidatesV2Component } from './Components/candidates-v2/candidates-v2.component';
+import { VoteCardComponent } from './Components/vote-card/vote-card.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -46,11 +47,15 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['Representative', 'Member'] } // only these roles
   },
+  { path: 'votecard', component: VoteCardComponent },
+
+
   {
     path: 'dashboard', component: DashboardComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['SuperAdmin'] },// only these roles
     children: [
+
       // { path: 'candidates', component: CandidatesComponent },
       { path: 'candidates', component: CandidatesV2Component },
       { path: 'elections', component: ElectionsComponent },
