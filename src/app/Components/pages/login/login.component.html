@@ -22,14 +22,14 @@
       </div> -->
       <!-- Phone -->
       <div class="input-group">
-        <mat-icon>phone</mat-icon>
-        <input type="tel" formControlName="phone" placeholder="Phone Number"
+        <mat-icon>account_circle</mat-icon>
+        <input type="text" formControlName="phone" placeholder="Email or Phone"
           [class.invalid]="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched" />
       </div>
 
       <div class="error" *ngIf="loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid">
         <span *ngIf="loginForm.get('phone')?.hasError('required')">
-          Phone number is required
+         Email or Phone is required
         </span>
       </div>
 

@@ -125,7 +125,14 @@ export class AuthService {
   createUsersForActiveMembers() {
     return this.http.post(`${this.apiUrl}/CreateUsersForActiveMembers`, {});
   }
-
+// Reset password by phone or email
+  setUserPassword(phoneOrEmail: string, newPassword: string): Observable<any> {
+    const body = {
+      phoneOrEmail,
+      newPassword
+    };
+    return this.http.post(`${this.apiUrl}/set-password`, body);
+  }
   private decodeToken(token: string): JwtPayload {
     return jwtDecode<JwtPayload>(token);
   }

@@ -1,9 +1,6 @@
 <mat-card class="member-dialog-card">
   <mat-card-header>
-    <mat-card-title>
-      
-      {{ member.fullName }}
-    </mat-card-title>
+    <mat-card-title>{{ member.fullName }}</mat-card-title>
     <mat-card-subtitle>
       Batch: {{ member.batch }} |
       <span *ngIf="member.active" class="member-code" matTooltip="Member Code">{{ member.memberCode }}</span>
@@ -20,13 +17,47 @@
       <div class="info-item" *ngIf="isSuperAdmin()"><mat-icon>card_giftcard</mat-icon><span>Donation: {{ member.fees | memberFeeAmount:'Donation' }}</span></div>
       <div class="info-item total-item" *ngIf="isSuperAdmin()"><mat-icon>attach_money</mat-icon><span>Total: {{ member.fees | memberFeeAmount:'Total' }}</span></div>
     </div>
+
+    <!-- Password Change Section -->
+    <div *ngIf="isSuperAdmin()" class="password-section" style="margin-top:16px;">
+      <!-- Initial button -->
+      <button *ngIf="!showPasswordInput"
+              mat-raised-button
+              color="accent"
+              class="change-password-btn"
+              (click)="showPasswordInput = true">
+        <mat-icon>lock_reset</mat-icon>
+        Change Password
+      </button>
+
+      <!-- Input + Set Password -->
+      <div *ngIf="showPasswordInput" class="password-input-inline" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
+        <mat-form-field appearance="outline" style="width:100%;">
+  <mat-label>New Password</mat-label>
+  <input matInput 
+         [type]="hidePassword ? 'password' : 'text'" 
+         placeholder="Enter new password" 
+         [(ngModel)]="newPassword">
+
+  <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" 
+          [attr.aria-label]="'Hide or show password'" 
+          [attr.aria-pressed]="hidePassword">
+    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+  </button>
+</mat-form-field>
+
+        <button mat-raised-button color="primary" 
+                (click)="changePassword()" 
+                [disabled]="!newPassword || isLoading">
+          Set Password
+        </button>
+      </div>
+
+
+    </div>
   </mat-card-content>
 
   <mat-card-actions>
-    <button mat-raised-button (click)="createUser(member.id)" *ngIf="isSuperAdmin()" color="accent" [disabled]="isLoading">
-      Make Rep
-    </button>
-    <span class="spacer"></span>
     <button mat-raised-button (click)="close()" color="primary">Close</button>
   </mat-card-actions>
 </mat-card>

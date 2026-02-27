@@ -7,29 +7,74 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/auth.service';
 import { MemberService } from '../../Services/member.service';
+import { MatLabel, MatFormField, MatFormFieldModule } from "@angular/material/form-field";
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { SnackbarService } from '../../Services/snackbar.service';
 
 @Component({
   selector: 'app-member-details',
   standalone: true,
   imports: [
     MatButtonModule,
+    FormsModule,
     MatCardModule,
     CommonModule,
     MatIconModule,
-    MemberFeeAmountPipe
+    MemberFeeAmountPipe,
+    MatLabel,
+    MatFormField,
+    FormsModule,
+    MatInputModule,
+    MatFormFieldModule,
   ],
   templateUrl: './member-details.component.html',
   styleUrl: './member-details.component.scss'
 })
 export class MemberDetailsComponent {
+hidePassword = true; // default hide
   isLoading = false;
+  showPasswordInput: any;
+  newPassword: any;
+  passwordMessage: any;
+
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public member: any,
     private dialogRef: MatDialogRef<MemberDetailsComponent>,
     private memberService: MemberService,
-    public authService: AuthService
+    public authService: AuthService,
+    private snackBar: SnackbarService
   ) { }
+ changePassword() {
+  if (!this.newPassword) return;
+  this.isLoading = true;
+  this.passwordMessage = '';
 
+  const phoneOrEmail = this.member.email || this.member.phone;
+
+  this.authService.setUserPassword(phoneOrEmail, this.newPassword)
+    .subscribe({
+      next: (res: any) => {
+        this.passwordMessage = res.message;
+       
+        this.newPassword = '';
+        this.showPasswordInput = false; // hide input after success
+        this.isLoading = false;
+        this.snackBar.showSuccess(
+          this.passwordMessage
+        );
+      },
+      error: (err) => {
+        this.passwordMessage = err.error?.message || 'Error setting password';
+       
+        this.isLoading = false;
+        this.snackBar.showError(
+          this.passwordMessage
+        );
+      }
+    });
+}
   close() {
     this.dialogRef.close();
   }

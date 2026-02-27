@@ -44,7 +44,7 @@ export class MemberLandingComponent implements OnInit {
   totalDonationAmount = 0;
   totalAmount = 0;
   // For filters
-  filter: MemberFilterDto = { pageNumber: 1, pageSize: 10, gender: null, bloodGroup: "" };
+  filter: MemberFilterDto = { pageNumber: 1, pageSize: 10, gender: null, bloodGroup: "",active:null };
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
   // ✅ Loader state
   loading: boolean = false;
@@ -66,7 +66,7 @@ export class MemberLandingComponent implements OnInit {
     // Get batch from JWT
     this.batch = this.authService.getBatch();
 
-    this.loadBatchSummary(); // ✅ Add this here to load data on startup
+   // this.loadBatchSummary(); // ✅ Add this here to load data on startup
 
   }
   initFilter() {
@@ -76,6 +76,15 @@ export class MemberLandingComponent implements OnInit {
   checkScreenSize(): void {
     this.isMobile = window.innerWidth <= 768; // You can adjust the breakpoint
   }
+
+
+onTabChange(event: any) {
+  if (event.tab.textLabel === 'Batch Summary') {
+    this.loadBatchSummary();
+  }
+}
+
+  
   loadMembers() {
 
     this.loading = true; // Show loader
@@ -99,12 +108,15 @@ export class MemberLandingComponent implements OnInit {
   }
 
   loadBatchSummary(): void {
+    this.loading = true; // Show loader
     this.memberService.getBatchSummary().subscribe({
       next: (res) => {
         this.batchSummaries = res;
+        this.loading = false; // Show loader
       },
       error: () => {
         console.error('Failed to load batch summary.');
+        this.loading = false; // Show loader
       }
     });
   }

@@ -114,9 +114,52 @@ mat-card-actions {
 
 
 
+.change-password-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
+.change-password-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+}
 
+.success-msg {
+  background-color: #d4edda;
+  color: #155724;
+}
 
+.error-msg {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.password-input-inline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+    margin: 0;
+  }
+
+  button {
+    height: 36px;
+    font-weight: 600;
+    text-transform: uppercase;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+    }
+  }
+}
 
 
 

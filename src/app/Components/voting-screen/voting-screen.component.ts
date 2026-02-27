@@ -62,6 +62,14 @@ export class VotingScreenComponent implements OnInit {
     this.loadBallot();
     this.checkVoterStatus();
   }
+  toBanglaNumber(value: number): string {
+  const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+  return value
+    .toString()
+    .split('')
+    .map(d => banglaDigits[+d])
+    .join('');
+}
   loadProfile() {
 
     this.memberService.getProfile().subscribe({
@@ -74,6 +82,7 @@ export class VotingScreenComponent implements OnInit {
 
     });
   }
+  
   launchOlympicStyleFireworks() {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -225,7 +234,7 @@ export class VotingScreenComponent implements OnInit {
       if (arr.length >= pos.maxSelect) {
         // can't select more
         this.snackBar.showError(
-          `আপনি ${pos.name} পদের জন্য সর্বোচ্চ ${pos.maxSelect} জন প্রার্থী নির্বাচন করতে পারবেন।`
+          `আপনি ${pos.name} পদের জন্য সর্বোচ্চ ${this.toBanglaNumber(pos.maxSelect)} জন প্রার্থী নির্বাচন করতে পারবেন।`
         );
 
         // revert the checkbox immediately

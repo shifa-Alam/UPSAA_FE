@@ -1,4 +1,4 @@
-<mat-tab-group>
+<mat-tab-group (selectedTabChange)="onTabChange($event)">
     <!-- Overview Tab -->
     <mat-tab label="Overview">
         <div class="register-container">
@@ -74,10 +74,18 @@
                             <option value="Female">Female</option>
                         </select>
                     </div>
+
                     <div class="filter-item blood-group">
                         <select [(ngModel)]="filter.bloodGroup" (ngModelChange)="applyFilter()">
                             <option value="" selected>All Blood Groups</option>
                             <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+                        </select>
+                    </div>
+                    <div class="filter-item status">
+                        <select [(ngModel)]="filter.active" (ngModelChange)="applyFilter()">
+                            <option [ngValue]="null" selected>All Members</option>
+                            <option [ngValue]="true">Active Members</option>
+                            <option [ngValue]="false">Inactive Members</option>
                         </select>
                     </div>
                     <div class="filter-item reset-button">
@@ -257,7 +265,10 @@
                         </tbody>
                     </table>
                 </div>
-
+                <!-- Loader Overlay -->
+                <div class="loader-overlay" *ngIf="loading">
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter="60"></mat-progress-spinner>
+                </div>
                 <ng-template #noData>
                     <div class="no-data">No batch summary data available.</div>
                 </ng-template>

@@ -52,6 +52,7 @@ export interface MemberFilterDto {
   gender?: string | null;
   bloodGroup?: string;
   degreeId?: number;
+  active?:boolean|null
 }
 
 export interface Member {

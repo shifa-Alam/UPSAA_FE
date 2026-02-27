@@ -19,11 +19,18 @@
       <div *ngFor="let pos of ballot.positions; let i = index" class="position-card"
         [attr.aria-labelledby]="'pos-'+pos.id">
         <div class="position-header">
-          <h2 id="{{'pos-'+pos.id}}">{{ pos.name }}</h2>
-          <div class="select-info">Choose {{ pos.maxSelect === 1 ? '1' : 'up to ' + pos.maxSelect }}</div>
+          <h2 id="{{'pos-'+pos.id}}">{{ pos.name }} <span class="selectMax">({{ pos.maxSelect === 1
+            ? '১ জনকে ভোট দিন'
+            : 'সর্বোচ্চ ' + toBanglaNumber(pos.maxSelect) + ' জনকে ভোট দিন' }})</span></h2>
+          <!-- <div class="select-info">
+            {{ pos.maxSelect === 1
+            ? '১ জন প্রার্থী নির্বাচন করুন'
+            : 'সর্বোচ্চ ' + toBanglaNumber(pos.maxSelect) + ' জন প্রার্থী নির্বাচন করতে পারবেন' }}
+          </div> -->
         </div>
 
         <div class="candidates" role="list">
+
           <label *ngFor="let c of pos.candidates" class="candidate-card" [class.selected]="isSelected(pos.id, c.id)"
             tabindex="0">
 
@@ -31,7 +38,7 @@
               [checked]="isSelected(pos.id, c.id)"
               (change)="toggleSelection(pos, c, $any($event.target).checked,$event)"
               [attr.aria-checked]="isSelected(pos.id, c.id) ? 'true' : 'false'" [disabled]="hasVoted" />
-
+            <img *ngIf="isSelected(pos.id, c.id)" src="images/voteSeal.png" class="vote-seal" alt="Vote Seal" />
             <div class="candidate-body">
 
               <!-- Image -->
@@ -44,9 +51,10 @@
                 </ng-template>
 
                 <!-- Ballot Badge -->
-                <!-- <span *ngIf="c.ballotNumber" class="ballot-badge">
-                  {{ c.ballotNumber }}
-                </span> -->
+                <span *ngIf="c.batch" class="ballot-badge">
+                  Batch :{{c.batch}}
+                </span>
+
               </div>
 
               <!-- Info -->
@@ -57,7 +65,7 @@
 
                 <div class="cand-meta-row" *ngIf="c.ballotNumber">
                   <span class="ballot-label">Ballot No</span>
-                  <span class="ballot-value">#10{{ c.ballotNumber }}</span>
+                  <span class="ballot-value">99{{ c.ballotNumber }}</span>
                 </div>
               </div>
 
@@ -67,7 +75,9 @@
 
         <div class="position-footer">
           <button type="button" class="btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">Clear</button>
-          <div class="position-status">{{ selectedCount(pos.id) }} selected</div>
+          <div class="position-status"> {{ selectedCount(pos.id) === 0
+            ? 'কেউ নির্বাচিত হয়নি'
+            : toBanglaNumber(selectedCount(pos.id)) + ' জন নির্বাচিত' }}</div>
         </div>
       </div>
     </section>

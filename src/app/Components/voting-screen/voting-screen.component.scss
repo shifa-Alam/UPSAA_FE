@@ -89,16 +89,31 @@
   cursor: pointer;
 }
 
+
 .candidate-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
 }
 
 .candidate-card.selected {
-  border: 2px solid #4f46e5;
-  background: #eef2ff;
+  border: 1px solid #4f46e5;
+  background: hsl(133, 88%, 91%);
 }
 
+.vote-seal {
+  position: absolute;
+  top: 40px;
+  right: 8px;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
+  z-index: 10;
+}
+.selectMax{
+ color: mediumaquamarine;
+ font-size: smaller;
+ font-family: 'SolaimanLipiBangla';
+}
 .candidate-card input {
   position: absolute;
   top: 10px;
@@ -121,12 +136,17 @@
 }
 
 .ballot-badge {
+
+  background-color: #f0f0f0;
+  /* হালকা গ্রে ব্যাকগ্রাউন্ড */
+  color: #333;
+  /* টেক্সট কালার */
+
+
   position: absolute;
-  bottom: 8px;
+  bottom: 0px;
   left: 8px;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
-  color: white;
-  font-size: 11px;
+  font-size: 10px;
   padding: 3px 8px;
   border-radius: 20px;
   font-weight: 600;
@@ -150,7 +170,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-weight: 600;
+  /* make everything bold */
+  font-size: 13px;
+  /* optional: slightly bigger for emphasis */
 }
 
 /* Label */

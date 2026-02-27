@@ -498,14 +498,14 @@
 
 /* ===== Mobile adjustments ===== */
 @media (max-width: 768px) {
-  .batch-column {
-    display: none;
-  }
+  // .batch-column {
+  //   display: none;
+  // }
 
-  .filter-item.gender,
-  .filter-item.blood-group {
-    display: none;
-  }
+  // .filter-item.gender,
+  // .filter-item.blood-group {
+  //   // display: none;
+  // }
 
   .dashboard-summary {
     display: grid;
