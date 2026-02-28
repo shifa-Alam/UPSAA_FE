@@ -56,7 +56,7 @@ export class VotingScreenComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private memberService: MemberService, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
-    // this.launchOlympicStyleFireworks();
+     this.launchOlympicStyleFireworks();
     this.loadProfile();
     this.initializeCountdown();
     this.loadBallot();
@@ -188,10 +188,12 @@ export class VotingScreenComponent implements OnInit {
 
         // if you want to check "already voted" from API, you can set it here
         this.voted = false; // or derive from API if available
+         this.loading = false;
       },
       error: (err) => {
         this.errorMessage = 'Failed to load ballot';
         console.error(err);
+         this.loading = false;
       },
       complete: () => this.loading = false
     });

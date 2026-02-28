@@ -109,14 +109,14 @@
       </mat-progress-bar>
       <h4 id="confirm-title">আপনি কি নিশ্চিত?</h4>
       <p>ব্যালট পুনরায় চেক করুন। একবার জমা দিলে আর পরিবর্তন করা যাবে না।</p>
-      <ul>
+      <!-- <ul>
         <li *ngFor="let pos of ballot.positions">
           <strong>{{ pos.name }}:</strong>
           {{ getSelectedNamesForPosition(pos) }}
 
           <ng-template #abstain><em>Abstain / no selection</em></ng-template>
         </li>
-      </ul>
+      </ul> -->
 
       <div class="modal-actions">
         <button class="submit-btn" (click)="submitVote()" [disabled]="submitting">হ্যাঁ,নিশ্চিত</button>

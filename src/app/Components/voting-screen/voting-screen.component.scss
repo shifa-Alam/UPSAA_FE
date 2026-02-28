@@ -90,10 +90,10 @@
 }
 
 
-.candidate-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
-}
+// .candidate-card:hover {
+//   transform: translateY(-3px);
+//   box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+// }
 
 .candidate-card.selected {
   border: 1px solid #4f46e5;
