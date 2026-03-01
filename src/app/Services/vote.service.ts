@@ -30,7 +30,29 @@ export interface Ballot {
 export interface ApiResponse {
   message: string;
 }
+export interface CandidateResult {
+  candidateId: number;
+  memberName: string;
+  positionName: string;
+  votes: number;
+}
 
+export interface PositionResult {
+  positionId: number;
+  positionName: string;
+  totalVotes: number;
+  winners: CandidateResult[];
+}
+
+export interface ElectionResult {
+  electionId: number;
+  electionTitle: string;
+  electionDate: string;
+  totalVotes: number;
+  candidates: CandidateResult[];
+  leadingCandidate?: CandidateResult;
+  positions: PositionResult[];
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -52,6 +74,8 @@ export class VoteService {
   getResultsByPosition(positionId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/position/${positionId}/results`);
   }
-
+  getElectionResults(electionId: number): Observable<ElectionResult> {
+    return this.http.get<ElectionResult>(`${this.apiUrl}/results/${electionId}`);
+  }
 
 }
