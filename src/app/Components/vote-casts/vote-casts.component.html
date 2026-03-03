@@ -1,3 +1,7 @@
+
+
+
+
 <div class="election-dashboard">
 
     <!-- Header -->
@@ -9,63 +13,21 @@
         </div>
     </header>
 
-    <!-- Summary Cards -->
-    <div class="summary-cards">
-        <div class="card">
-            <span class="card-title">Total Votes</span>
-            <h3>{{ totalVotes }}</h3>
-        </div>
+<div class="tabs">
+  <button 
+    [class.active]="activeTab === 'overview'" 
+    (click)="setTab('overview')">
+    Overview
+  </button>
 
-        <div class="card">
-            <span class="card-title">Candidates</span>
-            <h3>{{ candidates.length }}</h3>
-        </div>
+  <button 
+    [class.active]="activeTab === 'details'" 
+    (click)="setTab('details')">
+    Detailed Results
+  </button>
+</div>
 
-        <!-- <div class="card highlight-card">
-            <span class="card-title">Leading Candidate</span>
-            <h4>{{ leadingCandidate?.memberName }}</h4>
-            <p class="vote-count">{{ leadingCandidate?.votes }} votes</p>
-            <div class="progress-bar">
-                <div class="progress" [style.width.%]="(leadingCandidate?.votes / totalVotes * 100) || 0">
-                </div>
-            </div>
-        </div> -->
 
-        <div class="card">
-            <span class="card-title">Positions</span>
-            <h3>{{ positions.length }}</h3>
-        </div>
-    </div>
-
-    <!-- Winners by Position -->
-    <div class="section">
-        <h3 class="section-title">Winners by Position</h3>
-
-        <div class="position-grid">
-            <div class="position-card" *ngFor="let pos of positions">
-                <h4>{{ pos.positionName }}</h4>
-
-                <div class="winner" *ngFor="let winner of pos.winners; let i = index">
-
-                    <div class="winner-header">
-                        <span class="winner-name">
-                            {{ winner.memberName }}
-                            <span *ngIf="i === 0">🥇</span>
-                            <span *ngIf="i === 1">🥈</span>
-                            <span *ngIf="i === 2">🥉</span>
-                        </span>
-                        <span class="winner-votes">{{ winner.votes }}</span>
-                    </div>
-
-                    <div class="progress-bar small">
-                        <div class="progress" [style.width.%]="(winner.votes / pos.totalVotes * 100) || 0">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
     <!-- Results Table -->
     <div class="section">
