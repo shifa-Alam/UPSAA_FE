@@ -22,7 +22,8 @@
     <nav class="mobile-nav-links" *ngIf="!authService.hasRole('SuperAdmin');">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }">Home</a>
-      <a mat-button (click)="sidenav.close()" routerLink="/election" routerLinkActive="active-link" class="election-highlight">Election</a>
+      <a mat-button (click)="sidenav.close()" routerLink="/election" routerLinkActive="active-link"
+        class="election-highlight">Election</a>
       <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">Members</a>
       <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">Register</a>
       <!-- <a mat-button (click)="sidenav.close()" routerLink="/directory" routerLinkActive="active-link">Directory</a> -->
@@ -78,12 +79,13 @@
             <a mat-button routerLink="/" routerLinkActive="active-link"
               [routerLinkActiveOptions]="{ exact: true }">Home</a>
             <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
-              routerLinkActive="active-link" >Election</a>
+              routerLinkActive="active-link">Election</a>
             <a mat-button routerLink="/members" routerLinkActive="active-link">Members</a>
             <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
             <!-- <a mat-button routerLink="/directory" routerLinkActive="active-link">Directory</a> -->
             <!-- <a mat-button routerLink="/contact" routerLinkActive="active-link">Contact</a> -->
-             <a mat-button routerLink="/nomination" routerLinkActive="active-link" class="election-highlight">Nomination</a>
+            <a mat-button routerLink="/nomination" routerLinkActive="active-link"
+              class="election-highlight">Nomination</a>
 
             <!-- Login / Logout -->
             <!-- <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
@@ -135,32 +137,37 @@
       <!-- Mobile Footer -->
       <footer class="mobile-footer" *ngIf="isMobile$ | async">
         <nav class="footer-nav">
-          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
+          <!-- Home -->
+          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+            class="footer-btn">
             <mat-icon>home</mat-icon>
             <span>Home</span>
           </a>
-          <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
+
+          <!-- Vote -->
+          <a mat-button class="footer-btn vote-btn"
+            [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
             routerLinkActive="active-link">
             <mat-icon>how_to_vote</mat-icon>
-            <span>Election</span>
+            <span>Vote</span>
           </a>
+
           <!-- Profile or Vote Result -->
           <ng-container *ngIf="!authService.hasRole('SuperAdmin'); else voteResultLink">
-            <a mat-button routerLink="/profile" routerLinkActive="active-link">
+            <a mat-button class="footer-btn" routerLink="/profile" routerLinkActive="active-link">
               <mat-icon>person</mat-icon>
               <span>Profile</span>
             </a>
           </ng-container>
 
           <ng-template #voteResultLink>
-            <a mat-button routerLink="/dashboard/vote-casts" routerLinkActive="active-link">
+            <a mat-button class="footer-btn" routerLink="/dashboard/vote-casts" routerLinkActive="active-link">
               <mat-icon>analytics</mat-icon>
               <span>Results</span>
             </a>
           </ng-template>
         </nav>
       </footer>
-
 
     </div>
   </mat-sidenav-content>

@@ -20,8 +20,8 @@
         [attr.aria-labelledby]="'pos-'+pos.id">
         <div class="position-header">
           <h2 id="{{'pos-'+pos.id}}">{{ pos.name }} <span class="selectMax">({{ pos.maxSelect === 1
-            ? '১ জনকে ভোট দিন'
-            : 'সর্বোচ্চ ' + toBanglaNumber(pos.maxSelect) + ' জনকে ভোট দিন' }})</span></h2>
+              ? '১ জনকে ভোট দিন'
+              : 'সর্বোচ্চ ' + toBanglaNumber(pos.maxSelect) + ' জনকে ভোট দিন' }})</span></h2>
           <!-- <div class="select-info">
             {{ pos.maxSelect === 1
             ? '১ জন প্রার্থী নির্বাচন করুন'
@@ -43,8 +43,9 @@
 
               <!-- Image -->
               <div class="candidate-image-wrapper">
-                <img *ngIf="c.photo; else noImage" [src]="'images/CandidateProfile/' + c.photo" [alt]="c.name"
-                  class="candidate-photo" />
+                <!-- <img *ngIf="c.photo; else noImage" [src]="'images/CandidateProfile/' + c.photo" [alt]="c.name"
+                  class="candidate-photo" /> -->
+                <img src="images/default-user.png" alt="No Image" class="candidate-photo" />
 
                 <ng-template #noImage>
                   <img src="images/default-user.png" alt="No Image" class="candidate-photo" />
@@ -65,7 +66,7 @@
 
                 <div class="cand-meta-row" *ngIf="c.ballotNumber">
                   <span class="ballot-label">Ballot No</span>
-                  <span class="ballot-value">99{{ c.ballotNumber }}</span>
+                  <span class="ballot-value">{{ c.ballotNumber }}</span>
                 </div>
               </div>
 
@@ -126,7 +127,7 @@
   </div>
 
 </div>
-<div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
+<!-- <div *ngIf="!ballot && showCountdown" class="countdown-wrapper">
   <h2 class="countdown-title">ভোট গ্রহণ শুরু হতে বাকি</h2>
 
   <div class="countdown">
@@ -137,4 +138,4 @@
       <div class="label">{{ item.label }}</div>
     </div>
   </div>
-</div>
+</div> -->

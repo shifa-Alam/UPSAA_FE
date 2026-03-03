@@ -240,64 +240,88 @@ content-area router-outlet {
 }
 
 
+/* Mobile Footer Container - 3D look flush at bottom */
 .mobile-footer {
   position: fixed;
-  bottom: 0;
+  bottom: 0; /* flush with bottom */
   left: 0;
-  width: 100%;
-  background: linear-gradient(90deg, #4facfe, #00f2fe);
-  /* colorful gradient */
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 0;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.15);
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  right: 0;
+  border-radius:  25px 25px 0 0; /* rounded only top corners */
+  background: linear-gradient(135deg, #b4f3fe, #b4fbb4);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.25), 0 -2px 6px rgba(0,0,0,0.15); /* shadows above footer */
   z-index: 1000;
-  transition: background 0.3s;
+  padding: 0.5rem 0;
 }
 
-.mobile-footer .footer-nav {
+/* Footer Navigation */
+.footer-nav {
   display: flex;
   justify-content: space-around;
-  width: 100%;
-}
-
-.mobile-footer .footer-nav a {
-  display: flex;
-  flex-direction: column;
-  /* icon above text */
   align-items: center;
-  font-size: 12px;
-  color: #fff;
-  transition: transform 0.2s, color 0.2s;
-  position: relative;
 }
 
-.mobile-footer .footer-nav a mat-icon {
-  font-size: 24px;
-  transition: transform 0.2s, color 0.2s;
+/* Footer Buttons */
+.footer-btn {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap:4px;
+  font-size: 0.75rem;
+  color: #0e0303;
+  transition: all 0.2s ease;
+  min-width: 50px;
 }
 
-.mobile-footer .footer-nav a span {
-  font-size: 11px;
-  margin-top: 2px;
+
+/* Hover Effect */
+.footer-btn:hover {
+  transform: translateY(-4px);
+  color: #1976d2;
 }
 
-.mobile-footer .footer-nav a:hover {
-  color: #ffd700;
-  /* gold on hover */
-  transform: translateY(-2px);
+/* Active Link */
+.active-link.footer-btn {
+  color: blueviolet;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.mobile-footer .footer-nav a.active-link {
-  color: #ffeb3b;
-  /* bright yellow for active */
+/* Vote Button - 3D accent */
+.vote-btn {
+  background: linear-gradient(135deg, #060302, #3c210d);
+   padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-weight: 500;
+  box-shadow: 0 6px 12px rgba(255,126,95,0.35), 0 3px 6px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
 }
 
-.mobile-footer .footer-nav a.active-link mat-icon {
-  animation: bounce 0.3s;
+.vote-btn mat-icon,
+.vote-btn span {
+  color: #fafafa;
 }
+
+// .vote-btn:hover {
+//   background: linear-gradient(135deg, #ff6a3d, #ff9e70);
+//   transform: translateY(-6px);
+//   box-shadow: 0 8px 16px rgba(255,126,95,0.5), 0 4px 8px rgba(0,0,0,0.2);
+// }
+
+.vote-btn.active-link {
+  color: blueviolet;
+  box-shadow: 0 0 0 5px rgba(255,126,95,0.4);
+}
+
+
+.footer-btn mat-icon {
+      font-size: 15px;
+      align-items: center;
+    height: 15px;
+    width: 15px;
+    display: block;
+}
+
+
 
 /* simple bounce effect for active icon */
 @keyframes bounce {
