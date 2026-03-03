@@ -20,14 +20,18 @@ interface Position {
   styleUrl: './vote-casts.component.scss'
 })
 export class VoteCastsComponent implements OnInit {
+  activeTab: 'overview' | 'details' = 'overview';
 
-   electionDate: string = '';
+  setTab(tab: 'overview' | 'details') {
+    this.activeTab = tab;
+  }
+  electionDate: string = '';
   totalVotes: number = 0;
   leadingCandidate?: CandidateResult;
   candidates: CandidateResult[] = [];
   positions: PositionResult[] = [];
 
-  constructor(private voteService: VoteService) {}
+  constructor(private voteService: VoteService) { }
 
   ngOnInit(): void {
     this.getElectionResults();
