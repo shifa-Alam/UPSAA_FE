@@ -52,6 +52,9 @@ export interface ElectionResult {
   candidates: CandidateResult[];
   leadingCandidate?: CandidateResult;
   positions: PositionResult[];
+  totalCandidate?:number;
+  totalVoter?:number;
+  totalPosition?:number;
 }
 @Injectable({
   providedIn: 'root'

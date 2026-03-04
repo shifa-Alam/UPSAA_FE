@@ -43,9 +43,9 @@
 
               <!-- Image -->
               <div class="candidate-image-wrapper">
-                <!-- <img *ngIf="c.photo; else noImage" [src]="'images/CandidateProfile/' + c.photo" [alt]="c.name"
-                  class="candidate-photo" /> -->
-                <img src="images/default-user.png" alt="No Image" class="candidate-photo" />
+                <img *ngIf="c.photo; else noImage" [src]="'images/CandidateProfile/' + c.photo" [alt]="c.name"
+                  class="candidate-photo" />
+                <!-- <img src="images/default-user.png" alt="No Image" class="candidate-photo" /> -->
 
                 <ng-template #noImage>
                   <img src="images/default-user.png" alt="No Image" class="candidate-photo" />

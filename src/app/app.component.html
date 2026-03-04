@@ -138,19 +138,24 @@
       <footer class="mobile-footer" *ngIf="isMobile$ | async">
         <nav class="footer-nav">
           <!-- Home -->
-          <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
-            class="footer-btn">
-            <mat-icon>home</mat-icon>
-            <span>Home</span>
-          </a>
+          <div>
+            <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+              class="footer-btn">
+              <mat-icon>home</mat-icon>
+              <span>Home</span>
+            </a>
+          </div>
 
-          <!-- Vote -->
-          <a mat-button class="footer-btn vote-btn"
-            [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
-            routerLinkActive="active-link">
-            <mat-icon>how_to_vote</mat-icon>
-            <span>Vote</span>
-          </a>
+          <div>
+            <!-- Vote -->
+            <a mat-button class="footer-btn"
+              [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
+              routerLinkActive="active-link">
+              <mat-icon>how_to_vote</mat-icon>
+              <span>Vote</span>
+            </a>
+          </div>
+
 
           <!-- Profile or Vote Result -->
           <ng-container *ngIf="!authService.hasRole('SuperAdmin'); else voteResultLink">
