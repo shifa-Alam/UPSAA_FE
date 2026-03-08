@@ -56,20 +56,20 @@ export class VotingScreenComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private memberService: MemberService, private voteService: VoteService, private snackBar: SnackbarService) { }
 
   ngOnInit() {
-     this.launchOlympicStyleFireworks();
+    this.launchOlympicStyleFireworks();
     this.loadProfile();
-    this.initializeCountdown();
+    
     this.loadBallot();
     this.checkVoterStatus();
   }
   toBanglaNumber(value: number): string {
-  const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-  return value
-    .toString()
-    .split('')
-    .map(d => banglaDigits[+d])
-    .join('');
-}
+    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return value
+      .toString()
+      .split('')
+      .map(d => banglaDigits[+d])
+      .join('');
+  }
   loadProfile() {
 
     this.memberService.getProfile().subscribe({
@@ -82,9 +82,9 @@ export class VotingScreenComponent implements OnInit {
 
     });
   }
-  
+
   launchOlympicStyleFireworks() {
-    const duration = 3000;
+    const duration = 500;
     const end = Date.now() + duration;
 
     // Big opening burst with cheer
@@ -180,7 +180,7 @@ export class VotingScreenComponent implements OnInit {
     this.voteService.getBallot().subscribe({
       next: (data) => {
         this.ballot = data;
-
+        // this.showCountdown = false;
         //initialize empty selections
         for (const p of this.ballot.positions) {
           this.selections[p.id] = [];
@@ -188,12 +188,13 @@ export class VotingScreenComponent implements OnInit {
 
         // if you want to check "already voted" from API, you can set it here
         this.voted = false; // or derive from API if available
-         this.loading = false;
+        this.loading = false;
       },
       error: (err) => {
         this.errorMessage = 'Failed to load ballot';
         console.error(err);
-         this.loading = false;
+        this.loading = false;
+        this.initializeCountdown();
       },
       complete: () => this.loading = false
     });
