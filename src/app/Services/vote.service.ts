@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
@@ -80,5 +80,16 @@ export class VoteService {
   getElectionResults(electionId: number): Observable<ElectionResult> {
     return this.http.get<ElectionResult>(`${this.apiUrl}/results/${electionId}`);
   }
+  filterElectionResults(electionId: number, positionId?: number): Observable<CandidateResult[]> {
+  // 1️⃣ Build query params
+  let params = new HttpParams().set('electionId', electionId.toString());
+
+  if (positionId != null) {
+    params = params.set('positionId', positionId.toString());
+  }
+
+  // 2️⃣ Call backend API
+  return this.http.get<CandidateResult[]>(`${this.apiUrl}/FilterResult`, { params });
+}
 
 }
