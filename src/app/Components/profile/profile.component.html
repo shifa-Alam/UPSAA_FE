@@ -17,6 +17,7 @@
 
     <!-- Avatar -->
     <div class="avatar-wrapper" (click)="fileInput.click()">
+      
       <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl"
         class="avatar" />
       <ng-template #initialsAvatar>
