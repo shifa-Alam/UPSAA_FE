@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { NavbarComponent } from "./Components/shared/navbar/navbar.component";
+import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FooterComponent } from "./Components/shared/footer/footer.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,12 +11,13 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './Services/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MemberService } from './Services/member.service';
+import { ThemeService } from './Services/theme.service';
 
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -31,6 +31,7 @@ import { map } from 'rxjs/operators';
     MatIconModule,
     MatProgressBarModule,
     MatMenuModule,
+    FooterComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -42,7 +43,14 @@ export class AppComponent implements OnInit {
   title = 'upsaa';
   @ViewChild('sidenav') sidenav!: MatSidenav;
   isMobile$: Observable<boolean>;
+  /** The dashboard has its own full-height sidebar layout — the public site footer doesn't belong under it. */
+  hideFooter = false;
   ngOnInit() {
+    this.hideFooter = this.router.url.startsWith('/dashboard');
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(e => this.hideFooter = e.urlAfterRedirects.startsWith('/dashboard'));
+
     if (this.authService.isLoggedIn()) {
       this.memberService.getProfile().subscribe({
         next: res => {
@@ -63,6 +71,7 @@ export class AppComponent implements OnInit {
   constructor(
     public loadingService: LoadingService,
     public authService: AuthService, // for login/logout
+    public themeService: ThemeService,
     private memberService: MemberService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     this.isMobile$ = this.breakpointObserver

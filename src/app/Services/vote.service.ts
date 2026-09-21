@@ -44,6 +44,27 @@ export interface PositionResult {
   winners: CandidateResult[];
 }
 
+export interface CommitteeMember {
+  memberName: string;
+  photo: string | null;
+  batch?: number;
+  votes: number;
+}
+
+export interface CommitteePosition {
+  positionId: number;
+  positionName: string;
+  priority: number;
+  members: CommitteeMember[];
+}
+
+export interface Committee {
+  electionId: number;
+  electionTitle: string;
+  electionDate: string;
+  positions: CommitteePosition[];
+}
+
 export interface ElectionResult {
   electionId: number;
   electionTitle: string;
@@ -79,6 +100,10 @@ export class VoteService {
   }
   getElectionResults(electionId: number): Observable<ElectionResult> {
     return this.http.get<ElectionResult>(`${this.apiUrl}/results/${electionId}`);
+  }
+  /** Public — no login required. Winners of the most recently concluded election. */
+  getPublicCommittee(): Observable<Committee> {
+    return this.http.get<Committee>(`${this.apiUrl}/PublicCommittee`);
   }
   filterElectionResults(electionId: number, positionId?: number): Observable<CandidateResult[]> {
   // 1️⃣ Build query params

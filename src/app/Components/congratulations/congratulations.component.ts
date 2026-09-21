@@ -53,7 +53,7 @@ export class CongratulationsComponent implements OnInit {
         angle: Math.random() * 360,
         spread: 60,
         origin: { x: Math.random(), y: Math.random() - 0.2 },
-        colors: ['#00bcd4', '#ff4081', '#ffc107', '#4caf50']
+        colors: ['#0b5ed7', '#22d3ee', '#67e8f9', '#f5a623']
       });
       if (Date.now() < end) {
         requestAnimationFrame(frame);

@@ -1,0 +1,77 @@
+.page-header {
+  position: relative;
+  overflow: hidden;
+  /* Aurora-style wash of the node palette over the navy hero gradient — colorful,
+     but the dark base keeps white text comfortably readable. */
+  background:
+    radial-gradient(circle at 12% 18%, rgba(245, 158, 11, 0.4), transparent 42%),
+    radial-gradient(circle at 88% 12%, rgba(99, 102, 241, 0.4), transparent 46%),
+    radial-gradient(circle at 78% 90%, rgba(20, 184, 166, 0.35), transparent 46%),
+    radial-gradient(circle at 15% 92%, rgba(251, 113, 133, 0.3), transparent 42%),
+    var(--gradient-hero);
+  padding: var(--space-7) 0 var(--space-6);
+  color: #fff;
+}
+
+/* Colorful accent stripe — a consistent decorative touch across every page header. */
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b, #6366f1, #14b8a6, #fb7185, #10b981, #8b5cf6);
+}
+
+.page-header__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.page-header__eyebrow {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-300);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-pill);
+  padding: var(--space-1) var(--space-3);
+}
+
+.page-header__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.page-header__subtitle {
+  font-size: var(--font-size-md);
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 640px;
+  margin: 0;
+}
+
+.page-header__extra:empty {
+  display: none;
+}
+
+/* The `plain` variant input still exists for callers, but every header now
+   renders identically — one consistent colorful hero look across the whole site,
+   public pages and admin screens alike. */
+
+@media (max-width: 768px) {
+  .page-header {
+    padding: var(--space-6) 0 var(--space-5);
+  }
+
+  .page-header__title {
+    font-size: var(--font-size-2xl);
+  }
+}

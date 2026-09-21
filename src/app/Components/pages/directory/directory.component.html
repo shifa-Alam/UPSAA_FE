@@ -1,28 +1,90 @@
-<div class="directory">
-  <!-- Loader (absolute center) -->
-  <div *ngIf="isLoading" class="loader-overlay">
-    <mat-progress-spinner
-      mode="indeterminate"
-      diameter="50"
-      strokeWidth="4"
-      color="primary">
-    </mat-progress-spinner>
-  </div>
+<div class="directory-page">
 
-  <!-- Member Cards -->
-  <mat-card *ngFor="let alum of memberList" class="alum-card">
-    <div class="alum-info">
-      <img src="images/female.png" alt="alumni" *ngIf="alum.gender === 'Female'" />
-      <img src="images/male.png" alt="alumni" *ngIf="alum.gender === 'Male'" />
+  <app-page-header variant="hero" eyebrow="সদস্য তালিকা" title="অ্যালামনাই ডিরেক্টরি"
+    subtitle="উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশনের সক্রিয় নিবন্ধিত সদস্যদের তালিকা।">
+  </app-page-header>
 
-      <h3>{{ alum.fullName }}</h3>
-      <div class="alum-details">
-        <p><mat-icon>work</mat-icon> {{ alum.currentDesignation }}</p>
-        <p><mat-icon>business</mat-icon> {{ alum.employer }}</p>
-        <p><mat-icon>mail_outline</mat-icon> {{ alum.email }}</p>
-        <p><mat-icon>school</mat-icon> {{ alum.batch }}</p>
-        <p><mat-icon>location_on</mat-icon> {{ alum.currentCity }}</p>
+  <div class="upsaa-container directory-body">
+
+    <div class="directory-filters">
+      <div class="filter-field">
+        <mat-icon>person_search</mat-icon>
+        <input type="text" placeholder="নাম দিয়ে খুঁজুন" [(ngModel)]="filters.name" (ngModelChange)="onFilterChange()" />
+      </div>
+
+      <div class="filter-field">
+        <mat-icon>bloodtype</mat-icon>
+        <select [(ngModel)]="filters.bloodGroup" (ngModelChange)="onFilterChange()">
+          <option value="">সকল রক্তের গ্রুপ</option>
+          <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <mat-icon>place</mat-icon>
+        <input type="text" placeholder="শহর দিয়ে খুঁজুন" [(ngModel)]="filters.city" (ngModelChange)="onFilterChange()" />
+      </div>
+
+      <div class="filter-field">
+        <mat-icon>school</mat-icon>
+        <input type="text" placeholder="ব্যাচ (যেমনঃ ২০১৫)" [(ngModel)]="filters.batch"
+          (ngModelChange)="onFilterChange()" />
+      </div>
+
+      <button type="button" class="filter-reset" (click)="resetFilters()">
+        <mat-icon>restart_alt</mat-icon> রিসেট
+      </button>
+    </div>
+
+    <div class="directory-loading" *ngIf="loading">
+      <mat-icon class="directory-loading__icon">autorenew</mat-icon>
+      <span>তথ্য লোড হচ্ছে...</span>
+    </div>
+
+    <app-empty-state *ngIf="!loading && loadError" icon="groups" title="তালিকা লোড করা যায়নি"
+      message="কিছুক্ষণ পর আবার চেষ্টা করুন।"></app-empty-state>
+
+    <app-empty-state *ngIf="!loading && !loadError && members.length === 0" icon="search_off"
+      title="কোনো সদস্য পাওয়া যায়নি" message="ভিন্ন নাম, ব্যাচ, শহর বা রক্তের গ্রুপ দিয়ে খুঁজে দেখুন।"></app-empty-state>
+
+    <div class="directory-meta" *ngIf="!loading && !loadError && members.length > 0">
+      মোট {{ totalItems }} জন সক্রিয় সদস্য &middot; পৃষ্ঠা {{ pageNumber }} / {{ totalPages }}
+    </div>
+
+    <div class="directory-grid" *ngIf="!loading && !loadError && members.length > 0">
+      <div class="member-card" *ngFor="let m of members">
+        <ng-container *ngIf="m.photo; else memberInitials">
+          <img [src]="m.photo" [alt]="m.fullName" class="member-card__photo" />
+        </ng-container>
+        <ng-template #memberInitials>
+          <div class="member-card__initials">{{ initials(m.fullName) }}</div>
+        </ng-template>
+
+        <div class="member-card__name">{{ m.fullName }}</div>
+        <div class="member-card__meta" *ngIf="m.currentDesignation">{{ m.currentDesignation }}</div>
+        <div class="member-card__meta" *ngIf="m.employer">{{ m.employer }}</div>
+
+        <div class="member-card__tags">
+          <span class="member-card__tag" *ngIf="m.batch">ব্যাচ {{ m.batch }}</span>
+          <span class="member-card__tag" *ngIf="m.currentCity">
+            <mat-icon>place</mat-icon>{{ m.currentCity }}
+          </span>
+          <span class="member-card__tag member-card__tag--blood" *ngIf="m.bloodGroup">
+            <mat-icon>bloodtype</mat-icon>{{ m.bloodGroup }}
+          </span>
+        </div>
       </div>
     </div>
-  </mat-card>
+
+    <nav class="directory-pagination" *ngIf="!loading && !loadError && totalPages > 1">
+      <button type="button" [disabled]="pageNumber === 1" (click)="goToPage(pageNumber - 1)">
+        <mat-icon>chevron_left</mat-icon> পূর্ববর্তী
+      </button>
+      <span class="directory-pagination__page">{{ pageNumber }} / {{ totalPages }}</span>
+      <button type="button" [disabled]="pageNumber === totalPages" (click)="goToPage(pageNumber + 1)">
+        পরবর্তী <mat-icon>chevron_right</mat-icon>
+      </button>
+    </nav>
+
+  </div>
 </div>

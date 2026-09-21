@@ -1,0 +1,376 @@
+.committee-page {
+  background: var(--color-surface-alt);
+}
+
+.committee-sections {
+  position: relative;
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-8);
+  overflow: hidden;
+}
+
+/* Soft festive glow behind the tree — subtle, not distracting. */
+.committee-sections::before,
+.committee-sections::after {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.16;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.committee-sections::before {
+  top: -120px;
+  left: -140px;
+  background: radial-gradient(circle, #f59e0b, transparent 70%);
+}
+
+.committee-sections::after {
+  bottom: -160px;
+  right: -140px;
+  background: radial-gradient(circle, #6366f1, transparent 70%);
+}
+
+.org-tree {
+  position: relative;
+  z-index: 1;
+}
+
+.committee-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) 0;
+  color: var(--color-ink-600);
+  font-size: var(--font-size-md);
+}
+
+.committee-loading__icon {
+  animation: committee-spin 1.1s linear infinite;
+  color: var(--color-primary-500);
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+@keyframes committee-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Org tree ===== */
+.org-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: auto;
+  padding: var(--space-5) 0 var(--space-6);
+}
+
+.org-tier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.org-tier__stem {
+  width: 3px;
+  height: 36px;
+  background: var(--color-primary-200);
+}
+
+.org-tier__row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-7);
+}
+
+.org-tier__row--wide {
+  flex-wrap: wrap;
+  max-width: 1120px;
+  gap: var(--space-5) var(--space-6);
+}
+
+/* Branch lines: a horizontal bar spans between the first and last node's
+   centers, with a short vertical stem from the bar down to each node. */
+.org-tier__row--branched {
+  padding-top: 32px;
+}
+
+.org-tier__row--branched .org-node {
+  position: relative;
+  padding-top: 32px;
+}
+
+.org-tier__row--branched .org-node::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 32px;
+  background: var(--color-primary-200);
+  transform: translateX(-50%);
+}
+
+.org-tier__row--branched .org-node::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  height: 3px;
+  background: var(--color-primary-200);
+  left: calc(var(--space-7) / -2);
+  right: calc(var(--space-7) / -2);
+}
+
+.org-tier__row--branched .org-node:first-child::after {
+  left: 50%;
+}
+
+.org-tier__row--branched .org-node:last-child::after {
+  right: 50%;
+}
+
+.org-tier__row--branched .org-node:only-child::after,
+.org-tier__row--branched .org-node:only-child::before {
+  display: none;
+}
+
+/* ===== Node ===== */
+.org-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 160px;
+  padding: var(--space-3) var(--space-2) var(--space-2);
+  border-radius: var(--radius-lg);
+  transition: background var(--transition-fast);
+
+  /* Each node cycles through a small curated palette — the President (a lone
+     first child) always lands on the gold tone, fitting for the top of the tree. */
+  --node-tint: #fef3c7;
+  --node-solid: #f59e0b;
+  --node-dark: #b45309;
+}
+
+.org-node:nth-child(6n+2) {
+  --node-tint: #e0e7ff;
+  --node-solid: #6366f1;
+  --node-dark: #4338ca;
+}
+
+.org-node:nth-child(6n+3) {
+  --node-tint: #ccfbf1;
+  --node-solid: #14b8a6;
+  --node-dark: #0f766e;
+}
+
+.org-node:nth-child(6n+4) {
+  --node-tint: #ffe4e6;
+  --node-solid: #fb7185;
+  --node-dark: #be123c;
+}
+
+.org-node:nth-child(6n+5) {
+  --node-tint: #d1fae5;
+  --node-solid: #10b981;
+  --node-dark: #047857;
+}
+
+.org-node:nth-child(6n+0) {
+  --node-tint: #ede9fe;
+  --node-solid: #8b5cf6;
+  --node-dark: #6d28d9;
+}
+
+.org-node__avatar-wrap {
+  position: relative;
+  margin-bottom: var(--space-3);
+}
+
+.org-node__crown {
+  position: absolute;
+  top: -10px;
+  right: -6px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  box-shadow: 0 0 0 3px var(--color-surface), var(--shadow-md);
+  transform: rotate(12deg);
+  z-index: 2;
+}
+
+.org-node__crown mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #fff;
+}
+
+.org-node__photo,
+.org-node__initials {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  margin-bottom: 0;
+  box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 7px var(--node-tint), 0 0 0 8px var(--node-solid), var(--shadow-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.org-node__photo {
+  object-fit: cover;
+}
+
+.org-node__initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--node-solid), var(--node-dark));
+  color: #fff;
+  font-weight: 700;
+  font-size: var(--font-size-xl);
+}
+
+.org-node:hover {
+  background: var(--node-tint);
+}
+
+.org-node:hover .org-node__photo,
+.org-node:hover .org-node__initials {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 3px var(--color-surface), 0 0 0 8px var(--node-solid), var(--shadow-lg);
+}
+
+.org-node__name {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-ink-900);
+  line-height: 1.3;
+}
+
+.org-node__position {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--node-dark);
+  margin-top: var(--space-1);
+  line-height: 1.3;
+}
+
+.org-node__batch {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-400);
+  margin-top: var(--space-1);
+}
+
+/* Root node (President) stands out as the top of the tree. */
+.org-tier__row--root .org-node {
+  width: 210px;
+}
+
+.org-tier__row--root .org-node__photo,
+.org-tier__row--root .org-node__initials {
+  width: 136px;
+  height: 136px;
+  box-shadow: 0 0 0 4px var(--color-surface), 0 0 0 8px var(--node-tint), 0 0 0 10px var(--node-solid), var(--shadow-lg);
+}
+
+.org-tier__row--root .org-node__crown {
+  width: 40px;
+  height: 40px;
+  top: -12px;
+  right: -8px;
+}
+
+.org-tier__row--root .org-node__crown mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.org-tier__row--root .org-node__name {
+  font-size: var(--font-size-xl);
+}
+
+.org-tier__row--root .org-node__position {
+  font-size: var(--font-size-base);
+}
+
+.org-tier__row--root .org-node__batch {
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 768px) {
+  .org-tree {
+    padding: var(--space-4) 0 var(--space-5);
+  }
+
+  .org-tier__row {
+    gap: var(--space-5);
+  }
+
+  .org-tier__row--wide {
+    gap: var(--space-4) var(--space-5);
+    max-width: 100%;
+    padding: 0 var(--space-3);
+  }
+
+  .org-tier__row--branched {
+    padding-top: 24px;
+  }
+
+  .org-tier__row--branched .org-node {
+    padding-top: 24px;
+  }
+
+  .org-tier__row--branched .org-node::before {
+    height: 24px;
+  }
+
+  .org-tier__row--branched .org-node::after {
+    left: calc(var(--space-5) / -2);
+    right: calc(var(--space-5) / -2);
+  }
+
+  .org-node {
+    width: 120px;
+  }
+
+  .org-node__photo,
+  .org-node__initials {
+    width: 68px;
+    height: 68px;
+  }
+
+  .org-tier__row--root .org-node {
+    width: 150px;
+  }
+
+  .org-tier__row--root .org-node__photo,
+  .org-tier__row--root .org-node__initials {
+    width: 96px;
+    height: 96px;
+  }
+
+  .org-tier__row--root .org-node__name {
+    font-size: var(--font-size-lg);
+  }
+
+  .org-node__name {
+    font-size: var(--font-size-sm);
+  }
+
+  .org-node__position {
+    font-size: var(--font-size-xs);
+  }
+}

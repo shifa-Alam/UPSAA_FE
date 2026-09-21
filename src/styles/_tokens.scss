@@ -1,0 +1,123 @@
+// =============================================================
+// UPSAA design tokens — single source of truth for color,
+// spacing, radius, shadow and type used across every component.
+// Consolidates the scattered blue/teal values that used to be
+// hardcoded per-component into one consistent scale.
+// =============================================================
+
+:root {
+  // ---- Primary (navy/royal blue family) ----
+  --color-primary-50:  #eaf2fe;
+  --color-primary-100: #d3e4fd;
+  --color-primary-200: #a7c9fb;
+  --color-primary-300: #6fa5f6;
+  --color-primary-400: #3c80ef;
+  --color-primary-500: #0b5ed7; // base primary
+  --color-primary-600: #094db3;
+  --color-primary-700: #083e8f;
+  --color-primary-800: #0a2a5e; // deep navy (headers, hero, sidebar)
+  --color-primary-900: #071d40;
+
+  // ---- Accent (cyan/teal, stays in the existing blue family) ----
+  --color-accent-300: #67e8f9;
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #06b6d4; // base accent
+  --color-accent-600: #0891b2;
+
+  // ---- Neutrals (slate scale) ----
+  --color-ink-900: #0f172a;   // headings / high-emphasis text
+  --color-ink-700: #334155;
+  --color-ink-600: #475569;   // body text
+  --color-ink-400: #94a3b8;   // muted / placeholder text
+  --color-ink-200: #e2e8f0;   // borders / dividers
+  --color-ink-100: #f1f5f9;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc; // page background
+  --color-surface-sunken: #f4f7fb;
+
+  // ---- Semantic (unchanged — matches existing global snackbar rules) ----
+  --color-success: #4caf50;
+  --color-danger: #f44336;
+  --color-warning: #f5a623;
+
+  // ---- Gradients (single canonical hero/dark gradient, replaces the
+  // half-dozen ad hoc navy gradients that used to be per-component) ----
+  --gradient-hero: linear-gradient(135deg, var(--color-primary-800) 0%, var(--color-primary-700) 55%, var(--color-primary-500) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-accent-500) 100%);
+
+  // ---- Spacing (4px base) ----
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  // ---- Radius ----
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  // ---- Shadow ----
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 10px rgba(15, 23, 42, 0.08), 0 2px 4px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.14), 0 4px 10px rgba(15, 23, 42, 0.08);
+
+  // ---- Typography ----
+  --font-base: 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 15px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 22px;
+  --font-size-2xl: 28px;
+  --font-size-3xl: 36px;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.55;
+
+  // ---- Layout ----
+  --header-height: 68px;
+  --header-height-mobile: 56px;
+  --max-content-width: 1160px;
+
+  // ---- Motion ----
+  --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
+
+  // ---- Theme (light is the default; see [data-theme="dark"] below) ----
+  color-scheme: light;
+}
+
+// =============================================================
+// Dark theme — flips the neutral/surface/tint scale only. The
+// primary/accent hues, spacing, radius and type scale stay the
+// same so every component looks like "the same site at night"
+// rather than a different palette.
+// =============================================================
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-primary-50: #0d2647;
+  --color-primary-100: #123563;
+
+  --color-accent-300: #22d3ee;
+
+  --color-ink-900: #f1f5f9;   // headings / high-emphasis text
+  --color-ink-700: #cbd5e1;
+  --color-ink-600: #94a3b8;   // body text
+  --color-ink-400: #64748b;   // muted / placeholder text
+  --color-ink-200: #1e293b;   // borders / dividers
+  --color-ink-100: #172033;
+  --color-surface: #111827;
+  --color-surface-alt: #0b1120; // page background
+  --color-surface-sunken: #0d1424;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.6), 0 4px 10px rgba(0, 0, 0, 0.4);
+}

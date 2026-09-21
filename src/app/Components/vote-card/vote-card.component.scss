@@ -1,13 +1,3 @@
-/* Root Colors */
-:root {
-    --primary-color: #007bff;
-    --success-color: #28a745;
-    --text-color: #333;
-    --card-bg: #fff;
-    --card-shadow: rgba(0, 0, 0, 0.15);
-    font-family: 'SolaimanLipiBangla', sans-serif;
-}
-
 /* Container */
 #success-view {
     display: flex;
@@ -15,19 +5,22 @@
     align-items: center;
     padding: 30px 20px;
     min-height: 100vh;
-    background: #f8f9fc;
-    font-family: 'SolaimanLipiBangla', sans-serif;
+    background: var(--color-surface-alt);
+    font-family: var(--font-base);
 }
 
 /* Card */
 .card {
-    background: linear-gradient(135deg, #0a192f 0%, #112240 100%);
+    background: var(--gradient-hero);
     color: white;
     padding: 30px;
-    border-radius: 15px;
+    border-radius: var(--radius-lg);
     margin-bottom: 30px;
     text-align: center;
-    border: 2px solid #64ffda;
+    border: 2px solid var(--color-accent-400);
+    box-shadow: var(--shadow-lg);
+    max-width: 420px;
+    width: 100%;
 }
 
 
@@ -43,9 +36,9 @@
     font-size: 1.6rem;
     color: white;
     margin-bottom: 15px;
-    border-bottom: 2px solid;
+    border-bottom: 2px solid var(--color-accent-400);
     padding-bottom: 10px;
-    font-family: 'SolaimanLipiBangla', sans-serif;
+    font-family: var(--font-base);
 }
 
 /* Voter Info */
@@ -65,14 +58,14 @@
 .success-msg {
     font-size: 1.1rem;
     font-weight: bold;
-    color: white;
+    color: var(--color-accent-300);
     margin-bottom: 20px;
 }
 
 /* Extra Info */
 .extra-info {
     font-size: 0.9rem;
-    color: wheat;
+    color: var(--color-accent-300);
     line-height: 1.5;
 }
 
@@ -80,7 +73,7 @@
     display: block;
     margin-top: 10px;
     font-size: 0.85rem;
-    color: whitesmoke;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 /* Buttons */
@@ -97,32 +90,32 @@
 .action-btn {
     flex: 1;
     padding: 12px 20px;
-    border-radius: 8px;
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
     border: none;
-    transition: 0.3s ease, transform 0.2s ease;
+    transition: all var(--transition-base), transform var(--transition-base);
+    font-family: var(--font-base);
 }
 
 .cancel-btn {
-    background: #6c757d;
-    color: #fff;
-    font-family: 'SolaimanLipiBangla', sans-serif;
+    background: var(--color-ink-100);
+    color: var(--color-ink-700);
+    border: 1px solid var(--color-ink-200);
 }
 
 .cancel-btn:hover {
-    background: #5a6268;
+    background: var(--color-ink-200);
     transform: translateY(-2px);
 }
 
 .success-btn {
-    background: green;
+    background: var(--gradient-accent);
     color: #fff;
-    font-family: 'SolaimanLipiBangla', sans-serif;
 }
 
 .success-btn:hover {
-    background: #218838;
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }

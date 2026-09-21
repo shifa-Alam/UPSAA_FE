@@ -1,10 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/azure-blue.css';
+@import 'styles/tokens';
+
+/* =========================================================
+   Global Material overrides — pull every mat-* component onto
+   the design tokens instead of the prebuilt azure-blue palette.
+   ========================================================= */
+html {
+  --mdc-theme-primary: var(--color-primary-500);
+  --mat-toolbar-container-background-color: var(--color-surface);
+  --mat-toolbar-container-text-color: var(--color-ink-900);
+
+  --mdc-filled-button-container-color: var(--color-primary-500);
+  --mdc-filled-button-label-text-color: #fff;
+  --mdc-protected-button-container-color: var(--color-primary-500);
+  --mdc-outlined-button-outline-color: var(--color-ink-200);
+  --mdc-outlined-button-label-text-color: var(--color-primary-600);
+  --mdc-text-button-label-text-color: var(--color-primary-600);
+
+  --mdc-outlined-text-field-outline-color: var(--color-ink-200);
+  --mdc-outlined-text-field-hover-outline-color: var(--color-primary-300);
+  --mdc-outlined-text-field-focus-outline-color: var(--color-primary-500);
+  --mdc-outlined-text-field-label-text-color: var(--color-ink-400);
+  --mdc-outlined-text-field-focus-label-text-color: var(--color-primary-600);
+
+  --mat-select-panel-background-color: var(--color-surface);
+  --mdc-checkbox-selected-icon-color: var(--color-primary-500);
+  --mdc-radio-selected-icon-color: var(--color-primary-500);
+  --mdc-switch-selected-track-color: var(--color-primary-300);
+  --mdc-switch-selected-handle-color: var(--color-primary-500);
+
+  --mat-menu-container-color: var(--color-surface);
+  --mat-menu-item-label-text-color: var(--color-ink-700);
+
+  --mdc-circular-progress-active-indicator-color: var(--color-primary-500);
+  --mdc-linear-progress-active-indicator-color: var(--color-primary-500);
+  --mdc-linear-progress-track-color: var(--color-primary-100);
+
+  --mat-card-title-text-color: var(--color-ink-900);
+  --mat-card-subtitle-text-color: var(--color-ink-600);
+}
+
+.mat-mdc-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-md) !important;
+}
 
 /* Error snackbar */
 .mat-mdc-snack-bar-container.snackbar-error .mat-mdc-snackbar-surface {
-  background-color: #f44336 !important;
-  /* red */
+  background-color: var(--color-danger) !important;
 }
 
 .mat-mdc-snack-bar-container.snackbar-error .mat-mdc-snack-bar-label {
@@ -12,9 +56,8 @@
 }
 
 /* Success snackbar */
-.mat-mdc-snack-bar-container.snackbar-success .mat-mdc-snack-bar-surface {
-  background-color: #4caf50 !important;
-  /* green */
+.mat-mdc-snack-bar-container.snackbar-success .mat-mdc-snackbar-surface {
+  background-color: var(--color-success) !important;
 }
 
 .mat-mdc-snack-bar-container.snackbar-success .mat-mdc-snack-bar-label {
@@ -48,17 +91,59 @@
   font-feature-settings: 'liga';
 }
 
+* {
+  box-sizing: border-box;
+}
+
+/* Theme-switch effect: every element eases its own colors when [data-theme]
+   flips, so light↔dark reads as one smooth transition instead of a hard cut. */
+* {
+  transition: background-color var(--transition-base), border-color var(--transition-base),
+    color var(--transition-base), box-shadow var(--transition-base), fill var(--transition-base);
+}
+
+/* Theme toggle's circular-reveal animation (Chromium/Edge — other browsers just
+   fall back to the CSS color transitions above, no error, no broken state). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 420ms;
+}
+
 html,
 body {
-  font-family:
-    'SolaimanLipiBangla',
-    Roboto,
-    "Segoe UI",
-    sans-serif;
-
+  font-family: var(--font-base);
+  color: var(--color-ink-900);
+  background: var(--color-surface-alt);
   height: 100%;
   margin: 0;
   overflow: hidden; // prevents scrollbars on the body
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-base);
+  color: var(--color-ink-900);
+  line-height: var(--line-height-tight);
+  margin: 0 0 var(--space-3);
+}
+
+p {
+  margin: 0 0 var(--space-3);
+  color: var(--color-ink-600);
+  line-height: var(--line-height-normal);
+}
+
+/* Reusable page-section container so every page shares one max-width/gutters */
+.upsaa-container {
+  width: 100%;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: 0 var(--space-5);
+}
+
+@media (max-width: 768px) {
+  .upsaa-container {
+    padding: 0 var(--space-4);
+  }
 }
 
 .sidenav-container {
@@ -76,5 +161,3 @@ body {
   /* Only Bangla Unicode */
   unicode-range: U+0980-09FF;
 }
-
-/* styles.scss or styles.css */

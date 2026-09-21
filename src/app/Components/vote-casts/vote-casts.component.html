@@ -5,12 +5,11 @@
 <div class="election-dashboard" *ngIf="electionTitle">
 
     <!-- ================= HEADER ================= -->
-    <header class="dashboard-header stylish-header">
-        <h2 class="election-title">{{electionTitle}} ফলাফল</h2>
-        <p class="subtitle">
-            উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন
-            ১ম কার্যকরী পর্ষদ নির্বাচন ২০২৬-২৮
-        </p>
+    <app-page-header [title]="electionTitle + ' ফলাফল'"
+        subtitle="উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন ১ম কার্যকরী পর্ষদ নির্বাচন ২০২৬-২৮" variant="plain">
+    </app-page-header>
+
+    <div class="page-body upsaa-container">
 
         <div class="header-meta">
             <div class="meta-item meta-election-date">
@@ -42,164 +41,132 @@
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- ================= TABS ================= -->
-    <div class="tabs-container">
-        <div class="tabs">
-            <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
-                সারসংক্ষেপ
-            </button>
-            <button class="tab-btn" [class.active]="activeTab === 'details'" (click)="setTab('details')">
-                বিস্তারিত ফলাফল
-            </button>
-        </div>
-    </div>
-
-    <!-- ================= OVERVIEW ================= -->
-    <ng-container *ngIf="activeTab === 'overview'">
-
-        <!-- ===== KPI / Summary Cards ===== -->
-        <div class="summary-cards">
-
-            <div class="card">
-                <div class="card-title">মোট পদ</div>
-                <h3>{{ totalPosition }}</h3>
-            </div>
-
-            <div class="card">
-                <div class="card-title">মোট প্রার্থী</div>
-                <h3>{{ totalCandidate }}</h3>
-            </div>
-
-            <!-- <div class="card">
-                <div class="card-title">মোট ভোট</div>
-                <h3>{{ totalVotes }}</h3>
-            </div> -->
-
-            <div class="card highlight-card" *ngIf="leadingCandidate">
-                <div class="card-title hdTitle">সর্বোচ্চ ভোটপ্রাপ্ত</div>
-                <h3>{{ leadingCandidate.memberName }}</h3>
-                <div class="vote-count">{{ leadingCandidate.votes }} ভোট</div>
+        <!-- ================= TABS ================= -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
+                    সারসংক্ষেপ
+                </button>
+                <button class="tab-btn" [class.active]="activeTab === 'details'" (click)="setTab('details')">
+                    বিস্তারিত ফলাফল
+                </button>
             </div>
         </div>
 
-        <!-- ===== POSITION RESULTS ===== -->
-        <div class="section">
-            <div class="section-title">পদভিত্তিক ফলাফল</div>
+        <!-- ================= OVERVIEW ================= -->
+        <ng-container *ngIf="activeTab === 'overview'">
 
-            <div class="position-grid">
-                <div class="position-card" *ngFor="let position of positionResults">
-                    <div class="position-header">
-                        <h4>{{ position.positionName }}</h4>
-                        <span class="total-votes">মোট ভোট: {{ position.totalVotes }}</span>
-                    </div>
+            <!-- ===== KPI / Summary Cards ===== -->
+            <div class="summary-cards">
 
-                    <div class="candidate-row" *ngFor="let candidate of position.winners">
-                        <div class="candidate-info">
-                            <span class="candidate-name">{{ candidate.memberName }} &nbsp;</span>
-                            <span class="candidate-votes">{{ candidate.votes }} ভোট</span>
+                <div class="card">
+                    <div class="card-title">মোট পদ</div>
+                    <h3>{{ totalPosition }}</h3>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">মোট প্রার্থী</div>
+                    <h3>{{ totalCandidate }}</h3>
+                </div>
+
+                <!-- <div class="card">
+                    <div class="card-title">মোট ভোট</div>
+                    <h3>{{ totalVotes }}</h3>
+                </div> -->
+
+                <div class="card highlight-card" *ngIf="leadingCandidate">
+                    <div class="card-title hdTitle">সর্বোচ্চ ভোটপ্রাপ্ত</div>
+                    <h3>{{ leadingCandidate.memberName }}</h3>
+                    <div class="vote-count">{{ leadingCandidate.votes }} ভোট</div>
+                </div>
+            </div>
+
+            <!-- ===== POSITION RESULTS ===== -->
+            <div class="section">
+                <div class="section-title">পদভিত্তিক ফলাফল</div>
+
+                <div class="position-grid">
+                    <div class="position-card" *ngFor="let position of positionResults">
+                        <div class="position-header">
+                            <h4>{{ position.positionName }}</h4>
+                            <span class="total-votes">মোট ভোট: {{ position.totalVotes }}</span>
                         </div>
 
-                        <div class="progress-bar">
-                            <div class="progress" [style.width.%]="
+                        <div class="candidate-row" *ngFor="let candidate of position.winners">
+                            <div class="candidate-info">
+                                <span class="candidate-name">{{ candidate.memberName }} &nbsp;</span>
+                                <span class="candidate-votes">{{ candidate.votes }} ভোট</span>
+                            </div>
+
+                            <div class="progress-bar">
+                                <div class="progress" [style.width.%]="
                     position.totalVotes > 0
                     ? (candidate.votes / position.totalVotes) * 100
                     : 0
                    ">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="percentage-text">
-                            {{ (position.totalVotes > 0 ? (candidate.votes / position.totalVotes * 100) : 0) |
-                            number:'1.0-1' }}%
-                        </div>
+                            <div class="percentage-text">
+                                {{ (position.totalVotes > 0 ? (candidate.votes / position.totalVotes * 100) : 0) |
+                                number:'1.0-1' }}%
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </ng-container>
+        </ng-container>
 
-    <!-- ================= DETAILS ================= -->
-    <ng-container *ngIf="activeTab === 'details'">
-        <div class="section">
+        <!-- ================= DETAILS ================= -->
+        <ng-container *ngIf="activeTab === 'details'">
+            <div class="section">
 
-            <div class="section-title" style="
-        display: flex; 
-        flex-wrap: wrap; 
-        align-items: center; 
-        justify-content: flex-start; 
-        gap: 10px; 
-        font-weight: 600; 
-        font-size: 1rem; 
-        margin-bottom: 15px; 
-        color: #1f2937;
-        font-family: 'SolaimanLipiBangla', sans-serif;
-     ">
+                <div class="section-title position-filter-bar">
 
-                <span style="white-space: nowrap;">পদ নির্বাচন করুন:</span>
+                    <span class="position-filter-label">পদ নির্বাচন করুন:</span>
 
-                <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()" style="
-            padding: 10px 16px;
-            font-size: 1rem;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            background-color: #f8fafc;
-            color: #111827;
-            min-width: 160px;
-            max-width: 100%;
-            flex: 1;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            font-family: 'SolaimanLipiBangla', sans-serif;
-          " (focus)="onSelectFocus($event)" (blur)="onSelectBlur($event)" (mouseover)="onSelectMouseOver($event)"
-                    (mouseout)="onSelectMouseOut($event)">
-                    <option [ngValue]="0" selected>সব পদ</option>
-                    <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
-                </select>
+                    <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()"
+                        class="position-filter-select" (focus)="onSelectFocus($event)" (blur)="onSelectBlur($event)"
+                        (mouseover)="onSelectMouseOver($event)" (mouseout)="onSelectMouseOut($event)">
+                        <option [ngValue]="0" selected>সব পদ</option>
+                        <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
+                    </select>
+                </div>
+                <div class="table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>পদ</th>
+                                <th>প্রার্থী</th>
+                                <th>ভোট</th>
+                                <th>ভোটের হার</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loader row -->
+                            <tr *ngIf="detailsLoading">
+                                <td colspan="4" class="details-loader-cell">
+                                    <div class="spinner details-spinner"></div>
+                                </td>
+                            </tr>
+
+                            <tr *ngFor="let candidate of candidateResults"
+                                [class.leading]="leadingCandidate?.candidateId === candidate.candidateId">
+                                <td>{{ candidate.positionName }}</td>
+                                <td>{{ candidate.memberName }}</td>
+                                <td>{{ candidate.votes }}</td>
+                                <td>
+                                    {{ (totalVotes > 0 ? (candidate.votes / totalVotes * 100) : 0) | number:'1.0-1' }}%
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="table-wrapper">
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>পদ</th>
-                            <th>প্রার্থী</th>
-                            <th>ভোট</th>
-                            <th>ভোটের হার</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Loader row -->
-                        <tr *ngIf="detailsLoading">
-                            <td colspan="4" style="text-align: center; padding: 20px;">
-                                <div class="spinner" style="
-             border: 4px solid #f3f3f3;
-             border-top: 4px solid #3b82f6;
-             border-radius: 50%;
-             width: 30px;
-             height: 30px;
-             animation: spin 1s linear infinite;
-             margin: auto;
-           ">
-                                </div>
-                            </td>
-                        </tr>
+        </ng-container>
 
-                        <tr *ngFor="let candidate of candidateResults"
-                            [class.leading]="leadingCandidate?.candidateId === candidate.candidateId">
-                            <td>{{ candidate.positionName }}</td>
-                            <td>{{ candidate.memberName }}</td>
-                            <td>{{ candidate.votes }}</td>
-                            <td>
-                                {{ (totalVotes > 0 ? (candidate.votes / totalVotes * 100) : 0) | number:'1.0-1' }}%
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </ng-container>
+    </div>
 
 </div>

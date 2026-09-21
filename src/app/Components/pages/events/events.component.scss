@@ -1,0 +1,15 @@
+.events-page {
+  background: var(--color-surface-alt);
+}
+
+.events-body {
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .events-body {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+}

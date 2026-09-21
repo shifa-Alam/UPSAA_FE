@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray, FormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,8 +13,12 @@ import { SnackbarService } from '../../../Services/snackbar.service';
 import { Router } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoadingService } from '../../../Services/loading-service.service';
 import { DataService } from '../../../Services/data.service';
+import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { SectionCardComponent } from '../../shared/section-card/section-card.component';
 
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 
@@ -35,6 +39,10 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
     MatSelectModule,
     MatCheckboxModule,
     MatProgressBarModule,
+    MatIconModule,
+    MatTooltipModule,
+    PageHeaderComponent,
+    SectionCardComponent,
 
   ],
   templateUrl: './register.component.html',
@@ -43,6 +51,11 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 export class RegisterComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isSubmitting = false;
+
+  captchaImage: string | null = null;
+  captchaId: string | null = null;
+  captchaLoading = false;
+  private isBrowser: boolean;
 
   educationOptions = [
     { id: 1, name: 'SSC' },
@@ -78,8 +91,32 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private snackbarService: SnackbarService,
     private loadingService: LoadingService,
     private router: Router,
-    private dataService: DataService
-  ) { }
+    private dataService: DataService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
+
+  loadCaptcha() {
+    if (!this.isBrowser) return;
+
+    this.captchaLoading = true;
+    this.form?.get('captchaAnswer')?.reset();
+
+    this.memberService.getCaptcha().subscribe({
+      next: (challenge) => {
+        this.captchaId = challenge.captchaId;
+        this.captchaImage = challenge.image;
+        this.captchaLoading = false;
+      },
+      error: () => {
+        this.captchaId = null;
+        this.captchaImage = null;
+        this.captchaLoading = false;
+        this.snackbarService.showError('Could not load captcha. Please refresh and try again.');
+      }
+    });
+  }
 
   ngOnInit() {
     const currentYear = new Date().getFullYear();
@@ -156,7 +193,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
           feeType: ['Donation'],
           amount: [0, [Validators.required, Validators.min(0)]]
         }),
-      ])
+      ]),
+      captchaAnswer: ['', Validators.required]
     });
 
     // Calculate total dynamically
@@ -165,6 +203,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       .subscribe(() => this.calculateTotal());
 
     this.calculateTotal();
+    this.loadCaptcha();
   }
 
   get educationRecords(): FormArray {
@@ -195,6 +234,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.captchaId) {
+      this.snackbarService.showError('Please wait for the captcha to load.');
+      return;
+    }
+
     this.isSubmitting = true;
     this.loadingService.show();
     const formValue = this.form.value;
@@ -212,7 +256,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
       currentCity: formValue.currentCity,
       dob: formValue.dob ? new Date(formValue.dob).toISOString() : undefined,
       educationRecords: this.getCompletedEducationRecords(),
-      fees: this.getSelectedFees()
+      fees: this.getSelectedFees(),
+      captchaId: this.captchaId,
+      captchaAnswer: formValue.captchaAnswer
     };
     console.log(`member data: ${JSON.stringify(memberData)}`);
 
@@ -222,6 +268,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.loadingService.hide();
         this.form.reset();
         this.isSubmitting = false;
+        this.loadCaptcha();
 
         this.dataService.setMemberData(memberData);
         this.router.navigate(['/congratulations']);
@@ -233,6 +280,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.snackbarService.showError(err.error.message);
 
         this.isSubmitting = false;
+        // The captcha was consumed server-side on this attempt regardless of outcome.
+        this.loadCaptcha();
       }
     });
   }

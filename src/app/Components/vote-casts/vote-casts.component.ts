@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CandidateResult, PositionResult, VoteService, ElectionResult } from '../../Services/vote.service';
 import { PositionService } from '../../Services/position.service';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../shared/page-header/page-header.component';
 
 interface Candidate {
   memberName: string;
@@ -17,7 +18,7 @@ interface Position {
 @Component({
   selector: 'app-vote-casts',
   standalone: true,
-  imports: [CommonModule, FormsModule,],
+  imports: [CommonModule, FormsModule, PageHeaderComponent],
   templateUrl: './vote-casts.component.html',
   styleUrl: './vote-casts.component.scss'
 })

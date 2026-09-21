@@ -4,11 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Candidate, CandidateFilterDto, CandidateService } from '../../Services/candidate.service';
 import { Position, PositionService } from '../../Services/position.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { SectionCardComponent } from '../shared/section-card/section-card.component';
+import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
+import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 
 @Component({
   selector: 'app-candidates-v2',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSlideToggleModule],
+  imports: [CommonModule, FormsModule, MatSlideToggleModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent, StatCardComponent],
   templateUrl: './candidates-v2.component.html',
   styleUrl: './candidates-v2.component.scss'
 })

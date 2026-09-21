@@ -39,6 +39,42 @@ export interface MemberCreateDto {
   dob?: string | null;
   educationRecords: MemberEducationDto[]; // added
   fees: MemberFeeDto[];
+  captchaId?: string;
+  captchaAnswer?: string;
+}
+
+export interface PublicMember {
+  id: number;
+  fullName: string;
+  photo: string | null;
+  batch: number;
+  currentDesignation?: string | null;
+  employer?: string | null;
+  currentCity?: string | null;
+  bloodGroup?: string | null;
+  memberCode?: string | null;
+}
+
+export interface PublicMemberFilter {
+  pageNumber: number;
+  pageSize: number;
+  fullName?: string;
+  batch?: number;
+  currentCity?: string;
+  bloodGroup?: string;
+}
+
+export interface PaginatedPublicMembersResponse {
+  members: PublicMember[];
+  totalItems: number;
+  totalPages: number;
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface CaptchaChallenge {
+  captchaId: string;
+  image: string; // data:image/png;base64,...
 }
 export interface MemberFilterDto {
   pageNumber: number;
@@ -134,9 +170,16 @@ export class MemberService {
     // Note: concatenate the path as a string
     return this.http.post(`${this.apiUrl}/RegisterMember`, member);
   }
+  getCaptcha(): Observable<CaptchaChallenge> {
+    return this.http.get<CaptchaChallenge>(`${environment.baseUrl}/Captcha/generate`);
+  }
   getMembers(): Observable<MemberCreateDto[]> {
     return this.http.get<MemberCreateDto[]>(`${this.apiUrl}/GetAllMembers`);
     // Adjust the endpoint as per your API route
+  }
+  /** Public — no login required. Server-side paginated + filtered, payment-free member list. */
+  getPublicDirectory(filter: PublicMemberFilter): Observable<PaginatedPublicMembersResponse> {
+    return this.http.post<PaginatedPublicMembersResponse>(`${this.apiUrl}/PublicDirectory`, filter);
   }
   filterMembers(filter: MemberFilterDto): Observable<PaginatedMembersResponse> {
     console.log(filter)

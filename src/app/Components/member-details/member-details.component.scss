@@ -1,21 +1,22 @@
 .member-dialog-card {
   width: 100%;
-  // max-width: 400px;
-  padding: 12px;
+  padding: var(--space-3);
   max-height: 550px;
   overflow-y: auto;
-  font-family: 'SolaimanLipiBangla';
+  font-family: var(--font-base);
+  border-radius: var(--radius-lg);
 
   mat-card-header {
     mat-card-title {
       font-size: 1.2rem;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--color-ink-900);
       margin-bottom: 2px;
     }
 
     mat-card-subtitle {
       font-size: 0.85rem;
-      color: #666;
+      color: var(--color-ink-600);
     }
   }
 
@@ -34,17 +35,17 @@
         align-items: center;
         gap: 6px;
         font-size: 0.85rem;
-        color: #333;
+        color: var(--color-ink-700);
 
         mat-icon {
           font-size: 18px;
-          color: #3f51b5;
+          color: var(--color-primary-500);
         }
 
         &.total-item {
-          font-weight: 600;
-          color: #000;
-          border-top: 1px solid #ddd;
+          font-weight: 700;
+          color: var(--color-ink-900);
+          border-top: 1px solid var(--color-ink-200);
           padding-top: 4px;
           margin-top: 4px;
         }
@@ -57,14 +58,14 @@
       h4 {
         font-size: 0.95rem;
         margin-bottom: 4px;
-        color: #3f51b5;
+        color: var(--color-primary-600);
       }
 
       .education-item {
         padding: 4px 8px;
-        background-color: #f5f5f5;
-        border-left: 3px solid #3f51b5;
-        border-radius: 4px;
+        background-color: var(--color-surface-alt);
+        border-left: 3px solid var(--color-primary-500);
+        border-radius: var(--radius-sm);
         font-size: 0.8rem;
         margin-bottom: 4px;
       }
@@ -93,23 +94,20 @@ mat-card-actions {
 .member-code {
   display: inline-block;
   padding: 4px 10px;
-  /* bigger, comfortable */
-  border-radius: 16px;
-  /* modern pill */
-  background: linear-gradient(135deg, #5e35b1, #8e24aa);
-  /* deep purple gradient */
+  border-radius: var(--radius-pill);
+  background: var(--gradient-accent);
   color: #ffffff;
   font-weight: 600;
   font-size: 13px;
-  box-shadow: 0 4px 10px rgba(94, 53, 177, 0.5), 0 0 6px rgba(142, 36, 170, 0.4);
+  box-shadow: var(--shadow-sm);
   margin-left: 6px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 /* subtle hover effect */
 .member-code:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(94, 53, 177, 0.6), 0 0 8px rgba(142, 36, 170, 0.5);
+  box-shadow: var(--shadow-md);
 }
 
 
@@ -118,23 +116,23 @@ mat-card-actions {
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .change-password-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-md);
 }
 
 .success-msg {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: rgba(76, 175, 80, 0.12);
+  color: var(--color-success);
 }
 
 .error-msg {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: rgba(244, 67, 54, 0.12);
+  color: var(--color-danger);
 }
 
 .password-input-inline {
@@ -151,19 +149,15 @@ mat-card-actions {
     height: 36px;
     font-weight: 600;
     text-transform: uppercase;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-md);
     }
   }
 }
-
-
-
-
 
 
 .spacer {
@@ -171,7 +165,7 @@ mat-card-actions {
   /* Takes remaining space between buttons */
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .member-dialog-card {
     max-width: 100%;
 

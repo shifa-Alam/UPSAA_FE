@@ -1,47 +1,45 @@
 .nomination-card {
-  padding: 24px;
+  padding: var(--space-6);
   max-width: 500px;
   margin: auto;
-  background: #fff;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
 }
 
 .form-header {
   text-align: center;
-  margin-bottom: 20px;
-  padding: 0 12px;
-  /* add breathing room on small screens */
+  margin-bottom: var(--space-5);
+  padding: 0 var(--space-3);
 }
 
 .form-title {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #1976d2;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary-600);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-2);
   flex-wrap: wrap;
-  /* allow wrapping on small screens */
 }
 
 .title-icon {
   font-size: 24px;
-  color: #1976d2;
+  color: var(--color-primary-500);
 }
 
 .form-subtitle {
-  font-size: 0.95rem;
-  color: black;
-  margin-top: 8px;
-  line-height: 1.4;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  margin-top: var(--space-2);
+  line-height: var(--line-height-normal);
 }
 
 /* 📱 Responsive tweaks */
 @media (max-width: 480px) {
   .form-title {
-    font-size: 1.3rem;
-    gap: 4px;
+    font-size: var(--font-size-lg);
+    gap: var(--space-1);
   }
 
   .title-icon {
@@ -49,42 +47,39 @@
   }
 
   .form-subtitle {
-    font-size: 0.90rem;
-    line-height: 1.3;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
   }
 }
 
 .full-width {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 16px;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .apply-btn {
-  background-color: #2196f3;
+  background-color: var(--color-primary-500);
   color: #fff;
+  border-radius: var(--radius-md);
 }
-
-/* blue */
-.cancel-btn {
-  background-color: #9c27b0;
-  color: #fff;
-}
-
-/* purple */
 
 .apply-btn:hover {
-  background: linear-gradient(45deg, #388e3c, #66bb6a);
+  background-color: var(--color-primary-600);
 }
 
-
+.cancel-btn {
+  background-color: var(--color-ink-100);
+  color: var(--color-ink-700);
+  border-radius: var(--radius-md);
+}
 
 .cancel-btn:hover {
-  background: linear-gradient(45deg, #d32f2f, #ef5350);
+  background-color: var(--color-ink-200);
 }

@@ -1,0 +1,46 @@
+<div class="committee-page">
+
+  <app-page-header variant="plain" eyebrow="নির্বাচিত পরিষদ" title="নির্বাচিত কমিটি"
+    [subtitle]="electionTitle ? (electionTitle + ' নির্বাচনে বিজয়ী কার্যনির্বাহী কমিটি।') : 'কার্যনির্বাহী কমিটির সদস্যবৃন্দ।'">
+  </app-page-header>
+
+  <div class="upsaa-container committee-sections">
+
+    <div class="committee-loading" *ngIf="loading">
+      <mat-icon class="committee-loading__icon">autorenew</mat-icon>
+      <span>তথ্য লোড হচ্ছে...</span>
+    </div>
+
+    <app-empty-state *ngIf="!loading && loadError" icon="groups" title="কমিটির তথ্য এখনো পাওয়া যায়নি"
+      message="নির্বাচনের ফলাফল প্রকাশিত হলে এখানে নির্বাচিত কমিটির সদস্যদের তালিকা দেখা যাবে।">
+    </app-empty-state>
+
+    <div class="org-tree" *ngIf="!loading && !loadError">
+      <div class="org-tier" *ngFor="let tier of tiers; let first = first">
+        <div class="org-tier__stem" *ngIf="!first"></div>
+
+        <div class="org-tier__row" [class.org-tier__row--branched]="tier.length > 1 && tier.length <= 4"
+          [class.org-tier__row--wide]="tier.length > 4" [class.org-tier__row--root]="first">
+          <div class="org-node" *ngFor="let node of tier">
+            <div class="org-node__avatar-wrap">
+              <div class="org-node__crown" *ngIf="first">
+                <mat-icon>military_tech</mat-icon>
+              </div>
+              <ng-container *ngIf="node.photo; else initialsAvatar">
+                <img [src]="node.photo" [alt]="node.memberName" class="org-node__photo" />
+              </ng-container>
+              <ng-template #initialsAvatar>
+                <div class="org-node__initials">{{ initials(node.memberName) }}</div>
+              </ng-template>
+            </div>
+
+            <div class="org-node__name">{{ node.memberName }}</div>
+            <div class="org-node__position">{{ node.positionName }}</div>
+            <div class="org-node__batch" *ngIf="node.batch">ব্যাচ {{ node.batch }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

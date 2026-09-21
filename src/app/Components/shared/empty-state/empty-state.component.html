@@ -1,0 +1,8 @@
+<div class="empty-state">
+  <div class="empty-state__icon">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+  <h3 class="empty-state__title">{{ title }}</h3>
+  <p class="empty-state__message" *ngIf="message">{{ message }}</p>
+  <ng-content></ng-content>
+</div>

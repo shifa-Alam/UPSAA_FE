@@ -4,11 +4,14 @@ import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Election, ElectionService } from '../../Services/election.service';
+import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { SectionCardComponent } from '../shared/section-card/section-card.component';
+import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-positions',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent],
   templateUrl: './positions.component.html',
   styleUrl: './positions.component.scss'
 })

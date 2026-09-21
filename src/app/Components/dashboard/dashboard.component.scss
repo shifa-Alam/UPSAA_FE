@@ -1,18 +1,19 @@
 /* Layout */
 .dashboard-container {
   display: flex;
-  //height: 100vh;
-  background: #f8fafc;
+  background: var(--color-surface-alt);
+  min-height: 100vh;
 }
 
-/* Sidebar */
+/* Sidebar — kept dark navy on purpose, distinct from the light admin content area */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #0f172a, #020617);
+  background: linear-gradient(180deg, var(--color-ink-900) 0%, #020617 100%);
   color: #e5e7eb;
   display: flex;
   flex-direction: column;
-  transition: width 0.3s ease;
+  transition: width var(--transition-base);
+  flex-shrink: 0;
 }
 
 .sidebar.collapsed {
@@ -23,15 +24,17 @@
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 18px 16px;
-  font-size: 18px;
-  font-weight: 600;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-4);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .brand-icon {
   font-size: 22px;
+  line-height: 1;
 }
 
 .brand-text {
@@ -40,32 +43,35 @@
 
 /* Menu */
 .sidebar-menu {
-  padding: 14px 10px;
+  padding: var(--space-3) var(--space-2);
   overflow-y: auto;
 }
 
 .menu-group {
-  margin-bottom: 6px;
+  margin-bottom: var(--space-1);
 }
 
 /* Parent item */
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .menu-item:hover {
   background: rgba(255, 255, 255, 0.06);
+  color: #fff;
 }
 
 .menu-item.active {
-  background: linear-gradient(90deg, #2563eb, #1d4ed8);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  background: linear-gradient(90deg, var(--color-primary-600), var(--color-primary-500));
+  box-shadow: var(--shadow-md);
   color: #fff;
 }
 
@@ -74,13 +80,15 @@
   width: 24px;
   text-align: center;
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 /* Arrow */
 .arrow {
   margin-left: auto;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-base);
   font-size: 12px;
+  opacity: 0.7;
 }
 
 .arrow.open {
@@ -91,8 +99,8 @@
 .submenu {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease;
-  margin-left: 36px;
+  transition: max-height var(--transition-base);
+  margin-left: 34px;
 }
 
 .submenu.open {
@@ -103,73 +111,57 @@
 .submenu-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  margin-top: 4px;
-  border-radius: 8px;
-  font-size: 14px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-1);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  transition: background 0.2s ease;
-  opacity: 0.9;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .submenu-item:hover {
   background: rgba(255, 255, 255, 0.08);
-}
-
-.submenu-item.active {
-  background: rgba(37, 99, 235, 0.25);
   color: #fff;
 }
 
-/* Dot indicator */
+.submenu-item.active {
+  background: rgba(11, 94, 215, 0.35);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Dot indicator (available for future use) */
 .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #60a5fa;
+  background: var(--color-accent-400);
 }
 
 /* Main content */
 .main-content {
   flex: 1;
-  padding: 24px;
+  padding: var(--space-6);
   overflow-y: auto;
+  background: var(--color-surface-alt);
+  min-width: 0;
 }
 
-/* Default sidebar (desktop & tablet) */
-.sidebar {
-  width: 260px;
-  background: white;
-  color: black;
-
-  transition: transform 0.3s ease;
-}
-
-/* 🔥 Hide sidebar on mobile */
+/* Hide sidebar on mobile — this admin area is primarily used on desktop */
 @media (max-width: 768px) {
   .sidebar {
     display: none;
-  }
-}
-
-/* 📱 Mobile View Fix */
-@media (max-width: 768px) {
-
-  .sidebar {
-    display: none;
-    /* hide sidebar completely */
   }
 
   .dashboard-container {
     display: block;
-    /* stop flex layout */
     height: auto;
   }
 
   .main-content {
-    padding: 15px;
-    width: 92%;
-    //min-height: 100vh;
+    padding: var(--space-4);
+    width: 100%;
   }
 }

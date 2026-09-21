@@ -3,11 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Election, ElectionService } from '../../Services/election.service';
 import { finalize } from 'rxjs';
+import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { SectionCardComponent } from '../shared/section-card/section-card.component';
+import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-elections',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent],
   templateUrl: './elections.component.html',
   styleUrl: './elections.component.scss'
 })

@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 
 
 @Component({
@@ -28,7 +29,8 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
     MatIconModule,
     MatTooltipModule,
     MatTabsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    StatCardComponent
   ],
   templateUrl: './member-landing.component.html',
   styleUrls: ['./member-landing.component.scss'],

@@ -1,9 +1,15 @@
-<div>
-  <h2 class="page-title">UPSAA Elections</h2>
+<app-page-header title="Elections" subtitle="Create and manage UPSAA alumni elections — set voting and nomination windows."
+  variant="plain">
+</app-page-header>
+
+<div class="page-body upsaa-container">
 
   <!-- Header -->
   <div class="header">
-    <input type="text" placeholder="Search elections" [(ngModel)]="searchTerm" />
+    <div class="search-field">
+      <span class="material-icons search-icon">search</span>
+      <input type="text" placeholder="Search elections" [(ngModel)]="searchTerm" />
+    </div>
 
     <button class="add-btn" (click)="openAddElectionModal()">
       + Add
@@ -14,55 +20,61 @@
     <p>Loading elections...</p>
   </div>
   <div *ngIf="!loading">
-    <!-- Desktop Table -->
-    <div class="table-wrapper desktop-only">
-      <table class="elections-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th style="width: 180px;">Actions</th>
-          </tr>
-        </thead>
+    <app-section-card icon="how_to_vote" title="All Elections" [noPadding]="true">
+      <!-- Desktop Table -->
+      <div class="table-wrapper desktop-only" *ngIf="pagedElections.length">
+        <table class="elections-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th style="width: 180px;">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let election of pagedElections; let i = index">
-            <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
-            <td>{{ election.title }}</td>
-            <td>{{ election.startTime | date:'d MMMM y, h:mm a' }}</td>
-            <td>{{ election.endTime | date:'d MMMM y, h:mm a' }}</td>
-            <td>
-              <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
-              <button class="edit-btn" (click)="editElection(election)">Edit</button>
-              <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          <tbody>
+            <tr *ngFor="let election of pagedElections; let i = index">
+              <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+              <td>{{ election.title }}</td>
+              <td>{{ election.startTime | date:'d MMMM y, h:mm a' }}</td>
+              <td>{{ election.endTime | date:'d MMMM y, h:mm a' }}</td>
+              <td>
+                <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
+                <button class="edit-btn" (click)="editElection(election)">Edit</button>
+                <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Mobile Cards -->
-    <div class="mobile-only">
-      <div class="election-card" *ngFor="let election of pagedElections; let i = index">
+      <!-- Mobile Cards -->
+      <div class="mobile-only" *ngIf="pagedElections.length">
+        <div class="election-card" *ngFor="let election of pagedElections; let i = index">
 
-        <div class="card-header">
-          <span class="index">#{{ i + 1 }}</span>
-          <span class="title">{{ election.title }}</span>
+          <div class="card-header">
+            <span class="index">#{{ i + 1 }}</span>
+            <span class="title">{{ election.title }}</span>
 
-        </div>
-        <div class="card-dates">
-          <span>Start: {{ election.startTime | date:'d MMMM y' }}</span>
-          <span>End: {{ election.endTime | date:'d MMMM y' }}</span>
-        </div>
-        <div class="card-actions">
-          <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
-          <button class="edit-btn" (click)="editElection(election)">Edit</button>
-          <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+          </div>
+          <div class="card-dates">
+            <span>Start: {{ election.startTime | date:'d MMMM y' }}</span>
+            <span>End: {{ election.endTime | date:'d MMMM y' }}</span>
+          </div>
+          <div class="card-actions">
+            <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
+            <button class="edit-btn" (click)="editElection(election)">Edit</button>
+            <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+          </div>
         </div>
       </div>
-    </div>
+
+      <app-empty-state *ngIf="!pagedElections.length" icon="event_busy" title="No elections found"
+        message="Try adjusting your search, or add a new election to get started.">
+      </app-empty-state>
+    </app-section-card>
   </div>
 
 

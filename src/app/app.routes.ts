@@ -25,6 +25,7 @@ import { CandidateAddComponent } from './Components/candidate-add/candidate-add.
 import { NominationApplicationComponent } from './Components/nomination-application/nomination-application.component';
 import { CandidatesV2Component } from './Components/candidates-v2/candidates-v2.component';
 import { VoteCardComponent } from './Components/vote-card/vote-card.component';
+import { CommitteeComponent } from './Components/pages/committee/committee.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -66,20 +67,26 @@ export const routes: Routes = [
     ]
   }
   ,
-  {
-    path: 'directory', component: DirectoryComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['SuperAdmin', 'Admin', 'Representative', 'Member'] } // only these roles
-
-  },
   { path: 'login', component: LoginComponent },
   { path: 'forgot-password', component: ForgetPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'members',
+    component: DirectoryComponent
+    // Public — no login required. Calls the dedicated PublicDirectory API, which
+    // only ever returns lean, payment-free fields — a different component and a
+    // different endpoint from the authenticated member-management view below.
+  },
+  {
+    path: 'members/manage',
     component: MemberLandingComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Representative', 'Member'] } // only these roles
+  },
+  {
+    path: 'committee',
+    component: CommitteeComponent
+    // Public page — no login required, anyone can see the elected committee.
   },
   { path: 'congratulations', component: CongratulationsComponent },
   { path: 'contact', component: ContactComponent },

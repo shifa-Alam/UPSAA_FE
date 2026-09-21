@@ -1,8 +1,8 @@
-<div class="unauthorized-container">
-  <div class="card">
-    <h1>403</h1>
-    <h2>Access Denied</h2>
-    <p>You do not have permission to access this page.</p>
-    <button (click)="goHome()">Go to Home</button>
+<div class="unauthorized-page">
+  <div class="unauthorized-page__inner">
+    <app-empty-state icon="lock" title="Access Denied"
+      message="You do not have permission to access this page.">
+      <button class="unauthorized-page__cta" (click)="goHome()">Go to Home</button>
+    </app-empty-state>
   </div>
 </div>

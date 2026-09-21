@@ -3,6 +3,11 @@
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="collapsed">
 
+    <div class="sidebar-brand">
+      <span class="brand-icon">🏛️</span>
+      <span class="brand-text" *ngIf="!collapsed">Admin Panel</span>
+    </div>
+
     <nav class="sidebar-menu">
 
       <ng-container *ngFor="let item of menuItems">

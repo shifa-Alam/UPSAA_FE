@@ -15,37 +15,10 @@
 
                 <!-- Summary Cards -->
                 <div class="dashboard-summary">
-                    <div class="summary-card total-members">
-                        <div class="icon">👥</div>
-                        <div class="content">
-                            <h3>Members</h3>
-                            <p>{{ totalItems }}</p>
-                        </div>
-                    </div>
-
-                    <div class="summary-card membership-amount">
-                        <div class="icon">💳</div>
-                        <div class="content">
-                            <h3>Membership</h3>
-                            <p>৳ {{ totalMembershipAmount | number:'1.0-0' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="summary-card donation-amount">
-                        <div class="icon">💖</div>
-                        <div class="content">
-                            <h3>Donations</h3>
-                            <p>৳ {{ totalDonationAmount | number:'1.0-0' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="summary-card total-amount">
-                        <div class="icon">💰</div>
-                        <div class="content">
-                            <h3>Total Amount</h3>
-                            <p>৳ {{ totalAmount | number:'1.0-0' }}</p>
-                        </div>
-                    </div>
+                    <app-stat-card icon="groups" label="Members" [value]="totalItems" tone="primary"></app-stat-card>
+                    <app-stat-card icon="credit_card" label="Membership" value="৳ {{ totalMembershipAmount | number:'1.0-0' }}" tone="accent"></app-stat-card>
+                    <app-stat-card icon="favorite" label="Donations" value="৳ {{ totalDonationAmount | number:'1.0-0' }}" tone="neutral"></app-stat-card>
+                    <app-stat-card icon="payments" label="Total Amount" value="৳ {{ totalAmount | number:'1.0-0' }}" tone="primary"></app-stat-card>
                 </div>
 
                 <!-- Filter Section -->

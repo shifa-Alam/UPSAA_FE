@@ -73,39 +73,21 @@
   </div>
 </div>
 
+<app-page-header title="Candidates" subtitle="Review nominations, approve or reject candidates, and track payment status."
+  variant="plain">
+</app-page-header>
 
+<div class="page-body upsaa-container">
 
-
-
-<div>
-  <h2 class="page-title">Candidates</h2>
   <!-- Summary Cards -->
-  <div class="dashboard-summary">
-    <div class="summary-item">
-      <div class="icon">👥</div>
-      <div class="content">
-        <h3>Candidates</h3>
-        <p>{{ totalItems }}</p>
-      </div>
-    </div>
-
-    <div class="summary-item">
-      <div class="icon">💳</div>
-      <div class="content">
-        <h3>Total Fee</h3>
-        <p>৳ {{ totalFee | number:'1.0-0' }}</p>
-      </div>
-    </div>
-
-    <div class="summary-item">
-      <div class="icon">✔️</div>
-      <div class="content">
-        <h3>Paid</h3>
-        <p>৳ {{ paidFee | number:'1.0-0' }}</p>
-      </div>
-    </div>
+  <div class="stat-row">
+    <app-stat-card icon="groups" label="Candidates" [value]="totalItems" tone="primary"></app-stat-card>
+    <app-stat-card icon="payments" label="Total Fee" [value]="'৳ ' + (totalFee | number:'1.0-0')" tone="accent">
+    </app-stat-card>
+    <app-stat-card icon="verified" label="Paid" [value]="'৳ ' + (paidFee | number:'1.0-0')" tone="neutral">
+    </app-stat-card>
   </div>
-  <!-- Header -->
+
   <!-- Filter Section -->
   <div class="filters-container">
     <div class="filter-item">
@@ -153,83 +135,88 @@
     <p>Loading candidates...</p>
   </div>
   <div *ngIf="!loading">
-    <!-- Desktop Table -->
-    <div class="table-wrapper desktop-only">
-      <table class="candidates-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Member Code</th>
-            <th>Position</th>
-            <th>Ballot No</th>
-            <th>Batch</th>
-            <th>Fee</th>
-            <th style="width: 180px;">Actions</th>
-          </tr>
-        </thead>
+    <app-section-card icon="person_search" title="All Candidates" [noPadding]="true">
+      <!-- Desktop Table -->
+      <div class="table-wrapper desktop-only" *ngIf="candidates.length">
+        <table class="candidates-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Member Code</th>
+              <th>Position</th>
+              <th>Ballot No</th>
+              <th>Batch</th>
+              <th>Fee</th>
+              <th style="width: 180px;">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody>
-          <tr *ngFor="let candidate of candidates; let i = index">
-            <td>{{ i + 1}} </td>
-            <td>{{ candidate.memberName }}
-              <span *ngIf="candidate.nominationStatus=== 'Approved'" class="approved-tick">✔</span>
-              <span *ngIf="candidate.nominationStatus=== 'Rejected'" class="rejected-tick">✖</span>
-              <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
+          <tbody>
+            <tr *ngFor="let candidate of candidates; let i = index">
+              <td>{{ i + 1}} </td>
+              <td>{{ candidate.memberName }}
+                <span *ngIf="candidate.nominationStatus=== 'Approved'" class="approved-tick">✔</span>
+                <span *ngIf="candidate.nominationStatus=== 'Rejected'" class="rejected-tick">✖</span>
+                <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
 
-            </td>
-            <td>{{ candidate.memberCode }}</td>
-            <td>{{ candidate.positionName }}</td>
-            <td>{{ candidate.ballotNumber }}</td>
-            <td>{{ candidate.batch }}</td>
-            <td>{{ candidate.fee }}</td>
-            <td>
-              <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-              <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-              <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+              </td>
+              <td>{{ candidate.memberCode }}</td>
+              <td>{{ candidate.positionName }}</td>
+              <td>{{ candidate.ballotNumber }}</td>
+              <td>{{ candidate.batch }}</td>
+              <td>{{ candidate.fee }}</td>
+              <td>
+                <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
+                <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
+                <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Mobile Cards -->
-    <div class="mobile-only">
-      <div class="candidate-card" *ngFor="let candidate of candidates; let i = index">
+      <!-- Mobile Cards -->
+      <div class="mobile-only" *ngIf="candidates.length">
+        <div class="candidate-card" *ngFor="let candidate of candidates; let i = index">
 
-        <div class="card-header">
-          <!-- <span class="index">#{{ i + 1 }}</span> -->
-          <span class="title">{{ candidate.memberName }}
-            <span *ngIf="candidate.nominationStatus === 'Approved'" class="status-icon approved">✔</span>
-            <span *ngIf="candidate.nominationStatus === 'Rejected'" class="status-icon rejected">✖</span>
-            <span *ngIf="candidate.nominationStatus === 'Pending'" class="status-icon pending">⏳</span>
-          </span>
+          <div class="card-header">
+            <!-- <span class="index">#{{ i + 1 }}</span> -->
+            <span class="title">{{ candidate.memberName }}
+              <span *ngIf="candidate.nominationStatus === 'Approved'" class="status-icon approved">✔</span>
+              <span *ngIf="candidate.nominationStatus === 'Rejected'" class="status-icon rejected">✖</span>
+              <span *ngIf="candidate.nominationStatus === 'Pending'" class="status-icon pending">⏳</span>
+            </span>
 
-        </div>
-        <div class="card-dates">
-          <span>{{ candidate.positionName }}</span>
-          <span>batch: {{ candidate.batch }}</span>
-          <span *ngIf="candidate?.isPaid" class="paid">
-            ✔ Paid
-          </span>
+          </div>
+          <div class="card-dates">
+            <span>{{ candidate.positionName }}</span>
+            <span>batch: {{ candidate.batch }}</span>
+            <span *ngIf="candidate?.isPaid" class="paid">
+              ✔ Paid
+            </span>
 
-          <span *ngIf="!candidate?.isPaid" class="not-paid">
-            ✖ Not Paid
-          </span>
-        </div>
-        <div class="card-actions">
-          <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-          <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-          <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+            <span *ngIf="!candidate?.isPaid" class="not-paid">
+              ✖ Not Paid
+            </span>
+          </div>
+          <div class="card-actions">
+            <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
+            <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
+            <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+          </div>
         </div>
       </div>
-    </div>
+
+      <app-empty-state *ngIf="!candidates.length" icon="person_search" title="No candidates found"
+        message="Try adjusting your filters — no candidates match the current criteria.">
+      </app-empty-state>
+    </app-section-card>
   </div>
 
 
   <!-- Pagination -->
   <div class="pagination">
-    <!-- Pagination -->
     <nav class="pagination-container" *ngIf="totalPages > 1">
       <ul class="pagination">
 

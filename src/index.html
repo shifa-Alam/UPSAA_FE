@@ -11,6 +11,19 @@
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
 
+  <!-- Set the theme before first paint so there's no light->dark flash on load. -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('upsaa-theme');
+        var theme = saved === 'dark' || saved === 'light'
+          ? saved
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) { /* storage disabled — default light theme applies */ }
+    })();
+  </script>
+
 </head>
 
 <body>

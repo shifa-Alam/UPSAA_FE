@@ -1,128 +1,95 @@
-<div class="corporate-background">
-  <div class="content-container">
+<div class="home-page">
 
-    <section class="hero-section">
-      <div class="hero-content">
-        <img src="logo.png" alt="UPSAA Logo" class="hero-logo" />
+  <app-page-header class="home-hero" variant="hero" eyebrow="স্বাগতম" title="উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন"
+    subtitle="প্রজন্মের সংযোগ, ভবিষ্যতের ক্ষমতায়ন। উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থীদের ঐক্যবদ্ধ পরিবার — UPSAA।">
+    <div class="hero-extra">
+      <img src="logo.png" alt="UPSAA Logo" class="hero-logo" />
 
-        <h1 class="hero-title">
-          UPSAA নির্বাচন ২০২৬
-        </h1>
-
-        <p class="hero-tagline">
-          উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন এর কার্যনির্বাহী কমিটি নির্বাচন ২০২৬
-        </p>
-
-        <div class="hero-actions">
-          <!-- <a routerLink="/nomination" class="primary-btn">
-            <mat-icon>assignment</mat-icon> মনোনয়ন আবেদন
-          </a> -->
-          <a routerLink="/dashboard/vote-casts" class="primary-btn">
-            <mat-icon>how_to_vote</mat-icon> ভোটের ফলাফল
-          </a>
-          <a routerLink="/register" class="primary-btn">
-            <mat-icon>how_to_reg</mat-icon> সদস্য নিবন্ধন
-          </a>
-          <a routerLink="/members" class="secondary-btn">
-            সদস্য তালিকা
-          </a>
-        </div>
-      </div>
-    </section>
-    <section class="election-schedule-dark">
-
-      <h2 class="schedule-title-dark">
-        নির্বাচনী কার্যক্রম ও সময়সূচি – ২০২৬
-      </h2>
-
-      <div class="schedule-table-dark">
-
-        <div class="schedule-row-dark header">
-          <div>কার্যক্রম</div>
-          <div>তারিখ</div>
-          <div>সময়</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>মনোনয়নপত্র ক্রয় ও নতুন সদস্য নিবন্ধন শুরু</div>
-          <div>২২ ফেব্রুয়ারি, ২০২৬</div>
-          <div>সকাল ১০:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>মনোনয়নপত্র ক্রয় ও আবেদনের শেষ সময়</div>
-          <div>২৬ ফেব্রুয়ারি, ২০২৬</div>
-          <div>বিকেল ৫:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>মনোনয়নপত্র বাছাই ও প্রাথমিক বৈধ প্রার্থী তালিকা</div>
-          <div>২৬ ফেব্রুয়ারি, ২০২৬</div>
-          <div>সন্ধ্যা ৭:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>প্রার্থীতা প্রত্যাহারের শেষ তারিখ</div>
-          <div>২৭ ফেব্রুয়ারি, ২০২৬</div>
-          <div>বিকেল ৪:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>নতুন ভোটার নিবন্ধনের শেষ সময়</div>
-          <div>২৭ ফেব্রুয়ারি, ২০২৬</div>
-          <div>রাত ১১:৫৯</div>
-        </div>
-        <div class="schedule-row-dark">
-          <div>চূড়ান্ত প্রার্থী তালিকা ও ব্যালট নম্বর বরাদ্দ</div>
-          <div>২৮ ফেব্রুয়ারি, ২০২৬</div>
-          <div>সকাল ১১:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>পূর্ণাঙ্গ ভোটার তালিকা প্রকাশ ও আনুষ্ঠানিক প্রচারণা শুরু</div>
-          <div>১ মার্চ, ২০২৬</div>
-          <div>সকাল ১০:০০</div>
-        </div>
-
-        <div class="schedule-row-dark">
-          <div>সকল প্রকার প্রচারণা সমাপ্তি</div>
-          <div>১১ মার্চ, ২০২৬</div>
-          <div>রাত ১১:৫৯</div>
-        </div>
-        <div class="schedule-row-dark highlight">
-          <div>ভোট গ্রহণ (অনলাইন মেম্বার পোর্টাল)</div>
-          <div>১৩ মার্চ, ২০২৬</div>
-          <div>সকাল ৯:০০ – বিকেল ৪:০০</div>
-        </div>
-
-        <div class="schedule-row-dark result">
-          <div>ফলাফল ঘোষণা</div>
-          <div>১৩ মার্চ, ২০২৬</div>
-          <div>রাত ১০:৩০</div>
-        </div>
-
+      <div class="hero-actions">
+        <a routerLink="/register" class="primary-btn">
+          <mat-icon>how_to_reg</mat-icon> সদস্য নিবন্ধন
+        </a>
+        <a routerLink="/members" class="secondary-btn">
+          <mat-icon>groups</mat-icon> সদস্য তালিকা
+        </a>
       </div>
 
+      <a routerLink="/about" class="hero-link">
+        আমাদের সম্পর্কে বিস্তারিত জানুন <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+  </app-page-header>
+
+  <div class="upsaa-container home-sections">
+
+    <app-section-card icon="info" title="আমাদের পরিচিতি">
+      <p>
+        উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন (UPSAA) হলো আমাদের প্রিয় শিক্ষাপ্রতিষ্ঠান
+        উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থীদের একটি ঐক্যবদ্ধ প্ল্যাটফর্ম। এই সংগঠন আত্মিক
+        বন্ধনের পাশাপাশি পেশাগত সহায়তা ও সামাজিক দায়বদ্ধতার মাধ্যমে দেশের উন্নয়নে অবদান রাখে।
+      </p>
+    </app-section-card>
+
+    <section class="home-highlights">
+      <app-stat-card icon="celebration" tone="primary" label="পুনর্মিলনী, কুইজ, খেলাধুলা ও সাংস্কৃতিক অনুষ্ঠান"
+        value="আয়োজন"></app-stat-card>
+      <app-stat-card icon="school" tone="accent" label="জুনিয়র শিক্ষার্থীদের ক্যারিয়ার গাইডেন্স ও সেমিনার"
+        value="গাইডেন্স"></app-stat-card>
+      <app-stat-card icon="bloodtype" tone="primary" label="রক্তদান কর্মসূচি ও সামাজিক সচেতনতামূলক কার্যক্রম"
+        value="সমাজসেবা"></app-stat-card>
+      <app-stat-card icon="volunteer_activism" tone="accent" label="মেধাবী ও অসহায় শিক্ষার্থীদের আর্থিক সহায়তা"
+        value="সহায়তা"></app-stat-card>
     </section>
 
+    <!-- Leadership spotlight — real, live data from the same public committee endpoint
+         the Committee page uses. Quietly omitted if that data isn't available. -->
+    <section class="leadership-spotlight" *ngIf="leaders.length">
+      <div class="leadership-spotlight__head">
+        <span class="leadership-spotlight__eyebrow">নেতৃত্বে</span>
+        <h2>বর্তমান কার্যনির্বাহী পরিষদ</h2>
+      </div>
 
-    <!-- Contact Section -->
-    <section class="highlight-card contact-section">
-      <h2><mat-icon>contact_mail</mat-icon> যোগাযোগ করুন</h2>
-      <div class="contact-details">
-        <div class="contact-item">
-          <mat-icon>phone</mat-icon>
-          <span>PH: 01866 293776</span>
-        </div>
-        <div class="contact-item">
-          <mat-icon>email</mat-icon>
-          <span>Email: <a href="mailto:info@uttaranalumni.org">info&#64;uttaranalumni.org</a></span>
-        </div>
-        <div class="contact-item">
-          <mat-icon>location_on</mat-icon>
-          <span>Office: Thana Road, Jhenaigati, Sherpur 2120</span>
+      <div class="leadership-spotlight__grid">
+        <div class="leader-card" *ngFor="let leader of leaders">
+          <ng-container *ngIf="leader.photo; else leaderInitials">
+            <img [src]="leader.photo" [alt]="leader.name" class="leader-card__photo" />
+          </ng-container>
+          <ng-template #leaderInitials>
+            <div class="leader-card__initials">{{ initials(leader.name) }}</div>
+          </ng-template>
+
+          <div class="leader-card__body">
+            <span class="leader-card__position">{{ leader.position }}</span>
+            <span class="leader-card__name">{{ leader.name }}</span>
+          </div>
         </div>
       </div>
+
+      <a routerLink="/committee" class="leadership-spotlight__link">
+        পূর্ণাঙ্গ কার্যনির্বাহী কমিটি দেখুন <mat-icon>arrow_forward</mat-icon>
+      </a>
     </section>
+
+    <!-- Connect With Us — the association's real, verified official channels. -->
+    <app-section-card icon="hub" title="আমাদের সাথে যুক্ত হোন">
+      <div class="connect-grid">
+        <a class="connect-item connect-item--facebook" href="https://www.facebook.com/uttaranalumni/"
+          target="_blank" rel="noopener">
+          <span class="connect-item__icon"><mat-icon>thumb_up</mat-icon></span>
+          <span class="connect-item__label">ফেসবুক পেজ</span>
+        </a>
+        <a class="connect-item connect-item--facebook" href="https://www.facebook.com/groups/24644376638521350/"
+          target="_blank" rel="noopener">
+          <span class="connect-item__icon"><mat-icon>groups_2</mat-icon></span>
+          <span class="connect-item__label">ফেসবুক গ্রুপ</span>
+        </a>
+        <a class="connect-item connect-item--whatsapp" href="https://wa.me/8801866293776" target="_blank"
+          rel="noopener">
+          <span class="connect-item__icon"><mat-icon>chat</mat-icon></span>
+          <span class="connect-item__label">হোয়াটসঅ্যাপ</span>
+        </a>
+      </div>
+    </app-section-card>
+
   </div>
 </div>
