@@ -3,22 +3,22 @@ import { Position, PositionService } from '../../Services/position.service';
 import { finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Election, ElectionService } from '../../Services/election.service';
-import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-positions',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './positions.component.html',
   styleUrl: './positions.component.scss'
 })
 export class PositionsComponent implements OnInit {
-  viewDetails(_t20: Position) {
-    throw new Error('Method not implemented.');
-  }
   loading = false;
   positions: Position[] = [];
   pagedPositions: Position[] = [];
@@ -38,7 +38,7 @@ export class PositionsComponent implements OnInit {
     candidates: []
   };
   elections: Election[] = [];
-  constructor(private positionService: PositionService, private electionService: ElectionService) {
+  constructor(private positionService: PositionService, private electionService: ElectionService, private languageService: LanguageService) {
 
   }
 
@@ -77,7 +77,7 @@ export class PositionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to fetch positions:', err);
-          alert('Failed to load positions. Please try again.');
+          alert(this.languageService.translate('positions.loadErrorAlert'));
         }
       });
   }
@@ -128,7 +128,7 @@ export class PositionsComponent implements OnInit {
       },
       error: (err) => {
         console.error('delete failed:', err);
-        alert('Failed to delete position.');
+        alert(this.languageService.translate('positions.deleteErrorAlert'));
       }
     });
   }
@@ -151,7 +151,7 @@ export class PositionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update failed:', err);
-          alert('Failed to update position.');
+          alert(this.languageService.translate('positions.updateErrorAlert'));
         }
       });
     } else {
@@ -164,7 +164,7 @@ export class PositionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Add failed:', err);
-          alert('Failed to add position.');
+          alert(this.languageService.translate('positions.addErrorAlert'));
         }
       });
     }

@@ -8,46 +8,46 @@
     <div class="form-header">
       <h2 class="form-title">
         <mat-icon class="title-icon">assignment</mat-icon>
-        Apply for Nomination
+        {{ 'candidateAdd.formTitle' | translate }}
       </h2>
       <p class="form-subtitle">
-        🗳️ Stand out in the alumni elections! <br />
-        Please provide your position choice and a short reason for applying.
+        {{ 'candidateAdd.formSubtitle1' | translate }} <br />
+        {{ 'candidateAdd.formSubtitle2' | translate }}
       </p>
     </div>
     <!-- Position -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Select Position</mat-label>
+      <mat-label>{{ 'candidateAdd.positionLabel' | translate }}</mat-label>
       <mat-select [(ngModel)]="candidate.positionId" name="positionId" required>
-        <mat-option value="" disabled>-- Choose a Position --</mat-option>
+        <mat-option value="" disabled>{{ 'candidateAdd.positionPlaceholder' | translate }}</mat-option>
         <mat-option *ngFor="let p of positions" [value]="p.id">{{ p.name }} &nbsp;
           <span style="float:right; font-weight:600;">
-            (Fee ৳ {{ p.fee | number }})
+            ({{ 'candidateAdd.positionFeePrefix' | translate }} ৳ {{ p.fee | number }})
           </span>
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="!candidate.positionId">Position is required</mat-error>
+      <mat-error *ngIf="!candidate.positionId">{{ 'candidateAdd.positionRequiredError' | translate }}</mat-error>
     </mat-form-field>
 
     <!-- Application Reason -->
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Why are you applying?</mat-label>
+      <mat-label>{{ 'candidateAdd.reasonLabel' | translate }}</mat-label>
       <textarea matInput [(ngModel)]="candidate.applicationReason" name="applicationReason" rows="4"
-        placeholder="Write your reason here..." required>
+        [placeholder]="'candidateAdd.reasonPlaceholder' | translate" required>
       </textarea>
-      <mat-error *ngIf="!candidate.applicationReason">Reason is required</mat-error>
+      <mat-error *ngIf="!candidate.applicationReason">{{ 'candidateAdd.reasonRequiredError' | translate }}</mat-error>
     </mat-form-field>
 
     <!-- Actions -->
     <div class="modal-actions">
       <!-- Apply button -->
       <button mat-raised-button class="apply-btn" type="submit" [disabled]="loading">
-        {{ loading ? 'Submitting...' : 'Apply' }}
+        {{ loading ? ('candidateAdd.submitting' | translate) : ('candidateAdd.applyButton' | translate) }}
       </button>
 
       <!-- Cancel button -->
       <button mat-raised-button class="cancel-btn" type="button" (click)="closeModal()">
-        Cancel
+        {{ 'candidateAdd.cancelButton' | translate }}
       </button>
     </div>
   </form>

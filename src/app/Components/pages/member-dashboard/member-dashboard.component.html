@@ -1,0 +1,101 @@
+<div class="member-dashboard">
+  <div class="upsaa-container dashboard-body">
+
+    <div class="loading-wrapper" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>{{ 'memberDashboard.loading' | translate }}</p>
+    </div>
+
+    <ng-container *ngIf="!loading">
+
+      <!-- Welcome header -->
+      <div class="welcome-card" *ngIf="member">
+        <ng-container *ngIf="member.photo; else initialsAvatar">
+          <img [src]="member.photo" [alt]="member.fullName" class="welcome-card__photo" />
+        </ng-container>
+        <ng-template #initialsAvatar>
+          <div class="welcome-card__initials">{{ initials(member.fullName) }}</div>
+        </ng-template>
+
+        <div class="welcome-card__info">
+          <div class="welcome-card__greeting">{{ 'memberDashboard.welcomeBack' | translate }}</div>
+          <h2>{{ member.fullName }}</h2>
+          <div class="welcome-card__tags">
+            <span class="tag" *ngIf="member.batch">{{ 'memberDashboard.batchPrefix' | translate }} {{ member.batch }}</span>
+            <span class="tag" *ngIf="member.currentCity">
+              <mat-icon>place</mat-icon>{{ member.currentCity }}
+            </span>
+            <span class="tag" [ngClass]="member.active ? 'tag--active' : 'tag--pending'">
+              {{ member.active ? ('memberDashboard.statusActive' | translate) : ('memberDashboard.statusPending' | translate) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="welcome-card__fees" *ngIf="totalFeeCount > 0">
+          <div class="fees-count">{{ paidFeeCount }} / {{ totalFeeCount }}</div>
+          <div class="fees-label">{{ 'memberDashboard.feesPaidLabel' | translate }}</div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="quick-links">
+        <a class="quick-link" *ngFor="let link of quickLinks" [routerLink]="link.route">
+          <mat-icon>{{ link.icon }}</mat-icon>
+          <span>{{ link.labelKey | translate }}</span>
+        </a>
+      </div>
+
+      <div class="dashboard-columns">
+
+        <!-- Recent notices -->
+        <section class="dashboard-panel">
+          <h3>
+            <mat-icon>campaign</mat-icon> {{ 'memberDashboard.noticesTitle' | translate }}
+          </h3>
+
+          <div class="panel-loading" *ngIf="noticesLoading">
+            <mat-icon class="panel-loading__icon">autorenew</mat-icon>
+          </div>
+
+          <p class="panel-empty" *ngIf="!noticesLoading && notices.length === 0">
+            {{ 'memberDashboard.noticesEmpty' | translate }}
+          </p>
+
+          <div class="notice-item" *ngFor="let n of notices">
+            <strong>
+              {{ n.title }}
+              <span class="mini-badge" *ngIf="n.alumniOnly">{{ 'memberDashboard.alumniOnlyBadge' | translate }}</span>
+            </strong>
+            <span class="notice-item__date">{{ n.publishedDate | date:'mediumDate' }}</span>
+          </div>
+        </section>
+
+        <!-- Upcoming events -->
+        <section class="dashboard-panel">
+          <h3>
+            <mat-icon>event</mat-icon> {{ 'memberDashboard.eventsTitle' | translate }}
+          </h3>
+
+          <div class="panel-loading" *ngIf="eventsLoading">
+            <mat-icon class="panel-loading__icon">autorenew</mat-icon>
+          </div>
+
+          <p class="panel-empty" *ngIf="!eventsLoading && upcomingEvents.length === 0">
+            {{ 'memberDashboard.eventsEmpty' | translate }}
+          </p>
+
+          <div class="event-item" *ngFor="let e of upcomingEvents">
+            <strong>{{ e.title }}</strong>
+            <span class="event-item__date">{{ e.eventDate | date:'d MMM y' }}</span>
+          </div>
+
+          <a class="panel-link" routerLink="/events" *ngIf="!eventsLoading && upcomingEvents.length > 0">
+            {{ 'memberDashboard.viewAllEvents' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </section>
+
+      </div>
+
+    </ng-container>
+  </div>
+</div>

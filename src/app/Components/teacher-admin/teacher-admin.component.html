@@ -1,0 +1,169 @@
+<div class="teacher-admin">
+
+  <app-admin-header [title]="'teacherAdmin.title' | translate" [subtitle]="'teacherAdmin.subtitle' | translate"></app-admin-header>
+
+  <app-section-card icon="school" [title]="'teacherAdmin.postCardTitle' | translate">
+    <form class="teacher-form" (ngSubmit)="submit()">
+      <div class="teacher-form__row">
+        <div class="teacher-form__dropzone">
+          <input type="file" id="teacherFile" accept="image/*" (change)="onFileSelected($event)" />
+          <label for="teacherFile" *ngIf="!previewUrl">
+            <mat-icon>add_a_photo</mat-icon>
+            <span>{{ 'teacherAdmin.choosePhoto' | translate }}</span>
+          </label>
+          <label for="teacherFile" class="teacher-form__preview" *ngIf="previewUrl">
+            <img [src]="previewUrl" alt="Preview" />
+          </label>
+        </div>
+
+        <div class="teacher-form__fields">
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.nameLabel' | translate }}</label>
+            <input type="text" [placeholder]="'teacherAdmin.namePlaceholder' | translate" [(ngModel)]="form.fullName" name="fullName" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.designationLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="form.designation" name="designation" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.subjectLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="form.subject" name="subject" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.statusLabel' | translate }}</label>
+            <select [(ngModel)]="form.status" name="status">
+              <option *ngFor="let s of statuses" [value]="s">{{ statusLabelKey(s) | translate }}</option>
+            </select>
+          </div>
+          <div class="teacher-form__year-row">
+            <div class="form-field">
+              <label>{{ 'teacherAdmin.startYearLabel' | translate }}</label>
+              <input type="number" [(ngModel)]="form.serviceStartYear" name="serviceStartYear" />
+            </div>
+            <div class="form-field" *ngIf="form.status !== 'Current'">
+              <label>{{ 'teacherAdmin.endYearLabel' | translate }}</label>
+              <input type="number" [(ngModel)]="form.serviceEndYear" name="serviceEndYear" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.messageLabel' | translate }}</label>
+            <textarea rows="3" [placeholder]="'teacherAdmin.messagePlaceholder' | translate" [(ngModel)]="form.message" name="message"></textarea>
+          </div>
+
+          <button type="submit" class="teacher-form__submit" [disabled]="posting">
+            <mat-icon>{{ posting ? 'hourglass_top' : 'school' }}</mat-icon>
+            {{ posting ? ('teacherAdmin.posting' | translate) : ('teacherAdmin.postButton' | translate) }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </app-section-card>
+
+  <app-section-card icon="groups" [title]="'teacherAdmin.postedCardTitle' | translate" [noPadding]="true">
+
+    <div class="teacher-admin__loading" *ngIf="loading">
+      <mat-icon class="teacher-admin__loading-icon">autorenew</mat-icon>
+      <span>{{ 'teacherAdmin.loading' | translate }}</span>
+    </div>
+
+    <app-empty-state *ngIf="!loading && teachers.length === 0" icon="school" [title]="'teacherAdmin.emptyTitle' | translate"
+      [message]="'teacherAdmin.emptyMessage' | translate"></app-empty-state>
+
+    <div class="teacher-admin__list" *ngIf="!loading && teachers.length > 0">
+      <div class="teacher-admin__item" *ngFor="let t of teachers">
+
+        <!-- View mode -->
+        <ng-container *ngIf="editingId !== t.id">
+          <ng-container *ngIf="t.photoUrl; else initialsAvatar">
+            <img [src]="t.photoUrl" [alt]="t.fullName" class="teacher-admin__photo" />
+          </ng-container>
+          <ng-template #initialsAvatar>
+            <div class="teacher-admin__initials">{{ t.fullName.charAt(0) }}</div>
+          </ng-template>
+
+          <div class="teacher-admin__item-body">
+            <strong>{{ t.fullName }}</strong>
+            <span *ngIf="t.designation || t.subject">{{ t.designation }}<ng-container *ngIf="t.designation && t.subject"> &middot; </ng-container>{{ t.subject }}</span>
+            <span class="teacher-admin__status-row">
+              <span class="status-badge" [ngClass]="{
+                'status-badge--current': t.status === 'Current',
+                'status-badge--former': t.status === 'Former',
+                'status-badge--retired': t.status === 'Retired'
+              }">{{ statusLabelKey(t.status) | translate }}</span>
+              <ng-container *ngIf="t.serviceStartYear">{{ t.serviceStartYear }} – {{ t.serviceEndYear || ('teacherAdmin.present' | translate) }}</ng-container>
+            </span>
+            <p *ngIf="t.message">{{ t.message }}</p>
+          </div>
+          <div class="teacher-admin__actions">
+            <button type="button" class="teacher-admin__action" (click)="startEdit(t)"
+              [attr.aria-label]="'teacherAdmin.editAriaLabel' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" class="teacher-admin__action teacher-admin__action--danger"
+              [disabled]="deletingId === t.id" (click)="confirmDelete(t)"
+              [attr.aria-label]="'teacherAdmin.deleteAriaLabel' | translate">
+              <mat-icon>{{ deletingId === t.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Edit mode -->
+        <div class="teacher-admin__edit" *ngIf="editingId === t.id">
+          <label class="teacher-admin__edit-photo" for="editFile-{{ t.id }}">
+            <img [src]="editPreviewUrl || t.photoUrl || ''" *ngIf="editPreviewUrl || t.photoUrl" [alt]="t.fullName" />
+            <span class="teacher-admin__edit-photo-hint">
+              <mat-icon>photo_camera</mat-icon>
+              {{ 'teacherAdmin.replacePhoto' | translate }}
+            </span>
+          </label>
+          <input type="file" id="editFile-{{ t.id }}" accept="image/*" (change)="onEditFileSelected($event)" />
+
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.nameLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="editForm.fullName" name="editFullName-{{ t.id }}" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.designationLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="editForm.designation" name="editDesignation-{{ t.id }}" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.subjectLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="editForm.subject" name="editSubject-{{ t.id }}" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.statusLabel' | translate }}</label>
+            <select [(ngModel)]="editForm.status" name="editStatus-{{ t.id }}">
+              <option *ngFor="let s of statuses" [value]="s">{{ statusLabelKey(s) | translate }}</option>
+            </select>
+          </div>
+          <div class="teacher-form__year-row">
+            <div class="form-field">
+              <label>{{ 'teacherAdmin.startYearLabel' | translate }}</label>
+              <input type="number" [(ngModel)]="editForm.serviceStartYear" name="editStartYear-{{ t.id }}" />
+            </div>
+            <div class="form-field" *ngIf="editForm.status !== 'Current'">
+              <label>{{ 'teacherAdmin.endYearLabel' | translate }}</label>
+              <input type="number" [(ngModel)]="editForm.serviceEndYear" name="editEndYear-{{ t.id }}" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label>{{ 'teacherAdmin.messageLabel' | translate }}</label>
+            <textarea rows="3" [(ngModel)]="editForm.message" name="editMessage-{{ t.id }}"></textarea>
+          </div>
+
+          <div class="teacher-admin__edit-actions">
+            <button type="button" class="teacher-admin__save" [disabled]="saving" (click)="submitEdit(t)">
+              <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
+              {{ 'teacherAdmin.saveButton' | translate }}
+            </button>
+            <button type="button" class="teacher-admin__cancel" [disabled]="saving" (click)="cancelEdit()">
+              {{ 'teacherAdmin.cancelButton' | translate }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </app-section-card>
+
+</div>

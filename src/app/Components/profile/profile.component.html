@@ -1,6 +1,6 @@
 <div *ngIf="loading" class="loading-wrapper">
   <div class="spinner"></div>
-  <p>Profile Loading ...</p>
+  <p>{{ 'profile.loading' | translate }}</p>
 </div>
 <div class="profile-container" *ngIf="member && !loading">
 
@@ -29,8 +29,8 @@
     <!-- Profile Info -->
     <div class="profile-info">
       <h2>{{ member.fullName }}</h2>
-      <p class="designation">{{ member.currentDesignation || 'Student' }}</p>
-      <p class="designation">{{ member.employer || 'N/A' }}</p>
+      <p class="designation">{{ member.currentDesignation || ('profile.studentDefault' | translate) }}</p>
+      <p class="designation">{{ member.employer || ('profile.noInfo' | translate) }}</p>
 
     </div>
   </div>
@@ -49,10 +49,10 @@
 
     <div class="cropper-buttons">
       <button class="upload-btn" (click)="uploadImage()" [disabled]="uploading || !croppedImage">
-        <mat-icon>cloud_upload</mat-icon> {{ uploading ? 'Uploading...' : 'Upload' }}
+        <mat-icon>cloud_upload</mat-icon> {{ uploading ? ('profile.uploading' | translate) : ('profile.uploadButton' | translate) }}
       </button>
       <button class="cancel-btn" (click)="cancelCrop()">
-        <mat-icon>close</mat-icon> Cancel
+        <mat-icon>close</mat-icon> {{ 'profile.cancel' | translate }}
       </button>
     </div>
   </div>
@@ -62,12 +62,12 @@
   <!-- Tabs with Icons & Animation -->
   <mat-tab-group class="profile-tabs" animationDuration="500ms">
 
-    <mat-tab label="👤 Info">
+    <mat-tab [label]="'👤 ' + ('profile.infoTab' | translate)">
       <div class="tab-card contact-card">
         <div class="contact-item">
           <p class="member-code">
             <mat-icon>badge</mat-icon>
-            <strong>M Code:</strong>
+            <strong>{{ 'profile.memberCodeLabel' | translate }}</strong>
             <span class="code-value">{{ member.memberCode }}</span>
 
 
@@ -75,23 +75,23 @@
 
 
 
-          <p><mat-icon>calendar_today</mat-icon> <strong>Batch:</strong> {{ member.batch }}</p>
-          <p><mat-icon>call</mat-icon> <strong>Phone:</strong> {{ member.phone }}</p>
-          <p><mat-icon>email</mat-icon> <strong>Email:</strong> {{ member.email }}</p>
-          <p><mat-icon>location_city</mat-icon> <strong>City:</strong> {{ member.currentCity }}</p>
-          <p><mat-icon>favorite</mat-icon> <strong>Blood Group:</strong> {{ member.bloodGroup || 'N/A' }}</p>
+          <p><mat-icon>calendar_today</mat-icon> <strong>{{ 'profile.batchLabel' | translate }}</strong> {{ member.batch }}</p>
+          <p><mat-icon>call</mat-icon> <strong>{{ 'profile.phoneLabel' | translate }}</strong> {{ member.phone }}</p>
+          <p><mat-icon>email</mat-icon> <strong>{{ 'profile.emailLabel' | translate }}</strong> {{ member.email }}</p>
+          <p><mat-icon>location_city</mat-icon> <strong>{{ 'profile.cityLabel' | translate }}</strong> {{ member.currentCity }}</p>
+          <p><mat-icon>favorite</mat-icon> <strong>{{ 'profile.bloodGroupLabel' | translate }}</strong> {{ member.bloodGroup || ('profile.noInfo' | translate) }}</p>
         </div>
         <div class="action-buttons">
           <!-- Edit Info Button -->
           <button mat-flat-button class="action-btn edit-btn" (click)="openEditInfoDialog()">
             <mat-icon>edit</mat-icon>
-            Edit Info
+            {{ 'profile.editInfo' | translate }}
           </button>
 
           <!-- Change Password Button -->
           <button mat-flat-button class="action-btn change-password-btn" (click)="openChangePasswordDialog()">
             <mat-icon>lock</mat-icon>
-            Change Password
+            {{ 'profile.changePassword' | translate }}
           </button>
 
           <!-- Apply For Nomination Button -->
@@ -106,7 +106,7 @@
           </button> -->
            <button mat-raised-button class="action-btn nomination-btn pulse-button" [routerLink]="['/election']">
             <mat-icon>how_to_vote</mat-icon>
-           Vote
+           {{ 'profile.vote' | translate }}
           </button>
 
         </div>
@@ -118,14 +118,14 @@
 
     </mat-tab>
 
-    <mat-tab label="🎓 Education">
+    <mat-tab [label]="'🎓 ' + ('profile.educationTab' | translate)">
       <div class="tab-card education-card">
 
         <!-- Header with title + Add button -->
         <div class="tab-card-header">
-          <h3 class="card-title">Educations</h3>
+          <h3 class="card-title">{{ 'profile.educationInfoTitle' | translate }}</h3>
           <button mat-raised-button class="" (click)="addEducation()">
-            <mat-icon>add</mat-icon> Add New
+            <mat-icon>add</mat-icon> {{ 'profile.addNew' | translate }}
           </button>
         </div>
 
@@ -133,11 +133,11 @@
           <table class="members-table education-table">
             <thead>
               <tr>
-                <th>Degree</th>
-                <th>Institute</th>
-                <th>Subject</th>
+                <th>{{ 'profile.degree' | translate }}</th>
+                <th>{{ 'profile.institute' | translate }}</th>
+                <th>{{ 'profile.subject' | translate }}</th>
 
-                <th>Action</th>
+                <th>{{ 'profile.actions' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -160,7 +160,7 @@
         </div>
 
         <ng-template #noEdu>
-          <p class="no-records">No education records found. Click "Add Education" to create one.</p>
+          <p class="no-records">{{ 'profile.noEducationRecords' | translate }}</p>
         </ng-template>
 
       </div>
@@ -172,22 +172,22 @@
 
 
 
-    <mat-tab label="💳 Fees" *ngIf="member.fees.length">
+    <mat-tab [label]="'💳 ' + ('profile.feesTab' | translate)" *ngIf="member.fees.length">
       <div class="tab-card fees-card">
         <div *ngFor="let fee of member.fees; let last = last" class="fee-item">
           <p>
             <mat-icon>payment</mat-icon>
-            <strong class="label">Fee Type:</strong> {{ fee.feeType }}
+            <strong class="label">{{ 'profile.feeTypeLabel' | translate }}</strong> {{ fee.feeType }}
           </p>
           <p>
             <mat-icon>attach_money</mat-icon>
-            <strong class="label">Amount:</strong> Tk {{ fee.amount }}
+            <strong class="label">{{ 'profile.amountLabel' | translate }}</strong> ৳{{ fee.amount }}
           </p>
           <p>
             <mat-icon>check_circle</mat-icon>
-            <strong class="label">Status:</strong>
+            <strong class="label">{{ 'profile.statusLabel' | translate }}</strong>
             <span class="status" [class.paid]="fee.isPaid" [class.unpaid]="!fee.isPaid">
-              {{ fee.isPaid ? 'Paid' : 'Unpaid' }}
+              {{ fee.isPaid ? ('profile.paid' | translate) : ('profile.unpaid' | translate) }}
             </span>
           </p>
           <hr *ngIf="!last">

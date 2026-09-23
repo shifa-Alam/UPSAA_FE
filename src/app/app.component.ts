@@ -12,6 +12,8 @@ import { AuthService } from './Services/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MemberService } from './Services/member.service';
 import { ThemeService } from './Services/theme.service';
+import { LanguageService } from './Services/language.service';
+import { TranslatePipe } from './Pipes/translate.pipe';
 
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -32,6 +34,7 @@ import { filter, map } from 'rxjs/operators';
     MatProgressBarModule,
     MatMenuModule,
     FooterComponent,
+    TranslatePipe,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -43,13 +46,27 @@ export class AppComponent implements OnInit {
   title = 'upsaa';
   @ViewChild('sidenav') sidenav!: MatSidenav;
   isMobile$: Observable<boolean>;
-  /** The dashboard has its own full-height sidebar layout — the public site footer doesn't belong under it. */
-  hideFooter = false;
+  /** The dashboard has its own full-height sidebar layout — the public site's top toolbar
+   *  and footer don't belong around it. */
+  isDashboardRoute = false;
+
+  /** Routes grouped under the desktop nav's "Alumni" and "Community" dropdowns —
+   *  used to highlight the dropdown trigger itself when a child route is active,
+   *  the way routerLinkActive would for a plain link. */
+  private readonly alumniRoutes = ['/members', '/batches', '/achievements', '/teachers'];
+  private readonly communityRoutes = ['/blood-donors', '/constitution'];
+  isAlumniSectionActive = false;
+  isCommunitySectionActive = false;
+
   ngOnInit() {
-    this.hideFooter = this.router.url.startsWith('/dashboard');
+    this.isDashboardRoute = this.router.url.startsWith('/dashboard');
+    this.updateSectionActive(this.router.url);
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
-      .subscribe(e => this.hideFooter = e.urlAfterRedirects.startsWith('/dashboard'));
+      .subscribe(e => {
+        this.isDashboardRoute = e.urlAfterRedirects.startsWith('/dashboard');
+        this.updateSectionActive(e.urlAfterRedirects);
+      });
 
     if (this.authService.isLoggedIn()) {
       this.memberService.getProfile().subscribe({
@@ -68,10 +85,17 @@ export class AppComponent implements OnInit {
   toggleSidenav() {
     this.sidenav.toggle();
   }
+
+  private updateSectionActive(url: string): void {
+    const path = url.split('?')[0];
+    this.isAlumniSectionActive = this.alumniRoutes.some(r => path === r || path.startsWith(r + '/'));
+    this.isCommunitySectionActive = this.communityRoutes.some(r => path === r || path.startsWith(r + '/'));
+  }
   constructor(
     public loadingService: LoadingService,
     public authService: AuthService, // for login/logout
     public themeService: ThemeService,
+    public languageService: LanguageService,
     private memberService: MemberService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     this.isMobile$ = this.breakpointObserver

@@ -14,6 +14,8 @@ import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { SnackbarService } from '../../Services/snackbar.service';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from "@angular/material/icon";
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-candidate-add',
@@ -27,7 +29,7 @@ import { MatIconModule } from "@angular/material/icon";
     MatDialogModule,
     MatOptionModule,
     MatProgressBarModule,
-    MatSelectModule, MatIconModule],
+    MatSelectModule, MatIconModule, TranslatePipe],
   templateUrl: './candidate-add.component.html',
   styleUrl: './candidate-add.component.scss'
 })
@@ -57,6 +59,7 @@ export class CandidateAddComponent implements OnInit {
     private candidateService: CandidateService,
     private snackbarService: SnackbarService,
     private positionService: PositionService,
+    private languageService: LanguageService,
     public dialogRef: MatDialogRef<CandidateAddComponent>
   ) { }
   ngOnInit(): void {
@@ -71,7 +74,7 @@ export class CandidateAddComponent implements OnInit {
   submitNomination() {
     if (!this.candidate.positionId) {
 
-      this.snackbarService.showError('Please select a position.');
+      this.snackbarService.showError(this.languageService.translate('candidateAdd.selectPositionError'));
       return;
     }
 
@@ -80,7 +83,7 @@ export class CandidateAddComponent implements OnInit {
     this.candidateService.applyNomination(this.candidate).subscribe({
       next: () => {
 
-        this.snackbarService.showSuccess('Nomination submitted successfully 🎉');
+        this.snackbarService.showSuccess(this.languageService.translate('candidateAdd.successMessage'));
         this.loading = false;
       },
       error: (err) => {

@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { Member, MemberService } from '../../Services/member.service';
 import html2canvas from 'html2canvas';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 @Component({
   selector: 'app-nomination-application',
   standalone: true,
@@ -21,7 +23,8 @@ import html2canvas from 'html2canvas';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    TranslatePipe
   ],
   templateUrl: './nomination-application.component.html',
   styleUrl: './nomination-application.component.scss'
@@ -75,6 +78,7 @@ export class NominationApplicationComponent implements OnInit {
     private snackbarService: SnackbarService,
     private positionService: PositionService,
     private memberService: MemberService,
+    private languageService: LanguageService,
 
   ) { }
   ngOnInit(): void {
@@ -119,7 +123,7 @@ export class NominationApplicationComponent implements OnInit {
   submitNomination() {
     if (!this.candidate.positionId) {
 
-      this.snackbarService.showError('Please select a position.');
+      this.snackbarService.showError(this.languageService.translate('nomination.selectPositionError'));
       return;
     }
     this.updateApplicationReason();

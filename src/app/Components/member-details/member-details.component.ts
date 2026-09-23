@@ -11,6 +11,9 @@ import { MatLabel, MatFormField, MatFormFieldModule } from "@angular/material/fo
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { SnackbarService } from '../../Services/snackbar.service';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-member-details',
@@ -27,6 +30,8 @@ import { SnackbarService } from '../../Services/snackbar.service';
     FormsModule,
     MatInputModule,
     MatFormFieldModule,
+    TranslatePipe,
+    MatTooltipModule,
   ],
   templateUrl: './member-details.component.html',
   styleUrl: './member-details.component.scss'
@@ -44,7 +49,8 @@ hidePassword = true; // default hide
     private dialogRef: MatDialogRef<MemberDetailsComponent>,
     private memberService: MemberService,
     public authService: AuthService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private languageService: LanguageService
   ) { }
  changePassword() {
   if (!this.newPassword) return;
@@ -66,7 +72,7 @@ hidePassword = true; // default hide
         );
       },
       error: (err) => {
-        this.passwordMessage = err.error?.message || 'Error setting password';
+        this.passwordMessage = err.error?.message || this.languageService.translate('memberDetails.setPasswordError');
        
         this.isLoading = false;
         this.snackBar.showError(
@@ -91,11 +97,11 @@ hidePassword = true; // default hide
     this.memberService.requestActivation(this.member.id).subscribe({
       next: () => {
         this.isLoading = false;
-        alert('Activation request sent successfully.');
+        alert(this.languageService.translate('memberDetails.activationRequestSuccess'));
       },
       error: () => {
         this.isLoading = false;
-        alert('Failed to send activation request.');
+        alert(this.languageService.translate('memberDetails.activationRequestError'));
       }
     });
   }
@@ -106,43 +112,43 @@ hidePassword = true; // default hide
       next: () => {
         this.isLoading = false;
         this.member.active = true;
-        alert('Member activated successfully.');
+        alert(this.languageService.translate('memberDetails.memberActivateSuccess'));
       },
       error: () => {
         this.isLoading = false;
-        alert('Failed to activate member.');
+        alert(this.languageService.translate('memberDetails.memberActivateError'));
       }
     });
   }
 
   rejectActivation(): void {
-    if (!confirm('Are you sure you want to reject this activation request?')) return;
+    if (!confirm(this.languageService.translate('memberDetails.rejectConfirm'))) return;
 
     this.isLoading = true;
     this.memberService.rejectRequest(this.member.id).subscribe({
       next: () => {
         this.isLoading = false;
-        alert('Activation request rejected.');
+        alert(this.languageService.translate('memberDetails.rejectSuccess'));
       },
       error: () => {
         this.isLoading = false;
-        alert('Failed to reject request.');
+        alert(this.languageService.translate('memberDetails.rejectError'));
       }
     });
   }
 
 
   createUser(memberId: number) {
-    const confirmed = confirm('Are you sure you want to create this user?');
+    const confirmed = confirm(this.languageService.translate('memberDetails.createUserConfirm'));
     if (!confirmed) return;
     this.memberService.createUserFromMember(memberId).subscribe({
       next: (res) => {
         console.log('User created:', res);
-        alert(`User created successfully for member ${res.userName}`);
+        alert(`${this.languageService.translate('memberDetails.createUserSuccessPrefix')} ${res.userName} ${this.languageService.translate('memberDetails.createUserSuccessSuffix')}`);
       },
       error: (err) => {
         console.error('Error creating user:', err);
-        alert(err.error?.message || 'Failed to create user');
+        alert(err.error?.message || this.languageService.translate('memberDetails.createUserError'));
       }
     });
   }

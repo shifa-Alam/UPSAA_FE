@@ -3,7 +3,7 @@
   <mat-sidenav #sidenav class="mobile-menu" mode="over" [opened]="false">
 
     <!-- Profile Section -->
-    <div class="mobile-profile" *ngIf="authService.isLoggedIn() && !authService.hasRole('SuperAdmin'); ">
+    <div class="mobile-profile" *ngIf="authService.isLoggedIn() && !authService.isStaff(); ">
       <ng-container *ngIf="profileImageUrl; else initialsMobile">
         <img [src]="profileImageUrl" alt="User" class="avatar-img-mobile">
       </ng-container>
@@ -11,82 +11,153 @@
         <div class="name-avatar-mobile">{{ userInitial }}</div>
       </ng-template>
       <div class="mobile-profile-info">
-        <a mat-button class="profile-link" routerLink="/profile" (click)="sidenav.close()">View Profile</a>
+        <a mat-button class="profile-link" routerLink="/member-dashboard" (click)="sidenav.close()">{{ 'nav.viewProfile' | translate }}</a>
       </div>
     </div>
 
     <!-- Menu Links -->
-    <nav class="mobile-nav-links" *ngIf="!authService.hasRole('SuperAdmin');">
+    <nav class="mobile-nav-links" *ngIf="!authService.isStaff();">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }">
-        <mat-icon>home</mat-icon><span>Home</span>
+        <mat-icon>home</mat-icon><span>{{ 'nav.home' | translate }}</span>
       </a>
       <!-- Election cycle is currently over — hidden from nav, not deleted, in case it needs to come back.
       <a mat-button (click)="sidenav.close()" routerLink="/election" routerLinkActive="active-link"
         class="election-highlight">
-        <mat-icon>how_to_vote</mat-icon><span>Election</span>
+        <mat-icon>how_to_vote</mat-icon><span>নির্বাচন</span>
       </a>
       -->
       <a mat-button (click)="sidenav.close()" routerLink="/committee" routerLinkActive="active-link">
-        <mat-icon>emoji_people</mat-icon><span>Committee</span>
+        <mat-icon>emoji_people</mat-icon><span>{{ 'nav.committee' | translate }}</span>
       </a>
-      <a mat-button (click)="sidenav.close()"
-        [routerLink]="authService.isLoggedIn() ? '/members/manage' : '/members'" routerLinkActive="active-link">
-        <mat-icon>groups</mat-icon><span>Members</span>
+      <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>event</mat-icon><span>{{ 'nav.events' | translate }}</span>
+      </a>
+
+      <div class="mobile-nav-section-label">{{ 'nav.alumniMenu' | translate }}</div>
+      <a mat-button (click)="sidenav.close()" routerLink="/members" routerLinkActive="active-link">
+        <mat-icon>groups</mat-icon><span>{{ 'nav.members' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/batches" routerLinkActive="active-link">
+        <mat-icon>school</mat-icon><span>{{ 'nav.batches' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/achievements" routerLinkActive="active-link">
+        <mat-icon>military_tech</mat-icon><span>{{ 'nav.achievements' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/teachers" routerLinkActive="active-link">
+        <mat-icon>school</mat-icon><span>{{ 'nav.teachers' | translate }}</span>
+      </a>
+
+      <a mat-button (click)="sidenav.close()" routerLink="/gallery" routerLinkActive="active-link">
+        <mat-icon>photo_library</mat-icon><span>{{ 'nav.gallery' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/jobs" routerLinkActive="active-link">
+        <mat-icon>work</mat-icon><span>{{ 'nav.jobs' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">
-        <mat-icon>app_registration</mat-icon><span>Register</span>
+        <mat-icon>app_registration</mat-icon><span>{{ 'nav.register' | translate }}</span>
       </a>
+
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <div class="mobile-nav-section-label">{{ 'nav.communityMenu' | translate }}</div>
+        <a mat-button (click)="sidenav.close()" routerLink="/constitution" routerLinkActive="active-link">
+          <mat-icon>gavel</mat-icon><span>{{ 'nav.constitution' | translate }}</span>
+        </a>
+        <a mat-button (click)="sidenav.close()" routerLink="/blood-donors" routerLinkActive="active-link">
+          <mat-icon>bloodtype</mat-icon><span>{{ 'nav.bloodDonors' | translate }}</span>
+        </a>
+      </ng-container>
       <!--
       <a mat-button (click)="sidenav.close()" routerLink="/nomination" routerLinkActive="active-link"
         class="election-highlight">
-        <mat-icon>assignment_turned_in</mat-icon><span>Nomination</span>
+        <mat-icon>assignment_turned_in</mat-icon><span>মনোনয়ন</span>
       </a>
       -->
     </nav>
-    <nav class="mobile-nav-links" *ngIf="authService.hasRole('SuperAdmin');">
+    <nav class="mobile-nav-links" *ngIf="authService.isStaff();">
       <a mat-button (click)="sidenav.close()" routerLink="/" routerLinkActive="active-link"
         [routerLinkActiveOptions]="{ exact: true }">
-        <mat-icon>home</mat-icon><span>Home</span>
+        <mat-icon>home</mat-icon><span>{{ 'nav.home' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon>dashboard</mat-icon><span>{{ 'nav.dashboard' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="dashboard/elections" routerLinkActive="active-link">
-        <mat-icon>how_to_vote</mat-icon><span>Elections</span>
+        <mat-icon>how_to_vote</mat-icon><span>{{ 'nav.elections' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="dashboard/positions" routerLinkActive="active-link">
-        <mat-icon>badge</mat-icon><span>Positions</span>
+        <mat-icon>badge</mat-icon><span>{{ 'nav.positions' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="dashboard/candidates" routerLinkActive="active-link">
-        <mat-icon>person_search</mat-icon><span>Candidates</span>
+        <mat-icon>person_search</mat-icon><span>{{ 'nav.candidates' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="dashboard/vote-casts" routerLinkActive="active-link">
-        <mat-icon>analytics</mat-icon><span>Vote History</span>
+        <mat-icon>analytics</mat-icon><span>{{ 'nav.voteHistory' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/notices" routerLinkActive="active-link">
+        <mat-icon>campaign</mat-icon><span>{{ 'nav.notices' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="/committee" routerLinkActive="active-link">
-        <mat-icon>emoji_people</mat-icon><span>Committee</span>
+        <mat-icon>emoji_people</mat-icon><span>{{ 'nav.committee' | translate }}</span>
       </a>
-      <a mat-button (click)="sidenav.close()" routerLink="/members/manage" routerLinkActive="active-link">
-        <mat-icon>groups</mat-icon><span>Members</span>
+      <a mat-button (click)="sidenav.close()" routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>event</mat-icon><span>{{ 'nav.events' | translate }}</span>
+      </a>
+
+      <div class="mobile-nav-section-label">{{ 'nav.alumniMenu' | translate }}</div>
+      <a mat-button (click)="sidenav.close()" routerLink="dashboard/members" routerLinkActive="active-link">
+        <mat-icon>groups</mat-icon><span>{{ 'nav.members' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/batches" routerLinkActive="active-link">
+        <mat-icon>school</mat-icon><span>{{ 'nav.batches' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/achievements" routerLinkActive="active-link">
+        <mat-icon>military_tech</mat-icon><span>{{ 'nav.achievements' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/teachers" routerLinkActive="active-link">
+        <mat-icon>school</mat-icon><span>{{ 'nav.teachers' | translate }}</span>
+      </a>
+
+      <a mat-button (click)="sidenav.close()" routerLink="/gallery" routerLinkActive="active-link">
+        <mat-icon>photo_library</mat-icon><span>{{ 'nav.gallery' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/jobs" routerLinkActive="active-link">
+        <mat-icon>work</mat-icon><span>{{ 'nav.jobs' | translate }}</span>
+      </a>
+
+      <div class="mobile-nav-section-label">{{ 'nav.communityMenu' | translate }}</div>
+      <a mat-button (click)="sidenav.close()" routerLink="/constitution" routerLinkActive="active-link">
+        <mat-icon>gavel</mat-icon><span>{{ 'nav.constitution' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/blood-donors" routerLinkActive="active-link">
+        <mat-icon>bloodtype</mat-icon><span>{{ 'nav.bloodDonors' | translate }}</span>
       </a>
     </nav>
 
-    <!-- Theme toggle -->
-    <button mat-stroked-button class="theme-toggle-mobile" (click)="themeService.toggle()">
-      <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      {{ themeService.theme() === 'dark' ? 'Light Mode' : 'Dark Mode' }}
-    </button>
+    <!-- Theme + language toggle -->
+    <div class="toggle-row-mobile">
+      <button mat-stroked-button class="theme-toggle-mobile" (click)="themeService.toggle()">
+        <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        {{ themeService.theme() === 'dark' ? ('nav.lightMode' | translate) : ('nav.darkMode' | translate) }}
+      </button>
+      <button mat-stroked-button class="lang-toggle-mobile" (click)="languageService.toggle()">
+        <mat-icon>translate</mat-icon>
+        {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
+      </button>
+    </div>
 
     <!-- Logout -->
     <div class="mobile-logout">
       <ng-container *ngIf="authService.isLoggedIn(); else loginBtnMobile">
         <button mat-stroked-button color="warn" class="logout-btn" (click)="logout(); sidenav.close()">
-          <mat-icon>logout</mat-icon> Logout
+          <mat-icon>logout</mat-icon> {{ 'nav.logout' | translate }}
         </button>
       </ng-container>
     </div>
 
     <ng-template #loginBtnMobile>
       <a mat-flat-button color="primary" class="login-btn-mobile" (click)="sidenav.close()" routerLink="/login">
-        <mat-icon>login</mat-icon> Login
+        <mat-icon>login</mat-icon> {{ 'nav.login' | translate }}
       </a>
     </ng-template>
 
@@ -95,39 +166,88 @@
   <!-- Main Content -->
   <mat-sidenav-content class="layout-container">
     <div class="page-wrapper">
-      <!-- Top Toolbar -->
-      <mat-toolbar class="app-toolbar">
+      <!-- Top Toolbar — hidden on desktop dashboard views (the back office has its own
+           sidebar shell); kept on mobile since the dashboard sidebar hides itself there
+           and the hamburger menu is the only way to navigate the back office. -->
+      <mat-toolbar class="app-toolbar" *ngIf="!isDashboardRoute || (isMobile$ | async)">
         <div class="toolbar-content upsaa-container">
           <a routerLink="/" class="brand">
             <img src="logo.png" alt="Logo" class="logo-img" />
-            <span class="logo">UPS Alumni Association</span>
+            <span class="logo">UPSAA</span>
           </a>
 
           <!-- Hamburger Icon -->
-          <button class="menu-button" mat-icon-button (click)="sidenav.toggle()" aria-label="Open menu">
+          <button class="menu-button" mat-icon-button (click)="sidenav.toggle()"
+            [attr.aria-label]="'nav.openMenu' | translate">
             <mat-icon>menu</mat-icon>
           </button>
 
           <!-- Desktop Menu -->
           <div class="desktop-menu">
             <a mat-button routerLink="/" routerLinkActive="active-link"
-              [routerLinkActiveOptions]="{ exact: true }">Home</a>
+              [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.home' | translate }}</a>
             <!-- Election cycle is currently over — hidden from nav, not deleted, in case it needs to come back.
             <a mat-button [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
-              routerLinkActive="active-link">Election</a>
+              routerLinkActive="active-link">নির্বাচন</a>
             -->
-            <a mat-button routerLink="/committee" routerLinkActive="active-link">Committee</a>
-            <a mat-button [routerLink]="authService.isLoggedIn() ? '/members/manage' : '/members'"
-              routerLinkActive="active-link">Members</a>
-            <a mat-button routerLink="/register" routerLinkActive="active-link">Register</a>
+            <a mat-button routerLink="/committee" routerLinkActive="active-link">{{ 'nav.committee' | translate }}</a>
+            <a mat-button routerLink="/events" routerLinkActive="active-link">{{ 'nav.events' | translate }}</a>
+
+            <!-- Alumni dropdown: directory-style pages, public but grouped to declutter the bar -->
+            <button mat-button [matMenuTriggerFor]="alumniMenu" [class.active-link]="isAlumniSectionActive">
+              {{ 'nav.alumniMenu' | translate }}<mat-icon class="nav-menu-caret">expand_more</mat-icon>
+            </button>
+            <mat-menu #alumniMenu="matMenu">
+              <a mat-menu-item [routerLink]="authService.isStaff() ? '/dashboard/members' : '/members'">
+                <mat-icon>groups</mat-icon><span>{{ 'nav.members' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/batches">
+                <mat-icon>school</mat-icon><span>{{ 'nav.batches' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/achievements">
+                <mat-icon>military_tech</mat-icon><span>{{ 'nav.achievements' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/teachers">
+                <mat-icon>school</mat-icon><span>{{ 'nav.teachers' | translate }}</span>
+              </a>
+            </mat-menu>
+
+            <a mat-button routerLink="/gallery" routerLinkActive="active-link">{{ 'nav.gallery' | translate }}</a>
+            <a mat-button routerLink="/jobs" routerLinkActive="active-link">{{ 'nav.jobs' | translate }}</a>
+            <a mat-button routerLink="/register" routerLinkActive="active-link">{{ 'nav.register' | translate }}</a>
+
+            <!-- Community dropdown: alumni-only (logged-in) features -->
+            <ng-container *ngIf="authService.isLoggedIn()">
+              <button mat-button [matMenuTriggerFor]="communityMenu" [class.active-link]="isCommunitySectionActive">
+                {{ 'nav.communityMenu' | translate }}<mat-icon class="nav-menu-caret">expand_more</mat-icon>
+              </button>
+              <mat-menu #communityMenu="matMenu">
+                <a mat-menu-item routerLink="/blood-donors">
+                  <mat-icon>bloodtype</mat-icon><span>{{ 'nav.bloodDonors' | translate }}</span>
+                </a>
+                <a mat-menu-item routerLink="/constitution">
+                  <mat-icon>gavel</mat-icon><span>{{ 'nav.constitution' | translate }}</span>
+                </a>
+              </mat-menu>
+            </ng-container>
+
+            <a mat-button *ngIf="authService.isStaff()" routerLink="/dashboard"
+              routerLinkActive="active-link" class="dashboard-link">
+              <mat-icon>dashboard</mat-icon>{{ 'nav.dashboard' | translate }}</a>
             <!--
             <a mat-button routerLink="/nomination" routerLinkActive="active-link"
-              class="election-highlight">Nomination</a>
+              class="election-highlight">মনোনয়ন</a>
             -->
+
+            <!-- Language toggle -->
+            <button mat-stroked-button class="lang-toggle-button" (click)="languageService.toggle()"
+              [attr.aria-label]="languageService.lang() === 'bn' ? ('nav.switchToEnglish' | translate) : ('nav.switchToBangla' | translate)">
+              {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
+            </button>
 
             <!-- Theme toggle -->
             <button mat-icon-button class="theme-toggle-button" (click)="themeService.toggle()"
-              [attr.aria-label]="themeService.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
+              [attr.aria-label]="themeService.theme() === 'dark' ? ('nav.switchToLight' | translate) : ('nav.switchToDark' | translate)">
               <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
             </button>
 
@@ -144,19 +264,19 @@
               </button>
 
               <mat-menu #userMenu="matMenu">
-                <button mat-menu-item routerLink="/profile" *ngIf="!authService.hasRole('SuperAdmin')">
+                <button mat-menu-item routerLink="/member-dashboard" *ngIf="!authService.isStaff()">
                   <mat-icon>person</mat-icon>
-                  <span>Profile</span>
+                  <span>{{ 'nav.profile' | translate }}</span>
                 </button>
                 <button mat-menu-item (click)="logout()">
                   <mat-icon>logout</mat-icon>
-                  <span>Logout</span>
+                  <span>{{ 'nav.logout' | translate }}</span>
                 </button>
               </mat-menu>
             </ng-container>
 
             <ng-template #loginBtn>
-              <a mat-flat-button color="primary" class="login-btn" routerLink="/login">Login</a>
+              <a mat-flat-button color="primary" class="login-btn" routerLink="/login">{{ 'nav.login' | translate }}</a>
             </ng-template>
           </div>
         </div>
@@ -168,7 +288,7 @@
           class="top-progress-bar"></mat-progress-bar>
         <router-outlet></router-outlet>
 
-        <app-footer *ngIf="!hideFooter"></app-footer>
+        <app-footer *ngIf="!isDashboardRoute"></app-footer>
       </div>
 
       <!-- Mobile Footer -->
@@ -177,7 +297,7 @@
           <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
             class="footer-btn">
             <mat-icon>home</mat-icon>
-            <span>Home</span>
+            <span>{{ 'nav.home' | translate }}</span>
           </a>
 
           <!-- Election cycle is currently over — hidden from nav, not deleted, in case it needs to come back.
@@ -185,26 +305,26 @@
             [routerLink]="authService.hasRole('SuperAdmin') ? '/dashboard/elections' : '/election'"
             routerLinkActive="active-link">
             <mat-icon>how_to_vote</mat-icon>
-            <span>Vote</span>
+            <span>ভোট</span>
           </a>
           -->
 
           <a mat-button class="footer-btn" routerLink="/committee" routerLinkActive="active-link">
             <mat-icon>emoji_people</mat-icon>
-            <span>Committee</span>
+            <span>{{ 'nav.committee' | translate }}</span>
           </a>
 
-          <ng-container *ngIf="!authService.hasRole('SuperAdmin'); else voteResultLink">
-            <a mat-button class="footer-btn" routerLink="/profile" routerLinkActive="active-link">
+          <ng-container *ngIf="!authService.isStaff(); else voteResultLink">
+            <a mat-button class="footer-btn" routerLink="/member-dashboard" routerLinkActive="active-link">
               <mat-icon>person</mat-icon>
-              <span>Profile</span>
+              <span>{{ 'nav.profile' | translate }}</span>
             </a>
           </ng-container>
 
           <ng-template #voteResultLink>
             <a mat-button class="footer-btn" routerLink="/dashboard/vote-casts" routerLinkActive="active-link">
               <mat-icon>analytics</mat-icon>
-              <span>Results</span>
+              <span>{{ 'nav.results' | translate }}</span>
             </a>
           </ng-template>
         </nav>

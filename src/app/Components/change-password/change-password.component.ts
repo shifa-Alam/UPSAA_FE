@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-change-password',
@@ -18,7 +20,8 @@ import { Router } from '@angular/router';
   MatFormFieldModule,
   MatInputModule,
   MatButtonModule,
-  MatDialogModule   // ONLY this is needed for dialog elements
+  MatDialogModule,   // ONLY this is needed for dialog elements
+  TranslatePipe
 ],
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
@@ -32,7 +35,8 @@ export class ChangePasswordComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    public dialogRef: MatDialogRef<ChangePasswordComponent>
+    public dialogRef: MatDialogRef<ChangePasswordComponent>,
+    private languageService: LanguageService
   ) { }
 
   changePassword() {
@@ -40,7 +44,7 @@ export class ChangePasswordComponent {
     this.passwordSuccess = '';
 
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      this.passwordError = 'New passwords do not match.';
+      this.passwordError = this.languageService.translate('changePassword.errors.passwordsDoNotMatch');
       return;
     }
 
@@ -50,7 +54,7 @@ export class ChangePasswordComponent {
       newPassword: this.passwordData.newPassword
     }).subscribe({
       next: () => {
-        this.passwordSuccess = 'Password changed successfully.';
+        this.passwordSuccess = this.languageService.translate('changePassword.errors.success');
       // Clear local storage / JWT
       this.authService.logout(); // implement logout in your AuthService
       // Redirect to login page
@@ -60,7 +64,7 @@ export class ChangePasswordComponent {
       }, 1000);
       },
       error: (err) => {
-        this.passwordError = err?.error?.message || 'Password change failed.';
+        this.passwordError = err?.error?.message || this.languageService.translate('changePassword.errors.changeFailed');
       },
       complete: () => this.loading = false
     });

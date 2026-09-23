@@ -1,36 +1,78 @@
-<app-page-header title="Elections" subtitle="Create and manage UPSAA alumni elections — set voting and nomination windows."
-  variant="plain">
-</app-page-header>
+<div class="page-body">
 
-<div class="page-body upsaa-container">
+  <app-admin-header [title]="'elections.title' | translate" [subtitle]="'elections.subtitle' | translate"></app-admin-header>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="search-field">
-      <span class="material-icons search-icon">search</span>
-      <input type="text" placeholder="Search elections" [(ngModel)]="searchTerm" />
-    </div>
-
-    <button class="add-btn" (click)="openAddElectionModal()">
-      + Add
-    </button>
-  </div>
   <div *ngIf="loading" class="loading-wrapper">
     <div class="spinner"></div>
-    <p>Loading elections...</p>
+    <p>{{ 'elections.loading' | translate }}</p>
   </div>
+
   <div *ngIf="!loading">
-    <app-section-card icon="how_to_vote" title="All Elections" [noPadding]="true">
+
+    <!-- Add / Edit form -->
+    <app-section-card icon="add_circle"
+      [title]="editMode ? ('elections.modalEditTitle' | translate) : ('elections.modalAddTitle' | translate)" *ngIf="showModal">
+      <form class="entry-form" (ngSubmit)="submitElection()">
+        <div class="entry-form__grid">
+          <div class="form-field">
+            <label>{{ 'elections.formName' | translate }} <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="modalElection.title" name="title" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'elections.formStartDateTime' | translate }} <span class="required">*</span></label>
+            <input type="datetime-local" [(ngModel)]="modalElection.startTime" name="startTime" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'elections.formEndDateTime' | translate }} <span class="required">*</span></label>
+            <input type="datetime-local" [(ngModel)]="modalElection.endTime" name="endTime" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'elections.formCandidateStartDate' | translate }} <span class="required">*</span></label>
+            <input type="datetime-local" [(ngModel)]="modalElection.candidateStartTime" name="candidateStartTime" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'elections.formCandidateEndDate' | translate }} <span class="required">*</span></label>
+            <input type="datetime-local" [(ngModel)]="modalElection.candidateEndTime" name="candidateEndTime" required />
+          </div>
+        </div>
+
+        <div class="entry-form__actions">
+          <button type="button" class="btn btn--ghost" (click)="closeModal()">{{ 'elections.cancelButton' | translate }}</button>
+          <button type="submit" class="btn btn--primary">
+            {{ editMode ? ('elections.updateButton' | translate) : ('elections.createButton' | translate) }}
+          </button>
+        </div>
+      </form>
+    </app-section-card>
+
+    <!-- Filters + table -->
+    <app-section-card icon="how_to_vote" [title]="'elections.cardTitle' | translate" [noPadding]="true">
+
+      <div class="elections-toolbar">
+        <div class="elections-filters">
+          <div class="filter-field">
+            <mat-icon>search</mat-icon>
+            <input type="text" [placeholder]="'elections.searchPlaceholder' | translate" [(ngModel)]="searchTerm"
+              (ngModelChange)="filterElections()" />
+          </div>
+        </div>
+
+        <button type="button" class="btn btn--primary" (click)="openAddElectionModal()" *ngIf="!showModal">
+          <mat-icon>add</mat-icon> {{ 'elections.addButton' | translate }}
+        </button>
+      </div>
+
       <!-- Desktop Table -->
       <div class="table-wrapper desktop-only" *ngIf="pagedElections.length">
         <table class="elections-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Title</th>
-              <th>Start Date</th>
-              <th>End Date</th>
-              <th style="width: 180px;">Actions</th>
+              <th>{{ 'elections.colName' | translate }}</th>
+              <th>{{ 'elections.colStartDate' | translate }}</th>
+              <th>{{ 'elections.colEndDate' | translate }}</th>
+              <th>{{ 'elections.colStatus' | translate }}</th>
+              <th class="text-right">{{ 'elections.colActions' | translate }}</th>
             </tr>
           </thead>
 
@@ -41,9 +83,17 @@
               <td>{{ election.startTime | date:'d MMMM y, h:mm a' }}</td>
               <td>{{ election.endTime | date:'d MMMM y, h:mm a' }}</td>
               <td>
-                <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
-                <button class="edit-btn" (click)="editElection(election)">Edit</button>
-                <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+                <span class="status-badge" [class]="'status-badge--' + electionStatus(election)">
+                  {{ ('elections.status' + (electionStatus(election) | titlecase)) | translate }}
+                </span>
+              </td>
+              <td class="elections-table__actions">
+                <button type="button" (click)="editElection(election)" [attr.aria-label]="'elections.editAriaLabel' | translate">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button type="button" (click)="deleteElection(election)" [attr.aria-label]="'elections.deleteAriaLabel' | translate">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -57,79 +107,41 @@
           <div class="card-header">
             <span class="index">#{{ i + 1 }}</span>
             <span class="title">{{ election.title }}</span>
-
+            <span class="status-badge" [class]="'status-badge--' + electionStatus(election)">
+              {{ ('elections.status' + (electionStatus(election) | titlecase)) | translate }}
+            </span>
           </div>
           <div class="card-dates">
-            <span>Start: {{ election.startTime | date:'d MMMM y' }}</span>
-            <span>End: {{ election.endTime | date:'d MMMM y' }}</span>
+            <span>{{ 'elections.cardStart' | translate }} {{ election.startTime | date:'d MMMM y' }}</span>
+            <span>{{ 'elections.cardEnd' | translate }} {{ election.endTime | date:'d MMMM y' }}</span>
           </div>
           <div class="card-actions">
-            <!-- <button class="details-btn" (click)="viewDetails(election)" title="Details">Details</button> -->
-            <button class="edit-btn" (click)="editElection(election)">Edit</button>
-            <button class="delete-btn" (click)="deleteElection(election)">Delete</button>
+            <button type="button" (click)="editElection(election)" [attr.aria-label]="'elections.editAriaLabel' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" (click)="deleteElection(election)" [attr.aria-label]="'elections.deleteAriaLabel' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </div>
       </div>
 
-      <app-empty-state *ngIf="!pagedElections.length" icon="event_busy" title="No elections found"
-        message="Try adjusting your search, or add a new election to get started.">
+      <app-empty-state *ngIf="!pagedElections.length" icon="event_busy" [title]="'elections.emptyTitle' | translate"
+        [message]="'elections.emptyMessage' | translate">
       </app-empty-state>
+
+      <!-- Pagination -->
+      <nav class="elections-pagination" *ngIf="totalPages > 1">
+        <button type="button" [disabled]="currentPage === 1" (click)="prevPage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage === totalPages" (click)="nextPage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </nav>
+
     </app-section-card>
   </div>
-
-
-  <!-- Pagination -->
-  <div class="pagination">
-    <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal" *ngIf="showModal">
-    <div class="modal-content">
-      <h2>{{ editMode ? 'Edit' : 'Add' }} Election</h2>
-
-      <form (ngSubmit)="submitElection()">
-
-        <label>
-          Election Title <span class="required">*</span>
-        </label>
-        <input type="text" [(ngModel)]="modalElection.title" name="title" required />
-
-        <label>
-          Start Date <span class="required">*</span>
-        </label>
-        <input type="datetime-local" [(ngModel)]="modalElection.startTime" name="startTime" required />
-
-        <label>
-          End Date <span class="required">*</span>
-        </label>
-        <input type="datetime-local" [(ngModel)]="modalElection.endTime" name="endTime" required />
-
-        <label>
-          Nomination Start Date <span class="required">*</span>
-        </label>
-        <input type="datetime-local" [(ngModel)]="modalElection.candidateStartTime" name="candidateStartTime"
-          required />
-
-        <label>
-          Nomination End Date <span class="required">*</span>
-        </label>
-        <input type="datetime-local" [(ngModel)]="modalElection.candidateEndTime" name="candidateEndTime" required />
-
-        <div class="modal-actions">
-          <button type="submit" class="save-btn">
-            {{ editMode ? 'Update' : 'Create' }}
-          </button>
-          <button type="button" class="cancel-btn" (click)="closeModal()">
-            Cancel
-          </button>
-        </div>
-
-      </form>
-    </div>
-  </div>
-
 
 </div>

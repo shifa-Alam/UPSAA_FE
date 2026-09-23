@@ -1,16 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Election, ElectionService } from '../../Services/election.service';
 import { finalize } from 'rxjs';
-import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
+
+type ElectionStatus = 'upcoming' | 'ongoing' | 'ended';
 
 @Component({
   selector: 'app-elections',
   standalone: true,
-  imports: [CommonModule, FormsModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './elections.component.html',
   styleUrl: './elections.component.scss'
 })
@@ -30,7 +35,7 @@ export class ElectionsComponent implements OnInit {
   editMode = false;
   modalElection: Election = { id: 0, title: '', startTime: '', endTime: '', candidateStartTime: '', candidateEndTime: '' };
 
-  constructor(private electionService: ElectionService) {
+  constructor(private electionService: ElectionService, private languageService: LanguageService) {
 
   }
 
@@ -61,7 +66,7 @@ export class ElectionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Failed to fetch elections:', err);
-          alert('Failed to load elections. Please try again.');
+          alert(this.languageService.translate('elections.loadErrorAlert'));
         }
       });
   }
@@ -71,6 +76,13 @@ export class ElectionsComponent implements OnInit {
     );
     this.totalPages = Math.ceil(filtered.length / this.pageSize);
     this.pagedElections = filtered.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize);
+  }
+
+  electionStatus(election: Election): ElectionStatus {
+    const now = new Date();
+    if (now < new Date(election.startTime)) return 'upcoming';
+    if (now > new Date(election.endTime)) return 'ended';
+    return 'ongoing';
   }
 
   prevPage() {
@@ -125,7 +137,7 @@ export class ElectionsComponent implements OnInit {
       },
       error: (err) => {
         console.error('Add failed:', err);
-        alert('Failed to add election.');
+        alert(this.languageService.translate('elections.deleteErrorAlert'));
       }
     });
 
@@ -149,7 +161,7 @@ export class ElectionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Update failed:', err);
-          alert('Failed to update election.');
+          alert(this.languageService.translate('elections.updateErrorAlert'));
         }
       });
     } else {
@@ -162,7 +174,7 @@ export class ElectionsComponent implements OnInit {
         },
         error: (err) => {
           console.error('Add failed:', err);
-          alert('Failed to add election.');
+          alert(this.languageService.translate('elections.addErrorAlert'));
         }
       });
     }

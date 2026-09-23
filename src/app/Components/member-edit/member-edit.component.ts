@@ -10,10 +10,12 @@ import {  MatProgressBarModule } from "@angular/material/progress-bar";
 
 import { CommonModule } from '@angular/common';
 import { SnackbarService } from '../../Services/snackbar.service';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 @Component({
   selector: 'app-member-edit',
   standalone: true,
-  imports: [FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogContent, MatDialogActions, MatDialogTitle, MatSlideToggleModule, MatProgressBarModule],
+  imports: [FormsModule, CommonModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogContent, MatDialogActions, MatDialogTitle, MatSlideToggleModule, MatProgressBarModule, TranslatePipe],
   templateUrl: './member-edit.component.html',
   styleUrl: './member-edit.component.scss'
 })
@@ -25,7 +27,8 @@ export class MemberEditComponent {
     private memberService: MemberService,
     private snackBar: SnackbarService,
     public dialogRef: MatDialogRef<MemberEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Member
+    @Inject(MAT_DIALOG_DATA) public data: Member,
+    private languageService: LanguageService
   ) {
     this.memberData = { ...data }; // clone to edit safely
   }
@@ -36,12 +39,12 @@ export class MemberEditComponent {
     this.memberService.updateMember(this.memberData).subscribe({
       next: res => {
         // ✅ Success message
-        this.snackBar.showSuccess('Profile updated successfully!');
+        this.snackBar.showSuccess(this.languageService.translate('memberEdit.updateSuccess'));
 
         //this.dialogRef.close(this.memberData);
       },
       error: (err) => {
-        this.snackBar.showError(err?.error?.message || 'Failed to update Profile. Try again.');
+        this.snackBar.showError(err?.error?.message || this.languageService.translate('memberEdit.updateError'));
 
       },
       complete: () => this.submitting = false

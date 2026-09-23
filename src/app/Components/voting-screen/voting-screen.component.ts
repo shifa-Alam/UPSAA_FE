@@ -12,12 +12,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { Member, MemberService } from '../../Services/member.service';
 import { Router } from '@angular/router';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 
 @Component({
   selector: 'app-voting-screen',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressBarModule],
+  imports: [CommonModule, MatIconModule, MatProgressBarModule, TranslatePipe],
   templateUrl: './voting-screen.component.html',
   styleUrl: './voting-screen.component.scss'
 })
@@ -53,7 +55,7 @@ export class VotingScreenComponent implements OnInit {
   member: Member | undefined;
 
 
-  constructor(private http: HttpClient, private router: Router, private memberService: MemberService, private voteService: VoteService, private snackBar: SnackbarService) { }
+  constructor(private http: HttpClient, private router: Router, private memberService: MemberService, private voteService: VoteService, private snackBar: SnackbarService, private languageService: LanguageService) { }
 
   ngOnInit() {
     this.launchOlympicStyleFireworks();
@@ -166,10 +168,10 @@ export class VotingScreenComponent implements OnInit {
       this.countdown.seconds = Math.floor((distance / 1000) % 60);
 
       this.timeUnits = [
-        { value: this.countdown.days, label: 'দিন' },
-        { value: this.countdown.hours, label: 'ঘণ্টা' },
-        { value: this.countdown.minutes, label: 'মিনিট' },
-        { value: this.countdown.seconds, label: 'সেকেন্ড' }
+        { value: this.countdown.days, label: this.languageService.translate('votingScreen.dayLabel') },
+        { value: this.countdown.hours, label: this.languageService.translate('votingScreen.hourLabel') },
+        { value: this.countdown.minutes, label: this.languageService.translate('votingScreen.minuteLabel') },
+        { value: this.countdown.seconds, label: this.languageService.translate('votingScreen.secondLabel') }
       ];
 
     }, 1000);
@@ -237,7 +239,7 @@ export class VotingScreenComponent implements OnInit {
       if (arr.length >= pos.maxSelect) {
         // can't select more
         this.snackBar.showError(
-          `আপনি ${pos.name} পদের জন্য সর্বোচ্চ ${this.toBanglaNumber(pos.maxSelect)} জন প্রার্থী নির্বাচন করতে পারবেন।`
+          `${this.languageService.translate('votingScreen.maxSelectErrorPrefix')} ${pos.name} ${this.languageService.translate('votingScreen.maxSelectErrorMiddle')} ${this.toBanglaNumber(pos.maxSelect)} ${this.languageService.translate('votingScreen.maxSelectErrorSuffix')}`
         );
 
         // revert the checkbox immediately
@@ -281,7 +283,7 @@ export class VotingScreenComponent implements OnInit {
   }
   getSelectedNamesForPosition(pos: any): string {
     const selected = this.selections[pos.id] as number[];
-    if (!selected || selected.length === 0) return 'None';
+    if (!selected || selected.length === 0) return this.languageService.translate('votingScreen.noOneSelected');
 
     return selected
       .map((id: number) => this.candidateName(pos, id))
@@ -307,14 +309,14 @@ export class VotingScreenComponent implements OnInit {
         next: res => {
           this.hasVoted = true;
           this.showConfirm = false;
-          this.snackBar.showSuccess(res?.message || 'Vote submitted');
+          this.snackBar.showSuccess(res?.message || this.languageService.translate('votingScreen.voteSubmitSuccess'));
           // Example voter data
           const voterData = {
             name: this.member?.fullName,
             batch: this.member?.batch,
             memberCode: this.member?.memberCode,
-            voteDate: '১৩ মার্চ, ২০২৬ (বিকেল ৪:০০ টা)',
-            resultDate: '১৩ মার্চ, ২০২৬ (রাত ১০:৩০ মিনিট)'
+            voteDate: this.languageService.translate('votingScreen.votingEndDateTime'),
+            resultDate: this.languageService.translate('votingScreen.resultDateTime')
           };
 
           // Navigate to votecard page with state
@@ -323,7 +325,7 @@ export class VotingScreenComponent implements OnInit {
         },
         error: err => {
           console.error('submit failed', err);
-          this.snackBar.showError(err?.error?.message || 'Failed to submit vote. Try again.');
+          this.snackBar.showError(err?.error?.message || this.languageService.translate('votingScreen.voteSubmitError'));
 
         }
       });

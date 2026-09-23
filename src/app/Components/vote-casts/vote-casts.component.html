@@ -1,29 +1,28 @@
 <div *ngIf="loading" class="loader-container">
     <div class="spinner"></div>
-    <p>Loading Results...</p>
+    <p>{{ 'voteCasts.loading' | translate }}</p>
 </div>
 <div class="election-dashboard" *ngIf="electionTitle">
 
-    <!-- ================= HEADER ================= -->
-    <app-page-header [title]="electionTitle + ' ফলাফল'"
-        subtitle="উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন ১ম কার্যকরী পর্ষদ নির্বাচন ২০২৬-২৮" variant="plain">
-    </app-page-header>
+    <div class="page-body">
 
-    <div class="page-body upsaa-container">
+        <!-- ================= HEADER ================= -->
+        <app-admin-header [title]="electionTitle + ' ' + ('voteCasts.titleSuffix' | translate)"
+            [subtitle]="'voteCasts.subtitle' | translate"></app-admin-header>
 
         <div class="header-meta">
             <div class="meta-item meta-election-date">
-                <span class="meta-label">নির্বাচনের তারিখ</span>
+                <span class="meta-label">{{ 'voteCasts.electionDate' | translate }}</span>
                 <span class="meta-value">{{ electionDate |date:'d MMMM, y'}}</span>
             </div>
 
             <div class="meta-item meta-total-voter">
-                <span class="meta-label">মোট ভোটার</span>
+                <span class="meta-label">{{ 'voteCasts.totalVoter' | translate }}</span>
                 <span class="meta-value highlight">{{ totalVoter }}</span>
             </div>
 
             <div class="meta-item meta-total-vote">
-                <span class="meta-label">প্রাপ্ত ভোট (Casted Votes)</span>
+                <span class="meta-label">{{ 'voteCasts.totalVotesReceived' | translate }}</span>
                 <span class="meta-value highlight-vote">{{ totalVotes }}</span>
 
                 <!-- Progress bar -->
@@ -46,10 +45,10 @@
         <div class="tabs-container">
             <div class="tabs">
                 <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
-                    সারসংক্ষেপ
+                    {{ 'voteCasts.overviewTab' | translate }}
                 </button>
                 <button class="tab-btn" [class.active]="activeTab === 'details'" (click)="setTab('details')">
-                    বিস্তারিত ফলাফল
+                    {{ 'voteCasts.detailsTab' | translate }}
                 </button>
             </div>
         </div>
@@ -61,12 +60,12 @@
             <div class="summary-cards">
 
                 <div class="card">
-                    <div class="card-title">মোট পদ</div>
+                    <div class="card-title">{{ 'voteCasts.totalPositions' | translate }}</div>
                     <h3>{{ totalPosition }}</h3>
                 </div>
 
                 <div class="card">
-                    <div class="card-title">মোট প্রার্থী</div>
+                    <div class="card-title">{{ 'voteCasts.totalCandidates' | translate }}</div>
                     <h3>{{ totalCandidate }}</h3>
                 </div>
 
@@ -76,27 +75,25 @@
                 </div> -->
 
                 <div class="card highlight-card" *ngIf="leadingCandidate">
-                    <div class="card-title hdTitle">সর্বোচ্চ ভোটপ্রাপ্ত</div>
+                    <div class="card-title hdTitle">{{ 'voteCasts.topVoted' | translate }}</div>
                     <h3>{{ leadingCandidate.memberName }}</h3>
-                    <div class="vote-count">{{ leadingCandidate.votes }} ভোট</div>
+                    <div class="vote-count">{{ leadingCandidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</div>
                 </div>
             </div>
 
             <!-- ===== POSITION RESULTS ===== -->
-            <div class="section">
-                <div class="section-title">পদভিত্তিক ফলাফল</div>
-
+            <app-section-card icon="leaderboard" [title]="'voteCasts.positionResults' | translate">
                 <div class="position-grid">
                     <div class="position-card" *ngFor="let position of positionResults">
                         <div class="position-header">
                             <h4>{{ position.positionName }}</h4>
-                            <span class="total-votes">মোট ভোট: {{ position.totalVotes }}</span>
+                            <span class="total-votes">{{ 'voteCasts.totalVotesLabel' | translate }} {{ position.totalVotes }}</span>
                         </div>
 
                         <div class="candidate-row" *ngFor="let candidate of position.winners">
                             <div class="candidate-info">
                                 <span class="candidate-name">{{ candidate.memberName }} &nbsp;</span>
-                                <span class="candidate-votes">{{ candidate.votes }} ভোট</span>
+                                <span class="candidate-votes">{{ candidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</span>
                             </div>
 
                             <div class="progress-bar">
@@ -116,32 +113,31 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </app-section-card>
         </ng-container>
 
         <!-- ================= DETAILS ================= -->
         <ng-container *ngIf="activeTab === 'details'">
-            <div class="section">
+            <app-section-card icon="table_chart" [title]="'voteCasts.detailsTab' | translate" [noPadding]="true">
 
-                <div class="section-title position-filter-bar">
-
-                    <span class="position-filter-label">পদ নির্বাচন করুন:</span>
-
-                    <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()"
-                        class="position-filter-select" (focus)="onSelectFocus($event)" (blur)="onSelectBlur($event)"
-                        (mouseover)="onSelectMouseOver($event)" (mouseout)="onSelectMouseOut($event)">
-                        <option [ngValue]="0" selected>সব পদ</option>
-                        <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
-                    </select>
+                <div class="results-toolbar">
+                    <div class="filter-field">
+                        <mat-icon>how_to_vote</mat-icon>
+                        <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()">
+                            <option [ngValue]="0" selected>{{ 'voteCasts.allPositions' | translate }}</option>
+                            <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
+                        </select>
+                    </div>
                 </div>
+
                 <div class="table-wrapper">
                     <table class="results-table">
                         <thead>
                             <tr>
-                                <th>পদ</th>
-                                <th>প্রার্থী</th>
-                                <th>ভোট</th>
-                                <th>ভোটের হার</th>
+                                <th>{{ 'voteCasts.colPosition' | translate }}</th>
+                                <th>{{ 'voteCasts.colCandidate' | translate }}</th>
+                                <th>{{ 'voteCasts.colVotes' | translate }}</th>
+                                <th class="text-right">{{ 'voteCasts.colVoteRate' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -157,14 +153,14 @@
                                 <td>{{ candidate.positionName }}</td>
                                 <td>{{ candidate.memberName }}</td>
                                 <td>{{ candidate.votes }}</td>
-                                <td>
+                                <td class="text-right">
                                     {{ (totalVotes > 0 ? (candidate.votes / totalVotes * 100) : 0) | number:'1.0-1' }}%
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </app-section-card>
         </ng-container>
 
     </div>

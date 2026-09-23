@@ -1,39 +1,82 @@
-<app-page-header title="Positions" subtitle="Define election positions — max selections, priority, and nomination fee."
-  variant="plain">
-</app-page-header>
+<div class="page-body">
 
-<div class="page-body upsaa-container">
+  <app-admin-header [title]="'positions.title' | translate" [subtitle]="'positions.subtitle' | translate"></app-admin-header>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="search-field">
-      <span class="material-icons search-icon">search</span>
-      <input type="text" placeholder="Search positions" [(ngModel)]="searchTerm" />
-    </div>
-
-    <button class="add-btn" (click)="openAddPositionModal()">
-      + Add
-    </button>
-  </div>
   <div *ngIf="loading" class="loading-wrapper">
     <div class="spinner"></div>
-    <p>Loading positions...</p>
+    <p>{{ 'positions.loading' | translate }}</p>
   </div>
+
   <div *ngIf="!loading">
-    <app-section-card icon="badge" title="All Positions" [noPadding]="true">
+
+    <!-- Add / Edit form -->
+    <app-section-card icon="add_circle"
+      [title]="editMode ? ('positions.modalEditTitle' | translate) : ('positions.modalAddTitle' | translate)" *ngIf="showModal">
+      <form class="entry-form" (ngSubmit)="submitPosition()">
+        <div class="entry-form__grid">
+          <div class="form-field">
+            <label>{{ 'positions.formElection' | translate }}</label>
+            <select [(ngModel)]="modalPosition.electionId" name="electionId" required>
+              <option value="" disabled>{{ 'positions.formElectionPlaceholder' | translate }}</option>
+              <option *ngFor="let e of elections" [value]="e.id">{{ e.title }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>{{ 'positions.formName' | translate }}</label>
+            <input type="text" [(ngModel)]="modalPosition.name" name="title" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'positions.formMaxSelect' | translate }}</label>
+            <input type="number" [(ngModel)]="modalPosition.maxSelect" name="maxSelect" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'positions.formPriority' | translate }}</label>
+            <input type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
+          </div>
+          <div class="form-field">
+            <label>{{ 'positions.formFee' | translate }}</label>
+            <input type="number" [(ngModel)]="modalPosition.fee" name="fee" required />
+          </div>
+        </div>
+
+        <div class="entry-form__actions">
+          <button type="button" class="btn btn--ghost" (click)="closeModal()">{{ 'positions.cancelButton' | translate }}</button>
+          <button type="submit" class="btn btn--primary">
+            {{ editMode ? ('positions.updateButton' | translate) : ('positions.createButton' | translate) }}
+          </button>
+        </div>
+      </form>
+    </app-section-card>
+
+    <!-- Filters + table -->
+    <app-section-card icon="badge" [title]="'positions.cardTitle' | translate" [noPadding]="true">
+
+      <div class="positions-toolbar">
+        <div class="positions-filters">
+          <div class="filter-field">
+            <mat-icon>search</mat-icon>
+            <input type="text" [placeholder]="'positions.searchPlaceholder' | translate" [(ngModel)]="searchTerm"
+              (ngModelChange)="filterPositionss()" />
+          </div>
+        </div>
+
+        <button type="button" class="btn btn--primary" (click)="openAddPositionModal()" *ngIf="!showModal">
+          <mat-icon>add</mat-icon> {{ 'positions.addButton' | translate }}
+        </button>
+      </div>
+
       <!-- Desktop Table -->
       <div class="table-wrapper desktop-only" *ngIf="pagedPositions.length">
         <table class="positions-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Election</th>
-              <th>Title</th>
-              <th>Max Select</th>
-              <th>Priority</th>
-              <th>Fee</th>
-
-              <th style="width: 180px;">Actions</th>
+              <th>{{ 'positions.colElection' | translate }}</th>
+              <th>{{ 'positions.colName' | translate }}</th>
+              <th>{{ 'positions.colMaxSelect' | translate }}</th>
+              <th>{{ 'positions.colPriority' | translate }}</th>
+              <th>{{ 'positions.colFee' | translate }}</th>
+              <th class="text-right">{{ 'positions.colActions' | translate }}</th>
             </tr>
           </thead>
 
@@ -45,11 +88,13 @@
               <td>{{ position.maxSelect }}</td>
               <td>{{ position.priority }}</td>
               <td>{{ position.fee }}</td>
-
-              <td>
-                <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
-                <button class="edit-btn" (click)="editPosition(position)">Edit</button>
-                <button class="delete-btn" (click)="deletePosition(position)">Delete</button>
+              <td class="positions-table__actions">
+                <button type="button" (click)="editPosition(position)" [attr.aria-label]="'positions.editAriaLabel' | translate">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button type="button" (click)="deletePosition(position)" [attr.aria-label]="'positions.deleteAriaLabel' | translate">
+                  <mat-icon>delete</mat-icon>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -63,71 +108,38 @@
           <div class="card-header">
             <span class="index">#{{ i + 1 }}</span>
             <span class="title">{{ position.name }}</span>
-
           </div>
           <div class="card-dates">
-            <!-- <span>Election: {{ position.electionTitle }}</span> -->
-            <span>Max: {{ position.maxSelect }}</span>
-            <span>Priority: {{ position.priority }}</span>
-
+            <span>{{ 'positions.cardMax' | translate }} {{ position.maxSelect }}</span>
+            <span>{{ 'positions.cardPriority' | translate }} {{ position.priority }}</span>
           </div>
           <div class="card-actions">
-            <button class="details-btn" (click)="viewDetails(position)" title="Details">Details</button>
-            <button class="edit-btn" (click)="editPosition(position)">Edit</button>
-            <button class="delete-btn" (click)="deletePosition(position)">Delete</button>
+            <button type="button" (click)="editPosition(position)" [attr.aria-label]="'positions.editAriaLabel' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" (click)="deletePosition(position)" [attr.aria-label]="'positions.deleteAriaLabel' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </div>
       </div>
 
-      <app-empty-state *ngIf="!pagedPositions.length" icon="badge" title="No positions found"
-        message="Try adjusting your search, or add a new position to get started.">
+      <app-empty-state *ngIf="!pagedPositions.length" icon="badge" [title]="'positions.emptyTitle' | translate"
+        [message]="'positions.emptyMessage' | translate">
       </app-empty-state>
+
+      <!-- Pagination -->
+      <nav class="positions-pagination" *ngIf="totalPages > 1">
+        <button type="button" [disabled]="currentPage === 1" (click)="prevPage()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+        <button type="button" [disabled]="currentPage === totalPages" (click)="nextPage()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </nav>
+
     </app-section-card>
-  </div>
-
-
-  <!-- Pagination -->
-  <div class="pagination">
-    <button [disabled]="currentPage === 1" (click)="prevPage()">Prev</button>
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal" *ngIf="showModal">
-    <div class="modal-content">
-      <h2>{{ editMode ? 'Edit' : 'Add' }} Position</h2>
-
-      <form (ngSubmit)="submitPosition()">
-        <label>Election</label>
-        <select [(ngModel)]="modalPosition.electionId" name="electionId" required>
-          <option value="" disabled>Select election</option>
-          <option *ngFor="let e of elections" [value]="e.id">
-            {{ e.title }}
-          </option>
-        </select>
-        <label>Position Title</label>
-        <input type="text" [(ngModel)]="modalPosition.name" name="title" required />
-
-        <label>Max Select</label>
-        <input type="number" [(ngModel)]="modalPosition.maxSelect" name="maxSelect" required />
-
-        <label>Priority</label>
-        <input type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
-
-        <label>Fee</label>
-        <input type="number" [(ngModel)]="modalPosition.fee" name="fee" required />
-
-        <div class="modal-actions">
-          <button type="submit" class="save-btn">
-            {{ editMode ? 'Update' : 'Create' }}
-          </button>
-          <button type="button" class="cancel-btn" (click)="closeModal()">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
   </div>
 
 </div>

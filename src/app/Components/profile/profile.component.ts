@@ -11,6 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MemberEditComponent } from '../member-edit/member-edit.component';
 import { CandidateAddComponent } from '../candidate-add/candidate-add.component';
 import { RouterModule } from '@angular/router';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +24,8 @@ import { RouterModule } from '@angular/router';
     MatIcon,
     MatTabsModule,
     MatTableModule,
-    MatButtonModule],
+    MatButtonModule,
+    TranslatePipe],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
@@ -47,7 +50,7 @@ export class ProfileComponent implements OnInit {
   displayedColumns: string[] = ['degree', 'institute', 'subject', 'actions'];
 
   upsaaSpans: { rotate: string; size: number }[] = [];
-  constructor(private memberService: MemberService, private dialog: MatDialog) { }
+  constructor(private memberService: MemberService, private dialog: MatDialog, private languageService: LanguageService) { }
 
   ngOnInit() {
     this.loadProfile();
@@ -128,10 +131,10 @@ export class ProfileComponent implements OnInit {
         this.imageFile = null;
         this.imageChangedEvent = null; // reset cropper
         this.uploading = false;
-        alert('Profile image updated successfully!');
+        alert(this.languageService.translate('profile.uploadSuccess'));
       },
       error: () => {
-        alert('Failed to upload image.');
+        alert(this.languageService.translate('profile.uploadError'));
         this.uploading = false;
       }
     });
@@ -173,7 +176,7 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteEducation(edu: any) {
-    if (confirm(`Are you sure you want to delete the degree: ${edu.degreeName}?`)) {
+    if (confirm(`${this.languageService.translate('profile.deleteEducationConfirmPrefix')} ${edu.degreeName}?`)) {
       // Call your service to delete the record
       console.log('Delete:', edu);
       // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);

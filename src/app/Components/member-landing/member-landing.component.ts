@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { MemberDetailsComponent } from '../member-details/member-details.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
 
 import { AuthService } from '../../Services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +13,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { StatCardComponent } from '../shared/stat-card/stat-card.component';
+import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
+import { SectionCardComponent } from '../shared/section-card/section-card.component';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 
 @Component({
@@ -25,12 +28,14 @@ import { StatCardComponent } from '../shared/stat-card/stat-card.component';
     FormsModule,
     MemberFeeAmountPipe,
     MatProgressSpinnerModule,
-    MatCardModule,
     MatIconModule,
     MatTooltipModule,
     MatTabsModule,
     MatProgressBarModule,
-    StatCardComponent
+    StatCardComponent,
+    AdminHeaderComponent,
+    SectionCardComponent,
+    TranslatePipe
   ],
   templateUrl: './member-landing.component.html',
   styleUrls: ['./member-landing.component.scss'],
@@ -56,7 +61,7 @@ export class MemberLandingComponent implements OnInit {
   currentYear = new Date().getFullYear();
 
   constructor(private memberService: MemberService, private dialog: MatDialog,
-    public authService: AuthService
+    public authService: AuthService, private languageService: LanguageService
   ) { }
 
   ngOnInit() {
@@ -81,10 +86,26 @@ export class MemberLandingComponent implements OnInit {
 
 
 onTabChange(event: any) {
-  if (event.tab.textLabel === 'Batch Summary') {
+  // Compare by tab index rather than the (now translatable) text label, so this
+  // keeps working regardless of the active language. Index 1 is the Batch Summary tab.
+  if (event.index === 1) {
     this.loadBatchSummary();
   }
 }
+
+  // Maps a raw status badge value coming from the backend to its translated display label,
+  // without altering the underlying data (falls back to the raw value if unrecognized).
+  getStatusBadgeLabel(statusBadge: any): string {
+    const map: { [key: string]: string } = {
+      'Fully Paid': this.languageService.translate('memberLanding.statusFullyPaid'),
+      'Partially Paid': this.languageService.translate('memberLanding.statusPartiallyPaid'),
+      'Not Paid': this.languageService.translate('memberLanding.statusNotPaid'),
+      'Unpaid': this.languageService.translate('memberLanding.statusNotPaid'),
+      'Pending': this.languageService.translate('memberLanding.statusPending'),
+      'In Progress': this.languageService.translate('memberLanding.statusInProgress')
+    };
+    return map[statusBadge] ?? statusBadge;
+  }
 
   
   loadMembers() {
@@ -172,7 +193,7 @@ onTabChange(event: any) {
     return pages;
   }
   sendActiveReq(memberId: number) {
-    const confirmed = confirm('Proceed with this action?');
+    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
 
     if (!confirmed) return;
     this.memberService.requestActivation(memberId).subscribe({
@@ -190,7 +211,7 @@ onTabChange(event: any) {
     });
   }
   approveRequest(memberId: number) {
-    const confirmed = confirm('Proceed with this action?');
+    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
     if (!confirmed) return;
     this.memberService.approveRequest(memberId).subscribe({
       next: (res) => {
@@ -205,7 +226,7 @@ onTabChange(event: any) {
 
 
   activeDirectly(memberId: number) {
-    const confirmed = confirm('Proceed with this action?');
+    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
     if (!confirmed) return;
     this.memberService.activateMemberDirectly(memberId).subscribe({
       next: (res) => {

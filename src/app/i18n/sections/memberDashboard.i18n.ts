@@ -1,0 +1,48 @@
+import { I18nSection } from '../i18n.types';
+
+export const memberDashboardI18n: I18nSection = {
+  bn: {
+    memberDashboard: {
+      loading: 'লোড হচ্ছে...',
+      welcomeBack: 'স্বাগতম',
+      batchPrefix: 'ব্যাচ',
+      statusActive: 'সক্রিয়',
+      statusPending: 'অপেক্ষমাণ',
+      feesPaidLabel: 'ফি পরিশোধিত',
+      linkProfile: 'প্রোফাইল সম্পাদনা',
+      linkBloodDonors: 'রক্তদাতা',
+      linkJobs: 'চাকরি',
+      linkBatches: 'ব্যাচ ডিরেক্টরি',
+      linkEvents: 'ইভেন্ট',
+      linkConstitution: 'গঠনতন্ত্র',
+      noticesTitle: 'সাম্প্রতিক নোটিশ',
+      noticesEmpty: 'এখনো কোনো নোটিশ নেই।',
+      alumniOnlyBadge: 'শুধু অ্যালামনাই',
+      eventsTitle: 'আসন্ন ইভেন্ট',
+      eventsEmpty: 'কোনো আসন্ন ইভেন্ট নেই।',
+      viewAllEvents: 'সকল ইভেন্ট দেখুন',
+    },
+  },
+  en: {
+    memberDashboard: {
+      loading: 'Loading...',
+      welcomeBack: 'Welcome back',
+      batchPrefix: 'Batch',
+      statusActive: 'Active',
+      statusPending: 'Pending',
+      feesPaidLabel: 'fees paid',
+      linkProfile: 'Edit Profile',
+      linkBloodDonors: 'Blood Donors',
+      linkJobs: 'Jobs',
+      linkBatches: 'Batch Directory',
+      linkEvents: 'Events',
+      linkConstitution: 'Constitution',
+      noticesTitle: 'Recent Notices',
+      noticesEmpty: 'No notices yet.',
+      alumniOnlyBadge: 'Alumni only',
+      eventsTitle: 'Upcoming Events',
+      eventsEmpty: 'No upcoming events.',
+      viewAllEvents: 'View all events',
+    },
+  },
+};

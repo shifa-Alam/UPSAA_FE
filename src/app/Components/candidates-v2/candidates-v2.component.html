@@ -2,44 +2,44 @@
   <div class="modal-content">
     <!-- Header Section -->
     <div class="modal-header">
-      <h2>Candidate Details</h2>
+      <h2>{{ 'candidates.detailsModalTitle' | translate }}</h2>
 
       <mat-slide-toggle class="payment-toggle" [checked]="selectedCandidate?.isPaid"
         (change)="onPaymentToggle($event.checked)">
-        {{ selectedCandidate?.isPaid ? 'Paid' : 'Not Paid' }}
+        {{ selectedCandidate?.isPaid ? ('candidates.paid' | translate) : ('candidates.notPaid' | translate) }}
       </mat-slide-toggle>
     </div>
 
     <div class="details-wrapper">
-      <p><strong>Name:</strong> {{ selectedCandidate?.memberName }}</p>
-      <p><strong>Member Code:</strong> {{ selectedCandidate?.memberCode }}</p>
-      <p><strong>Position:</strong> {{ selectedCandidate?.positionName }}</p>
-      <p><strong>Supporters:</strong> {{ selectedCandidate?.applicationReason }}</p>
-      <p><strong>Ballot No:</strong> {{ selectedCandidate?.ballotNumber }}</p>
-      <p><strong>Batch:</strong> {{ selectedCandidate?.batch }}</p>
-      <p><strong>Status:</strong> {{ selectedCandidate?.nominationStatus }}</p>
-      <p><strong>Admin Note:</strong> {{ selectedCandidate?.adminNote }}</p>
+      <p><strong>{{ 'candidates.detailsName' | translate }}</strong> {{ selectedCandidate?.memberName }}</p>
+      <p><strong>{{ 'candidates.detailsMemberCode' | translate }}</strong> {{ selectedCandidate?.memberCode }}</p>
+      <p><strong>{{ 'candidates.detailsPosition' | translate }}</strong> {{ selectedCandidate?.positionName }}</p>
+      <p><strong>{{ 'candidates.detailsSupporter' | translate }}</strong> {{ selectedCandidate?.applicationReason }}</p>
+      <p><strong>{{ 'candidates.detailsBallotNumber' | translate }}</strong> {{ selectedCandidate?.ballotNumber }}</p>
+      <p><strong>{{ 'candidates.detailsBatch' | translate }}</strong> {{ selectedCandidate?.batch }}</p>
+      <p><strong>{{ 'candidates.detailsStatus' | translate }}</strong> {{ statusLabel(selectedCandidate?.nominationStatus) }}</p>
+      <p><strong>{{ 'candidates.detailsAdminNote' | translate }}</strong> {{ selectedCandidate?.adminNote }}</p>
       <p class="fee-text">
-        <strong>Fee:</strong>
+        <strong>{{ 'candidates.detailsFee' | translate }}</strong>
         <span class="fee-amount">৳ {{ selectedCandidate?.fee }}</span>
       </p>
       <p>
-        <strong>Payment Status:</strong>
+        <strong>{{ 'candidates.detailsPaymentStatus' | translate }}</strong>
 
         <span *ngIf="selectedCandidate?.isPaid" class="paid">
-          ✔ Paid
+          ✔ {{ 'candidates.paid' | translate }}
         </span>
 
         <span *ngIf="!selectedCandidate?.isPaid" class="not-paid">
-          ✖ Not Paid
+          ✖ {{ 'candidates.notPaid' | translate }}
         </span>
       </p>
     </div>
 
 
     <div *ngIf="showRejectNote" class="reject-note">
-      <label><strong>Rejection Note</strong></label>
-      <textarea [(ngModel)]="rejectNote" placeholder="Write rejection reason..." rows="3">
+      <label><strong>{{ 'candidates.rejectReasonLabel' | translate }}</strong></label>
+      <textarea [(ngModel)]="rejectNote" [placeholder]="'candidates.rejectReasonPlaceholder' | translate" rows="3">
       </textarea>
     </div>
 
@@ -47,108 +47,101 @@
 
       <button *ngIf="selectedCandidate?.nominationStatus === 'Pending'&& !showRejectNote" class="approve-btn"
         (click)="approveCandidate(selectedCandidate)">
-        Approve
+        {{ 'candidates.approveBtn' | translate }}
       </button>
 
       <button *ngIf="selectedCandidate?.nominationStatus === 'Pending' && !showRejectNote" class="reject-btn"
         (click)="showRejectNote = true">
-        Reject
+        {{ 'candidates.rejectBtn' | translate }}
       </button>
 
 
       <button *ngIf="showRejectNote" class="confirm-reject-btn" [disabled]="!rejectNote.trim()"
         (click)="confirmReject(selectedCandidate)">
-        Confirm Reject
+        {{ 'candidates.confirmRejectBtn' | translate }}
       </button>
 
 
       <button
         *ngIf="selectedCandidate?.nominationStatus === 'Approved' || selectedCandidate?.nominationStatus === 'Rejected'"
         class="undo-btn" (click)="undoAction(selectedCandidate)">
-        Undo
+        {{ 'candidates.undoBtn' | translate }}
       </button>
 
-      <button class="close-btn" (click)="closeDetailsModal()">Close</button>
+      <button class="close-btn" (click)="closeDetailsModal()">{{ 'candidates.closeBtn' | translate }}</button>
     </div>
   </div>
 </div>
 
-<app-page-header title="Candidates" subtitle="Review nominations, approve or reject candidates, and track payment status."
-  variant="plain">
-</app-page-header>
+<div class="page-body">
 
-<div class="page-body upsaa-container">
+  <app-admin-header [title]="'candidates.title' | translate" [subtitle]="'candidates.subtitle' | translate"></app-admin-header>
 
   <!-- Summary Cards -->
   <div class="stat-row">
-    <app-stat-card icon="groups" label="Candidates" [value]="totalItems" tone="primary"></app-stat-card>
-    <app-stat-card icon="payments" label="Total Fee" [value]="'৳ ' + (totalFee | number:'1.0-0')" tone="accent">
+    <app-stat-card icon="groups" [label]="'candidates.statCandidate' | translate" [value]="totalItems" tone="primary"></app-stat-card>
+    <app-stat-card icon="payments" [label]="'candidates.statTotalFee' | translate" [value]="'৳ ' + (totalFee | number:'1.0-0')" tone="accent">
     </app-stat-card>
-    <app-stat-card icon="verified" label="Paid" [value]="'৳ ' + (paidFee | number:'1.0-0')" tone="neutral">
+    <app-stat-card icon="verified" [label]="'candidates.statPaid' | translate" [value]="'৳ ' + (paidFee | number:'1.0-0')" tone="neutral">
     </app-stat-card>
   </div>
 
-  <!-- Filter Section -->
-  <div class="filters-container">
-    <div class="filter-item">
-      <input type="text" placeholder="Search Name" [(ngModel)]="filter.memberName" (ngModelChange)="applyFilter()" />
-    </div>
-    <div class="filter-item">
-      <input type="text" placeholder="Member code" [(ngModel)]="filter.memberCode" (ngModelChange)="applyFilter()" />
-    </div>
-
-    <div class="filter-item">
-      <input type="number" placeholder="Batch" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
-    </div>
-    <div class="filter-item">
-      <input type="text" placeholder="Fee" [(ngModel)]="filter.fee" (ngModelChange)="applyFilter()" />
-    </div>
-    <div class="filter-item gender">
-      <select [(ngModel)]="filter.nominationStatusId" (ngModelChange)="applyFilter()">
-        <option [ngValue]="null" selected>Nomination Status</option>
-        <option value="0">Pending</option>
-        <option value="1">Approved</option>
-        <option value="2">Rejected</option>
-      </select>
-    </div>
-
-    <div class="filter-item gender">
-      <select [(ngModel)]="filter.isPaid" (ngModelChange)="applyFilter()">
-        <option [ngValue]="null" selected>Payment Status</option>
-        <option [ngValue]="true">Paid</option>
-        <option [ngValue]="false">Not Paid</option>
-      </select>
-    </div>
-
-    <div class="filter-item blood-group">
-      <select [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()">
-        <option [ngValue]="0" selected> Position</option>
-        <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
-      </select>
-    </div>
-    <div class="filter-item reset-button">
-      <button type="button" (click)="resetFilters()">Reset Filters</button>
-    </div>
-  </div>
   <div *ngIf="loading" class="loading-wrapper">
     <div class="spinner"></div>
-    <p>Loading candidates...</p>
+    <p>{{ 'candidates.loading' | translate }}</p>
   </div>
+
   <div *ngIf="!loading">
-    <app-section-card icon="person_search" title="All Candidates" [noPadding]="true">
+    <app-section-card icon="person_search" [title]="'candidates.cardTitle' | translate" [noPadding]="true">
+
+      <div class="candidates-toolbar">
+        <div class="candidates-filters">
+          <div class="filter-field">
+            <mat-icon>search</mat-icon>
+            <input type="text" [placeholder]="'candidates.filterName' | translate" [(ngModel)]="filter.memberName" (ngModelChange)="applyFilter()" />
+          </div>
+          <div class="filter-field">
+            <mat-icon>badge</mat-icon>
+            <input type="text" [placeholder]="'candidates.filterMemberCode' | translate" [(ngModel)]="filter.memberCode" (ngModelChange)="applyFilter()" />
+          </div>
+          <div class="filter-field">
+            <mat-icon>calendar_today</mat-icon>
+            <input type="number" [placeholder]="'candidates.filterBatch' | translate" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
+          </div>
+          <select class="filter-select" [(ngModel)]="filter.nominationStatusId" (ngModelChange)="applyFilter()">
+            <option [ngValue]="null" selected>{{ 'candidates.filterNominationStatus' | translate }}</option>
+            <option value="0">{{ 'candidates.statusPending' | translate }}</option>
+            <option value="1">{{ 'candidates.statusApproved' | translate }}</option>
+            <option value="2">{{ 'candidates.statusRejected' | translate }}</option>
+          </select>
+          <select class="filter-select" [(ngModel)]="filter.isPaid" (ngModelChange)="applyFilter()">
+            <option [ngValue]="null" selected>{{ 'candidates.filterPaymentStatus' | translate }}</option>
+            <option [ngValue]="true">{{ 'candidates.paid' | translate }}</option>
+            <option [ngValue]="false">{{ 'candidates.notPaid' | translate }}</option>
+          </select>
+          <select class="filter-select" [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()">
+            <option [ngValue]="0" selected>{{ 'candidates.filterPosition' | translate }}</option>
+            <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
+          </select>
+          <button type="button" class="filter-reset" (click)="resetFilters()" [title]="'candidates.resetFilters' | translate">
+            <mat-icon>restart_alt</mat-icon>
+          </button>
+        </div>
+      </div>
+
       <!-- Desktop Table -->
       <div class="table-wrapper desktop-only" *ngIf="candidates.length">
         <table class="candidates-table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Name</th>
-              <th>Member Code</th>
-              <th>Position</th>
-              <th>Ballot No</th>
-              <th>Batch</th>
-              <th>Fee</th>
-              <th style="width: 180px;">Actions</th>
+              <th>{{ 'candidates.colName' | translate }}</th>
+              <th>{{ 'candidates.colMemberCode' | translate }}</th>
+              <th>{{ 'candidates.colPosition' | translate }}</th>
+              <th>{{ 'candidates.colBallotNumber' | translate }}</th>
+              <th>{{ 'candidates.colBatch' | translate }}</th>
+              <th>{{ 'candidates.colFee' | translate }}</th>
+              <th class="text-right">{{ 'candidates.colActions' | translate }}</th>
             </tr>
           </thead>
 
@@ -166,10 +159,10 @@
               <td>{{ candidate.ballotNumber }}</td>
               <td>{{ candidate.batch }}</td>
               <td>{{ candidate.fee }}</td>
-              <td>
-                <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-                <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-                <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+              <td class="candidates-table__actions">
+                <button type="button" (click)="viewDetails(candidate)" [attr.aria-label]="'candidates.detailsAriaLabel' | translate">
+                  <mat-icon>visibility</mat-icon>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -181,81 +174,54 @@
         <div class="candidate-card" *ngFor="let candidate of candidates; let i = index">
 
           <div class="card-header">
-            <!-- <span class="index">#{{ i + 1 }}</span> -->
             <span class="title">{{ candidate.memberName }}
               <span *ngIf="candidate.nominationStatus === 'Approved'" class="status-icon approved">✔</span>
               <span *ngIf="candidate.nominationStatus === 'Rejected'" class="status-icon rejected">✖</span>
               <span *ngIf="candidate.nominationStatus === 'Pending'" class="status-icon pending">⏳</span>
             </span>
-
           </div>
           <div class="card-dates">
             <span>{{ candidate.positionName }}</span>
-            <span>batch: {{ candidate.batch }}</span>
+            <span>{{ 'candidates.cardBatch' | translate }} {{ candidate.batch }}</span>
             <span *ngIf="candidate?.isPaid" class="paid">
-              ✔ Paid
+              ✔ {{ 'candidates.paid' | translate }}
             </span>
 
             <span *ngIf="!candidate?.isPaid" class="not-paid">
-              ✖ Not Paid
+              ✖ {{ 'candidates.notPaid' | translate }}
             </span>
           </div>
           <div class="card-actions">
-            <button class="details-btn" (click)="viewDetails(candidate)" title="Details">Details</button>
-            <button class="edit-btn" (click)="editCandidate(candidate)">Edit</button>
-            <button class="delete-btn" (click)="deleteCandidate(candidate)">Delete</button>
+            <button type="button" (click)="viewDetails(candidate)" [attr.aria-label]="'candidates.detailsAriaLabel' | translate">
+              <mat-icon>visibility</mat-icon>
+            </button>
           </div>
         </div>
       </div>
 
-      <app-empty-state *ngIf="!candidates.length" icon="person_search" title="No candidates found"
-        message="Try adjusting your filters — no candidates match the current criteria.">
+      <app-empty-state *ngIf="!candidates.length" icon="person_search" [title]="'candidates.emptyTitle' | translate"
+        [message]="'candidates.emptyMessage' | translate">
       </app-empty-state>
+
+      <!-- Pagination -->
+      <nav class="candidates-pagination" *ngIf="totalPages > 1">
+        <button type="button" [disabled]="pageNumber === 1" (click)="onPageChange(pageNumber - 1)">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <button type="button" class="page-number" [class.active]="pageNumber === 1" (click)="onPageChange(1)">1</button>
+        <span *ngIf="pageNumber > 3" class="ellipsis">…</span>
+        <button type="button" class="page-number" *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p"
+          (click)="onPageChange(p)">{{ p }}</button>
+        <span *ngIf="pageNumber < totalPages - 2" class="ellipsis">…</span>
+        <button type="button" class="page-number" [class.active]="pageNumber === totalPages" (click)="onPageChange(totalPages)">{{ totalPages }}</button>
+
+        <button type="button" [disabled]="pageNumber === totalPages" (click)="onPageChange(pageNumber + 1)">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </nav>
+
     </app-section-card>
   </div>
-
-
-  <!-- Pagination -->
-  <div class="pagination">
-    <nav class="pagination-container" *ngIf="totalPages > 1">
-      <ul class="pagination">
-
-        <!-- Previous -->
-        <li [class.disabled]="pageNumber === 1">
-          <button (click)="onPageChange(pageNumber - 1)">‹ Previous</button>
-        </li>
-
-        <!-- First page -->
-        <li [class.active]="pageNumber === 1">
-          <button (click)="onPageChange(1)">1</button>
-        </li>
-
-        <!-- Ellipsis before middle pages -->
-        <li *ngIf="pageNumber > 3"><span>...</span></li>
-
-        <!-- Middle pages -->
-        <li *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p">
-          <button (click)="onPageChange(p)">{{ p }}</button>
-        </li>
-
-        <!-- Ellipsis after middle pages -->
-        <li *ngIf="pageNumber < totalPages - 2"><span>...</span></li>
-
-        <!-- Last page -->
-        <li [class.active]="pageNumber === totalPages">
-          <button (click)="onPageChange(totalPages)">{{ totalPages }}</button>
-        </li>
-
-        <!-- Next -->
-        <li [class.disabled]="pageNumber === totalPages">
-          <button (click)="onPageChange(pageNumber + 1)">Next ›</button>
-        </li>
-
-      </ul>
-    </nav>
-
-  </div>
-
-
 
 </div>

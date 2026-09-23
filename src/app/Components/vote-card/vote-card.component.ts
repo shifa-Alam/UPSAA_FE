@@ -2,10 +2,11 @@ import { AfterViewInit, Component } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import html2canvas from 'html2canvas';
 import { ElementRef, ViewChild } from '@angular/core';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
 @Component({
   selector: 'app-vote-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './vote-card.component.html',
   styleUrls: ['./vote-card.component.scss']
 })

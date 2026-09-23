@@ -135,15 +135,17 @@
    Page body
 ================================= */
 .page-body {
-  padding: var(--space-6) 0;
+  /* No max-width/centering — full-width inside the admin panel's main-content,
+     not the public site's reading column. */
+  padding: var(--space-4) var(--space-5);
 }
 
 /* ===== Summary stat row ===== */
 .stat-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 /* ===============================
@@ -163,24 +165,25 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 600px;
-}
-
-.candidates-table th,
-.candidates-table td {
-  padding: var(--space-4) var(--space-5);
-  text-align: left;
-  border-bottom: 1px solid var(--color-ink-200);
   font-size: var(--font-size-sm);
-  color: var(--color-ink-700);
 }
 
 .candidates-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-5);
   background: var(--color-surface-alt);
   color: var(--color-ink-600);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 600;
   font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.candidates-table td {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--color-ink-100);
+  color: var(--color-ink-700);
 }
 
 .candidates-table tbody tr:last-child td {
@@ -191,124 +194,99 @@
   background: var(--color-surface-alt);
 }
 
-.candidates-table button {
-  padding: 6px var(--space-3);
-  border-radius: var(--radius-sm);
+.text-right {
+  text-align: right;
+}
+
+.candidates-table__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.candidates-table__actions button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   border: none;
+  background: transparent;
+  color: var(--color-ink-400);
   cursor: pointer;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-/* detail Button */
-.details-btn {
-  padding: 8px var(--space-4);
-  background: var(--color-success);
-  color: #fff;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  margin-right: var(--space-2);
+.candidates-table__actions button:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
 }
 
-.details-btn:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-}
-
-/* Edit Button */
-.edit-btn {
-  padding: 8px var(--space-4);
-  background: var(--color-primary-500);
-  color: #fff;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  margin-right: var(--space-2);
-}
-
-.edit-btn:hover {
-  background: var(--color-primary-600);
-  transform: translateY(-1px);
-}
-
-/* Delete Button */
-.delete-btn {
-  padding: 8px var(--space-4);
-  background: var(--color-danger);
-  color: #fff;
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-  border: none;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.delete-btn:hover {
-  filter: brightness(0.92);
-  transform: translateY(-1px);
+.candidates-table__actions button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* ===============================
    Pagination
 ================================= */
-.pagination {
-  margin-top: var(--space-5);
+.candidates-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  flex-wrap: wrap;
 }
 
-.pagination-container {
+.candidates-pagination > button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-ink-200);
+  background: var(--color-surface);
+  color: var(--color-primary-600);
+  cursor: pointer;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-.pagination-container ul.pagination {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  flex-wrap: wrap;
-  font-size: var(--font-size-sm);
+.candidates-pagination > button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.pagination-container li button {
-  min-width: 36px;
-  height: 36px;
+.page-number {
+  min-width: 32px;
+  height: 32px;
   padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-pill);
   border: 1px solid var(--color-ink-200);
   background: var(--color-surface);
   color: var(--color-ink-700);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.pagination-container li button:hover {
-  background: var(--color-surface-alt);
+.page-number:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
 }
 
-.pagination-container li.active button {
+.page-number.active {
   background: var(--color-primary-500);
-  border-color: var(--color-primary-500);
   color: #fff;
-  font-weight: 600;
+  border-color: var(--color-primary-500);
 }
 
-.pagination-container li.disabled button {
-  opacity: 0.5;
-}
-
-.pagination-container li span {
-  padding: 0 var(--space-2);
+.ellipsis {
   color: var(--color-ink-400);
+  padding: 0 var(--space-1);
 }
 
 /* ===============================
@@ -391,60 +369,82 @@
   font-weight: 700;
 }
 
-/* ===== Filter Section ===== */
-.filters-container {
+/* ===== Toolbar (filters) ===== */
+.candidates-toolbar {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-ink-200);
+}
+
+.candidates-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-bottom: var(--space-5);
-  background: var(--color-surface);
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.filter-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
   border: 1px solid var(--color-ink-200);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  justify-content: center;
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-2);
+  background: var(--color-surface-alt);
 }
 
-.filter-item {
-  flex: 1 1 200px;
-  min-width: 160px;
+.filter-field mat-icon {
+  color: var(--color-primary-500);
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
-.filter-item input,
-.filter-item select {
-  width: 100%;
-  padding: var(--space-3);
+.filter-field input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-base);
+  color: var(--color-ink-900);
+  min-width: 110px;
+}
+
+.filter-select {
+  height: 34px;
+  padding: 0 var(--space-2);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-ink-200);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-xs);
   font-family: var(--font-base);
   background: var(--color-surface-alt);
-  box-sizing: border-box;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.filter-item input:focus,
-.filter-item select:focus {
-  border-color: var(--color-primary-400);
-  outline: none;
-  box-shadow: 0 0 0 3px var(--color-primary-50);
-  background: var(--color-surface);
-}
-
-.reset-button button {
-  background: var(--color-danger);
-  color: #fff;
-  border: none;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
+  color: var(--color-ink-900);
   cursor: pointer;
-  width: 100%;
-  font-weight: 600;
-  transition: filter var(--transition-fast);
 }
 
-.reset-button button:hover {
-  filter: brightness(0.92);
+.filter-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-ink-200);
+  background: var(--color-surface);
+  color: var(--color-ink-600);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.filter-reset:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+}
+
+.filter-reset mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* ===============================
@@ -498,38 +498,33 @@
 
 .card-actions {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-1);
   margin-top: var(--space-2);
   justify-content: flex-end;
 }
 
 .card-actions button {
-  padding: 6px var(--space-3);
-  font-size: var(--font-size-xs);
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-surface-alt);
+  color: var(--color-ink-500);
   cursor: pointer;
-  font-weight: 600;
-  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-actions button:hover {
-  transform: translateY(-1px);
-}
-
-.card-actions .details-btn {
-  background: rgba(76, 175, 80, 0.12);
-  color: #2e7d32;
-}
-
-.card-actions .edit-btn {
   background: var(--color-primary-50);
   color: var(--color-primary-600);
 }
 
-.card-actions .delete-btn {
-  background: rgba(244, 67, 54, 0.1);
-  color: var(--color-danger);
+.card-actions button mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* 📱 Mobile */
@@ -543,8 +538,8 @@
     display: block;
   }
 
-  .filters-container {
-    justify-content: stretch;
+  .candidates-toolbar {
+    padding: var(--space-3);
   }
 
   .modal-actions {

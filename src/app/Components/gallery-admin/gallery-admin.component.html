@@ -1,0 +1,112 @@
+<div class="gallery-admin">
+
+  <app-admin-header [title]="'galleryAdmin.title' | translate" [subtitle]="'galleryAdmin.subtitle' | translate"></app-admin-header>
+
+  <app-section-card icon="cloud_upload" [title]="'galleryAdmin.uploadCardTitle' | translate">
+    <form class="upload-form" (ngSubmit)="submit()">
+      <div class="upload-form__row">
+        <div class="upload-form__dropzone">
+          <input type="file" id="galleryFile" accept="image/*" (change)="onFileSelected($event)" />
+          <label for="galleryFile" *ngIf="!previewUrl">
+            <mat-icon>add_photo_alternate</mat-icon>
+            <span>{{ 'galleryAdmin.chooseImage' | translate }}</span>
+          </label>
+          <label for="galleryFile" class="upload-form__preview" *ngIf="previewUrl">
+            <img [src]="previewUrl" alt="Preview" />
+          </label>
+        </div>
+
+        <div class="upload-form__fields">
+          <div class="form-field">
+            <label>{{ 'galleryAdmin.titleLabel' | translate }}</label>
+            <input type="text" [placeholder]="'galleryAdmin.titlePlaceholder' | translate" [(ngModel)]="title" name="title" />
+          </div>
+
+          <div class="form-field">
+            <label>{{ 'galleryAdmin.categoryLabel' | translate }}</label>
+            <input type="text" [placeholder]="'galleryAdmin.categoryPlaceholder' | translate" [(ngModel)]="category" name="category"
+              list="categoryOptions" />
+            <datalist id="categoryOptions">
+              <option *ngFor="let cat of categories" [value]="cat"></option>
+            </datalist>
+          </div>
+
+          <button type="submit" class="upload-form__submit" [disabled]="uploading">
+            <mat-icon>{{ uploading ? 'hourglass_top' : 'upload' }}</mat-icon>
+            {{ uploading ? ('galleryAdmin.uploading' | translate) : ('galleryAdmin.uploadButton' | translate) }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </app-section-card>
+
+  <app-section-card icon="photo_library" [title]="'galleryAdmin.uploadedCardTitle' | translate" [noPadding]="true">
+
+    <div class="gallery-admin__loading" *ngIf="loading">
+      <mat-icon class="gallery-admin__loading-icon">autorenew</mat-icon>
+      <span>{{ 'galleryAdmin.loading' | translate }}</span>
+    </div>
+
+    <app-empty-state *ngIf="!loading && images.length === 0" icon="photo_library" [title]="'galleryAdmin.emptyTitle' | translate"
+      [message]="'galleryAdmin.emptyMessage' | translate"></app-empty-state>
+
+    <div class="gallery-admin__grid" *ngIf="!loading && images.length > 0">
+      <div class="gallery-admin__item" *ngFor="let image of images">
+
+        <!-- View mode -->
+        <ng-container *ngIf="editingId !== image.id">
+          <img [src]="image.imageUrl" [alt]="image.title" />
+          <div class="gallery-admin__item-body">
+            <strong>{{ image.title }}</strong>
+            <span>{{ image.category }}</span>
+            <span *ngIf="image.createdByName" class="gallery-admin__uploader">{{ 'galleryAdmin.uploadedBy' | translate }} {{ image.createdByName }}</span>
+          </div>
+          <div class="gallery-admin__actions">
+            <button type="button" class="gallery-admin__action" (click)="startEdit(image)"
+              [attr.aria-label]="'galleryAdmin.editAriaLabel' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" class="gallery-admin__action gallery-admin__action--danger"
+              [disabled]="deletingId === image.id" (click)="confirmDelete(image)"
+              [attr.aria-label]="'galleryAdmin.deleteAriaLabel' | translate">
+              <mat-icon>{{ deletingId === image.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Edit mode -->
+        <div class="gallery-admin__edit" *ngIf="editingId === image.id">
+          <label class="gallery-admin__edit-photo" for="editFile-{{ image.id }}">
+            <img [src]="editPreviewUrl || image.imageUrl" [alt]="image.title" />
+            <span class="gallery-admin__edit-photo-hint">
+              <mat-icon>photo_camera</mat-icon>
+              {{ 'galleryAdmin.replaceImage' | translate }}
+            </span>
+          </label>
+          <input type="file" id="editFile-{{ image.id }}" accept="image/*" (change)="onEditFileSelected($event)" />
+
+          <div class="form-field">
+            <label>{{ 'galleryAdmin.titleLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="editTitle" name="editTitle-{{ image.id }}" />
+          </div>
+          <div class="form-field">
+            <label>{{ 'galleryAdmin.categoryLabel' | translate }}</label>
+            <input type="text" [(ngModel)]="editCategory" name="editCategory-{{ image.id }}" list="categoryOptions" />
+          </div>
+
+          <div class="gallery-admin__edit-actions">
+            <button type="button" class="gallery-admin__save" [disabled]="saving" (click)="submitEdit(image)">
+              <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
+              {{ 'galleryAdmin.saveButton' | translate }}
+            </button>
+            <button type="button" class="gallery-admin__cancel" [disabled]="saving" (click)="cancelEdit()">
+              {{ 'galleryAdmin.cancelButton' | translate }}
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </app-section-card>
+
+</div>

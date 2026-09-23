@@ -72,6 +72,21 @@ export interface PaginatedPublicMembersResponse {
   pageSize: number;
 }
 
+export interface PublicBatch {
+  batch: number;
+  alumniCount: number;
+}
+
+export interface BloodDonor {
+  id: number;
+  fullName: string;
+  batch: number;
+  bloodGroup: string | null;
+  currentCity: string | null;
+  photo: string | null;
+  phone: string;
+}
+
 export interface CaptchaChallenge {
   captchaId: string;
   image: string; // data:image/png;base64,...
@@ -180,6 +195,18 @@ export class MemberService {
   /** Public — no login required. Server-side paginated + filtered, payment-free member list. */
   getPublicDirectory(filter: PublicMemberFilter): Observable<PaginatedPublicMembersResponse> {
     return this.http.post<PaginatedPublicMembersResponse>(`${this.apiUrl}/PublicDirectory`, filter);
+  }
+  /** Public — no login required. Batch year + active alumni count only. */
+  getPublicBatchSummary(): Observable<PublicBatch[]> {
+    return this.http.get<PublicBatch[]>(`${this.apiUrl}/PublicBatchSummary`);
+  }
+  /** Alumni-only — requires login (any role). Phone comes back masked ("***") if the donor hid their contact info. */
+  getBloodDonors(bloodGroup?: string, city?: string): Observable<BloodDonor[]> {
+    const params: string[] = [];
+    if (bloodGroup) params.push(`bloodGroup=${encodeURIComponent(bloodGroup)}`);
+    if (city) params.push(`city=${encodeURIComponent(city)}`);
+    const query = params.length ? `?${params.join('&')}` : '';
+    return this.http.get<BloodDonor[]>(`${this.apiUrl}/BloodDonors${query}`);
   }
   filterMembers(filter: MemberFilterDto): Observable<PaginatedMembersResponse> {
     console.log(filter)

@@ -14,6 +14,7 @@ interface LoginResponse {
 interface JwtPayload {
   id: string;
   role: string;
+  email?: string;
   Batch?: number;
   MemberId?: number;
   exp: number;
@@ -74,6 +75,10 @@ export class AuthService {
   hasRole(role: string): boolean {
     const roles = this.getRoles(); // e.g., ['Admin', 'Representative']
     return roles.includes(role);
+  }
+  /** True for SuperAdmin or Admin — the two roles that manage the back office. */
+  isStaff(): boolean {
+    return this.hasRole('SuperAdmin') || this.hasRole('Admin');
   }
   getRoles(): string[] {
     const user = this.getCurrentUser();

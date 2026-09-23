@@ -4,15 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { Candidate, CandidateFilterDto, CandidateService } from '../../Services/candidate.service';
 import { Position, PositionService } from '../../Services/position.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { PageHeaderComponent } from '../shared/page-header/page-header.component';
+import { MatIconModule } from '@angular/material/icon';
+import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { StatCardComponent } from '../shared/stat-card/stat-card.component';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-candidates-v2',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSlideToggleModule, PageHeaderComponent, SectionCardComponent, EmptyStateComponent, StatCardComponent],
+  imports: [CommonModule, FormsModule, MatSlideToggleModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, StatCardComponent, TranslatePipe],
   templateUrl: './candidates-v2.component.html',
   styleUrl: './candidates-v2.component.scss'
 })
@@ -44,7 +47,7 @@ export class CandidatesV2Component implements OnInit {
   };
   totalFee: number = 0;
   paidFee: number = 0;
-  constructor(private candidateService: CandidateService, private positionService: PositionService) {
+  constructor(private candidateService: CandidateService, private positionService: PositionService, private languageService: LanguageService) {
 
   }
 
@@ -134,6 +137,21 @@ export class CandidatesV2Component implements OnInit {
   viewDetails(candidate: Candidate) {
     this.selectedCandidate = candidate;
     this.showDetailsModal = true;
+  }
+
+  statusLabel(status: string | null | undefined): string {
+    switch (status) {
+      case 'Pending':
+        return this.languageService.translate('candidates.statusPending');
+      case 'Approved':
+        return this.languageService.translate('candidates.statusApproved');
+      case 'Rejected':
+        return this.languageService.translate('candidates.statusRejected');
+      case 'Withdrawn':
+        return this.languageService.translate('candidates.statusWithdrawn');
+      default:
+        return status || '';
+    }
   }
 
   approveCandidate(candidate: any) {
@@ -241,7 +259,7 @@ export class CandidatesV2Component implements OnInit {
         },
         error: (err) => {
           console.error('Update failed:', err);
-          alert('Failed to update candidate.');
+          alert(this.languageService.translate('candidates.updateErrorAlert'));
         }
       });
     } else {
@@ -254,7 +272,7 @@ export class CandidatesV2Component implements OnInit {
         },
         error: (err) => {
           console.error('Add failed:', err);
-          alert('Failed to add candidate.');
+          alert(this.languageService.translate('candidates.addErrorAlert'));
         }
       });
     }
@@ -270,7 +288,7 @@ export class CandidatesV2Component implements OnInit {
           this.selectedCandidate!.isPaid = isPaid;
         },
         error: () => {
-          alert('Failed to update payment status');
+          alert(this.languageService.translate('candidates.paymentUpdateErrorAlert'));
           // revert toggle if API fails
           this.selectedCandidate!.isPaid = !isPaid;
         }

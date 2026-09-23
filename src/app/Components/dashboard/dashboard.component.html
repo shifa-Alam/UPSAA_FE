@@ -3,48 +3,44 @@
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="collapsed">
 
-    <div class="sidebar-brand">
-      <span class="brand-icon">🏛️</span>
-      <span class="brand-text" *ngIf="!collapsed">Admin Panel</span>
+    <div class="sidebar-head">
+      <div class="sidebar-brand">
+        <span class="brand-tile">🏛️</span>
+        <span class="brand-text" *ngIf="!collapsed">{{ 'dashboard.brand' | translate }}</span>
+      </div>
+
+      <button type="button" class="rail-toggle" (click)="toggleCollapsed()"
+        [attr.aria-expanded]="!collapsed"
+        [attr.aria-label]="(collapsed ? 'dashboard.expandSidebar' : 'dashboard.collapseSidebar') | translate"
+        [title]="(collapsed ? 'dashboard.expandSidebar' : 'dashboard.collapseSidebar') | translate">
+        <app-nav-icon name="collapse"></app-nav-icon>
+      </button>
     </div>
 
     <nav class="sidebar-menu">
 
       <ng-container *ngFor="let item of menuItems">
 
-        <!-- Parent -->
         <div class="menu-group">
 
-          <a class="menu-item parent"
-             (click)="toggleMenu(item)"
-             [class.active]="item.expanded">
+          <button type="button" class="menu-item parent" (click)="toggleMenu(item)" [class.open]="item.expanded"
+            [title]="item.labelKey | translate">
 
-            <span class="icon">{{ item.icon }}</span>
-            <span class="label" *ngIf="!collapsed">{{ item.label }}</span>
+            <app-nav-icon class="icon" [name]="item.icon"></app-nav-icon>
+            <span class="label" *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
 
-            <span class="arrow"
-                  *ngIf="item.children && !collapsed"
-                  [class.open]="item.expanded">
-              ▸
-            </span>
+            <svg class="arrow" *ngIf="!collapsed" [class.open]="item.expanded" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
 
-          </a>
-
-          <!-- Children -->
-          <div class="submenu"
-               [class.open]="item.expanded"
-               *ngIf="item.children && !collapsed">
-
-            <a class="submenu-item"
-               *ngFor="let child of item.children"
-               (click)="navigate(child.route)"
-               [class.active]="activeRoute === child.route">
-
-              <span class="icon">{{ child.icon }}</span>
-              <span class="label">{{ child.label }}</span>
-
+          <div class="submenu" [class.open]="item.expanded" *ngIf="!collapsed">
+            <a class="submenu-item" *ngFor="let child of item.children" (click)="navigate(child.route)"
+              [class.active]="activeRoute === child.route">
+              <app-nav-icon class="icon" [name]="child.icon"></app-nav-icon>
+              <span class="label">{{ child.labelKey | translate }}</span>
             </a>
-
           </div>
 
         </div>
@@ -52,6 +48,29 @@
       </ng-container>
 
     </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar">{{ userInitial }}</div>
+        <div class="user-info" *ngIf="!collapsed">
+          <span class="user-name">{{ currentUser?.email }}</span>
+          <span class="user-role">{{ roleLabelKey | translate }}</span>
+        </div>
+      </div>
+      <div class="footer-actions" *ngIf="!collapsed">
+        <button type="button" class="footer-btn" (click)="lang.toggle()" [title]="'dashboard.toggleLanguage' | translate">
+          {{ lang.lang() === 'bn' ? 'EN' : 'বাং' }}
+        </button>
+        <button type="button" class="footer-btn" (click)="theme.toggle()"
+          [title]="(theme.theme() === 'dark' ? 'dashboard.lightMode' : 'dashboard.darkMode') | translate">
+          <app-nav-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'"></app-nav-icon>
+        </button>
+        <button type="button" class="footer-btn footer-btn--danger" (click)="logout()" [title]="'dashboard.logout' | translate">
+          <app-nav-icon name="logout"></app-nav-icon>
+        </button>
+      </div>
+    </div>
+
   </aside>
 
   <!-- Main content -->

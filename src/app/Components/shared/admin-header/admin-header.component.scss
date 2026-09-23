@@ -1,0 +1,37 @@
+/* Plain, minimal page header for the admin panel — title + subtitle inline
+   with the page's own background (no hero banner), matching the reference
+   admin panel's understated dashboard header rather than the public site's
+   colorful hero treatment. */
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.admin-header h2 {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-ink-900);
+  letter-spacing: -0.01em;
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+.admin-header .sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  margin: 2px 0 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.header-actions:empty {
+  display: none;
+}

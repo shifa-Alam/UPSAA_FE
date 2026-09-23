@@ -1,0 +1,130 @@
+<div class="birthday-automation">
+
+  <app-admin-header [title]="'birthdayAutomation.title' | translate" [subtitle]="'birthdayAutomation.subtitle' | translate">
+    <button type="button" class="run-now-btn" [disabled]="runningNow" (click)="runNow()">
+      <mat-icon>{{ runningNow ? 'hourglass_top' : 'send' }}</mat-icon>
+      {{ runningNow ? ('birthdayAutomation.running' | translate) : ('birthdayAutomation.runNowButton' | translate) }}
+    </button>
+  </app-admin-header>
+
+  <app-section-card icon="settings" [title]="'birthdayAutomation.settingsCardTitle' | translate">
+    <form class="settings-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
+      <label class="toggle-field">
+        <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
+        <span>{{ 'birthdayAutomation.enabledLabel' | translate }}</span>
+      </label>
+
+      <div class="form-field">
+        <label>{{ 'birthdayAutomation.pageIdLabel' | translate }}</label>
+        <input type="text" [placeholder]="'birthdayAutomation.pageIdPlaceholder' | translate" [(ngModel)]="pageId" name="pageId" />
+      </div>
+
+      <div class="form-field">
+        <label>{{ 'birthdayAutomation.tokenLabel' | translate }}</label>
+        <input type="password" [placeholder]="settings?.hasAccessToken ? (settings?.pageAccessTokenMasked || '') : ('birthdayAutomation.tokenPlaceholder' | translate)"
+          [(ngModel)]="pageAccessToken" name="pageAccessToken" autocomplete="new-password" />
+        <span class="field-hint" *ngIf="settings?.hasAccessToken">{{ 'birthdayAutomation.tokenHint' | translate }}</span>
+      </div>
+
+      <div class="form-field">
+        <label>{{ 'birthdayAutomation.postTimeLabel' | translate }}</label>
+        <input type="time" [(ngModel)]="postTime" name="postTime" />
+      </div>
+
+      <button type="submit" class="settings-form__submit" [disabled]="saving">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+        {{ saving ? ('birthdayAutomation.saving' | translate) : ('birthdayAutomation.saveButton' | translate) }}
+      </button>
+    </form>
+
+    <div class="birthday-automation__loading" *ngIf="settingsLoading">
+      <mat-icon class="birthday-automation__loading-icon">autorenew</mat-icon>
+      <span>{{ 'birthdayAutomation.loading' | translate }}</span>
+    </div>
+  </app-section-card>
+
+  <app-section-card icon="cake" [title]="'birthdayAutomation.todayCardTitle' | translate" [noPadding]="true">
+
+    <div class="birthday-automation__loading" *ngIf="birthdaysLoading">
+      <mat-icon class="birthday-automation__loading-icon">autorenew</mat-icon>
+      <span>{{ 'birthdayAutomation.loading' | translate }}</span>
+    </div>
+
+    <app-empty-state *ngIf="!birthdaysLoading && birthdays.length === 0" icon="cake"
+      [title]="'birthdayAutomation.noBirthdaysTitle' | translate" [message]="'birthdayAutomation.noBirthdaysMessage' | translate"></app-empty-state>
+
+    <div class="table-wrapper" *ngIf="!birthdaysLoading && birthdays.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{{ 'birthdayAutomation.colName' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colBatch' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of birthdays">
+            <td class="avatar-cell">
+              <img *ngIf="member.photo" [src]="member.photo" [alt]="member.fullName" class="avatar" />
+              <span *ngIf="!member.photo" class="avatar avatar--initials">{{ member.fullName.charAt(0) }}</span>
+            </td>
+            <td>{{ member.fullName }}</td>
+            <td>{{ member.batch }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{
+                'status-badge--success': member.status === 'Success',
+                'status-badge--failed': member.status === 'Failed',
+                'status-badge--pending': !member.status
+              }">
+                {{ member.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate)
+                   : member.status === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
+                   : ('birthdayAutomation.statusPending' | translate) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section-card>
+
+  <app-section-card icon="history" [title]="'birthdayAutomation.logsCardTitle' | translate" [noPadding]="true">
+
+    <div class="birthday-automation__loading" *ngIf="logsLoading">
+      <mat-icon class="birthday-automation__loading-icon">autorenew</mat-icon>
+      <span>{{ 'birthdayAutomation.loading' | translate }}</span>
+    </div>
+
+    <app-empty-state *ngIf="!logsLoading && logs.length === 0" icon="history"
+      [title]="'birthdayAutomation.noLogsTitle' | translate" [message]="'birthdayAutomation.noLogsMessage' | translate"></app-empty-state>
+
+    <div class="table-wrapper" *ngIf="!logsLoading && logs.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>{{ 'birthdayAutomation.colDate' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colName' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colDetails' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>{{ log.postDate | date:'mediumDate' }}</td>
+            <td>{{ log.memberName }}</td>
+            <td>
+              <span class="status-badge" [ngClass]="{
+                'status-badge--success': log.status === 'Success',
+                'status-badge--failed': log.status === 'Failed'
+              }">
+                {{ log.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate) : ('birthdayAutomation.statusFailed' | translate) }}
+              </span>
+            </td>
+            <td class="details-cell">{{ log.status === 'Success' ? log.facebookPostId : log.errorMessage }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section-card>
+
+</div>

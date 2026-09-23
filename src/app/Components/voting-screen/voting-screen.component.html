@@ -1,15 +1,15 @@
 <div *ngIf="loading" class="loader-container">
   <div class="spinner"></div>
-  <p>Loading ballot...</p>
+  <p>{{ 'votingScreen.loadingBallot' | translate }}</p>
 </div>
 
 <div class="voting-root" *ngIf="ballot">
   <header class="voting-header">
     <h1>{{ ballot.title }}</h1>
     <div class="voter-info">
-      <div *ngIf="member"> হ্যালো, {{ member.fullName }} (ব্যাচ {{ member.batch }})</div>
+      <div *ngIf="member"> {{ 'votingScreen.greeting' | translate }} {{ member.fullName }} ({{ 'votingScreen.batchLabel' | translate }} {{ member.batch }})</div>
       <div *ngIf="hasVoted" class="voted-badge">
-        ✔ আপনি ইতোমধ্যে ভোট প্রদান করেছেন
+        {{ 'votingScreen.alreadyVotedBadge' | translate }}
       </div>
     </div>
   </header>
@@ -20,8 +20,8 @@
         [attr.aria-labelledby]="'pos-'+pos.id">
         <div class="position-header">
           <h2 id="{{'pos-'+pos.id}}">{{ pos.name }} <span class="selectMax">({{ pos.maxSelect === 1
-              ? '১ জনকে ভোট দিন'
-              : 'সর্বোচ্চ ' + toBanglaNumber(pos.maxSelect) + ' জনকে ভোট দিন' }})</span></h2>
+              ? ('votingScreen.voteForOne' | translate)
+              : ('votingScreen.voteForMaxPrefix' | translate) + ' ' + toBanglaNumber(pos.maxSelect) + ' ' + ('votingScreen.voteForMaxSuffix' | translate) }})</span></h2>
           <!-- <div class="select-info">
             {{ pos.maxSelect === 1
             ? '১ জন প্রার্থী নির্বাচন করুন'
@@ -53,7 +53,7 @@
 
                 <!-- Ballot Badge -->
                 <span *ngIf="c.batch" class="ballot-badge">
-                  Batch :{{c.batch}}
+                  {{ 'votingScreen.batchLabel' | translate }}: {{c.batch}}
                 </span>
 
               </div>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="cand-meta-row" *ngIf="c.ballotNumber">
-                  <span class="ballot-label">Ballot No</span>
+                  <span class="ballot-label">{{ 'votingScreen.ballotNumberLabel' | translate }}</span>
                   <span class="ballot-value">{{ c.ballotNumber }}</span>
                 </div>
               </div>
@@ -75,17 +75,17 @@
         </div>
 
         <div class="position-footer">
-          <button type="button" class="btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">Clear</button>
+          <button type="button" class="btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">{{ 'votingScreen.clearButton' | translate }}</button>
           <div class="position-status"> {{ selectedCount(pos.id) === 0
-            ? 'কেউ নির্বাচিত হয়নি'
-            : toBanglaNumber(selectedCount(pos.id)) + ' জন নির্বাচিত' }}</div>
+            ? ('votingScreen.noneSelected' | translate)
+            : toBanglaNumber(selectedCount(pos.id)) + ' ' + ('votingScreen.selectedCountSuffix' | translate) }}</div>
         </div>
       </div>
     </section>
 
     <aside class="summary">
-      <h3>ভোটের সারাংশ</h3>
-      <div *ngIf="!hasSelections()">এখনো কোনো প্রার্থী বাছাই করা হয়নি।</div>
+      <h3>{{ 'votingScreen.summaryTitle' | translate }}</h3>
+      <div *ngIf="!hasSelections()">{{ 'votingScreen.noCandidatesChosen' | translate }}</div>
       <ul>
         <li *ngFor="let pos of ballot.positions">
           <strong>{{ pos.name }}:</strong>
@@ -96,9 +96,9 @@
       </ul>
 
       <div class="submit-area">
-        <button class="btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">ভোট
-          জমা দিন</button>
-        <div *ngIf="submitting">জমা দেওয়া হচ্ছে...</div>
+        <button class="btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">{{ 'votingScreen.submitVoteButton' | translate }}</button>
+
+        <div *ngIf="submitting">{{ 'votingScreen.submitting' | translate }}</div>
       </div>
     </aside>
   </main>
@@ -108,8 +108,8 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
       <mat-progress-bar *ngIf="submitting" mode="indeterminate">
       </mat-progress-bar>
-      <h4 id="confirm-title">আপনি কি নিশ্চিত?</h4>
-      <p>ব্যালট পুনরায় চেক করুন। একবার জমা দিলে আর পরিবর্তন করা যাবে না।</p>
+      <h4 id="confirm-title">{{ 'votingScreen.confirmTitle' | translate }}</h4>
+      <p>{{ 'votingScreen.confirmBody' | translate }}</p>
       <!-- <ul>
         <li *ngFor="let pos of ballot.positions">
           <strong>{{ pos.name }}:</strong>
@@ -120,8 +120,8 @@
       </ul> -->
 
       <div class="modal-actions">
-        <button class="submit-btn" (click)="submitVote()" [disabled]="submitting">হ্যাঁ,নিশ্চিত</button>
-        <button class="cancel-btn" (click)="showConfirm=false" [disabled]="submitting">ফিরে যান</button>
+        <button class="submit-btn" (click)="submitVote()" [disabled]="submitting">{{ 'votingScreen.confirmYes' | translate }}</button>
+        <button class="cancel-btn" (click)="showConfirm=false" [disabled]="submitting">{{ 'votingScreen.backButton' | translate }}</button>
       </div>
     </div>
   </div>
@@ -145,11 +145,11 @@
   <div class="countdown-panel">
 
     <h2 class="countdown-panel__title">
-      ভোট গ্রহণ শুরু হতে বাকি
+      {{ 'votingScreen.countdownTitle' | translate }}
     </h2>
 
     <p class="countdown-panel__subtitle">
-      উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন নির্বাচন ২০২৬
+      {{ 'votingScreen.countdownSubtitle' | translate }}
     </p>
 
     <div class="countdown-grid">
