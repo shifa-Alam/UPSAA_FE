@@ -60,10 +60,16 @@
 
             <p class="feature__desc" *ngIf="next.description">{{ next.description }}</p>
 
-            <a *ngIf="next.registrationUrl" [href]="next.registrationUrl" target="_blank" rel="noopener"
-              class="pp-btn pp-btn--solid">
-              {{ 'events.registerButton' | translate }} <mat-icon>open_in_new</mat-icon>
-            </a>
+            <div class="feature__actions">
+              <a *ngIf="next.registrationUrl" [href]="next.registrationUrl" target="_blank" rel="noopener"
+                class="pp-btn pp-btn--solid">
+                {{ 'events.registerButton' | translate }} <mat-icon>open_in_new</mat-icon>
+              </a>
+              <a *ngIf="next.galleryPhotoCount" class="pp-btn pp-btn--outline" [routerLink]="['../gallery']"
+                [queryParams]="{ event: next.id }">
+                <mat-icon>photo_library</mat-icon> {{ photosLabel(next) }}
+              </a>
+            </div>
           </div>
         </article>
 
@@ -87,6 +93,9 @@
               <p class="upcoming-card__desc" *ngIf="ev.description">{{ ev.description }}</p>
               <a *ngIf="ev.registrationUrl" [href]="ev.registrationUrl" target="_blank" rel="noopener" class="pp-link">
                 {{ 'events.registerButton' | translate }} <mat-icon>arrow_forward</mat-icon>
+              </a>
+              <a *ngIf="ev.galleryPhotoCount" class="pp-link" [routerLink]="['../gallery']" [queryParams]="{ event: ev.id }">
+                <mat-icon>photo_library</mat-icon>{{ photosLabel(ev) }}
               </a>
             </div>
           </article>
@@ -116,6 +125,10 @@
                   <span class="past-card__date">{{ shortDate(ev) }}</span>
                   <h4 class="past-card__title">{{ ev.title }}</h4>
                   <span class="past-card__venue" *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</span>
+                  <a *ngIf="ev.galleryPhotoCount" class="pp-link past-card__photos" [routerLink]="['../gallery']"
+                    [queryParams]="{ event: ev.id }">
+                    <mat-icon>photo_library</mat-icon>{{ photosLabel(ev) }}
+                  </a>
                 </div>
               </article>
             </div>

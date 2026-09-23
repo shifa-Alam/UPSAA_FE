@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
+import { ConfirmService } from '../../../Services/confirm.service';
 import { JobPostService, JobPost, JobPostSave, JobType } from '../../../Services/job-post.service';
 import { SnackbarService } from '../../../Services/snackbar.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
@@ -24,6 +25,7 @@ const emptyForm = (): JobPostSave => ({
   styleUrl: './jobs.component.scss'
 })
 export class JobsComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   jobTypes: JobType[] = ['FullTime', 'PartTime', 'Internship', 'Contract'];
 
   jobs: JobPost[] = [];
@@ -117,18 +119,17 @@ export class JobsComponent implements OnInit {
   }
 
   confirmDelete(job: JobPost): void {
-    if (!confirm(`"${job.title}" ${this.languageService.translate('jobs.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(job.title, this.languageService.translate('jobs.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.deletingId = job.id;
-    this.jobPostService.delete(job.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('jobs.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(() => {
-      this.deletingId = null;
-      this.jobs = this.jobs.filter(j => j.id !== job.id);
-      this.snackbar.showSuccess(this.languageService.translate('jobs.deleteSuccess'));
+      this.deletingId = job.id;
+      this.jobPostService.delete(job.id).pipe(finalize(() => this.deletingId = null)).subscribe({
+        next: () => {
+          this.jobs = this.jobs.filter(j => j.id !== job.id);
+          this.snackbar.showSuccess(this.languageService.translate('jobs.deleteSuccess'));
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('jobs.deleteFailedError'))
+      });
     });
   }
 

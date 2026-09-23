@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { GalleryService, GalleryImage } from '../../../Services/gallery.service';
 import { LanguageService } from '../../../Services/language.service';
@@ -24,6 +25,11 @@ export class GalleryComponent implements OnInit {
   loading = true;
   loadError = false;
   selected: GalleryImage | null = null;
+  /** Set from ?event= — shows only the photos linked to that event. */
+  eventId: number | null = null;
+
+  private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   constructor(private galleryService: GalleryService, private languageService: LanguageService) { }
 
@@ -31,7 +37,16 @@ export class GalleryComponent implements OnInit {
     this.galleryService.getCategories().pipe(catchError(() => of([]))).subscribe(cats => {
       this.categories = cats;
     });
-    this.fetch();
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const id = Number(params.get('event'));
+      this.eventId = Number.isInteger(id) && id > 0 ? id : null;
+      this.activeCategory = '';
+      this.fetch();
+    });
+  }
+
+  get eventTitle(): string | null {
+    return this.photos.find(p => p.eventTitle)?.eventTitle ?? null;
   }
 
   filterByCategory(category: string): void {
@@ -42,7 +57,7 @@ export class GalleryComponent implements OnInit {
   private fetch(): void {
     this.loading = true;
     this.loadError = false;
-    this.galleryService.getAll(this.activeCategory || undefined).pipe(
+    this.galleryService.getAll(this.activeCategory || undefined, this.eventId ?? undefined).pipe(
       catchError(() => of(null))
     ).subscribe(photos => {
       this.loading = false;

@@ -24,7 +24,8 @@
   }
 
   input,
-  textarea {
+  textarea,
+  select {
     width: 100%;
     min-height: 44px;
     padding: 10px var(--space-3);
@@ -290,6 +291,13 @@
   align-items: stretch;
 }
 
+.upload-form__media {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
 .upload-form__fields {
   display: flex;
   flex-direction: column;
@@ -338,6 +346,18 @@
   &:focus-within {
     border-color: var(--color-primary-500);
     box-shadow: 0 0 0 3px var(--color-primary-100);
+  }
+}
+
+.dropzone--dragging,
+.dropzone--dragging:hover {
+  border-style: dashed;
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-50);
+  box-shadow: 0 0 0 3px var(--color-primary-100);
+
+  .dropzone__change {
+    opacity: 1;
   }
 }
 
@@ -727,6 +747,24 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.tile__meta--event {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary-700);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+:host-context([data-theme='dark']) .tile__meta--event {
+  color: var(--color-primary-300);
 }
 
 // ---------------------------- Inline edit ----------------------------

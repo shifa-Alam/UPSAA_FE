@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import { EventService, EventItem, EventSave } from '../../Services/event.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
@@ -25,6 +26,7 @@ const emptyForm = (): EventSave => ({
   styleUrl: './event-admin.component.scss'
 })
 export class EventAdminComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   loading = true;
   events: EventItem[] = [];
   pagedEvents: EventItem[] = [];
@@ -160,19 +162,18 @@ export class EventAdminComponent implements OnInit {
   }
 
   confirmDelete(ev: EventItem): void {
-    if (!confirm(`"${ev.title}" ${this.languageService.translate('eventAdmin.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(ev.title, this.languageService.translate('eventAdmin.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.deletingId = ev.id;
-    this.eventService.delete(ev.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('eventAdmin.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(() => {
-      this.deletingId = null;
-      this.events = this.events.filter(e => e.id !== ev.id);
-      this.calculatePages();
-      this.snackbar.showSuccess(this.languageService.translate('eventAdmin.deleteSuccess'));
+      this.deletingId = ev.id;
+      this.eventService.delete(ev.id).pipe(finalize(() => this.deletingId = null)).subscribe({
+        next: () => {
+          this.events = this.events.filter(e => e.id !== ev.id);
+          this.calculatePages();
+          this.snackbar.showSuccess(this.languageService.translate('eventAdmin.deleteSuccess'));
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('eventAdmin.deleteFailedError'))
+      });
     });
   }
 

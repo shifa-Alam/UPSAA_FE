@@ -30,6 +30,31 @@
     </div>
   </div>
 
+  <!-- Profile completeness — hidden once everything is filled in. -->
+  <section class="completion" *ngIf="member && missingProfileFields.length > 0">
+    <div class="completion__head">
+      <div class="completion__text">
+        <strong class="completion__title">
+          {{ 'memberDashboard.profileCompleteTitle' | translate }} {{ formatNumber(profileCompletion) }}%
+        </strong>
+        <span class="completion__hint">{{ 'memberDashboard.profileCompleteHint' | translate }}</span>
+      </div>
+      <a routerLink="/portal/profile" class="completion__cta">
+        {{ 'memberDashboard.profileCompleteButton' | translate }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+          stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+      </a>
+    </div>
+    <div class="completion__track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+      [attr.aria-valuenow]="profileCompletion" [attr.aria-label]="'memberDashboard.profileCompleteTitle' | translate">
+      <span class="completion__fill" [style.width.%]="profileCompletion"></span>
+    </div>
+    <div class="completion__missing">
+      <span class="completion__missing-label">{{ 'memberDashboard.profileMissingLabel' | translate }}</span>
+      <span class="completion__chip" *ngFor="let key of missingProfileFields">{{ key | translate }}</span>
+    </div>
+  </section>
+
   <!-- ===== At a glance ===== -->
   <section class="welcome__block">
     <h2 class="welcome__heading">{{ 'adminWelcome.glance' | translate }}</h2>

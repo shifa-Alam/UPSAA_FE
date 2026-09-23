@@ -2,8 +2,9 @@
 
   <!-- ===== Hero ===== -->
   <section class="hero">
-    <div class="hero__bg" [class.hero__bg--photo]="heroImage"
-      [style.background-image]="heroImage ? 'url(' + heroImage + ')' : null"></div>
+    <div class="hero__bg" *ngIf="!heroImages.length"></div>
+    <div class="hero__bg hero__bg--photo" *ngFor="let img of heroImages; let i = index"
+      [class.hero__bg--active]="i === heroIndex" [style.background-image]="heroBackground(i)" aria-hidden="true"></div>
     <div class="hero__overlay"></div>
 
     <div class="hero__content upsaa-container">
@@ -35,7 +36,7 @@
   <section class="stats" [hidden]="!stats.length">
     <div class="upsaa-container stats__grid">
       <div class="stat" *ngFor="let s of stats">
-        <span class="stat__value">{{ formatNumber(s.shown, s.plain) }}{{ s.suffix }}</span>
+        <span class="stat__value" [appCountUp]="s.value" [countPlain]="!!s.plain" [countSuffix]="s.suffix || ''"></span>
         <span class="stat__label">{{ s.labelKey | translate }}</span>
       </div>
     </div>

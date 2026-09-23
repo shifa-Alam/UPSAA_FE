@@ -11,7 +11,13 @@ export interface GalleryImage {
   createdDate: string;
   createdById: string | null;
   createdByName: string | null;
+  eventId: number | null;
+  eventTitle: string | null;
 }
+
+/** Keep in sync with GalleryController's limits. */
+export const GALLERY_MAX_FILE_BYTES = 10 * 1024 * 1024;
+export const GALLERY_MAX_FILES_PER_UPLOAD = 20;
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +28,11 @@ export class GalleryService {
   constructor(private http: HttpClient) { }
 
   /** Public — no login required. */
-  getAll(category?: string): Observable<GalleryImage[]> {
-    const query = category ? `?category=${encodeURIComponent(category)}` : '';
+  getAll(category?: string, eventId?: number): Observable<GalleryImage[]> {
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (eventId) params.set('eventId', String(eventId));
+    const query = params.toString() ? `?${params}` : '';
     return this.http.get<GalleryImage[]>(`${this.apiUrl}/GetAll${query}`);
   }
 
@@ -33,20 +42,22 @@ export class GalleryService {
   }
 
   /** SuperAdmin/Admin only. */
-  upload(file: File, title: string, category: string): Observable<GalleryImage> {
+  upload(file: File, title: string, category: string, eventId?: number | null): Observable<GalleryImage> {
     const formData = new FormData();
     formData.append('File', file);
     formData.append('Title', title);
     formData.append('Category', category);
+    if (eventId) formData.append('EventId', String(eventId));
     return this.http.post<GalleryImage>(`${this.apiUrl}/Upload`, formData);
   }
 
   /** SuperAdmin/Admin only. Uploads all files under one Title/Category — one gallery entry per file. */
-  uploadMultiple(files: File[], title: string, category: string): Observable<GalleryImage[]> {
+  uploadMultiple(files: File[], title: string, category: string, eventId?: number | null): Observable<GalleryImage[]> {
     const formData = new FormData();
     files.forEach(file => formData.append('Files', file));
     formData.append('Title', title);
     formData.append('Category', category);
+    if (eventId) formData.append('EventId', String(eventId));
     return this.http.post<GalleryImage[]>(`${this.apiUrl}/UploadMultiple`, formData);
   }
 
@@ -55,11 +66,13 @@ export class GalleryService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  /** SuperAdmin/Admin only. Pass a file to replace the photo; omit to only change title/category. */
-  update(id: number, title: string, category: string, file?: File | null): Observable<GalleryImage> {
+  /** SuperAdmin/Admin only. Pass a file to replace the photo; omit to only change the details.
+   *  eventId is replaced as-is — null unlinks the photo from its event. */
+  update(id: number, title: string, category: string, eventId: number | null, file?: File | null): Observable<GalleryImage> {
     const formData = new FormData();
     formData.append('Title', title);
     formData.append('Category', category);
+    if (eventId) formData.append('EventId', String(eventId));
     if (file) {
       formData.append('File', file);
     }

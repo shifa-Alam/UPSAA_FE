@@ -1,4 +1,5 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { ConfirmService } from '../../Services/confirm.service';
 import { CommonModule } from '@angular/common';
 import { Member, MemberService } from '../../Services/member.service';
 import { ImageCropperModule } from 'ngx-image-cropper';
@@ -30,6 +31,7 @@ import { LanguageService } from '../../Services/language.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   profileImageUrl: string = '';
@@ -176,11 +178,13 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteEducation(edu: any) {
-    if (confirm(`${this.languageService.translate('profile.deleteEducationConfirmPrefix')} ${edu.degreeName}?`)) {
+    const message = `${this.languageService.translate('profile.deleteEducationConfirmPrefix')} ${edu.degreeName}?`;
+    this.confirmService.ask({ message, danger: true }).subscribe(ok => {
+      if (!ok) return;
       // Call your service to delete the record
       console.log('Delete:', edu);
       // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
-    }
+    });
   }
   openCandidateForm() {
     // Option 1: open Angular Material dialog

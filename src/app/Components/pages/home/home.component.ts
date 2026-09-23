@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
@@ -11,11 +11,15 @@ import { MemberService, PublicMember } from '../../../Services/member.service';
 import { LanguageService } from '../../../Services/language.service';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
+import { CountUpDirective } from '../../shared/count-up/count-up.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 
 /** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
- *  image; while null the hero uses the newest gallery photo, then a plain gradient. */
+ *  image; while null the hero crossfades through the newest gallery photos, then
+ *  falls back to a plain gradient. */
 const HERO_IMAGE: string | null = null;
+const HERO_SLIDES = 5;
+const HERO_SLIDE_MS = 7000;
 
 const EVENTS_COUNT = 3;
 const NOTICES_COUNT = 4;
@@ -27,7 +31,6 @@ interface HomeStat {
   icon: string;
   labelKey: string;
   value: number;
-  shown: number;
   /** Years render without thousands separators (2005, not 2,005). */
   plain?: boolean;
   suffix?: string;
@@ -36,12 +39,16 @@ interface HomeStat {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit {
-  heroImage: string | null = HERO_IMAGE;
+export class HomeComponent implements OnInit, OnDestroy {
+  /** Hero photos in order; only the current and next one ever get a background URL. */
+  heroImages: string[] = HERO_IMAGE ? [HERO_IMAGE] : [];
+  heroIndex = 0;
+  private heroTimer?: ReturnType<typeof setInterval>;
+  private readonly isBrowser: boolean;
 
   stats: HomeStat[] = [];
   private batchStats: HomeStat[] = [];
@@ -56,8 +63,6 @@ export class HomeComponent implements OnInit {
   alumni: PublicMember[] = [];
   achievements: Achievement[] = [];
   memories: GalleryImage[] = [];
-
-  private isBrowser: boolean;
 
   constructor(
     private noticeService: NoticeService,
@@ -76,9 +81,9 @@ export class HomeComponent implements OnInit {
       const active = batches.filter(b => b.alumniCount > 0);
       if (!active.length) return;
       this.batchStats = [
-        { icon: 'groups', labelKey: 'home.stats.alumni', value: active.reduce((sum, b) => sum + b.alumniCount, 0), shown: 0, suffix: '+' },
-        { icon: 'school', labelKey: 'home.stats.batches', value: active.length, shown: 0 },
-        { icon: 'history_edu', labelKey: 'home.stats.since', value: Math.min(...active.map(b => b.batch)), shown: 0, plain: true },
+        { icon: 'groups', labelKey: 'home.stats.alumni', value: active.reduce((sum, b) => sum + b.alumniCount, 0), suffix: '+' },
+        { icon: 'school', labelKey: 'home.stats.batches', value: active.length },
+        { icon: 'history_edu', labelKey: 'home.stats.since', value: Math.min(...active.map(b => b.batch)), plain: true },
       ];
       this.rebuildStats();
     });
@@ -86,7 +91,7 @@ export class HomeComponent implements OnInit {
     this.achievementService.getAll().pipe(catchError(() => of([]))).subscribe(list => {
       this.achievements = list.slice(0, ACHIEVEMENTS_COUNT);
       if (list.length) {
-        this.achievementStat = { icon: 'military_tech', labelKey: 'home.stats.achievements', value: list.length, shown: 0 };
+        this.achievementStat = { icon: 'military_tech', labelKey: 'home.stats.achievements', value: list.length };
         this.rebuildStats();
       }
     });
@@ -112,8 +117,33 @@ export class HomeComponent implements OnInit {
 
     this.galleryService.getAll().pipe(catchError(() => of([]))).subscribe(photos => {
       this.memories = photos.slice(0, MEMORIES_COUNT);
-      if (!this.heroImage && photos.length) this.heroImage = photos[0].imageUrl;
+      if (!HERO_IMAGE && photos.length) {
+        this.heroImages = photos.slice(0, HERO_SLIDES).map(p => p.imageUrl);
+        this.startHeroSlides();
+      }
     });
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.heroTimer);
+  }
+
+  /** Background for slide i. Only the visible slide, the one fading out and the next
+   *  one get an image, so phones never download the whole set up front. */
+  heroBackground(i: number): string | null {
+    const n = this.heroImages.length;
+    const near = [this.heroIndex, (this.heroIndex + 1) % n, (this.heroIndex - 1 + n) % n];
+    return near.includes(i) ? `url(${this.heroImages[i]})` : null;
+  }
+
+  private startHeroSlides(): void {
+    clearInterval(this.heroTimer);
+    const reduced = this.isBrowser && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!this.isBrowser || reduced || this.heroImages.length < 2) return;
+    this.heroTimer = setInterval(() => {
+      if (document.hidden) return; // don't burn data or battery in a background tab
+      this.heroIndex = (this.heroIndex + 1) % this.heroImages.length;
+    }, HERO_SLIDE_MS);
   }
 
   scrollTo(el: HTMLElement): void {
@@ -150,28 +180,6 @@ export class HomeComponent implements OnInit {
 
   private rebuildStats(): void {
     this.stats = [...this.batchStats, ...(this.achievementStat ? [this.achievementStat] : [])];
-    this.countUp();
   }
 
-  /** Gentle count-up for the stats band; skipped on the server and for reduced motion. */
-  private countUp(): void {
-    const reduced = this.isBrowser && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (!this.isBrowser || reduced) {
-      this.stats.forEach(s => s.shown = s.value);
-      return;
-    }
-    const start = performance.now();
-    const duration = 1400;
-    const tick = (t: number) => {
-      const p = Math.min((t - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      // Years count up from a nearby start so "2005" doesn't race up from 0.
-      this.stats.forEach(s => {
-        const from = s.plain ? s.value - 30 : 0;
-        s.shown = Math.round(from + (s.value - from) * eased);
-      });
-      if (p < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
 }

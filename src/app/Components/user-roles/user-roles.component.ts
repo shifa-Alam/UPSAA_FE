@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ConfirmService } from '../../Services/confirm.service';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject, Subscription, debounceTime, finalize } from 'rxjs';
@@ -23,6 +24,7 @@ const ROLE_ORDER = ['SuperAdmin', 'Admin', 'Representative', 'Member'];
   styleUrl: './user-roles.component.scss'
 })
 export class UserRolesComponent implements OnInit, OnDestroy {
+  private confirmService = inject(ConfirmService);
   users: UserRoleItem[] = [];
   roles: string[] = ROLE_ORDER;
   totalItems = 0;
@@ -126,18 +128,20 @@ export class UserRolesComponent implements OnInit, OnDestroy {
     const question = this.lang.translate('userRoles.confirmChange')
       .replace('{name}', name)
       .replace('{role}', this.lang.translate(this.roleKey(role)));
-    if (!confirm(question)) return;
+    this.confirmService.ask({ message: question }).subscribe(ok => {
+      if (!ok) return;
 
-    this.savingId = u.userId;
-    this.userRoleService.changeRole(u.userId, role).pipe(finalize(() => this.savingId = null)).subscribe({
-      next: res => {
-        u.role = res.role;
-        delete this.pending[u.userId];
-        this.snackbar.showSuccess(this.lang.translate('userRoles.changeSuccess'));
-      },
-      error: err => {
-        this.snackbar.showError(err?.error?.message || this.lang.translate('userRoles.changeFailed'));
-      }
+      this.savingId = u.userId;
+      this.userRoleService.changeRole(u.userId, role).pipe(finalize(() => this.savingId = null)).subscribe({
+        next: res => {
+          u.role = res.role;
+          delete this.pending[u.userId];
+          this.snackbar.showSuccess(this.lang.translate('userRoles.changeSuccess'));
+        },
+        error: err => {
+          this.snackbar.showError(err?.error?.message || this.lang.translate('userRoles.changeFailed'));
+        }
+      });
     });
   }
 

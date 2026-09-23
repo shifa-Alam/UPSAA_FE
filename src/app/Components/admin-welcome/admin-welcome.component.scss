@@ -200,6 +200,72 @@
   to { background-position: -100% 0; }
 }
 
+// ---------------------------- Trend charts ----------------------------
+.charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+}
+
+.chart-card--wide {
+  grid-column: 1 / -1;
+}
+
+.chart-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.chart-card__title {
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.chart-card__sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+  white-space: nowrap;
+}
+
+.chart-card__placeholder {
+  display: grid;
+  place-items: center;
+  height: 240px;
+  margin: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.chart-card__placeholder--loading {
+  background: linear-gradient(90deg, var(--color-ink-100), var(--color-ink-200), var(--color-ink-100));
+  background-size: 200% 100%;
+  animation: welcome-shimmer 1.2s ease-in-out infinite;
+}
+
+@media (max-width: 900px) {
+  .charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 // ---------------------------- Quick actions ----------------------------
 .actions {
   display: grid;

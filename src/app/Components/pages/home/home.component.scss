@@ -29,8 +29,15 @@
   background-position: center;
 }
 
-// Slow Ken Burns drift on the photo; plain gradient stays still.
+// Photo slides stack and crossfade; the active one drifts (slow Ken Burns).
+// The plain gradient fallback stays still.
 .hero__bg--photo {
+  opacity: 0;
+  transition: opacity 1600ms ease;
+}
+
+.hero__bg--active {
+  opacity: 1;
   animation: hero-drift 24s ease-in-out infinite alternate;
 }
 
@@ -572,7 +579,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__bg--photo,
+  .hero__bg--active,
   .hero__content,
   .hero__scroll {
     animation: none;

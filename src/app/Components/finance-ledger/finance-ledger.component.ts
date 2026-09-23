@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, Observable, of } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import {
   FinanceService, LedgerEntry, LedgerEntryInput, LedgerFilter,
   LedgerType, CategoryTotal, MonthlyTotal, LedgerSummaryResponse
@@ -45,6 +46,7 @@ function escapeHtml(value: string): string {
   styleUrl: './finance-ledger.component.scss'
 })
 export class FinanceLedgerComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   entries: LedgerEntry[] = [];
   incomeByCategory: CategoryTotal[] = [];
   expenseByCategory: CategoryTotal[] = [];
@@ -387,17 +389,17 @@ ${res.monthlyTotals.length > 1 ? `<h2>${t('monthlyBreakdown')}</h2>
   }
 
   confirmDelete(entry: LedgerEntry): void {
-    if (!confirm(`"${entry.category}" (৳${entry.amount}) ${this.languageService.translate('financeLedger.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(`${entry.category} (৳${entry.amount})`, this.languageService.translate('financeLedger.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.financeService.deleteEntry(entry.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('financeLedger.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(res => {
-      if (res === null) return;
-      this.snackbar.showSuccess(this.languageService.translate('financeLedger.deleteSuccess'));
-      this.fetch();
+      // Delete answers 204 with no body, so success must not be judged by the emitted value.
+      this.financeService.deleteEntry(entry.id).subscribe({
+        next: () => {
+          this.snackbar.showSuccess(this.languageService.translate('financeLedger.deleteSuccess'));
+          this.fetch();
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('financeLedger.deleteFailedError'))
+      });
     });
   }
 

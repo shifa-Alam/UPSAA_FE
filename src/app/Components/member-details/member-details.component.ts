@@ -1,4 +1,5 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
+import { ConfirmService } from '../../Services/confirm.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MemberFeeAmountPipe } from '../../Pipes/member-fee-amount.pipe';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,6 +38,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './member-details.component.scss'
 })
 export class MemberDetailsComponent {
+  private confirmService = inject(ConfirmService);
 hidePassword = true; // default hide
   isLoading = false;
   showPasswordInput: any;
@@ -122,34 +124,37 @@ hidePassword = true; // default hide
   }
 
   rejectActivation(): void {
-    if (!confirm(this.languageService.translate('memberDetails.rejectConfirm'))) return;
+    this.confirmService.ask({ message: this.languageService.translate('memberDetails.rejectConfirm'), danger: true }).subscribe(ok => {
+      if (!ok) return;
 
-    this.isLoading = true;
-    this.memberService.rejectRequest(this.member.id).subscribe({
-      next: () => {
-        this.isLoading = false;
-        alert(this.languageService.translate('memberDetails.rejectSuccess'));
-      },
-      error: () => {
-        this.isLoading = false;
-        alert(this.languageService.translate('memberDetails.rejectError'));
-      }
+      this.isLoading = true;
+      this.memberService.rejectRequest(this.member.id).subscribe({
+        next: () => {
+          this.isLoading = false;
+          alert(this.languageService.translate('memberDetails.rejectSuccess'));
+        },
+        error: () => {
+          this.isLoading = false;
+          alert(this.languageService.translate('memberDetails.rejectError'));
+        }
+      });
     });
   }
 
 
   createUser(memberId: number) {
-    const confirmed = confirm(this.languageService.translate('memberDetails.createUserConfirm'));
-    if (!confirmed) return;
-    this.memberService.createUserFromMember(memberId).subscribe({
-      next: (res) => {
-        console.log('User created:', res);
-        alert(`${this.languageService.translate('memberDetails.createUserSuccessPrefix')} ${res.userName} ${this.languageService.translate('memberDetails.createUserSuccessSuffix')}`);
-      },
-      error: (err) => {
-        console.error('Error creating user:', err);
-        alert(err.error?.message || this.languageService.translate('memberDetails.createUserError'));
-      }
+    this.confirmService.ask({ message: this.languageService.translate('memberDetails.createUserConfirm') }).subscribe(ok => {
+      if (!ok) return;
+      this.memberService.createUserFromMember(memberId).subscribe({
+        next: (res) => {
+          console.log('User created:', res);
+          alert(`${this.languageService.translate('memberDetails.createUserSuccessPrefix')} ${res.userName} ${this.languageService.translate('memberDetails.createUserSuccessSuffix')}`);
+        },
+        error: (err) => {
+          console.error('Error creating user:', err);
+          alert(err.error?.message || this.languageService.translate('memberDetails.createUserError'));
+        }
+      });
     });
   }
 }

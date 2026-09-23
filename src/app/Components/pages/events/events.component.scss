@@ -163,6 +163,21 @@
   overflow: hidden;
 }
 
+.feature__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.past-card__photos {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+}
+
 // ---------------------------- Other upcoming ----------------------------
 .upcoming {
   display: grid;

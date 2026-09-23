@@ -1,16 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { AuthService } from '../../Services/auth.service';
 import { LanguageService } from '../../Services/language.service';
-import { MemberService } from '../../Services/member.service';
+import { MemberService, BatchSummary } from '../../Services/member.service';
+import { DashboardService, MonthlyCount } from '../../Services/dashboard.service';
+import { FinanceService, MonthlyTotal } from '../../Services/finance.service';
+import { SimpleChartComponent, SimpleChartConfig } from '../shared/simple-chart/simple-chart.component';
+import { toDateOnly } from '../../Utils/date-utils';
 import { EventService, EventItem } from '../../Services/event.service';
 import { NoticeService } from '../../Services/notice.service';
 import { GalleryService } from '../../Services/gallery.service';
 import { AchievementService } from '../../Services/achievement.service';
 import { NavIconComponent, NavIconName } from '../shared/nav-icon/nav-icon.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { CountUpDirective } from '../shared/count-up/count-up.directive';
 
 interface WelcomeStat {
   labelKey: string;
@@ -29,11 +34,12 @@ interface QuickAction {
 }
 
 const UPCOMING_COUNT = 3;
+const TREND_MONTHS = 12;
 
 @Component({
   selector: 'app-admin-welcome',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavIconComponent, TranslatePipe],
+  imports: [CommonModule, RouterLink, NavIconComponent, TranslatePipe, SimpleChartComponent, CountUpDirective],
   templateUrl: './admin-welcome.component.html',
   styleUrl: './admin-welcome.component.scss'
 })
@@ -59,6 +65,63 @@ export class AdminWelcomeComponent implements OnInit {
   upcoming: EventItem[] = [];
   eventsLoaded = false;
 
+  private dashboardService = inject(DashboardService);
+  private financeService = inject(FinanceService);
+
+  // Chart inputs — undefined while loading, null when the request failed.
+  private batches = signal<BatchSummary[] | null | undefined>(undefined);
+  private registrations = signal<MonthlyCount[] | null | undefined>(undefined);
+  private financeMonths = signal<MonthlyTotal[] | null | undefined>(undefined);
+
+  readonly registrationChart = computed<SimpleChartConfig | null>(() => {
+    const data = this.registrations();
+    if (!data) return null;
+    return {
+      type: 'line',
+      labels: data.map(d => this.monthLabel(d.year, d.month)),
+      datasets: [{ label: this.lang.translate('adminWelcome.charts.newMembers'), data: data.map(d => d.count), colorVar: '--color-primary-600' }],
+      formatValue: v => this.formatNumberFor(v)
+    };
+  });
+
+  readonly financeChart = computed<SimpleChartConfig | null>(() => {
+    const data = this.financeMonths();
+    if (!data) return null;
+    // The ledger only returns months that have entries; show every month of the window.
+    const months = this.lastMonths(TREND_MONTHS);
+    const find = (y: number, m: number) => data.find(d => d.year === y && d.month === m);
+    return {
+      type: 'bar',
+      labels: months.map(([y, m]) => this.monthLabel(y, m)),
+      datasets: [
+        { label: this.lang.translate('financeLedger.typeIncome'), data: months.map(([y, m]) => find(y, m)?.income ?? 0), colorVar: '--color-success' },
+        { label: this.lang.translate('financeLedger.typeExpense'), data: months.map(([y, m]) => find(y, m)?.expense ?? 0), colorVar: '--color-danger' }
+      ],
+      formatValue: v => '৳' + this.formatNumberFor(v)
+    };
+  });
+
+  readonly batchChart = computed<SimpleChartConfig | null>(() => {
+    const data = this.batches();
+    if (!data) return null;
+    const sorted = [...data].filter(b => b.batch).sort((a, b) => a.batch - b.batch);
+    const plain = new Intl.NumberFormat(this.chartLocale(), { useGrouping: false });
+    return {
+      type: 'bar',
+      labels: sorted.map(b => plain.format(b.batch)),
+      datasets: [{ label: this.lang.translate('adminWelcome.charts.members'), data: sorted.map(b => Number(b.registeredMembers) || 0), colorVar: '--color-primary-600' }],
+      formatValue: v => this.formatNumberFor(v)
+    };
+  });
+
+  chartState(value: unknown): 'loading' | 'error' | 'ready' {
+    return value === undefined ? 'loading' : value === null ? 'error' : 'ready';
+  }
+
+  get registrationsState() { return this.chartState(this.registrations()); }
+  get financeState() { return this.chartState(this.financeMonths()); }
+  get batchesState() { return this.chartState(this.batches()); }
+
   constructor(
     private auth: AuthService,
     private lang: LanguageService,
@@ -70,7 +133,18 @@ export class AdminWelcomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dashboardService.getRegistrationTrend(TREND_MONTHS).pipe(catchError(() => of(null))).subscribe(data => this.registrations.set(data));
+
+    const [[fromY, fromM]] = this.lastMonths(TREND_MONTHS);
+    this.financeService.filter({
+      from: toDateOnly(new Date(fromY, fromM - 1, 1)),
+      to: toDateOnly(new Date()),
+      pageNumber: 1,
+      pageSize: 1
+    }).pipe(catchError(() => of(null))).subscribe(res => this.financeMonths.set(res ? res.monthlyTotals : null));
+
     this.memberService.getBatchSummary().pipe(catchError(() => of(null))).subscribe(batches => {
+      this.batches.set(batches);
       if (!batches) return;
       this.setStat('adminWelcome.stats.members', batches.reduce((sum, b) => sum + (Number(b.registeredMembers) || 0), 0));
       this.setStat('adminWelcome.stats.pending', batches.reduce((sum, b) => sum + (Number(b.pendingMembersCount) || 0), 0));
@@ -132,6 +206,28 @@ export class AdminWelcomeComponent implements OnInit {
 
   formatNumber(value: number): string {
     return new Intl.NumberFormat(this.locale).format(value);
+  }
+
+  // Reads the language signal so the chart computeds re-run when it changes.
+  private chartLocale(): string {
+    return this.lang.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+  }
+
+  private formatNumberFor(value: number): string {
+    return new Intl.NumberFormat(this.chartLocale(), { maximumFractionDigits: 0 }).format(value);
+  }
+
+  private monthLabel(year: number, month: number): string {
+    return new Intl.DateTimeFormat(this.chartLocale(), { month: 'short', year: '2-digit' }).format(new Date(year, month - 1, 1));
+  }
+
+  /** [year, month(1-12)] for the last n months, oldest first, ending with the current month. */
+  private lastMonths(n: number): [number, number][] {
+    const now = new Date();
+    return Array.from({ length: n }, (_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - (n - 1 - i), 1);
+      return [d.getFullYear(), d.getMonth() + 1] as [number, number];
+    });
   }
 
   eventDay(ev: EventItem): string {

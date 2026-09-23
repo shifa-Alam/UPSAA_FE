@@ -5,36 +5,42 @@
   <!-- ===== Upload ===== -->
   <app-section-card icon="cloud_upload" [title]="'galleryAdmin.uploadCardTitle' | translate">
     <form class="upload-form" (ngSubmit)="submit()">
-      <div class="dropzone" [class.dropzone--filled]="previewUrls.length > 0">
-        <input type="file" id="galleryFile" accept="image/*" multiple (change)="onFileSelected($event)"
-          [attr.aria-label]="'galleryAdmin.chooseImage' | translate" />
-        <label for="galleryFile" class="dropzone__empty" *ngIf="previewUrls.length === 0">
-          <span class="dropzone__icon"><mat-icon>add_photo_alternate</mat-icon></span>
-          <span class="dropzone__title">{{ 'galleryAdmin.chooseImage' | translate }}</span>
-          <span class="dropzone__hint">{{ 'galleryAdmin.chooseImageHint' | translate }}</span>
-        </label>
-        <label for="galleryFile" class="dropzone__preview" *ngIf="previewUrls.length > 0">
-          <img [src]="previewUrls[0]" alt="Preview" />
-          <span class="dropzone__change">
-            <mat-icon>photo_camera</mat-icon>
-            {{ 'galleryAdmin.addMoreImages' | translate }}
-          </span>
-        </label>
-      </div>
-
-      <!-- Extra thumbnails when more than one file is queued — each removable before upload. -->
-      <div class="selected-files" *ngIf="previewUrls.length > 1">
-        <div class="selected-files__item" *ngFor="let url of previewUrls; let i = index">
-          <img [src]="url" alt="" />
-          <button type="button" class="selected-files__remove" (click)="removeSelectedFile(i)"
-            [attr.aria-label]="'galleryAdmin.removeSelectedAriaLabel' | translate">
-            <mat-icon>close</mat-icon>
-          </button>
+      <div class="upload-form__media">
+        <div class="dropzone" [class.dropzone--filled]="previewUrls.length > 0" [class.dropzone--dragging]="dragging"
+          (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+          <input type="file" id="galleryFile" accept="image/*" multiple (change)="onFileSelected($event)"
+            [attr.aria-label]="'galleryAdmin.chooseImage' | translate" />
+          <label for="galleryFile" class="dropzone__empty" *ngIf="previewUrls.length === 0">
+            <span class="dropzone__icon"><mat-icon>{{ dragging ? 'file_download' : 'add_photo_alternate' }}</mat-icon></span>
+            <span class="dropzone__title">{{ (dragging ? 'galleryAdmin.dropHere' : 'galleryAdmin.chooseImage') | translate }}</span>
+            <span class="dropzone__hint">{{ 'galleryAdmin.chooseImageHint' | translate }}</span>
+          </label>
+          <label for="galleryFile" class="dropzone__preview" *ngIf="previewUrls.length > 0">
+            <img [src]="previewUrls[0]" alt="Preview" />
+            <span class="dropzone__change">
+              <mat-icon>{{ dragging ? 'file_download' : 'photo_camera' }}</mat-icon>
+              {{ (dragging ? 'galleryAdmin.dropHere' : 'galleryAdmin.addMoreImages') | translate }}
+            </span>
+          </label>
         </div>
+
+        <!-- Every queued file, each removable before upload. -->
+        <div class="selected-files" *ngIf="previewUrls.length > 1">
+          <div class="selected-files__item" *ngFor="let url of previewUrls; let i = index">
+            <img [src]="url" alt="" />
+            <button type="button" class="selected-files__remove" (click)="removeSelectedFile(i)"
+              [attr.aria-label]="'galleryAdmin.removeSelectedAriaLabel' | translate">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+        <span class="selected-files__count" *ngIf="previewUrls.length > 0">
+          {{ selectedCountLabel }} · {{ totalSizeLabel }}
+        </span>
+        <span class="selected-files__count" *ngIf="previewUrls.length === 0">
+          {{ 'galleryAdmin.limitsHint' | translate }}
+        </span>
       </div>
-      <span class="selected-files__count" *ngIf="previewUrls.length > 1">
-        {{ selectedCountLabel }}
-      </span>
 
       <div class="upload-form__fields">
         <div class="form-field">
@@ -49,6 +55,14 @@
           <datalist id="categoryOptions">
             <option *ngFor="let cat of categories" [value]="cat"></option>
           </datalist>
+        </div>
+
+        <div class="form-field">
+          <label for="galleryEvent">{{ 'galleryAdmin.eventLabel' | translate }}</label>
+          <select id="galleryEvent" [(ngModel)]="eventId" name="eventId" (ngModelChange)="onEventChange()">
+            <option [ngValue]="null">{{ 'galleryAdmin.noEvent' | translate }}</option>
+            <option *ngFor="let ev of events" [ngValue]="ev.id">{{ eventOptionLabel(ev) }}</option>
+          </select>
         </div>
 
         <div class="form-actions">
@@ -109,6 +123,9 @@
           </div>
           <div class="tile__body">
             <strong class="tile__title" [attr.title]="image.title">{{ image.title }}</strong>
+            <span *ngIf="image.eventTitle" class="tile__meta tile__meta--event">
+              <mat-icon>event</mat-icon>{{ image.eventTitle }}
+            </span>
             <span *ngIf="image.createdByName" class="tile__meta">{{ 'galleryAdmin.uploadedBy' | translate }} {{ image.createdByName }}</span>
           </div>
         </ng-container>
@@ -131,6 +148,13 @@
           <div class="form-field">
             <label for="editCategory-{{ image.id }}">{{ 'galleryAdmin.categoryLabel' | translate }}</label>
             <input type="text" id="editCategory-{{ image.id }}" [(ngModel)]="editCategory" name="editCategory-{{ image.id }}" list="categoryOptions" />
+          </div>
+          <div class="form-field">
+            <label for="editEvent-{{ image.id }}">{{ 'galleryAdmin.eventLabel' | translate }}</label>
+            <select id="editEvent-{{ image.id }}" [(ngModel)]="editEventId" name="editEvent-{{ image.id }}">
+              <option [ngValue]="null">{{ 'galleryAdmin.noEvent' | translate }}</option>
+              <option *ngFor="let ev of events" [ngValue]="ev.id">{{ eventOptionLabel(ev) }}</option>
+            </select>
           </div>
 
           <div class="tile__edit-actions">

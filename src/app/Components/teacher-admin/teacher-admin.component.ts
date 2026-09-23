@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import { TeacherService, Teacher, TeacherSave, TeacherStatus } from '../../Services/teacher.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
@@ -23,6 +24,7 @@ const emptyForm = (): TeacherSave => ({
   styleUrl: './teacher-admin.component.scss'
 })
 export class TeacherAdminComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   statuses: TeacherStatus[] = ['Current', 'Former', 'Retired'];
 
   teachers: Teacher[] = [];
@@ -138,18 +140,17 @@ export class TeacherAdminComponent implements OnInit {
   }
 
   confirmDelete(teacher: Teacher): void {
-    if (!confirm(`"${teacher.fullName}" ${this.languageService.translate('teacherAdmin.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(teacher.fullName, this.languageService.translate('teacherAdmin.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.deletingId = teacher.id;
-    this.teacherService.delete(teacher.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('teacherAdmin.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(() => {
-      this.deletingId = null;
-      this.teachers = this.teachers.filter(t => t.id !== teacher.id);
-      this.snackbar.showSuccess(this.languageService.translate('teacherAdmin.deleteSuccess'));
+      this.deletingId = teacher.id;
+      this.teacherService.delete(teacher.id).pipe(finalize(() => this.deletingId = null)).subscribe({
+        next: () => {
+          this.teachers = this.teachers.filter(t => t.id !== teacher.id);
+          this.snackbar.showSuccess(this.languageService.translate('teacherAdmin.deleteSuccess'));
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('teacherAdmin.deleteFailedError'))
+      });
     });
   }
 

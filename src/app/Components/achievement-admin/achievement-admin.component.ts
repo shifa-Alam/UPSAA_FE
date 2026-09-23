@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import { AchievementService, Achievement, AchievementSave } from '../../Services/achievement.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
@@ -23,6 +24,7 @@ const emptyForm = (): AchievementSave => ({
   styleUrl: './achievement-admin.component.scss'
 })
 export class AchievementAdminComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   achievements: Achievement[] = [];
   loading = true;
 
@@ -143,18 +145,17 @@ export class AchievementAdminComponent implements OnInit {
   }
 
   confirmDelete(achievement: Achievement): void {
-    if (!confirm(`"${achievement.title}" ${this.languageService.translate('achievementAdmin.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(achievement.title, this.languageService.translate('achievementAdmin.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.deletingId = achievement.id;
-    this.achievementService.delete(achievement.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('achievementAdmin.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(() => {
-      this.deletingId = null;
-      this.achievements = this.achievements.filter(a => a.id !== achievement.id);
-      this.snackbar.showSuccess(this.languageService.translate('achievementAdmin.deleteSuccess'));
+      this.deletingId = achievement.id;
+      this.achievementService.delete(achievement.id).pipe(finalize(() => this.deletingId = null)).subscribe({
+        next: () => {
+          this.achievements = this.achievements.filter(a => a.id !== achievement.id);
+          this.snackbar.showSuccess(this.languageService.translate('achievementAdmin.deleteSuccess'));
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('achievementAdmin.deleteFailedError'))
+      });
     });
   }
 

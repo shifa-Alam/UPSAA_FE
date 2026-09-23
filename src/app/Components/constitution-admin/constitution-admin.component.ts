@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { finalize } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import { ConstitutionService, ConstitutionDocument } from '../../Services/constitution.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { LanguageService } from '../../Services/language.service';
@@ -20,6 +21,7 @@ const MAX_FILE_MB = 20;
   styleUrl: './constitution-admin.component.scss'
 })
 export class ConstitutionAdminComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   current: ConstitutionDocument | null = null;
   loading = true;
   /** GetCurrent failed for some other reason (network, 5xx) — uploading may still work. */
@@ -108,16 +110,18 @@ export class ConstitutionAdminComponent implements OnInit {
 
   remove(): void {
     if (!this.current || this.deleting) return;
-    if (!confirm(this.lang.translate('constitutionAdmin.deleteConfirm'))) return;
-    this.deleting = true;
-    this.constitutionService.delete().pipe(finalize(() => this.deleting = false)).subscribe({
-      next: () => {
-        this.current = null;
-        this.snackbar.showSuccess(this.lang.translate('constitutionAdmin.deleteSuccess'));
-      },
-      error: err => {
-        this.snackbar.showError(err?.error?.message || this.lang.translate('constitutionAdmin.deleteFailedError'));
-      }
+    this.confirmService.ask({ message: this.lang.translate('constitutionAdmin.deleteConfirm'), danger: true }).subscribe(ok => {
+      if (!ok) return;
+      this.deleting = true;
+      this.constitutionService.delete().pipe(finalize(() => this.deleting = false)).subscribe({
+        next: () => {
+          this.current = null;
+          this.snackbar.showSuccess(this.lang.translate('constitutionAdmin.deleteSuccess'));
+        },
+        error: err => {
+          this.snackbar.showError(err?.error?.message || this.lang.translate('constitutionAdmin.deleteFailedError'));
+        }
+      });
     });
   }
 

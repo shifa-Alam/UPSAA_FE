@@ -1,4 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { ConfirmService } from '../../Services/confirm.service';
 import { Member, MemberService, MemberFilterDto, BatchSummary } from '../../Services/member.service';
 import { CommonModule } from '@angular/common';
 import { MemberFeeAmountPipe } from '../../Pipes/member-fee-amount.pipe';
@@ -40,6 +41,7 @@ import { LanguageService } from '../../Services/language.service';
 
 })
 export class MemberLandingComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   members: Member[] = [];
   totalItems = 0;
   totalPages = 0;
@@ -202,50 +204,41 @@ onTabChange(event: any) {
 
     return pages;
   }
+  private confirmContinue(action: () => void): void {
+    this.confirmService.ask({ message: this.languageService.translate('memberLanding.confirmContinue') }).subscribe(ok => {
+      if (ok) action();
+    });
+  }
+
   sendActiveReq(memberId: number) {
-    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
-
-    if (!confirmed) return;
-    this.memberService.requestActivation(memberId).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.loadMembers();
-
-      },
-      error: (err) => {
-        console.log("Error:", JSON.stringify(err.error, null, 2));
-
-
-
-      }
+    this.confirmContinue(() => {
+      this.memberService.requestActivation(memberId).subscribe({
+        next: (res) => {
+          console.log(res);
+          this.loadMembers();
+        },
+        error: (err) => {
+          console.log("Error:", JSON.stringify(err.error, null, 2));
+        }
+      });
     });
   }
+
   approveRequest(memberId: number) {
-    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
-    if (!confirmed) return;
-    this.memberService.approveRequest(memberId).subscribe({
-      next: (res) => {
-        this.loadMembers();
-
-      },
-      error: () => {
-
-      }
+    this.confirmContinue(() => {
+      this.memberService.approveRequest(memberId).subscribe({
+        next: () => this.loadMembers(),
+        error: () => { }
+      });
     });
   }
-
 
   activeDirectly(memberId: number) {
-    const confirmed = confirm(this.languageService.translate('memberLanding.confirmContinue'));
-    if (!confirmed) return;
-    this.memberService.activateMemberDirectly(memberId).subscribe({
-      next: (res) => {
-        this.loadMembers();
-
-      },
-      error: () => {
-
-      }
+    this.confirmContinue(() => {
+      this.memberService.activateMemberDirectly(memberId).subscribe({
+        next: () => this.loadMembers(),
+        error: () => { }
+      });
     });
   }
 

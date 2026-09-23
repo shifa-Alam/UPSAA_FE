@@ -13,7 +13,17 @@
         <span class="pp-section__rule"></span>
       </header>
 
-      <div class="filters" *ngIf="categories.length > 0" role="group" [attr.aria-label]="'gallery.filterAriaLabel' | translate">
+      <div class="event-filter" *ngIf="eventId !== null">
+        <mat-icon>event</mat-icon>
+        <span class="event-filter__text">
+          {{ 'gallery.eventPhotosOf' | translate }} <strong>{{ eventTitle || ('gallery.thisEvent' | translate) }}</strong>
+        </span>
+        <a class="event-filter__clear" [routerLink]="[]" [queryParams]="{ event: null }" queryParamsHandling="merge">
+          <mat-icon>close</mat-icon>{{ 'gallery.showAllPhotos' | translate }}
+        </a>
+      </div>
+
+      <div class="filters" *ngIf="categories.length > 0 && eventId === null" role="group" [attr.aria-label]="'gallery.filterAriaLabel' | translate">
         <div class="filters__track">
           <button type="button" class="filters__pill" [class.filters__pill--active]="activeCategory === ''"
             [attr.aria-pressed]="activeCategory === ''" (click)="filterByCategory('')">

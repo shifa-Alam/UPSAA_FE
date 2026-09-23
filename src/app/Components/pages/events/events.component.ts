@@ -107,4 +107,10 @@ export class EventsComponent implements OnInit {
   formatYear(year: number): string {
     return new Intl.NumberFormat(this.locale, { useGrouping: false }).format(year);
   }
+
+  /** "Photos (12)" / "ছবি দেখুন (১২)". */
+  photosLabel(ev: EventItem): string {
+    const count = new Intl.NumberFormat(this.locale).format(ev.galleryPhotoCount);
+    return `${this.languageService.translate('events.viewPhotos')} (${count})`;
+  }
 }

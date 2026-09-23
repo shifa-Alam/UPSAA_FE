@@ -32,7 +32,7 @@
         <dl class="tally">
           <div class="tally__item" *ngFor="let s of stats">
             <dt class="tally__label">{{ s.labelKey | translate }}</dt>
-            <dd class="tally__value">{{ formatNumber(s.shown, s.plain) }}</dd>
+            <dd class="tally__value" [appCountUp]="s.value" [countPlain]="!!s.plain"></dd>
           </div>
         </dl>
       </div>

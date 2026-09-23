@@ -16,6 +16,8 @@ export interface EventItem {
   createdDate: string;
   createdById: string | null;
   createdByName: string | null;
+  /** Gallery photos linked to this event. */
+  galleryPhotoCount: number;
 }
 
 export interface EventSave {

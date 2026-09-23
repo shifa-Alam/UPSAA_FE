@@ -23,11 +23,56 @@
         [class.stat--attention]="s.attention && !!s.value">
         <span class="stat__icon"><app-nav-icon [name]="s.icon"></app-nav-icon></span>
         <span class="stat__value">
-          <ng-container *ngIf="s.value !== null; else statPending">{{ formatNumber(s.value) }}</ng-container>
+          <span *ngIf="s.value !== null; else statPending" [appCountUp]="s.value"></span>
           <ng-template #statPending><span class="stat__skeleton"></span></ng-template>
         </span>
         <span class="stat__label">{{ s.labelKey | translate }}</span>
       </a>
+    </div>
+  </section>
+
+  <!-- ===== Trends ===== -->
+  <section class="welcome__block">
+    <h2 class="welcome__heading">{{ 'adminWelcome.charts.heading' | translate }}</h2>
+    <div class="charts">
+      <article class="chart-card">
+        <header class="chart-card__head">
+          <h3 class="chart-card__title">{{ 'adminWelcome.charts.registrationsTitle' | translate }}</h3>
+          <span class="chart-card__sub">{{ 'adminWelcome.charts.last12Months' | translate }}</span>
+        </header>
+        <ng-container [ngSwitch]="registrationsState">
+          <app-simple-chart *ngSwitchCase="'ready'" [config]="registrationChart()"
+            [ariaLabel]="'adminWelcome.charts.registrationsTitle' | translate"></app-simple-chart>
+          <div *ngSwitchCase="'loading'" class="chart-card__placeholder chart-card__placeholder--loading"></div>
+          <p *ngSwitchDefault class="chart-card__placeholder">{{ 'adminWelcome.charts.loadFailed' | translate }}</p>
+        </ng-container>
+      </article>
+
+      <article class="chart-card">
+        <header class="chart-card__head">
+          <h3 class="chart-card__title">{{ 'adminWelcome.charts.financeTitle' | translate }}</h3>
+          <a routerLink="/dashboard/finance" class="welcome__more">{{ 'adminWelcome.charts.details' | translate }}</a>
+        </header>
+        <ng-container [ngSwitch]="financeState">
+          <app-simple-chart *ngSwitchCase="'ready'" [config]="financeChart()"
+            [ariaLabel]="'adminWelcome.charts.financeTitle' | translate"></app-simple-chart>
+          <div *ngSwitchCase="'loading'" class="chart-card__placeholder chart-card__placeholder--loading"></div>
+          <p *ngSwitchDefault class="chart-card__placeholder">{{ 'adminWelcome.charts.loadFailed' | translate }}</p>
+        </ng-container>
+      </article>
+
+      <article class="chart-card chart-card--wide">
+        <header class="chart-card__head">
+          <h3 class="chart-card__title">{{ 'adminWelcome.charts.batchTitle' | translate }}</h3>
+          <a routerLink="/dashboard/members" class="welcome__more">{{ 'adminWelcome.charts.details' | translate }}</a>
+        </header>
+        <ng-container [ngSwitch]="batchesState">
+          <app-simple-chart *ngSwitchCase="'ready'" [config]="batchChart()"
+            [ariaLabel]="'adminWelcome.charts.batchTitle' | translate"></app-simple-chart>
+          <div *ngSwitchCase="'loading'" class="chart-card__placeholder chart-card__placeholder--loading"></div>
+          <p *ngSwitchDefault class="chart-card__placeholder">{{ 'adminWelcome.charts.loadFailed' | translate }}</p>
+        </ng-container>
+      </article>
     </div>
   </section>
 

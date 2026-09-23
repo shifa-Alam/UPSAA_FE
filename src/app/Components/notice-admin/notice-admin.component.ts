@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, of } from 'rxjs';
+import { ConfirmService } from '../../Services/confirm.service';
 import { NoticeService, Notice } from '../../Services/notice.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
@@ -19,6 +20,7 @@ import { LanguageService } from '../../Services/language.service';
   styleUrl: './notice-admin.component.scss'
 })
 export class NoticeAdminComponent implements OnInit {
+  private confirmService = inject(ConfirmService);
   notices: Notice[] = [];
   loading = true;
 
@@ -125,18 +127,17 @@ export class NoticeAdminComponent implements OnInit {
   }
 
   confirmDelete(notice: Notice): void {
-    if (!confirm(`"${notice.title}" ${this.languageService.translate('noticeAdmin.deleteConfirm')}`)) return;
+    this.confirmService.askDelete(notice.title, this.languageService.translate('noticeAdmin.deleteConfirm')).subscribe(ok => {
+      if (!ok) return;
 
-    this.deletingId = notice.id;
-    this.noticeService.delete(notice.id).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('noticeAdmin.deleteFailedError'));
-        return of(null);
-      })
-    ).subscribe(() => {
-      this.deletingId = null;
-      this.notices = this.notices.filter(n => n.id !== notice.id);
-      this.snackbar.showSuccess(this.languageService.translate('noticeAdmin.deleteSuccess'));
+      this.deletingId = notice.id;
+      this.noticeService.delete(notice.id).pipe(finalize(() => this.deletingId = null)).subscribe({
+        next: () => {
+          this.notices = this.notices.filter(n => n.id !== notice.id);
+          this.snackbar.showSuccess(this.languageService.translate('noticeAdmin.deleteSuccess'));
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('noticeAdmin.deleteFailedError'))
+      });
     });
   }
 

@@ -78,8 +78,10 @@
   // Bangla glyphs there automatically.
   --font-base: 'Inter', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
   // Display face for brand, hero and section headings (h1/h2). Playfair has no
-  // Bengali glyphs, so Bangla headings still fall through to SolaimanLipiBangla.
-  --font-display: 'Playfair Display', 'SolaimanLipiBangla', Georgia, 'Times New Roman', serif;
+  // Bengali glyphs, so Bangla characters fall through to Noto Serif Bengali — a
+  // serif with real 500–800 weights to match Playfair's bold headings. Google Fonts
+  // serves it per unicode-range, so English-only pages never download it.
+  --font-display: 'Playfair Display', 'Noto Serif Bengali', 'SolaimanLipiBangla', Georgia, 'Times New Roman', serif;
   --font-size-xs: 12px;
   --font-size-sm: 13px;
   --font-size-base: 14px;
