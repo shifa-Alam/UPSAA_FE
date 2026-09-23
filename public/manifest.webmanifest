@@ -1,0 +1,83 @@
+{
+  "id": "/",
+  "name": "UPSAA",
+  "short_name": "UPSAA",
+  "description": "উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থীদের ঐক্যবদ্ধ পরিবার — নোটিশ, ইভেন্ট, অ্যালামনাই তালিকা, ছবি ও নির্বাচন।",
+  "lang": "bn",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "theme_color": "#0a2a5e",
+  "background_color": "#0a2a5e",
+  "categories": [
+    "education",
+    "social"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "নোটিশ",
+      "short_name": "নোটিশ",
+      "url": "/notices?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "ইভেন্ট",
+      "short_name": "ইভেন্ট",
+      "url": "/events?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "অ্যালামনাই তালিকা",
+      "short_name": "তালিকা",
+      "url": "/members?source=pwa",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

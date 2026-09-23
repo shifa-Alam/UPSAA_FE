@@ -203,6 +203,7 @@
         {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
       </button>
     </div>
+    <app-push-toggle [compact]="true" class="push-toggle-mobile"></app-push-toggle>
 
     <!-- Logout -->
     <div class="mobile-logout">
@@ -349,6 +350,13 @@
 
         <app-footer *ngIf="!isDashboardRoute"></app-footer>
       </div>
+
+      <!-- Installed-app pieces (phones): offline notice, tab bar, install suggestion. -->
+      <div class="offline-strip" *ngIf="!pwa.online()" role="status">
+        <mat-icon>cloud_off</mat-icon> {{ 'pwa.offline' | translate }}
+      </div>
+      <app-bottom-nav (more)="sidenav.open()"></app-bottom-nav>
+      <app-install-banner></app-install-banner>
 
     </div>
   </mat-sidenav-content>

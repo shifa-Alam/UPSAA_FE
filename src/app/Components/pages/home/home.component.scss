@@ -78,23 +78,24 @@
   margin-bottom: var(--space-4);
 }
 
-.hero__eyebrow {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--color-heritage-500);
-  margin-bottom: var(--space-2);
+.hero__title {
+  // The association's full name — the focus of the hero.
+  color: #fff;
+  font-size: clamp(27px, 3vw + 14px, 46px);
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 20ch;
+  margin: 0 0 var(--space-2);
+  text-wrap: balance;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
 }
 
-.hero__title {
-  color: #fff;
-  font-size: clamp(23px, 3.4vw, 36px);
-  font-weight: 700;
-  line-height: 1.12;
-  max-width: 18ch;
+.hero__welcome {
+  color: var(--color-heritage-500);
+  font-size: clamp(16px, 0.8vw + 12px, 21px);
+  font-weight: 600;
+  line-height: 1.4;
   margin: 0 0 var(--space-3);
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
 }
 
 .hero__tagline {
@@ -569,7 +570,6 @@
 // Tracking and uppercase are Latin typographic devices — letter-spacing
 // pulls Bangla conjuncts apart, so drop it when the page is in Bangla.
 :host-context(html[lang='bn']) {
-  .hero__eyebrow,
   .hero__pillars,
   .stat__label,
   .news__date,

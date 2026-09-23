@@ -1,0 +1,84 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/logo.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/logo.png",
+          "/logo1.png",
+          "/icons/icon-192.png",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/icons/**",
+          "/images/**",
+          "/fonts/**",
+          "/sounds/**",
+          "/*.png",
+          "/*.jpg",
+          "/*.svg",
+          "/*.webp"
+        ]
+      }
+    },
+    {
+      "name": "web-fonts",
+      "installMode": "lazy",
+      "updateMode": "lazy",
+      "resources": {
+        "urls": [
+          "https://fonts.googleapis.com/**",
+          "https://fonts.gstatic.com/**"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "uploaded-photos",
+      "urls": [
+        "https://sbfqa.lucidtech.website/api/*/GetImageFile/**",
+        "https://sbfqa.lucidtech.website/api/member/GetProfileImageFile/**"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 300,
+        "maxAge": "30d"
+      }
+    },
+    {
+      "name": "public-content",
+      "urls": [
+        "https://sbfqa.lucidtech.website/api/Committee/**",
+        "https://sbfqa.lucidtech.website/api/Event/GetAll**",
+        "https://sbfqa.lucidtech.website/api/Gallery/GetAll**",
+        "https://sbfqa.lucidtech.website/api/Gallery/Categories",
+        "https://sbfqa.lucidtech.website/api/Achievement/GetAll**",
+        "https://sbfqa.lucidtech.website/api/Teacher/GetAll**",
+        "https://sbfqa.lucidtech.website/api/member/PublicBatchSummary"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "timeout": "6s",
+        "maxSize": 60,
+        "maxAge": "3d"
+      }
+    }
+  ]
+}

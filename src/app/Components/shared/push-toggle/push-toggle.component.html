@@ -1,0 +1,23 @@
+<ng-container *ngIf="push.state() !== 'unsupported'">
+  <!-- Side-menu row -->
+  <button *ngIf="compact" type="button" class="push-row" (click)="toggle()"
+    [disabled]="push.busy() || push.state() === 'blocked' || push.state() === 'ios-install'"
+    [attr.aria-pressed]="push.state() === 'on'" [title]="hint | translate">
+    <mat-icon>{{ push.state() === 'on' ? 'notifications_active' : 'notifications_none' }}</mat-icon>
+    <span class="push-row__label">{{ 'pwa.push.title' | translate }}</span>
+    <span class="push-row__switch" [class.is-on]="push.state() === 'on'" aria-hidden="true"></span>
+  </button>
+
+  <!-- Dashboard card -->
+  <section *ngIf="!compact" class="push-card" [class.is-on]="push.state() === 'on'">
+    <span class="push-card__icon"><mat-icon>{{ push.state() === 'on' ? 'notifications_active' : 'notifications' }}</mat-icon></span>
+    <div class="push-card__body">
+      <strong>{{ 'pwa.push.title' | translate }}</strong>
+      <p>{{ hint | translate }}</p>
+    </div>
+    <button type="button" class="push-card__btn" *ngIf="push.state() === 'on' || push.state() === 'off'"
+      (click)="toggle()" [disabled]="push.busy()">
+      {{ (push.state() === 'on' ? 'pwa.push.disable' : 'pwa.push.enable') | translate }}
+    </button>
+  </section>
+</ng-container>

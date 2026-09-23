@@ -21,6 +21,11 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { SizedImagePipe } from './Pipes/sized-image.pipe';
+import { BottomNavComponent } from './Components/shared/bottom-nav/bottom-nav.component';
+import { InstallBannerComponent } from './Components/shared/install-banner/install-banner.component';
+import { PwaService } from './Services/pwa.service';
+import { PushService } from './Services/push.service';
+import { PushToggleComponent } from './Components/shared/push-toggle/push-toggle.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -37,6 +42,9 @@ import { SizedImagePipe } from './Pipes/sized-image.pipe';
     FooterComponent,
     TranslatePipe,
     SizedImagePipe,
+    BottomNavComponent,
+    InstallBannerComponent,
+    PushToggleComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -72,6 +80,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pwa.init();
+    // Signed in (now or on a later login): tie this phone's notifications to the member.
+    this.authService.user$.pipe(filter(u => !!u)).subscribe(() => this.push.linkToCurrentUser());
     this.isDashboardRoute = this.isShellUrl(this.router.url);
     this.updateSectionActive(this.router.url);
     this.router.events
@@ -110,6 +121,8 @@ export class AppComponent implements OnInit {
     public themeService: ThemeService,
     public languageService: LanguageService,
     private memberService: MemberService,
+    public pwa: PwaService,
+    private push: PushService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     this.isMobile$ = this.breakpointObserver
       // Must match the CSS breakpoint that hides the dashboard sidebar, or tablets lose all navigation.

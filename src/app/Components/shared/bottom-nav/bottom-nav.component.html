@@ -1,0 +1,12 @@
+<nav class="bottom-nav" *ngIf="!hidden()" [attr.aria-label]="'pwa.tabs.navLabel' | translate">
+  <a *ngFor="let tab of tabs()" class="bottom-nav__tab" [routerLink]="tab.link" routerLinkActive="is-active"
+    [routerLinkActiveOptions]="{ exact: !!tab.exact }" #rla="routerLinkActive"
+    [attr.aria-current]="rla.isActive ? 'page' : null" (click)="tap()">
+    <span class="bottom-nav__pill"><mat-icon>{{ tab.icon }}</mat-icon></span>
+    <span class="bottom-nav__label">{{ tab.label | translate }}</span>
+  </a>
+  <button type="button" class="bottom-nav__tab" (click)="tap(); more.emit()">
+    <span class="bottom-nav__pill"><mat-icon>menu</mat-icon></span>
+    <span class="bottom-nav__label">{{ 'pwa.tabs.more' | translate }}</span>
+  </button>
+</nav>

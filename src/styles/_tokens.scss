@@ -96,6 +96,7 @@
   // ---- Layout ----
   --header-height: 50px;
   --header-height-mobile: 48px;
+  --bottom-nav-height: 60px; // phone tab bar (plus env(safe-area-inset-bottom))
   --max-content-width: 1240px;
 
   // ---- Motion ----

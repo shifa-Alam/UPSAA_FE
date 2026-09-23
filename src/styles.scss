@@ -245,3 +245,67 @@ p {
   /* Only Bangla Unicode */
   unicode-range: U+0980-09FF;
 }
+
+/* =========================================================
+   Native-app feel on phones (see also the PWA pieces in
+   app.component: tab bar, install banner, offline strip).
+   ========================================================= */
+html {
+  // No grey flash on tap, and no font inflation when the phone rotates.
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+// Taps fire immediately (no double-tap-to-zoom wait) on anything interactive.
+a, button, input, select, textarea, label, [role='button'], .mat-mdc-button-base {
+  touch-action: manipulation;
+}
+
+// Touch screens: a gentle press effect, and thumb-sized targets for the small
+// icon buttons (34–36px on desktop) and pager buttons across the admin screens.
+@media (hover: none) and (pointer: coarse) {
+  .pp-btn:active,
+  .btn:active,
+  .mat-mdc-button:active,
+  .mat-mdc-unelevated-button:active,
+  .mat-mdc-outlined-button:active,
+  .mat-mdc-raised-button:active {
+    transform: scale(0.97);
+    transition: transform 80ms ease;
+  }
+
+  .icon-btn,
+  .page-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+// Installed app: no rubber-band bounce past the top/bottom of the page, like a native app.
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+// Page change cross-fade (router withViewTransitions) — quick, so navigation feels instant.
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 160ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+// "New version available" snackbar sits above the phone tab bar, not under it.
+@media (max-width: 768px) {
+  .mat-mdc-snack-bar-container.snackbar-update {
+    margin-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 8px);
+  }
+}

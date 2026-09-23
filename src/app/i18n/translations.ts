@@ -49,6 +49,7 @@ import { constitutionAdminI18n } from './sections/constitutionAdmin.i18n';
 import { userRolesI18n } from './sections/userRoles.i18n';
 import { pageTitlesI18n } from './sections/pageTitles.i18n';
 import { committeeAdminI18n } from './sections/committeeAdmin.i18n';
+import { pwaI18n } from './sections/pwa.i18n';
 
 // Every entry here is a section file's export. Each one owns a single,
 // unique top-level namespace key (see i18n.types.ts) — that's what makes
@@ -106,6 +107,7 @@ const sections = [
   userRolesI18n,
   pageTitlesI18n,
   committeeAdminI18n,
+  pwaI18n,
 ];
 
 function mergeLang(lang: Lang): Dict {

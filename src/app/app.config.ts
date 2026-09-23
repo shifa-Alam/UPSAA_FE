@@ -1,5 +1,6 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { TitleStrategy, provideRouter } from '@angular/router';
+import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
+import { TitleStrategy, provideRouter, withViewTransitions } from '@angular/router';
+import { provideServiceWorker } from '@angular/service-worker';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
@@ -15,7 +16,11 @@ import { AppTitleStrategy } from './Utils/app-title.strategy';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes), 
+    provideRouter(routes,
+      // Native-app feel: a soft cross-fade between pages (browsers without the
+      // View Transitions API just navigate as before).
+      withViewTransitions({ skipInitialTransition: true })
+    ),
     provideClientHydration(), 
     provideAnimationsAsync(),
     provideHttpClient(
@@ -26,6 +31,12 @@ export const appConfig: ApplicationConfig = {
     // Per-page, translated browser-tab titles (route `title` = pageTitles.* key).
     { provide: TitleStrategy, useClass: AppTitleStrategy },
     // Material's default 80vw cap leaves phone dialogs cramped.
+    // Offline cache + installable app (production builds only — see ngsw-config.json).
+    // Registered once the app is idle so it never competes with the first page load.
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxWidth: '96vw', autoFocus: 'first-tabbable', hasBackdrop: true } },
   ]
 };

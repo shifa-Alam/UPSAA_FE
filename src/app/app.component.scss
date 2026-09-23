@@ -192,6 +192,11 @@ content-area router-outlet {
     height: var(--header-height-mobile);
   }
 
+  /* Room for the fixed tab bar (app-bottom-nav) so the last content isn't hidden under it. */
+  .content-area {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  }
+
   .logo {
     font-size: var(--font-size-sm);
   }
@@ -359,4 +364,45 @@ content-area router-outlet {
   font-weight: 700;
   font-size: var(--font-size-sm);
   text-transform: uppercase;
+}
+
+/* ===== Installed app (PWA) ===== */
+/* Launched from the home screen with viewport-fit=cover, the page draws under the
+   phone's status bar / notch — keep the toolbar clear of it. */
+@media (display-mode: standalone) and (max-width: 768px) {
+  .app-toolbar {
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--header-height-mobile) + env(safe-area-inset-top));
+  }
+
+  .mobile-menu {
+    padding-top: calc(var(--space-3) + env(safe-area-inset-top));
+  }
+}
+
+.offline-strip {
+  position: fixed;
+  z-index: 1120;
+  left: 0;
+  right: 0;
+  top: calc(var(--header-height-mobile) + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #334155;
+  color: #fff;
+
+  mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+  }
+}
+
+.push-toggle-mobile {
+  margin: 0 0 var(--space-2);
 }

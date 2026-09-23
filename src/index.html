@@ -5,9 +5,21 @@
   <meta charset="utf-8">
   <title>UPSAA — Uttaran Public School Alumni Association</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- viewport-fit=cover lets the installed app draw under the iPhone notch/home bar;
+       the layout pads itself with env(safe-area-inset-*). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="google" content="notranslate">
   <meta name="theme-color" content="#0a2a5e">
+
+  <!-- Installable app (PWA): manifest, home-screen icons, iOS standalone mode. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="application-name" content="UPSAA">
+  <meta name="apple-mobile-web-app-title" content="UPSAA">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
 
   <!-- Link previews (Facebook, WhatsApp, Messenger, X). Crawlers don't run JavaScript,
        so these static tags are what every shared link shows. og:image must be an

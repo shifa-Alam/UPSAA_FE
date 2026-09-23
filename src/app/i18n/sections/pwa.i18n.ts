@@ -1,0 +1,89 @@
+import { I18nSection } from '../i18n.types';
+
+/** Installable-app pieces: bottom tab bar, install banner, update prompt, push notifications. */
+export const pwaI18n: I18nSection = {
+  bn: {
+    pwa: {
+      tabs: {
+        home: 'হোম',
+        dashboard: 'ড্যাশবোর্ড',
+        notices: 'নোটিশ',
+        events: 'ইভেন্ট',
+        members: 'সদস্য',
+        directory: 'তালিকা',
+        profile: 'প্রোফাইল',
+        more: 'আরও',
+        navLabel: 'প্রধান মেনু',
+      },
+      update: {
+        message: 'অ্যাপের নতুন সংস্করণ এসেছে।',
+        action: 'রিফ্রেশ',
+      },
+      install: {
+        title: 'UPSAA অ্যাপ ইনস্টল করুন',
+        text: 'হোম স্ক্রিন থেকে এক ট্যাপে খুলুন — দ্রুত, অ্যাপের মতো।',
+        action: 'ইনস্টল',
+        dismiss: 'এখন না',
+        iosTitle: 'হোম স্ক্রিনে যোগ করুন',
+        iosText: 'Safari-র নিচে শেয়ার বাটনে ট্যাপ করে “Add to Home Screen” বেছে নিন।',
+        close: 'বন্ধ করুন',
+      },
+      push: {
+        title: 'নোটিফিকেশন',
+        enable: 'নোটিফিকেশন চালু করুন',
+        disable: 'নোটিফিকেশন বন্ধ করুন',
+        on: 'নতুন নোটিশ ও ইভেন্টের খবর আপনার ফোনে আসবে।',
+        off: 'নতুন নোটিশ ও ইভেন্ট প্রকাশ হলেই ফোনে জানুন।',
+        blocked: 'ব্রাউজারের সেটিংসে এই সাইটের নোটিফিকেশন বন্ধ করা আছে।',
+        iosInstallFirst: 'iPhone-এ নোটিফিকেশন পেতে আগে অ্যাপটি হোম স্ক্রিনে যোগ করুন।',
+        unsupported: 'এই ব্রাউজারে নোটিফিকেশন সমর্থিত নয়।',
+        enabledToast: 'নোটিফিকেশন চালু হয়েছে।',
+        disabledToast: 'নোটিফিকেশন বন্ধ হয়েছে।',
+        failed: 'নোটিফিকেশন চালু করা যায়নি। আবার চেষ্টা করুন।',
+      },
+      offline: 'আপনি অফলাইনে আছেন — সংরক্ষিত তথ্য দেখানো হচ্ছে।',
+    },
+  },
+  en: {
+    pwa: {
+      tabs: {
+        home: 'Home',
+        dashboard: 'Dashboard',
+        notices: 'Notices',
+        events: 'Events',
+        members: 'Members',
+        directory: 'Alumni',
+        profile: 'Profile',
+        more: 'More',
+        navLabel: 'Main menu',
+      },
+      update: {
+        message: 'A new version of the app is available.',
+        action: 'Refresh',
+      },
+      install: {
+        title: 'Install the UPSAA app',
+        text: 'Open it in one tap from your home screen — fast, like an app.',
+        action: 'Install',
+        dismiss: 'Not now',
+        iosTitle: 'Add to Home Screen',
+        iosText: 'Tap the Share button in Safari, then choose “Add to Home Screen”.',
+        close: 'Close',
+      },
+      push: {
+        title: 'Notifications',
+        enable: 'Turn on notifications',
+        disable: 'Turn off notifications',
+        on: 'New notices and events will reach your phone.',
+        off: 'Get notified on your phone when a notice or event is published.',
+        blocked: 'Notifications for this site are blocked in your browser settings.',
+        iosInstallFirst: 'On iPhone, add the app to your home screen first to get notifications.',
+        unsupported: 'This browser doesn’t support notifications.',
+        enabledToast: 'Notifications turned on.',
+        disabledToast: 'Notifications turned off.',
+        failed: 'Couldn’t turn on notifications. Please try again.',
+      },
+      offline: 'You’re offline — showing saved information.',
+    },
+  },
+};

@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@angular/service-worker": "^18.2.13",
     "@angular/ssr": "^18.2.11",
     "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",

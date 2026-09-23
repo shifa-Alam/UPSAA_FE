@@ -30,10 +30,12 @@ const PROFILE_CHECKS: { key: string; filled: (m: Member) => boolean }[] = [
 ];
 
 /** Alumni portal welcome — the member's first screen after login (/portal/home). */
+import { PushToggleComponent } from '../../shared/push-toggle/push-toggle.component';
+
 @Component({
   selector: 'app-member-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavIconComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [CommonModule, RouterModule, NavIconComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe, PushToggleComponent],
   templateUrl: './member-dashboard.component.html',
   styleUrl: './member-dashboard.component.scss'
 })
