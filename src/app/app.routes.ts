@@ -1,4 +1,8 @@
 
+import { shellRedirectGuard } from './Guards/shell-redirect.guard';
+import { UserRolesComponent } from './Components/user-roles/user-roles.component';
+import { ConstitutionAdminComponent } from './Components/constitution-admin/constitution-admin.component';
+import { AdminWelcomeComponent } from './Components/admin-welcome/admin-welcome.component';
 import { Routes } from '@angular/router';
 import { AboutComponent } from './Components/pages/about/about.component';
 import { ContactComponent } from './Components/pages/contact/contact.component';
@@ -42,22 +46,46 @@ import { NoticeAdminComponent } from './Components/notice-admin/notice-admin.com
 import { BirthdayAutomationComponent } from './Components/birthday-automation/birthday-automation.component';
 import { FinanceLedgerComponent } from './Components/finance-ledger/finance-ledger.component';
 
+// Every public route carries shellRedirectGuard: signed-in members are kept inside
+// /portal (never the public site), and staff open the community pages in /dashboard.
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, canActivate: [shellRedirectGuard] },
   { path: 'home', redirectTo: '', pathMatch: 'full' },
-  { path: 'about', component: AboutComponent },
-  { path: 'events', component: EventsComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'about', component: AboutComponent, canActivate: [shellRedirectGuard] },
+  { path: 'events', component: EventsComponent, canActivate: [shellRedirectGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [shellRedirectGuard] },
   {
     path: 'profile', component: ProfileComponent,
-    canActivate: [AuthGuard, RoleGuard],
+    canActivate: [shellRedirectGuard, AuthGuard, RoleGuard],
     data: { roles: ['Representative', 'Member'] } // only these roles
   },
+  // Alumni portal — the post-login landing for members, in the same sidebar
+  // shell as the back office (DashboardComponent with the member menu).
   {
-    path: 'member-dashboard', component: MemberDashboardComponent,
+    path: 'portal', component: DashboardComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['Representative', 'Member'] } // only these roles — the new post-login landing page
+    data: { roles: ['Representative', 'Member'], shell: 'member' },
+    children: [
+      { path: 'home', component: MemberDashboardComponent },
+      { path: 'profile', component: ProfileComponent },
+      // Copies of the public pages, so members have everything without leaving the portal.
+      { path: 'members', component: DirectoryComponent },
+      { path: 'batches', component: BatchesComponent },
+      { path: 'events', component: EventsComponent },
+      { path: 'gallery', component: GalleryComponent },
+      { path: 'achievements', component: AchievementsComponent },
+      { path: 'teachers', component: TeachersComponent },
+      { path: 'committee', component: CommitteeComponent },
+      { path: 'about', component: AboutComponent },
+      { path: 'contact', component: ContactComponent },
+      { path: 'jobs', component: JobsComponent },
+      { path: 'blood-donors', component: BloodDonorsComponent },
+      { path: 'constitution', component: ConstitutionComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' }
+    ]
   },
+  // Old landing URL, kept so existing links and bookmarks still reach the welcome page.
+  { path: 'member-dashboard', redirectTo: 'portal/home', pathMatch: 'full' },
   {
     path: 'nomination', component: NominationApplicationComponent,
     canActivate: [AuthGuard, RoleGuard],
@@ -74,7 +102,7 @@ export const routes: Routes = [
   {
     path: 'dashboard', component: DashboardComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['SuperAdmin', 'Admin'] },// only these roles
+    data: { roles: ['SuperAdmin', 'Admin'], shell: 'admin' },// only these roles
     children: [
 
       // { path: 'candidates', component: CandidatesComponent },
@@ -84,6 +112,10 @@ export const routes: Routes = [
 
       { path: 'vote-casts', component: VoteCastsComponent },
       { path: 'members', component: MemberLandingComponent },
+      {
+        path: 'user-roles', component: UserRolesComponent,
+        canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } // SuperAdmin only, also enforced by the API
+      },
       { path: 'gallery', component: GalleryAdminComponent },
       { path: 'notices', component: NoticeAdminComponent },
       { path: 'birthday-automation', component: BirthdayAutomationComponent },
@@ -91,16 +123,22 @@ export const routes: Routes = [
       { path: 'teachers', component: TeacherAdminComponent },
       { path: 'events', component: EventAdminComponent },
       { path: 'finance', component: FinanceLedgerComponent },
-      { path: '', redirectTo: 'elections', pathMatch: 'full' }
+      { path: 'home', component: AdminWelcomeComponent },
+      { path: 'jobs', component: JobsComponent },
+      { path: 'blood-donors', component: BloodDonorsComponent },
+      // Staff manage the document here; members read it at /portal/constitution.
+      { path: 'constitution', component: ConstitutionAdminComponent },
+      { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   }
   ,
-  { path: 'login', component: LoginComponent },
-  { path: 'forgot-password', component: ForgetPasswordComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
+  { path: 'login', component: LoginComponent, canActivate: [shellRedirectGuard] },
+  { path: 'forgot-password', component: ForgetPasswordComponent, canActivate: [shellRedirectGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [shellRedirectGuard] },
   {
     path: 'members',
-    component: DirectoryComponent
+    component: DirectoryComponent,
+    canActivate: [shellRedirectGuard]
     // Public — no login required. Calls the dedicated PublicDirectory API, which
     // only ever returns lean, payment-free fields. Back-office member management
     // now lives at /dashboard/members (SuperAdmin/Admin only) — Representative
@@ -108,50 +146,57 @@ export const routes: Routes = [
   },
   {
     path: 'batches',
-    component: BatchesComponent
+    component: BatchesComponent,
+    canActivate: [shellRedirectGuard]
     // Public — no login required. Batch year + active alumni count, links into
     // /members?batch=YYYY (the public directory above) for the "View Alumni" click.
   },
   {
     path: 'achievements',
-    component: AchievementsComponent
+    component: AchievementsComponent,
+    canActivate: [shellRedirectGuard]
     // Public — no login required. "Our Proud Alumni" showcase.
   },
   {
     path: 'teachers',
-    component: TeachersComponent
+    component: TeachersComponent,
+    canActivate: [shellRedirectGuard]
     // Public — no login required. Current/Former/Retired teachers & staff.
   },
   {
     path: 'committee',
-    component: CommitteeComponent
+    component: CommitteeComponent,
+    canActivate: [shellRedirectGuard]
     // Public page — no login required, anyone can see the elected committee.
   },
   {
     path: 'constitution',
     component: ConstitutionComponent,
-    canActivate: [AuthGuard, RoleGuard],
+    canActivate: [shellRedirectGuard, AuthGuard, RoleGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Representative', 'Member'] } // members-only
   },
   {
     path: 'blood-donors',
     component: BloodDonorsComponent,
-    canActivate: [AuthGuard, RoleGuard],
+    canActivate: [shellRedirectGuard, AuthGuard, RoleGuard],
     data: { roles: ['SuperAdmin', 'Admin', 'Representative', 'Member'] } // members-only
   },
   {
     path: 'jobs',
-    component: JobsComponent
-    // Public — no login required to browse. Posting/editing/deleting still
-    // requires login (any role); the component and backend both gate that.
+    component: JobsComponent,
+    canActivate: [shellRedirectGuard]
+    // Public — no login required to browse; signed-in users are forwarded to the
+    // copy inside their sidebar shell. Posting/editing/deleting still requires
+    // login (any role); the component and backend both gate that.
   },
   {
     path: 'gallery',
-    component: GalleryComponent
+    component: GalleryComponent,
+    canActivate: [shellRedirectGuard]
     // Public — no login required, event photos for everyone to browse.
   },
-  { path: 'congratulations', component: CongratulationsComponent },
-  { path: 'contact', component: ContactComponent },
+  { path: 'congratulations', component: CongratulationsComponent, canActivate: [shellRedirectGuard] },
+  { path: 'contact', component: ContactComponent, canActivate: [shellRedirectGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
 
   { path: '**', redirectTo: '' }

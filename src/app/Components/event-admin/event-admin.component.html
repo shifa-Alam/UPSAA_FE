@@ -1,161 +1,146 @@
-<div class="page-body">
+<div class="adm">
 
-  <app-admin-header [title]="'eventAdmin.title' | translate" [subtitle]="'eventAdmin.subtitle' | translate"></app-admin-header>
+  <app-admin-header [title]="'eventAdmin.title' | translate" [subtitle]="'eventAdmin.subtitle' | translate">
+    <button type="button" class="btn btn--solid" (click)="openAddForm()" *ngIf="!loading && !showForm">
+      <mat-icon>add</mat-icon> {{ 'eventAdmin.addButton' | translate }}
+    </button>
+  </app-admin-header>
 
-  <div *ngIf="loading" class="loading-wrapper">
-    <div class="spinner"></div>
-    <p>{{ 'eventAdmin.loading' | translate }}</p>
+  <div *ngIf="loading" class="loading" role="status">
+    <mat-icon>autorenew</mat-icon>
+    <span>{{ 'eventAdmin.loading' | translate }}</span>
   </div>
 
-  <div *ngIf="!loading">
+  <ng-container *ngIf="!loading">
 
-    <!-- Add / Edit form -->
+    <!-- ===== Add / Edit form ===== -->
     <app-section-card icon="event" [title]="editMode ? ('eventAdmin.editTitle' | translate) : ('eventAdmin.addTitle' | translate)" *ngIf="showForm">
-      <form class="entry-form" (ngSubmit)="submit()">
-        <div class="entry-form__row">
-          <div class="entry-form__dropzone">
-            <input type="file" id="eventFile" accept="image/*" (change)="onFileSelected($event)" />
-            <label for="eventFile" *ngIf="!previewUrl">
-              <mat-icon>add_a_photo</mat-icon>
+      <form (ngSubmit)="submit()">
+        <div class="form-layout">
+          <div class="photo-pick photo-pick--cover" [class.photo-pick--filled]="previewUrl">
+            <input type="file" id="eventFile" accept="image/*" (change)="onFileSelected($event)"
+              [attr.aria-label]="'eventAdmin.choosePhoto' | translate" />
+            <span class="photo-pick__empty" *ngIf="!previewUrl">
+              <mat-icon>add_photo_alternate</mat-icon>
               <span>{{ 'eventAdmin.choosePhoto' | translate }}</span>
-            </label>
-            <label for="eventFile" class="entry-form__preview" *ngIf="previewUrl">
-              <img [src]="previewUrl" alt="Preview" />
-            </label>
+            </span>
+            <ng-container *ngIf="previewUrl">
+              <img [src]="previewUrl" alt="" />
+              <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'eventAdmin.changePhoto' | translate }}</span>
+            </ng-container>
           </div>
 
-          <div class="entry-form__grid">
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formTitle' | translate }} <span class="required">*</span></label>
-              <input type="text" [(ngModel)]="form.title" name="title" required />
+          <div class="form-grid">
+            <div class="field field--full">
+              <label class="field__label" for="evTitle">{{ 'eventAdmin.formTitle' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+              <input id="evTitle" type="text" [(ngModel)]="form.title" name="title" required />
             </div>
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formEventDate' | translate }} <span class="required">*</span></label>
-              <input type="datetime-local" [(ngModel)]="form.eventDate" name="eventDate" required />
+            <div class="field">
+              <label class="field__label" for="evStart">{{ 'eventAdmin.formEventDate' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+              <input id="evStart" type="datetime-local" [(ngModel)]="form.eventDate" name="eventDate" required />
             </div>
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formEndDate' | translate }}</label>
-              <input type="datetime-local" [(ngModel)]="form.endDate" name="endDate" />
+            <div class="field">
+              <label class="field__label" for="evEnd">{{ 'eventAdmin.formEndDate' | translate }}</label>
+              <input id="evEnd" type="datetime-local" [(ngModel)]="form.endDate" name="endDate" />
             </div>
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formVenue' | translate }}</label>
-              <input type="text" [(ngModel)]="form.venue" name="venue" />
+            <div class="field">
+              <label class="field__label" for="evVenue">{{ 'eventAdmin.formVenue' | translate }}</label>
+              <input id="evVenue" type="text" [(ngModel)]="form.venue" name="venue" />
             </div>
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formOrganizer' | translate }}</label>
-              <input type="text" [(ngModel)]="form.organizerName" name="organizerName" />
+            <div class="field">
+              <label class="field__label" for="evOrganizer">{{ 'eventAdmin.formOrganizer' | translate }}</label>
+              <input id="evOrganizer" type="text" [(ngModel)]="form.organizerName" name="organizerName" />
             </div>
-            <div class="form-field">
-              <label>{{ 'eventAdmin.formRegistrationUrl' | translate }}</label>
-              <input type="url" [(ngModel)]="form.registrationUrl" name="registrationUrl" placeholder="https://" />
+            <div class="field field--full">
+              <label class="field__label" for="evRegistration">{{ 'eventAdmin.formRegistrationUrl' | translate }}</label>
+              <input id="evRegistration" type="url" [(ngModel)]="form.registrationUrl" name="registrationUrl" placeholder="https://" />
             </div>
-            <div class="form-field entry-form__full">
-              <label>{{ 'eventAdmin.formDescription' | translate }}</label>
-              <textarea rows="3" [(ngModel)]="form.description" name="description"></textarea>
+            <div class="field field--full">
+              <label class="field__label" for="evDescription">{{ 'eventAdmin.formDescription' | translate }}</label>
+              <textarea id="evDescription" rows="3" [(ngModel)]="form.description" name="description"></textarea>
             </div>
           </div>
         </div>
 
-        <div class="entry-form__actions">
-          <button type="button" class="btn btn--ghost" (click)="cancelForm()">{{ 'eventAdmin.cancelButton' | translate }}</button>
-          <button type="submit" class="btn btn--primary" [disabled]="saving">
+        <div class="form-actions">
+          <button type="button" class="btn btn--outline" (click)="cancelForm()">{{ 'eventAdmin.cancelButton' | translate }}</button>
+          <button type="submit" class="btn btn--solid" [disabled]="saving">
+            <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
             {{ saving ? ('eventAdmin.saving' | translate) : (editMode ? ('eventAdmin.updateButton' | translate) : ('eventAdmin.createButton' | translate)) }}
           </button>
         </div>
       </form>
     </app-section-card>
 
-    <!-- Toolbar + table -->
-    <app-section-card icon="event" [title]="'eventAdmin.cardTitle' | translate" [noPadding]="true">
+    <!-- ===== Toolbar + list ===== -->
+    <app-section-card icon="event_note" [title]="'eventAdmin.cardTitle' | translate" [noPadding]="true">
 
-      <div class="events-toolbar">
-        <div class="filter-field">
+      <div class="toolbar">
+        <div class="field search">
           <mat-icon>search</mat-icon>
-          <input type="text" [placeholder]="'eventAdmin.searchPlaceholder' | translate" [(ngModel)]="searchTerm"
-            (ngModelChange)="filterEvents()" />
+          <input type="search" [placeholder]="'eventAdmin.searchPlaceholder' | translate" [(ngModel)]="searchTerm"
+            (ngModelChange)="filterEvents()" [attr.aria-label]="'eventAdmin.searchPlaceholder' | translate" />
         </div>
-
-        <button type="button" class="btn btn--primary" (click)="openAddForm()" *ngIf="!showForm">
-          <mat-icon>add</mat-icon> {{ 'eventAdmin.addButton' | translate }}
-        </button>
       </div>
 
-      <!-- Desktop Table -->
-      <div class="table-wrapper desktop-only" *ngIf="pagedEvents.length">
-        <table class="events-table">
-          <thead>
-            <tr>
-              <th>{{ 'eventAdmin.colTitle' | translate }}</th>
-              <th>{{ 'eventAdmin.colDate' | translate }}</th>
-              <th>{{ 'eventAdmin.colVenue' | translate }}</th>
-              <th>{{ 'eventAdmin.colStatus' | translate }}</th>
-              <th class="text-right">{{ 'eventAdmin.colActions' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let ev of pagedEvents">
-              <td>{{ ev.title }}</td>
-              <td>{{ ev.eventDate | date:'d MMMM y, h:mm a' }}</td>
-              <td>{{ ev.venue || '—' }}</td>
-              <td>
-                <span class="status-badge" [class]="'status-badge--' + eventStatus(ev)">
-                  {{ ('eventAdmin.status' + (eventStatus(ev) | titlecase)) | translate }}
-                </span>
-              </td>
-              <td class="events-table__actions">
-                <button type="button" (click)="startEdit(ev)" [attr.aria-label]="'eventAdmin.editAriaLabel' | translate">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button type="button" [disabled]="deletingId === ev.id" (click)="confirmDelete(ev)"
-                  [attr.aria-label]="'eventAdmin.deleteAriaLabel' | translate">
-                  <mat-icon>{{ deletingId === ev.id ? 'hourglass_top' : 'delete' }}</mat-icon>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ul class="events" *ngIf="pagedEvents.length">
+        <li class="ev" *ngFor="let ev of pagedEvents" [ngClass]="'ev--' + eventStatus(ev)">
+          <div class="pp-date" aria-hidden="true">
+            <span class="pp-date__day">{{ eventDay(ev) }}</span>
+            <span class="pp-date__month">{{ eventMonth(ev) }}</span>
+          </div>
 
-      <!-- Mobile Cards -->
-      <div class="mobile-only" *ngIf="pagedEvents.length">
-        <div class="event-card" *ngFor="let ev of pagedEvents">
-          <div class="card-header">
-            <span class="title">{{ ev.title }}</span>
-            <span class="status-badge" [class]="'status-badge--' + eventStatus(ev)">
-              {{ ('eventAdmin.status' + (eventStatus(ev) | titlecase)) | translate }}
+          <div class="ev__body">
+            <span class="ev__title">{{ ev.title }}</span>
+            <span class="ev__meta">
+              <span class="ev__meta-item">
+                <mat-icon aria-hidden="true">schedule</mat-icon>
+                <span class="sr-only">{{ 'eventAdmin.colDate' | translate }}:</span>
+                <time [attr.datetime]="ev.eventDate">{{ eventWhen(ev) }}</time>
+              </span>
+              <span class="ev__meta-item">
+                <mat-icon aria-hidden="true">place</mat-icon>
+                <span class="sr-only">{{ 'eventAdmin.colVenue' | translate }}:</span>
+                {{ ev.venue || '—' }}
+              </span>
             </span>
           </div>
-          <div class="card-dates">
-            <span>{{ ev.eventDate | date:'d MMMM y, h:mm a' }}</span>
-            <span *ngIf="ev.venue">{{ ev.venue }}</span>
+
+          <div class="ev__side">
+            <span class="pill" [ngClass]="'pill--' + eventStatus(ev)">
+              {{ ('eventAdmin.status' + (eventStatus(ev) | titlecase)) | translate }}
+            </span>
+            <div class="ev__actions">
+              <button type="button" class="icon-btn" (click)="startEdit(ev)"
+                [attr.aria-label]="'eventAdmin.editAriaLabel' | translate" [attr.title]="'eventAdmin.editAriaLabel' | translate">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button type="button" class="icon-btn icon-btn--danger" [disabled]="deletingId === ev.id" (click)="confirmDelete(ev)"
+                [attr.aria-label]="'eventAdmin.deleteAriaLabel' | translate" [attr.title]="'eventAdmin.deleteAriaLabel' | translate">
+                <mat-icon>{{ deletingId === ev.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+              </button>
+            </div>
           </div>
-          <div class="card-actions">
-            <button type="button" (click)="startEdit(ev)" [attr.aria-label]="'eventAdmin.editAriaLabel' | translate">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button type="button" [disabled]="deletingId === ev.id" (click)="confirmDelete(ev)"
-              [attr.aria-label]="'eventAdmin.deleteAriaLabel' | translate">
-              <mat-icon>{{ deletingId === ev.id ? 'hourglass_top' : 'delete' }}</mat-icon>
-            </button>
-          </div>
-        </div>
-      </div>
+        </li>
+      </ul>
 
       <app-empty-state *ngIf="!pagedEvents.length" icon="event_busy" [title]="'eventAdmin.emptyTitle' | translate"
         [message]="'eventAdmin.emptyMessage' | translate"></app-empty-state>
 
       <!-- Pagination -->
-      <nav class="events-pagination" *ngIf="totalPages > 1">
-        <button type="button" [disabled]="currentPage === 1" (click)="prevPage()">
+      <nav class="pager" *ngIf="totalPages > 1" [attr.aria-label]="'eventAdmin.paginationLabel' | translate">
+        <button type="button" class="icon-btn" [disabled]="currentPage === 1" (click)="prevPage()"
+          [attr.aria-label]="'eventAdmin.prevPage' | translate">
           <mat-icon>chevron_left</mat-icon>
         </button>
         <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button type="button" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        <button type="button" class="icon-btn" [disabled]="currentPage === totalPages" (click)="nextPage()"
+          [attr.aria-label]="'eventAdmin.nextPage' | translate">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </nav>
 
     </app-section-card>
-  </div>
+  </ng-container>
 
 </div>

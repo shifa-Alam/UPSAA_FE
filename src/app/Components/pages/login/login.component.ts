@@ -49,10 +49,10 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
 
-        if (this.authService.hasRole('SuperAdmin')) {
-          this.router.navigate(['/dashboard']); // admin dashboard
+        if (this.authService.isStaff()) {
+          this.router.navigate(['/dashboard/home']); // back-office welcome screen
         } else {
-          this.router.navigate(['/member-dashboard']); // regular member
+          this.router.navigate(['/portal/home']); // alumni portal welcome screen
         }
       },
       error: (err) => {

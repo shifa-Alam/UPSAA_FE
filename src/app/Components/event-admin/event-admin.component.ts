@@ -76,6 +76,26 @@ export class EventAdminComponent implements OnInit {
     return 'ongoing';
   }
 
+  // ---- Display helpers for the date tile / meta line (locale follows the UI language) ----
+  private get locale(): string {
+    return this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+  }
+
+  eventDay(ev: EventItem): string {
+    return new Intl.DateTimeFormat(this.locale, { day: '2-digit' }).format(new Date(ev.eventDate));
+  }
+
+  eventMonth(ev: EventItem): string {
+    return new Intl.DateTimeFormat(this.locale, { month: 'short' }).format(new Date(ev.eventDate));
+  }
+
+  eventWhen(ev: EventItem): string {
+    const d = new Date(ev.eventDate);
+    const date = new Intl.DateTimeFormat(this.locale, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+    const time = new Intl.DateTimeFormat(this.locale, { hour: 'numeric', minute: '2-digit' }).format(d);
+    return `${date} · ${time}`;
+  }
+
   openAddForm(): void {
     this.editMode = false;
     this.editingId = null;

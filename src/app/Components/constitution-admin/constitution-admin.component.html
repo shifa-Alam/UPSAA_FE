@@ -1,0 +1,78 @@
+<div class="constitution-admin">
+
+  <app-admin-header [title]="'constitutionAdmin.title' | translate" [subtitle]="'constitutionAdmin.subtitle' | translate"></app-admin-header>
+
+  <div class="note note--danger" *ngIf="!loading && apiMissing" role="alert">
+    <mat-icon>dns</mat-icon>
+    <div>
+      <strong>{{ 'constitutionAdmin.apiMissingTitle' | translate }}</strong>
+      <span>{{ 'constitutionAdmin.apiMissingBody' | translate }}</span>
+    </div>
+  </div>
+
+  <div class="note note--warn" *ngIf="!loading && loadFailed">
+    <mat-icon>cloud_off</mat-icon>
+    <span>{{ 'constitutionAdmin.unavailable' | translate }}</span>
+  </div>
+
+  <!-- ===== Current document ===== -->
+  <app-section-card icon="gavel" [title]="'constitutionAdmin.currentTitle' | translate">
+    <div class="state" *ngIf="loading">
+      <mat-icon class="spin">autorenew</mat-icon>
+    </div>
+
+    <p class="state state--empty" *ngIf="!loading && !current">{{ 'constitutionAdmin.none' | translate }}</p>
+
+    <div class="doc" *ngIf="!loading && current">
+      <span class="doc__icon"><mat-icon>picture_as_pdf</mat-icon></span>
+      <div class="doc__info">
+        <span class="doc__name">{{ current.fileName || ('constitutionAdmin.defaultName' | translate) }}</span>
+        <span class="doc__meta">
+          {{ 'constitutionAdmin.uploadedOn' | translate }} {{ uploadedOn(current) }}
+          <ng-container *ngIf="current.uploadedByName"> · {{ current.uploadedByName }}</ng-container>
+        </span>
+      </div>
+      <div class="doc__actions">
+        <button type="button" class="btn btn--outline" (click)="view()">
+          <mat-icon>open_in_new</mat-icon>{{ 'constitutionAdmin.view' | translate }}
+        </button>
+        <button type="button" class="btn btn--danger" (click)="remove()" [disabled]="deleting">
+          <mat-icon>{{ deleting ? 'hourglass_top' : 'delete' }}</mat-icon>{{ 'constitutionAdmin.delete' | translate }}
+        </button>
+      </div>
+    </div>
+  </app-section-card>
+
+  <!-- ===== Upload / replace ===== -->
+  <app-section-card icon="upload_file"
+    [title]="(current ? 'constitutionAdmin.replaceTitle' : 'constitutionAdmin.uploadTitle') | translate"
+    [subtitle]="'constitutionAdmin.uploadHint' | translate">
+    <label class="drop" [class.drop--picked]="selectedFile" [class.drop--disabled]="apiMissing">
+      <input type="file" accept="application/pdf,.pdf" (change)="onFileSelected($event)" [disabled]="uploading || apiMissing" />
+      <mat-icon class="drop__icon">{{ selectedFile ? 'task' : 'upload_file' }}</mat-icon>
+      <ng-container *ngIf="!selectedFile; else pickedFile">
+        <span class="drop__title">{{ 'constitutionAdmin.choose' | translate }}</span>
+        <span class="drop__hint">{{ 'constitutionAdmin.limit' | translate }}</span>
+      </ng-container>
+      <ng-template #pickedFile>
+        <span class="drop__title">{{ selectedFile!.name }}</span>
+        <span class="drop__hint">{{ formatSize(selectedFile!.size) }} · {{ 'constitutionAdmin.changeFile' | translate }}</span>
+      </ng-template>
+    </label>
+
+    <p class="replace-note" *ngIf="current && selectedFile">
+      <mat-icon>info</mat-icon>{{ 'constitutionAdmin.replaceWarning' | translate }}
+    </p>
+
+    <div class="actions">
+      <button type="button" class="btn btn--outline" *ngIf="selectedFile" (click)="clearSelection()" [disabled]="uploading">
+        {{ 'constitutionAdmin.cancel' | translate }}
+      </button>
+      <button type="button" class="btn btn--solid" (click)="upload()" [disabled]="!selectedFile || uploading || apiMissing">
+        <mat-icon>{{ uploading ? 'hourglass_top' : 'cloud_upload' }}</mat-icon>
+        {{ (uploading ? 'constitutionAdmin.uploading' : 'constitutionAdmin.uploadButton') | translate }}
+      </button>
+    </div>
+  </app-section-card>
+
+</div>

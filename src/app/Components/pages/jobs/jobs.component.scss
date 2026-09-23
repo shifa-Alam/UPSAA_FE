@@ -7,14 +7,14 @@
 }
 
 .jobs-body {
-  padding-bottom: clamp(56px, 8vw, 96px);
+  padding-bottom: clamp(32px, 5vw, 56px);
 }
 
 .jobs-main {
   max-width: 880px;
   margin: 0 auto;
-  min-height: 320px;
-  padding-top: clamp(32px, 5vw, 56px);
+  min-height: 220px;
+  padding-top: clamp(20px, 3vw, 36px);
 }
 
 // ---------------------------- Toolbar ----------------------------
@@ -90,7 +90,7 @@
 // ---------------------------- Form ----------------------------
 .job-form {
   margin-bottom: var(--space-7);
-  padding: clamp(24px, 4vw, 40px);
+  padding: clamp(16px, 2.6vw, 28px);
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-xl);
@@ -118,7 +118,7 @@
 
 .job-form__title {
   margin: 0;
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(19px, 2.4vw, 24px);
   line-height: 1.2;
 }
 
@@ -325,7 +325,7 @@
 .job__title {
   margin: var(--space-1) 0 0;
   font-family: var(--font-display);
-  font-size: clamp(19px, 2.4vw, 23px);
+  font-size: clamp(16px, 1.8vw, 19px);
   font-weight: 700;
   line-height: 1.25;
   color: var(--color-ink-900);
@@ -538,4 +538,9 @@
   .job:hover {
     transform: none;
   }
+}
+
+// Inside the sidebar shell the header is compact, so the toolbar no longer floats over it.
+:host-context(.shell-content) .tools {
+  margin-top: var(--space-5);
 }

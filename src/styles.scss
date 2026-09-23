@@ -41,6 +41,47 @@ html {
 
   --mat-card-title-text-color: var(--color-ink-900);
   --mat-card-subtitle-text-color: var(--color-ink-600);
+
+  // ---- Compact density (roughly Material density -2) ----
+  --mat-form-field-container-height: 44px;
+  --mat-form-field-container-vertical-padding: 10px;
+  --mat-form-field-filled-with-label-container-padding-top: 16px;
+  --mat-form-field-filled-with-label-container-padding-bottom: 4px;
+
+  --mdc-filled-button-container-height: 36px;
+  --mdc-outlined-button-container-height: 36px;
+  --mdc-protected-button-container-height: 36px;
+  --mdc-text-button-container-height: 36px;
+  --mat-filled-button-horizontal-padding: 18px;
+  --mat-outlined-button-horizontal-padding: 18px;
+  --mat-protected-button-horizontal-padding: 18px;
+
+  --mdc-icon-button-state-layer-size: 36px;
+  --mdc-checkbox-state-layer-size: 32px;
+  --mdc-radio-state-layer-size: 32px;
+  --mdc-chip-container-height: 28px;
+
+  --mat-table-header-container-height: 44px;
+  --mat-table-row-item-container-height: 42px;
+  --mat-table-footer-container-height: 42px;
+
+  --mdc-list-list-item-one-line-container-height: 40px;
+  --mdc-list-list-item-two-line-container-height: 56px;
+  --mdc-secondary-navigation-tab-container-height: 40px;
+  --mat-expansion-header-collapsed-state-height: 44px;
+  --mat-expansion-header-expanded-state-height: 52px;
+  --mat-stepper-header-height: 56px;
+  --mat-standard-button-toggle-height: 34px;
+
+  --mat-dialog-headline-padding: 6px 20px 10px;
+  --mat-dialog-content-padding: 16px 20px;
+  --mat-dialog-with-actions-content-padding: 16px 20px 0;
+  --mat-dialog-actions-padding: 12px 20px;
+}
+
+.mat-mdc-option,
+.mat-mdc-menu-item {
+  min-height: 40px !important;
 }
 
 .mat-mdc-card {
@@ -159,6 +200,16 @@ p {
   margin: 0 0 var(--space-3);
   color: var(--color-ink-600);
   line-height: var(--line-height-normal);
+}
+
+/* Phones: form text at 16px or more, or iOS zooms the page on focus. !important
+   because every component sizes its own fields; this must win over all of them. */
+@media (max-width: 768px) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='file']),
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
 }
 
 /* Reusable page-section container so every page shares one max-width/gutters */

@@ -1,213 +1,264 @@
-<div class="page-body">
-  <app-admin-header [title]="'memberLanding.pageTitle' | translate" [subtitle]="'memberLanding.pageSubtitle' | translate"></app-admin-header>
-</div>
+<div class="members">
+  <app-admin-header [title]="'memberLanding.pageTitle' | translate" [subtitle]="'memberLanding.pageSubtitle' | translate">
+    <button type="button" class="btn btn--solid header-btn" *ngIf="isSuperAdmin()" (click)="makeUserOfAllCtiveMember()">
+      <mat-icon>person_add</mat-icon> {{ 'memberLanding.createUsersButton' | translate }}
+    </button>
+  </app-admin-header>
 
-<mat-tab-group (selectedTabChange)="onTabChange($event)">
-  <!-- Overview Tab -->
-  <mat-tab [label]="'memberLanding.overviewTab' | translate">
-    <div class="page-body">
+  <mat-tab-group class="members-tabs" (selectedTabChange)="onTabChange($event)">
+    <!-- ===== Overview ===== -->
+    <mat-tab [label]="'memberLanding.overviewTab' | translate">
+      <div class="tab-body">
 
-      <!-- Summary Cards -->
-      <div class="stat-row">
-        <app-stat-card icon="groups" [label]="'memberLanding.statMembers' | translate" [value]="totalItems" tone="primary"></app-stat-card>
-        <app-stat-card icon="credit_card" [label]="'memberLanding.statMembership' | translate" value="৳ {{ totalMembershipAmount | number:'1.0-0' }}" tone="accent"></app-stat-card>
-        <app-stat-card icon="favorite" [label]="'memberLanding.statDonation' | translate" value="৳ {{ totalDonationAmount | number:'1.0-0' }}" tone="neutral"></app-stat-card>
-        <app-stat-card icon="payments" [label]="'memberLanding.statTotalAmount' | translate" value="৳ {{ totalAmount | number:'1.0-0' }}" tone="primary"></app-stat-card>
-      </div>
+        <!-- Summary -->
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>groups</mat-icon></span>
+            <span class="stat__value">{{ totalItems | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statMembers' | translate }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>credit_card</mat-icon></span>
+            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalMembershipAmount | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statMembership' | translate }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>favorite</mat-icon></span>
+            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalDonationAmount | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statDonation' | translate }}</span>
+          </div>
+          <div class="stat stat--total">
+            <span class="stat__icon"><mat-icon>payments</mat-icon></span>
+            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalAmount | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statTotalAmount' | translate }}</span>
+          </div>
+        </div>
 
-      <app-section-card icon="groups" [title]="'memberLanding.overviewTab' | translate" [noPadding]="true">
+        <app-section-card icon="groups" [title]="'memberLanding.directoryTitle' | translate" [noPadding]="true">
 
-        <div class="member-toolbar">
-          <div class="member-filters">
-            <div class="filter-field">
+          <!-- Filters -->
+          <div class="filters">
+            <label class="filter filter--grow">
               <mat-icon>search</mat-icon>
-              <input type="text" [placeholder]="'memberLanding.filterName' | translate" [(ngModel)]="filter.fullName" (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-field">
+              <input type="text" [placeholder]="'memberLanding.filterName' | translate" [attr.aria-label]="'memberLanding.filterName' | translate"
+                [(ngModel)]="filter.fullName" (ngModelChange)="applyFilter()" />
+            </label>
+            <label class="filter filter--grow">
               <mat-icon>call</mat-icon>
-              <input type="text" [placeholder]="'memberLanding.filterPhoneEmail' | translate" [(ngModel)]="filter.phoneOrEmail" (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-field">
+              <input type="text" [placeholder]="'memberLanding.filterPhoneEmail' | translate" [attr.aria-label]="'memberLanding.filterPhoneEmail' | translate"
+                [(ngModel)]="filter.phoneOrEmail" (ngModelChange)="applyFilter()" />
+            </label>
+            <label class="filter filter--batch">
               <mat-icon>calendar_today</mat-icon>
-              <input type="number" [placeholder]="'memberLanding.filterBatch' | translate" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
-            </div>
-            <div class="filter-field">
+              <input type="number" [placeholder]="'memberLanding.filterBatch' | translate" [attr.aria-label]="'memberLanding.filterBatch' | translate"
+                [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
+            </label>
+            <label class="filter">
               <mat-icon>place</mat-icon>
-              <input type="text" [placeholder]="'memberLanding.filterCity' | translate" [(ngModel)]="filter.currentCity" (ngModelChange)="applyFilter()" />
-            </div>
-            <select class="filter-select" [(ngModel)]="filter.gender" (ngModelChange)="applyFilter()">
+              <input type="text" [placeholder]="'memberLanding.filterCity' | translate" [attr.aria-label]="'memberLanding.filterCity' | translate"
+                [(ngModel)]="filter.currentCity" (ngModelChange)="applyFilter()" />
+            </label>
+            <select class="filter-select" [attr.aria-label]="'memberLanding.allGenders' | translate" [(ngModel)]="filter.gender" (ngModelChange)="applyFilter()">
               <option [ngValue]="null" selected>{{ 'memberLanding.allGenders' | translate }}</option>
               <option value="Male">{{ 'memberLanding.male' | translate }}</option>
               <option value="Female">{{ 'memberLanding.female' | translate }}</option>
             </select>
-            <select class="filter-select" [(ngModel)]="filter.bloodGroup" (ngModelChange)="applyFilter()">
+            <select class="filter-select" [attr.aria-label]="'memberLanding.allBloodGroups' | translate" [(ngModel)]="filter.bloodGroup" (ngModelChange)="applyFilter()">
               <option value="" selected>{{ 'memberLanding.allBloodGroups' | translate }}</option>
               <option *ngFor="let bg of bloodGroups" [value]="bg">{{ bg }}</option>
             </select>
-            <select class="filter-select" [(ngModel)]="filter.active" (ngModelChange)="applyFilter()">
+            <select class="filter-select" [attr.aria-label]="'memberLanding.allMembers' | translate" [(ngModel)]="filter.active" (ngModelChange)="applyFilter()">
               <option [ngValue]="null" selected>{{ 'memberLanding.allMembers' | translate }}</option>
               <option [ngValue]="true">{{ 'memberLanding.activeMembers' | translate }}</option>
               <option [ngValue]="false">{{ 'memberLanding.inactiveMembers' | translate }}</option>
             </select>
-            <button type="button" class="filter-reset" (click)="resetFilters()" [title]="'memberLanding.resetFilters' | translate">
+            <button type="button" class="btn btn--ghost filter-reset" (click)="resetFilters()" [title]="'memberLanding.resetFilters' | translate">
               <mat-icon>restart_alt</mat-icon>
+              <span>{{ 'memberLanding.resetFilters' | translate }}</span>
             </button>
           </div>
 
-          <button type="button" class="btn btn--primary" *ngIf="isSuperAdmin()" (click)="makeUserOfAllCtiveMember()">
-            <mat-icon>person_add</mat-icon> {{ 'memberLanding.createUsersButton' | translate }}
-          </button>
+          <!-- Loader -->
+          <div class="loader" *ngIf="loading">
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter="40"></mat-progress-spinner>
+          </div>
+
+          <!-- Members table -->
+          <div class="table-scroll">
+            <table class="data-table members-table">
+              <thead>
+                <tr>
+                  <th class="col-batch" *ngIf="!isMobile">{{ 'memberLanding.colBatch' | translate }}</th>
+                  <th class="col-name">{{ 'memberLanding.colName' | translate }}</th>
+                  <th class="col-phone">{{ 'memberLanding.colMemberCode' | translate }}</th>
+                  <th class="col-city">{{ 'memberLanding.colCity' | translate }}</th>
+                  <th class="col-blood">{{ 'memberLanding.colBloodGroup' | translate }}</th>
+                  <th class="num" *ngIf="isSuperAdmin()">{{ 'memberLanding.colTotal' | translate }}</th>
+                  <th class="col-manage" *ngIf="isSuperAdmin() || isRepresentative()">{{ 'memberLanding.colManage' | translate }}</th>
+                  <th class="text-right">{{ 'memberLanding.colAction' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let member of members" [class.row--attention]="member.statusId == 'Pending'">
+                  <td class="col-batch" *ngIf="!isMobile">{{ member.batch }}</td>
+                  <td class="col-name">
+                    <span class="member-name">
+                      <span class="strong">{{ member.fullName }}</span>
+                      <mat-icon *ngIf="member.active" class="verified" [title]="'memberLanding.memberActive' | translate">verified</mat-icon>
+                    </span>
+                  </td>
+                  <td class="col-phone mono">{{ member.memberCode }}</td>
+                  <td class="col-city">{{ member.currentCity }}</td>
+                  <td class="col-blood">{{ member.bloodGroup }}</td>
+                  <td class="num" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}</td>
+
+                  <td class="col-manage" *ngIf="isSuperAdmin() || isRepresentative()">
+                    <div class="manage">
+                      <!-- Representative: request activation for own batch -->
+                      <button type="button" class="icon-btn icon-btn--request"
+                        *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null) && (member.batch == batch)"
+                        (click)="sendActiveReq(member.id)"
+                        [attr.aria-label]="'memberLanding.activationRequestTooltip' | translate" [title]="'memberLanding.activationRequestTooltip' | translate">
+                        <mat-icon>send</mat-icon>
+                      </button>
+                      <span class="pill pill--attention" *ngIf="isRepresentative() && member.statusId == 'Pending'">
+                        {{ 'memberLanding.memberPending' | translate }}
+                      </span>
+
+                      <!-- SuperAdmin: accept pending request -->
+                      <ng-container *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
+                        <span class="pill pill--attention" *ngIf="!isRepresentative()">{{ 'memberLanding.memberPending' | translate }}</span>
+                        <button type="button" class="icon-btn icon-btn--accept" (click)="approveRequest(member.id)"
+                          [attr.aria-label]="'memberLanding.acceptTooltip' | translate" [title]="'memberLanding.acceptTooltip' | translate">
+                          <mat-icon>check_circle</mat-icon>
+                        </button>
+                      </ng-container>
+
+                      <!-- SuperAdmin: activate directly -->
+                      <button type="button" class="icon-btn icon-btn--activate" *ngIf="isSuperAdmin() && member.statusId == null"
+                        (click)="activeDirectly(member.id)"
+                        [attr.aria-label]="'memberLanding.activateTooltip' | translate" [title]="'memberLanding.activateTooltip' | translate">
+                        <mat-icon>bolt</mat-icon>
+                      </button>
+
+                      <span class="pill pill--success" *ngIf="member.active && isSuperAdmin()">{{ 'memberLanding.memberActive' | translate }}</span>
+                    </div>
+                  </td>
+
+                  <td class="text-right">
+                    <button type="button" class="icon-btn" (click)="viewMemberDetails(member)"
+                      [attr.aria-label]="'memberLanding.detailsTooltip' | translate" [title]="'memberLanding.detailsTooltip' | translate">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <nav class="pager" *ngIf="totalPages > 1" [attr.aria-label]="'memberLanding.paginationLabel' | translate">
+            <button type="button" class="pager__step" [disabled]="pageNumber === 1" (click)="onPageChange(pageNumber - 1)"
+              [attr.aria-label]="'memberLanding.previous' | translate">
+              <mat-icon>chevron_left</mat-icon>
+            </button>
+
+            <button type="button" class="pager__page" [class.is-active]="pageNumber === 1" (click)="onPageChange(1)">1</button>
+            <span *ngIf="pageNumber > 3" class="pager__gap">…</span>
+            <button type="button" class="pager__page" *ngFor="let p of getMiddlePages()" [class.is-active]="pageNumber === p"
+              (click)="onPageChange(p)">{{ p }}</button>
+            <span *ngIf="pageNumber < totalPages - 2" class="pager__gap">…</span>
+            <button type="button" class="pager__page" [class.is-active]="pageNumber === totalPages" (click)="onPageChange(totalPages)">{{ totalPages }}</button>
+
+            <button type="button" class="pager__step" [disabled]="pageNumber === totalPages" (click)="onPageChange(pageNumber + 1)"
+              [attr.aria-label]="'memberLanding.next' | translate">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </nav>
+
+        </app-section-card>
+      </div>
+    </mat-tab>
+
+    <!-- ===== Batch summary ===== -->
+    <mat-tab [label]="'memberLanding.batchSummaryTab' | translate">
+      <div class="tab-body">
+
+        <div class="stats" *ngIf="batchSummaries.length > 0">
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>school</mat-icon></span>
+            <span class="stat__value">{{ batchSummaries.length | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statBatches' | translate }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>how_to_reg</mat-icon></span>
+            <span class="stat__value">{{ batchTotals.registered | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statRegistered' | translate }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>payments</mat-icon></span>
+            <span class="stat__value"><span class="stat__cur">৳</span>{{ batchTotals.amount | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statBatchAmount' | translate }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat__icon"><mat-icon>task_alt</mat-icon></span>
+            <span class="stat__value">{{ batchTotals.fullyPaid | number:'1.0-0' }}</span>
+            <span class="stat__label">{{ 'memberLanding.statFullyPaidBatches' | translate }}</span>
+          </div>
         </div>
 
-        <!-- Loader Overlay -->
-        <div class="loader-overlay" *ngIf="loading">
-          <mat-progress-spinner color="primary" mode="indeterminate" diameter="48"></mat-progress-spinner>
-        </div>
+        <app-section-card icon="bar_chart" [title]="'memberLanding.batchSummaryTab' | translate"
+          [subtitle]="'(২০০৩ - ' + currentYear + ')'" [noPadding]="true">
 
-        <!-- Members Table -->
-        <div class="table-container">
-          <table class="members-table">
-            <thead>
-              <tr>
-                <th class="batch-column" *ngIf="!isMobile">{{ 'memberLanding.colBatch' | translate }}</th>
-                <th class="col-name">{{ 'memberLanding.colName' | translate }}</th>
-                <th class="col-phone">{{ 'memberLanding.colMemberCode' | translate }}</th>
-                <th class="col-city">{{ 'memberLanding.colCity' | translate }}</th>
-                <th class="col-blood">{{ 'memberLanding.colBloodGroup' | translate }}</th>
-                <th class="col-total" *ngIf="isSuperAdmin()">{{ 'memberLanding.colTotal' | translate }}</th>
-                <th class="col-total" *ngIf="isSuperAdmin()">{{ 'memberLanding.colManage' | translate }}</th>
-                <th class="text-right">{{ 'memberLanding.colAction' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let member of members" class="member-row">
-                <td class="batch-column" *ngIf="!isMobile">
-                  {{ member.batch }}
-                </td>
-                <td class="col-name">
-                  <span *ngIf="member.active" class="verified-badge">
-                    <mat-icon class="badge-icon">verified</mat-icon>
-                  </span>
-                  {{ member.fullName }}
-                </td>
+          <div class="loader" *ngIf="loading">
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter="40"></mat-progress-spinner>
+          </div>
 
-                <td class="col-phone">{{ member.memberCode }}</td>
-                <td class="col-city">{{ member.currentCity }}</td>
-                <td class="col-blood">{{ member.bloodGroup }}</td>
-                <td class="col-total" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}
-                </td>
-                <td class="members-table__actions"
-                  *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null)&& (member.batch==batch)">
-                  <button type="button" class="members-table__action--request" (click)="sendActiveReq(member.id)"
-                    [attr.aria-label]="'memberLanding.activationRequestTooltip' | translate" [title]="'memberLanding.activationRequestTooltip' | translate">
-                    <mat-icon>send</mat-icon>
-                  </button>
-                </td>
-                <td class="col-name" *ngIf="isRepresentative() && member.statusId == 'Pending'">
-                  <mat-icon color="warn">hourglass_empty</mat-icon>
-                </td>
-
-                <!-- Accept button -->
-                <td class="members-table__actions" *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
-                  <button type="button" class="members-table__action--accept" (click)="approveRequest(member.id)"
-                    [attr.aria-label]="'memberLanding.acceptTooltip' | translate" [title]="'memberLanding.acceptTooltip' | translate">
-                    <mat-icon>check_circle</mat-icon>
-                  </button>
-                </td>
-
-                <!-- Activate button -->
-                <td class="members-table__actions" *ngIf="isSuperAdmin() && member.statusId == null">
-                  <button type="button" class="members-table__action--activate" (click)="activeDirectly(member.id)"
-                    [attr.aria-label]="'memberLanding.activateTooltip' | translate" [title]="'memberLanding.activateTooltip' | translate">
-                    <mat-icon>bolt</mat-icon>
-                  </button>
-                </td>
-
-                <td class="col-name" *ngIf="member.active &&  isSuperAdmin()">
-                  <mat-icon class="members-table__active-icon">check_circle</mat-icon>
-                </td>
-
-                <td class="members-table__actions text-right">
-                  <button type="button" (click)="viewMemberDetails(member)" [attr.aria-label]="'memberLanding.detailsTooltip' | translate"
-                    [title]="'memberLanding.detailsTooltip' | translate">
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <nav class="members-pagination" *ngIf="totalPages > 1">
-          <button type="button" [disabled]="pageNumber === 1" (click)="onPageChange(pageNumber - 1)">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
-
-          <button type="button" class="page-number" [class.active]="pageNumber === 1" (click)="onPageChange(1)">1</button>
-          <span *ngIf="pageNumber > 3" class="ellipsis">…</span>
-          <button type="button" class="page-number" *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p"
-            (click)="onPageChange(p)">{{ p }}</button>
-          <span *ngIf="pageNumber < totalPages - 2" class="ellipsis">…</span>
-          <button type="button" class="page-number" [class.active]="pageNumber === totalPages" (click)="onPageChange(totalPages)">{{ totalPages }}</button>
-
-          <button type="button" [disabled]="pageNumber === totalPages" (click)="onPageChange(pageNumber + 1)">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </nav>
-
-      </app-section-card>
-    </div>
-  </mat-tab>
-
-  <!-- Batch Summary Tab -->
-  <mat-tab [label]="'memberLanding.batchSummaryTab' | translate">
-    <div class="page-body">
-      <app-section-card icon="bar_chart" [title]="'memberLanding.batchSummaryTab' | translate"
-        [subtitle]="'(২০০৩ - ' + currentYear + ')'" [noPadding]="true">
-
-        <div class="loader-overlay" *ngIf="loading">
-          <mat-progress-spinner color="primary" mode="indeterminate" diameter="48"></mat-progress-spinner>
-        </div>
-
-        <div class="table-container" *ngIf="batchSummaries.length > 0; else noData">
-          <table class="members-table">
-            <thead>
-              <tr>
-                <th>{{ 'memberLanding.colBatch' | translate }}</th>
-                <th>{{ 'memberLanding.colRegistered' | translate }}</th>
-                <th>{{ 'memberLanding.colAmountBdt' | translate }}</th>
-                <th>{{ 'memberLanding.colPercentPaid' | translate }}</th>
-                <th>{{ 'memberLanding.colStatus' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let batch of batchSummaries; let i = index" class="batch-row"
-                [ngClass]="{'top-1': i === 0, 'top-2': i === 1, 'top-3': i === 2}">
-                <td>{{ batch.batch }}</td>
-                <td>{{ batch.registeredMembers }}</td>
-                <td>{{ batch.totalAmount | number:'1.0-0' }}</td>
-                <td>
-                  <div class="progress-container">
-                    <mat-progress-bar mode="determinate" [value]="batch.percentagePaid" [color]="batch.progressColor" class="progress-bar">
-                    </mat-progress-bar>
-                    <span class="percentage-text">{{ batch.percentagePaid }}%</span>
-                  </div>
-                </td>
-                <td>
-                  <span class="status-badge" [ngClass]="{'full-paid': batch.percentagePaid===100, 'pending': batch.percentagePaid<100}">
-                    {{ getStatusBadgeLabel(batch.statusBadge) }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <ng-template #noData>
-          <div class="no-data">{{ 'memberLanding.noBatchData' | translate }}</div>
-        </ng-template>
-      </app-section-card>
-    </div>
-  </mat-tab>
-
-</mat-tab-group>
+          <div class="table-scroll" *ngIf="batchSummaries.length > 0; else noData">
+            <table class="data-table batch-table">
+              <thead>
+                <tr>
+                  <th>{{ 'memberLanding.colBatch' | translate }}</th>
+                  <th class="num">{{ 'memberLanding.colRegistered' | translate }}</th>
+                  <th class="num">{{ 'memberLanding.colAmountBdt' | translate }}</th>
+                  <th>{{ 'memberLanding.colPercentPaid' | translate }}</th>
+                  <th>{{ 'memberLanding.colStatus' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let batch of batchSummaries; let i = index"
+                  [ngClass]="{'top-1': i === 0, 'top-2': i === 1, 'top-3': i === 2}">
+                  <td>
+                    <span class="batch-cell">
+                      <span class="rank" *ngIf="i < 3">{{ i + 1 }}</span>
+                      <span class="strong">{{ batch.batch }}</span>
+                    </span>
+                  </td>
+                  <td class="num">{{ batch.registeredMembers }}</td>
+                  <td class="num">{{ batch.totalAmount | number:'1.0-0' }}</td>
+                  <td>
+                    <div class="meter" [attr.aria-label]="batch.percentagePaid + '%'">
+                      <span class="meter__track">
+                        <span class="meter__fill" [ngClass]="'meter__fill--' + (batch.progressColor || 'primary')"
+                          [style.width.%]="batch.percentagePaid > 100 ? 100 : batch.percentagePaid"></span>
+                      </span>
+                      <span class="meter__value">{{ batch.percentagePaid }}%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="pill" [ngClass]="batch.percentagePaid === 100 ? 'pill--success' : (batch.percentagePaid > 0 ? 'pill--attention' : 'pill--danger')">
+                      {{ getStatusBadgeLabel(batch.statusBadge) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ng-template #noData>
+            <p class="empty" *ngIf="!loading">{{ 'memberLanding.noBatchData' | translate }}</p>
+          </ng-template>
+        </app-section-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

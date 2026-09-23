@@ -4,7 +4,8 @@ export const candidateAddI18n: I18nSection = {
   bn: {
     candidateAdd: {
       formTitle: 'মনোনয়নের জন্য আবেদন করুন',
-      formSubtitle1: '🗳️ অ্যালামনাই নির্বাচনে অংশ নিন!',
+      eyebrow: 'অ্যালামনাই নির্বাচন',
+      formSubtitle1: 'অ্যালামনাই নির্বাচনে অংশ নিন!',
       formSubtitle2: 'অনুগ্রহ করে আপনার পছন্দের পদ এবং আবেদনের সংক্ষিপ্ত কারণ উল্লেখ করুন।',
       positionLabel: 'পদ নির্বাচন করুন',
       positionPlaceholder: '-- একটি পদ বেছে নিন --',
@@ -23,7 +24,8 @@ export const candidateAddI18n: I18nSection = {
   en: {
     candidateAdd: {
       formTitle: 'Apply for Nomination',
-      formSubtitle1: '🗳️ Take part in the Alumni election!',
+      eyebrow: 'Alumni election',
+      formSubtitle1: 'Take part in the Alumni election!',
       formSubtitle2: 'Please choose your preferred position and a brief reason for applying.',
       positionLabel: 'Choose a Position',
       positionPlaceholder: '-- Select a position --',

@@ -1,63 +1,91 @@
-<mat-card class="member-dialog-card">
-  <mat-card-header>
-    <mat-card-title>{{ member.fullName }}</mat-card-title>
-    <mat-card-subtitle>
-      {{ 'memberDetails.batchLabel' | translate }} {{ member.batch }} |
-      <span *ngIf="member.active" class="member-code" [matTooltip]="'memberDetails.memberCodeTooltip' | translate">{{ member.memberCode }}</span>
-    </mat-card-subtitle>
-  </mat-card-header>
-
-  <mat-card-content>
-    <div class="info-section">
-      <div class="info-item"><mat-icon>phone</mat-icon><span>{{ member.phone }}</span></div>
-      <div class="info-item"><mat-icon>email</mat-icon><span>{{ member.email }}</span></div>
-      <div class="info-item"><mat-icon>location_city</mat-icon><span>{{ member.currentCity }}</span></div>
-      <div class="info-item"><mat-icon>bloodtype</mat-icon><span>{{ member.bloodGroup }}</span></div>
-      <div class="info-item" *ngIf="isSuperAdmin()"><mat-icon>payments</mat-icon><span>{{ 'memberDetails.membershipLabel' | translate }} {{ member.fees | memberFeeAmount:'Membership' }}</span></div>
-      <div class="info-item" *ngIf="isSuperAdmin()"><mat-icon>card_giftcard</mat-icon><span>{{ 'memberDetails.donationLabel' | translate }} {{ member.fees | memberFeeAmount:'Donation' }}</span></div>
-      <div class="info-item total-item" *ngIf="isSuperAdmin()"><mat-icon>attach_money</mat-icon><span>{{ 'memberDetails.totalLabel' | translate }} {{ member.fees | memberFeeAmount:'Total' }}</span></div>
+<div class="dlg">
+  <header class="dlg__head">
+    <div class="dlg__avatar" aria-hidden="true">{{ (member.fullName || '').charAt(0).toUpperCase() }}</div>
+    <div class="dlg__heading">
+      <span class="eyebrow">{{ 'memberDetails.eyebrow' | translate }}</span>
+      <h2 class="dlg__title">{{ member.fullName }}</h2>
+      <p class="dlg__meta">
+        <span>{{ 'memberDetails.batchLabel' | translate }} {{ member.batch }}</span>
+        <span *ngIf="member.active" class="code" [matTooltip]="'memberDetails.memberCodeTooltip' | translate">{{ member.memberCode }}</span>
+      </p>
     </div>
+    <button type="button" class="icon-btn dlg__close" (click)="close()" [attr.aria-label]="'memberDetails.closeButton' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
 
-    <!-- Password Change Section -->
-    <div *ngIf="isSuperAdmin()" class="password-section" style="margin-top:16px;">
-      <!-- Initial button -->
-      <button *ngIf="!showPasswordInput"
-              mat-raised-button
-              color="accent"
-              class="change-password-btn"
-              (click)="showPasswordInput = true">
+  <div class="dlg__body">
+    <dl class="field-grid">
+      <div>
+        <dt>{{ 'memberDetails.field.phone' | translate }}</dt>
+        <dd>{{ member.phone }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'memberDetails.field.email' | translate }}</dt>
+        <dd>{{ member.email }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'memberDetails.field.city' | translate }}</dt>
+        <dd>{{ member.currentCity }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'memberDetails.field.bloodGroup' | translate }}</dt>
+        <dd>{{ member.bloodGroup }}</dd>
+      </div>
+    </dl>
+
+    <!-- Fees (SuperAdmin only) -->
+    <section class="dlg__section" *ngIf="isSuperAdmin()">
+      <h3 class="dlg__section-title">{{ 'memberDetails.feesHeading' | translate }}</h3>
+      <div class="ledger">
+        <div class="ledger__row">
+          <span>{{ 'memberDetails.field.membership' | translate }}</span>
+          <span class="ledger__amt">{{ member.fees | memberFeeAmount:'Membership' }}</span>
+        </div>
+        <div class="ledger__row">
+          <span>{{ 'memberDetails.field.donation' | translate }}</span>
+          <span class="ledger__amt">{{ member.fees | memberFeeAmount:'Donation' }}</span>
+        </div>
+        <div class="ledger__row ledger__row--total">
+          <span>{{ 'memberDetails.field.total' | translate }}</span>
+          <span class="ledger__amt">{{ member.fees | memberFeeAmount:'Total' }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Password reset (SuperAdmin only) -->
+    <section class="dlg__section" *ngIf="isSuperAdmin()">
+      <h3 class="dlg__section-title">{{ 'memberDetails.passwordHeading' | translate }}</h3>
+
+      <button *ngIf="!showPasswordInput" type="button" class="btn btn--outline" (click)="showPasswordInput = true">
         <mat-icon>lock_reset</mat-icon>
         {{ 'memberDetails.changePasswordButton' | translate }}
       </button>
 
-      <!-- Input + Set Password -->
-      <div *ngIf="showPasswordInput" class="password-input-inline" style="margin-top:12px; display:flex; align-items:center; gap:8px;">
-        <mat-form-field appearance="outline" style="width:100%;">
-  <mat-label>{{ 'memberDetails.newPasswordLabel' | translate }}</mat-label>
-  <input matInput
-         [type]="hidePassword ? 'password' : 'text'"
-         [placeholder]="'memberDetails.newPasswordPlaceholder' | translate"
-         [(ngModel)]="newPassword">
+      <div *ngIf="showPasswordInput" class="password-row">
+        <mat-form-field appearance="outline" class="password-row__field" subscriptSizing="dynamic">
+          <mat-label>{{ 'memberDetails.newPasswordLabel' | translate }}</mat-label>
+          <input matInput
+                 [type]="hidePassword ? 'password' : 'text'"
+                 [placeholder]="'memberDetails.newPasswordPlaceholder' | translate"
+                 [(ngModel)]="newPassword">
+          <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="'memberDetails.togglePasswordAria' | translate"
+                  [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
 
-  <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
-          [attr.aria-label]="'memberDetails.togglePasswordAria' | translate"
-          [attr.aria-pressed]="hidePassword">
-    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-  </button>
-</mat-form-field>
-
-        <button mat-raised-button color="primary"
+        <button type="button" class="btn btn--solid password-row__submit"
                 (click)="changePassword()"
                 [disabled]="!newPassword || isLoading">
           {{ 'memberDetails.setPasswordButton' | translate }}
         </button>
       </div>
+    </section>
+  </div>
 
-
-    </div>
-  </mat-card-content>
-
-  <mat-card-actions>
-    <button mat-raised-button (click)="close()" color="primary">{{ 'memberDetails.closeButton' | translate }}</button>
-  </mat-card-actions>
-</mat-card>
+  <footer class="dlg__actions">
+    <button type="button" class="btn btn--solid" (click)="close()">{{ 'memberDetails.closeButton' | translate }}</button>
+  </footer>
+</div>

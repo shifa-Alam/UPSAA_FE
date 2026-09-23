@@ -41,7 +41,7 @@
 }
 
 .monogram--lg {
-  font-size: clamp(88px, 12vw, 132px);
+  font-size: clamp(64px, 8vw, 96px);
 }
 
 .medal {
@@ -126,7 +126,7 @@
 
 .spotlight__photo {
   position: relative;
-  min-height: 380px;
+  min-height: 300px;
   background: var(--color-ink-100);
 
   img {
@@ -148,12 +148,12 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-4);
-  padding: clamp(28px, 4.5vw, 56px);
+  padding: clamp(20px, 3vw, 36px);
 }
 
 .spotlight__title {
   font-family: var(--font-display);
-  font-size: clamp(24px, 3vw, 34px);
+  font-size: clamp(20px, 2.4vw, 27px);
   font-weight: 700;
   line-height: 1.2;
   margin: 0;

@@ -1,41 +1,48 @@
 <div class="page-body">
 
-  <app-admin-header [title]="'positions.title' | translate" [subtitle]="'positions.subtitle' | translate"></app-admin-header>
+  <app-admin-header [title]="'positions.title' | translate" [subtitle]="'positions.subtitle' | translate">
+    <button type="button" class="btn btn--primary" (click)="openAddPositionModal()" *ngIf="!loading && !showModal">
+      <mat-icon>add</mat-icon> {{ 'positions.addButton' | translate }}
+    </button>
+  </app-admin-header>
 
-  <div *ngIf="loading" class="loading-wrapper">
+  <div *ngIf="loading" class="loading-wrapper" role="status">
     <div class="spinner"></div>
     <p>{{ 'positions.loading' | translate }}</p>
   </div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="!loading" class="page-stack">
 
     <!-- Add / Edit form -->
-    <app-section-card icon="add_circle"
+    <app-section-card [icon]="editMode ? 'edit' : 'add_circle'"
       [title]="editMode ? ('positions.modalEditTitle' | translate) : ('positions.modalAddTitle' | translate)" *ngIf="showModal">
       <form class="entry-form" (ngSubmit)="submitPosition()">
         <div class="entry-form__grid">
           <div class="form-field">
-            <label>{{ 'positions.formElection' | translate }}</label>
-            <select [(ngModel)]="modalPosition.electionId" name="electionId" required>
+            <label for="pos-election">{{ 'positions.formElection' | translate }} <span class="required">*</span></label>
+            <select id="pos-election" [(ngModel)]="modalPosition.electionId" name="electionId" required>
               <option value="" disabled>{{ 'positions.formElectionPlaceholder' | translate }}</option>
               <option *ngFor="let e of elections" [value]="e.id">{{ e.title }}</option>
             </select>
           </div>
           <div class="form-field">
-            <label>{{ 'positions.formName' | translate }}</label>
-            <input type="text" [(ngModel)]="modalPosition.name" name="title" required />
+            <label for="pos-name">{{ 'positions.formName' | translate }} <span class="required">*</span></label>
+            <input id="pos-name" type="text" [(ngModel)]="modalPosition.name" name="title" required />
           </div>
           <div class="form-field">
-            <label>{{ 'positions.formMaxSelect' | translate }}</label>
-            <input type="number" [(ngModel)]="modalPosition.maxSelect" name="maxSelect" required />
+            <label for="pos-max">{{ 'positions.formMaxSelect' | translate }} <span class="required">*</span></label>
+            <input id="pos-max" type="number" [(ngModel)]="modalPosition.maxSelect" name="maxSelect" required />
           </div>
           <div class="form-field">
-            <label>{{ 'positions.formPriority' | translate }}</label>
-            <input type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
+            <label for="pos-priority">{{ 'positions.formPriority' | translate }} <span class="required">*</span></label>
+            <input id="pos-priority" type="number" [(ngModel)]="modalPosition.priority" name="priority" required />
           </div>
           <div class="form-field">
-            <label>{{ 'positions.formFee' | translate }}</label>
-            <input type="number" [(ngModel)]="modalPosition.fee" name="fee" required />
+            <label for="pos-fee">{{ 'positions.formFee' | translate }} <span class="required">*</span></label>
+            <div class="input-affix">
+              <span class="input-affix__prefix" aria-hidden="true">৳</span>
+              <input id="pos-fee" type="number" [(ngModel)]="modalPosition.fee" name="fee" required />
+            </div>
           </div>
         </div>
 
@@ -51,50 +58,50 @@
     <!-- Filters + table -->
     <app-section-card icon="badge" [title]="'positions.cardTitle' | translate" [noPadding]="true">
 
-      <div class="positions-toolbar">
-        <div class="positions-filters">
-          <div class="filter-field">
+      <div class="admin-toolbar">
+        <div class="admin-filters">
+          <label class="filter-field">
             <mat-icon>search</mat-icon>
             <input type="text" [placeholder]="'positions.searchPlaceholder' | translate" [(ngModel)]="searchTerm"
-              (ngModelChange)="filterPositionss()" />
-          </div>
+              (ngModelChange)="filterPositionss()" [attr.aria-label]="'positions.searchPlaceholder' | translate" />
+          </label>
         </div>
-
-        <button type="button" class="btn btn--primary" (click)="openAddPositionModal()" *ngIf="!showModal">
-          <mat-icon>add</mat-icon> {{ 'positions.addButton' | translate }}
-        </button>
       </div>
 
       <!-- Desktop Table -->
       <div class="table-wrapper desktop-only" *ngIf="pagedPositions.length">
-        <table class="positions-table">
+        <table class="admin-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th class="col-index">#</th>
               <th>{{ 'positions.colElection' | translate }}</th>
               <th>{{ 'positions.colName' | translate }}</th>
-              <th>{{ 'positions.colMaxSelect' | translate }}</th>
-              <th>{{ 'positions.colPriority' | translate }}</th>
-              <th>{{ 'positions.colFee' | translate }}</th>
-              <th class="text-right">{{ 'positions.colActions' | translate }}</th>
+              <th class="num">{{ 'positions.colMaxSelect' | translate }}</th>
+              <th class="num">{{ 'positions.colPriority' | translate }}</th>
+              <th class="num">{{ 'positions.colFee' | translate }}</th>
+              <th class="text-right col-actions">{{ 'positions.colActions' | translate }}</th>
             </tr>
           </thead>
 
           <tbody>
             <tr *ngFor="let position of pagedPositions; let i = index">
-              <td>{{ i + 1 + (currentPage - 1) * pageSize }}</td>
-              <td>{{ position.electionTitle }}</td>
-              <td>{{ position.name }}</td>
-              <td>{{ position.maxSelect }}</td>
-              <td>{{ position.priority }}</td>
-              <td>{{ position.fee }}</td>
-              <td class="positions-table__actions">
-                <button type="button" (click)="editPosition(position)" [attr.aria-label]="'positions.editAriaLabel' | translate">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button type="button" (click)="deletePosition(position)" [attr.aria-label]="'positions.deleteAriaLabel' | translate">
-                  <mat-icon>delete</mat-icon>
-                </button>
+              <td class="col-index">{{ i + 1 + (currentPage - 1) * pageSize }}</td>
+              <td class="cell-muted">{{ position.electionTitle }}</td>
+              <td class="cell-strong">{{ position.name }}</td>
+              <td class="num">{{ position.maxSelect }}</td>
+              <td class="num">{{ position.priority }}</td>
+              <td class="num">{{ position.fee }}</td>
+              <td class="col-actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-btn" (click)="editPosition(position)"
+                    [attr.aria-label]="'positions.editAriaLabel' | translate" [title]="'positions.editAriaLabel' | translate">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn icon-btn--danger" (click)="deletePosition(position)"
+                    [attr.aria-label]="'positions.deleteAriaLabel' | translate" [title]="'positions.deleteAriaLabel' | translate">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -102,22 +109,23 @@
       </div>
 
       <!-- Mobile Cards -->
-      <div class="mobile-only" *ngIf="pagedPositions.length">
-        <div class="position-card" *ngFor="let position of pagedPositions; let i = index">
-
-          <div class="card-header">
-            <span class="index">#{{ i + 1 }}</span>
-            <span class="title">{{ position.name }}</span>
+      <div class="mobile-only item-list" *ngIf="pagedPositions.length">
+        <div class="item-card" *ngFor="let position of pagedPositions; let i = index">
+          <div class="item-card__head">
+            <span class="item-card__title">
+              <span class="index">#{{ i + 1 }}</span>
+              <span>{{ position.name }}</span>
+            </span>
           </div>
-          <div class="card-dates">
+          <div class="item-card__meta">
             <span>{{ 'positions.cardMax' | translate }} {{ position.maxSelect }}</span>
             <span>{{ 'positions.cardPriority' | translate }} {{ position.priority }}</span>
           </div>
-          <div class="card-actions">
-            <button type="button" (click)="editPosition(position)" [attr.aria-label]="'positions.editAriaLabel' | translate">
+          <div class="item-card__actions">
+            <button type="button" class="icon-btn" (click)="editPosition(position)" [attr.aria-label]="'positions.editAriaLabel' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button type="button" (click)="deletePosition(position)" [attr.aria-label]="'positions.deleteAriaLabel' | translate">
+            <button type="button" class="icon-btn icon-btn--danger" (click)="deletePosition(position)" [attr.aria-label]="'positions.deleteAriaLabel' | translate">
               <mat-icon>delete</mat-icon>
             </button>
           </div>
@@ -129,12 +137,14 @@
       </app-empty-state>
 
       <!-- Pagination -->
-      <nav class="positions-pagination" *ngIf="totalPages > 1">
-        <button type="button" [disabled]="currentPage === 1" (click)="prevPage()">
+      <nav class="admin-pagination" *ngIf="totalPages > 1">
+        <button type="button" class="page-btn" [disabled]="currentPage === 1" (click)="prevPage()"
+          [attr.aria-label]="'positions.previous' | translate">
           <mat-icon>chevron_left</mat-icon>
         </button>
         <span>{{ currentPage }} / {{ totalPages }}</span>
-        <button type="button" [disabled]="currentPage === totalPages" (click)="nextPage()">
+        <button type="button" class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()"
+          [attr.aria-label]="'positions.next' | translate">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </nav>

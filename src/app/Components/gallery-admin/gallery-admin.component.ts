@@ -38,11 +38,44 @@ export class GalleryAdminComponent implements OnInit {
   editPreviewUrl: string | null = null;
   saving = false;
 
+  /** Client-side category filter for the grid (null = all categories). */
+  activeCategory: string | null = null;
+
   constructor(private galleryService: GalleryService, private snackbar: SnackbarService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
     this.loadImages();
     this.loadCategories();
+  }
+
+  /** Distinct categories present among the loaded images, in first-seen order. */
+  get imageCategories(): string[] {
+    const seen = new Set<string>();
+    for (const image of this.images) {
+      if (image.category) seen.add(image.category);
+    }
+    return Array.from(seen);
+  }
+
+  /** Images shown in the grid — falls back to all when the active category no longer exists. */
+  get visibleImages(): GalleryImage[] {
+    const active = this.activeCategory;
+    if (!active || !this.images.some(i => i.category === active)) return this.images;
+    return this.images.filter(i => i.category === active);
+  }
+
+  isCategoryActive(category: string | null): boolean {
+    const active = this.activeCategory && this.images.some(i => i.category === this.activeCategory)
+      ? this.activeCategory : null;
+    return active === category;
+  }
+
+  setCategory(category: string | null): void {
+    this.activeCategory = category;
+  }
+
+  countFor(category: string): number {
+    return this.images.filter(i => i.category === category).length;
   }
 
   onFileSelected(event: Event): void {

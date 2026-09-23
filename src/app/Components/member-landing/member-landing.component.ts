@@ -12,7 +12,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
@@ -32,7 +31,6 @@ import { LanguageService } from '../../Services/language.service';
     MatTooltipModule,
     MatTabsModule,
     MatProgressBarModule,
-    StatCardComponent,
     AdminHeaderComponent,
     SectionCardComponent,
     TranslatePipe
@@ -142,6 +140,18 @@ onTabChange(event: any) {
         this.loading = false; // Show loader
       }
     });
+  }
+
+  // Totals across the loaded batch summary rows, for the summary stat cards.
+  get batchTotals(): { registered: number; amount: number; fullyPaid: number } {
+    return this.batchSummaries.reduce(
+      (acc, b) => ({
+        registered: acc.registered + (Number(b.registeredMembers) || 0),
+        amount: acc.amount + (Number(b.totalAmount) || 0),
+        fullyPaid: acc.fullyPaid + (Number(b.percentagePaid) >= 100 ? 1 : 0)
+      }),
+      { registered: 0, amount: 0, fullyPaid: 0 }
+    );
   }
 
   isRepresentative(): boolean {

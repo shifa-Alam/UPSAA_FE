@@ -1,3 +1,5 @@
+/* Back-office content card — matches the welcome screen's cards: quiet border,
+   serif title, navy icon disc, and a hairline under the head. */
 .section-card {
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
@@ -9,27 +11,28 @@
 .section-card__head {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-4) 0;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-ink-200);
 }
 
 .section-card__icon {
-  color: var(--color-primary-600);
-  background: var(--color-primary-50);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
+  color: #fff;
+  background: var(--color-primary-800);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 .section-card__title {
   font-size: var(--font-size-md);
   font-weight: 700;
-  letter-spacing: -0.005em;
+  line-height: 1.25;
   margin: 0;
 }
 
@@ -45,4 +48,14 @@
 
 .section-card__body--flush {
   padding: 0;
+}
+
+@media (max-width: 768px) {
+  .section-card__head {
+    padding: var(--space-3);
+  }
+
+  .section-card__body {
+    padding: var(--space-3);
+  }
 }

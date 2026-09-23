@@ -1,53 +1,57 @@
 <div class="nomination-card">
   <!-- Loading indicator -->
-  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+  <mat-progress-bar *ngIf="loading" mode="indeterminate" class="nomination-progress"></mat-progress-bar>
 
   <form (ngSubmit)="submitNomination()" #nominationForm="ngForm" class="nomination-form">
 
     <!-- Title Section -->
     <div class="form-header">
-      <h2 class="form-title">
-        <mat-icon class="title-icon">assignment</mat-icon>
-        {{ 'candidateAdd.formTitle' | translate }}
-      </h2>
-      <p class="form-subtitle">
-        {{ 'candidateAdd.formSubtitle1' | translate }} <br />
-        {{ 'candidateAdd.formSubtitle2' | translate }}
-      </p>
+      <span class="title-icon" aria-hidden="true"><mat-icon>assignment</mat-icon></span>
+      <div class="form-header__text">
+        <span class="form-eyebrow">{{ 'candidateAdd.eyebrow' | translate }}</span>
+        <h2 class="form-title">{{ 'candidateAdd.formTitle' | translate }}</h2>
+        <p class="form-subtitle">
+          {{ 'candidateAdd.formSubtitle1' | translate }}
+          {{ 'candidateAdd.formSubtitle2' | translate }}
+        </p>
+      </div>
     </div>
-    <!-- Position -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'candidateAdd.positionLabel' | translate }}</mat-label>
-      <mat-select [(ngModel)]="candidate.positionId" name="positionId" required>
-        <mat-option value="" disabled>{{ 'candidateAdd.positionPlaceholder' | translate }}</mat-option>
-        <mat-option *ngFor="let p of positions" [value]="p.id">{{ p.name }} &nbsp;
-          <span style="float:right; font-weight:600;">
-            ({{ 'candidateAdd.positionFeePrefix' | translate }} ৳ {{ p.fee | number }})
-          </span>
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="!candidate.positionId">{{ 'candidateAdd.positionRequiredError' | translate }}</mat-error>
-    </mat-form-field>
 
-    <!-- Application Reason -->
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'candidateAdd.reasonLabel' | translate }}</mat-label>
-      <textarea matInput [(ngModel)]="candidate.applicationReason" name="applicationReason" rows="4"
-        [placeholder]="'candidateAdd.reasonPlaceholder' | translate" required>
-      </textarea>
-      <mat-error *ngIf="!candidate.applicationReason">{{ 'candidateAdd.reasonRequiredError' | translate }}</mat-error>
-    </mat-form-field>
+    <div class="form-body">
+      <!-- Position -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'candidateAdd.positionLabel' | translate }}</mat-label>
+        <mat-select [(ngModel)]="candidate.positionId" name="positionId" required>
+          <mat-option value="" disabled>{{ 'candidateAdd.positionPlaceholder' | translate }}</mat-option>
+          <mat-option *ngFor="let p of positions" [value]="p.id">{{ p.name }} &nbsp;
+            <span class="option-fee">
+              ({{ 'candidateAdd.positionFeePrefix' | translate }} ৳ {{ p.fee | number }})
+            </span>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="!candidate.positionId">{{ 'candidateAdd.positionRequiredError' | translate }}</mat-error>
+      </mat-form-field>
+
+      <!-- Application Reason -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>{{ 'candidateAdd.reasonLabel' | translate }}</mat-label>
+        <textarea matInput [(ngModel)]="candidate.applicationReason" name="applicationReason" rows="4"
+          [placeholder]="'candidateAdd.reasonPlaceholder' | translate" required>
+        </textarea>
+        <mat-error *ngIf="!candidate.applicationReason">{{ 'candidateAdd.reasonRequiredError' | translate }}</mat-error>
+      </mat-form-field>
+    </div>
 
     <!-- Actions -->
     <div class="modal-actions">
-      <!-- Apply button -->
-      <button mat-raised-button class="apply-btn" type="submit" [disabled]="loading">
-        {{ loading ? ('candidateAdd.submitting' | translate) : ('candidateAdd.applyButton' | translate) }}
+      <!-- Cancel button -->
+      <button class="btn btn--outline" type="button" (click)="closeModal()">
+        {{ 'candidateAdd.cancelButton' | translate }}
       </button>
 
-      <!-- Cancel button -->
-      <button mat-raised-button class="cancel-btn" type="button" (click)="closeModal()">
-        {{ 'candidateAdd.cancelButton' | translate }}
+      <!-- Apply button -->
+      <button class="btn btn--primary" type="submit" [disabled]="loading">
+        {{ loading ? ('candidateAdd.submitting' | translate) : ('candidateAdd.applyButton' | translate) }}
       </button>
     </div>
   </form>

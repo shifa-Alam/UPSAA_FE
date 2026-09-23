@@ -1,124 +1,147 @@
-<div class="finance-page">
+<div class="adm">
 
-  <app-admin-header [title]="'financeLedger.title' | translate" [subtitle]="'financeLedger.subtitle' | translate"></app-admin-header>
+  <app-admin-header [title]="'financeLedger.title' | translate" [subtitle]="'financeLedger.subtitle' | translate">
+    <button type="button" class="btn btn--solid" (click)="openNewForm()" *ngIf="!showForm">
+      <mat-icon>add</mat-icon> {{ 'financeLedger.newEntryButton' | translate }}
+    </button>
+  </app-admin-header>
 
-  <!-- Summary -->
-  <div class="finance-summary">
-    <app-stat-card icon="trending_up" tone="primary" [label]="'financeLedger.statIncome' | translate" [value]="'৳' + (totalIncome | number)">
-    </app-stat-card>
-    <app-stat-card icon="trending_down" tone="accent" [label]="'financeLedger.statExpense' | translate" [value]="'৳' + (totalExpense | number)">
-    </app-stat-card>
-    <app-stat-card [icon]="balance >= 0 ? 'account_balance_wallet' : 'warning'"
-      [tone]="balance >= 0 ? 'primary' : 'accent'" [label]="'financeLedger.statBalance' | translate" [value]="'৳' + (balance | number)">
-    </app-stat-card>
+  <!-- ===== Summary ===== -->
+  <section class="stats" [attr.aria-label]="'financeLedger.summaryLabel' | translate">
+    <div class="stat stat--income">
+      <span class="stat__icon"><mat-icon>trending_up</mat-icon></span>
+      <span class="stat__value">৳{{ totalIncome | number }}</span>
+      <span class="stat__label">{{ 'financeLedger.statIncome' | translate }}</span>
+    </div>
+    <div class="stat stat--expense">
+      <span class="stat__icon"><mat-icon>trending_down</mat-icon></span>
+      <span class="stat__value">৳{{ totalExpense | number }}</span>
+      <span class="stat__label">{{ 'financeLedger.statExpense' | translate }}</span>
+    </div>
+    <div class="stat stat--balance" [class.stat--negative]="balance < 0">
+      <span class="stat__icon"><mat-icon>{{ balance >= 0 ? 'account_balance_wallet' : 'warning' }}</mat-icon></span>
+      <span class="stat__value">৳{{ balance | number }}</span>
+      <span class="stat__label">{{ 'financeLedger.statBalance' | translate }}</span>
+    </div>
+  </section>
+
+  <!-- ===== Category breakdown ===== -->
+  <div class="breakdown" *ngIf="incomeByCategory.length || expenseByCategory.length">
+    <section class="panel" *ngIf="incomeByCategory.length">
+      <h3 class="panel__title">{{ 'financeLedger.incomeByCategory' | translate }}</h3>
+      <ul class="bars">
+        <li class="bar" *ngFor="let c of incomeByCategory">
+          <div class="bar__row">
+            <span class="bar__label">{{ c.category }}</span>
+            <strong class="bar__value text-income">৳{{ c.amount | number }}</strong>
+          </div>
+          <div class="bar__track" aria-hidden="true">
+            <span class="bar__fill bar__fill--income" [style.width.%]="barPct(c, incomeByCategory)"></span>
+          </div>
+        </li>
+      </ul>
+    </section>
+    <section class="panel" *ngIf="expenseByCategory.length">
+      <h3 class="panel__title">{{ 'financeLedger.expenseByCategory' | translate }}</h3>
+      <ul class="bars">
+        <li class="bar" *ngFor="let c of expenseByCategory">
+          <div class="bar__row">
+            <span class="bar__label">{{ c.category }}</span>
+            <strong class="bar__value text-expense">৳{{ c.amount | number }}</strong>
+          </div>
+          <div class="bar__track" aria-hidden="true">
+            <span class="bar__fill bar__fill--expense" [style.width.%]="barPct(c, expenseByCategory)"></span>
+          </div>
+        </li>
+      </ul>
+    </section>
   </div>
 
-  <!-- Category breakdown -->
-  <div class="finance-breakdown" *ngIf="incomeByCategory.length || expenseByCategory.length">
-    <div class="breakdown-card" *ngIf="incomeByCategory.length">
-      <h4>{{ 'financeLedger.incomeByCategory' | translate }}</h4>
-      <div class="breakdown-row" *ngFor="let c of incomeByCategory">
-        <span>{{ c.category }}</span>
-        <strong class="text-income">৳{{ c.amount | number }}</strong>
-      </div>
-    </div>
-    <div class="breakdown-card" *ngIf="expenseByCategory.length">
-      <h4>{{ 'financeLedger.expenseByCategory' | translate }}</h4>
-      <div class="breakdown-row" *ngFor="let c of expenseByCategory">
-        <span>{{ c.category }}</span>
-        <strong class="text-expense">৳{{ c.amount | number }}</strong>
-      </div>
-    </div>
-  </div>
-
-  <!-- Add / Edit form -->
+  <!-- ===== Add / Edit form ===== -->
   <app-section-card icon="add_circle" [title]="editingId ? ('financeLedger.editEntryTitle' | translate) : ('financeLedger.newEntryTitle' | translate)" *ngIf="showForm">
-    <form class="entry-form" (ngSubmit)="submitForm()">
-      <div class="entry-form__type">
-        <button type="button" class="type-pill type-pill--income" [class.active]="form.type === 'Income'"
-          (click)="form.type = 'Income'">
+    <form (ngSubmit)="submitForm()">
+      <div class="type-toggle" role="group" [attr.aria-label]="'financeLedger.colType' | translate">
+        <button type="button" class="type-toggle__opt type-toggle__opt--income" [class.active]="form.type === 'Income'"
+          [attr.aria-pressed]="form.type === 'Income'" (click)="form.type = 'Income'">
           <mat-icon>trending_up</mat-icon> {{ 'financeLedger.typeIncome' | translate }}
         </button>
-        <button type="button" class="type-pill type-pill--expense" [class.active]="form.type === 'Expense'"
-          (click)="form.type = 'Expense'">
+        <button type="button" class="type-toggle__opt type-toggle__opt--expense" [class.active]="form.type === 'Expense'"
+          [attr.aria-pressed]="form.type === 'Expense'" (click)="form.type = 'Expense'">
           <mat-icon>trending_down</mat-icon> {{ 'financeLedger.typeExpense' | translate }}
         </button>
       </div>
 
-      <div class="entry-form__grid">
-        <div class="form-field">
-          <label>{{ 'financeLedger.dateLabel' | translate }}</label>
-          <input type="date" [(ngModel)]="form.entryDate" name="entryDate" required />
+      <div class="form-grid form-grid--ledger">
+        <div class="field">
+          <label class="field__label" for="leDate">{{ 'financeLedger.dateLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+          <input id="leDate" type="date" [(ngModel)]="form.entryDate" name="entryDate" required />
         </div>
-        <div class="form-field">
-          <label>{{ 'financeLedger.categoryLabel' | translate }}</label>
-          <input type="text" [(ngModel)]="form.category" name="category" list="ledgerCategories"
+        <div class="field">
+          <label class="field__label" for="leCategory">{{ 'financeLedger.categoryLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+          <input id="leCategory" type="text" [(ngModel)]="form.category" name="category" list="ledgerCategories"
             [placeholder]="'financeLedger.categoryPlaceholder' | translate" />
           <datalist id="ledgerCategories">
             <option *ngFor="let cat of categories" [value]="cat"></option>
           </datalist>
         </div>
-        <div class="form-field">
-          <label>{{ 'financeLedger.amountLabel' | translate }}</label>
-          <input type="number" [(ngModel)]="form.amount" name="amount" min="0" step="0.01" />
+        <div class="field">
+          <label class="field__label" for="leAmount">{{ 'financeLedger.amountLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+          <input id="leAmount" class="num" type="number" [(ngModel)]="form.amount" name="amount" min="0" step="0.01" />
         </div>
-        <div class="form-field">
-          <label>{{ 'financeLedger.referenceLabel' | translate }}</label>
-          <input type="text" [(ngModel)]="form.reference" name="reference" [placeholder]="'financeLedger.referencePlaceholder' | translate" />
+        <div class="field">
+          <label class="field__label" for="leReference">{{ 'financeLedger.referenceLabel' | translate }}</label>
+          <input id="leReference" type="text" [(ngModel)]="form.reference" name="reference" [placeholder]="'financeLedger.referencePlaceholder' | translate" />
         </div>
-        <div class="form-field form-field--wide">
-          <label>{{ 'financeLedger.descriptionLabel' | translate }}</label>
-          <input type="text" [(ngModel)]="form.description" name="description" />
+        <div class="field field--full">
+          <label class="field__label" for="leDescription">{{ 'financeLedger.descriptionLabel' | translate }}</label>
+          <input id="leDescription" type="text" [(ngModel)]="form.description" name="description" />
         </div>
       </div>
 
-      <div class="entry-form__actions">
-        <button type="button" class="btn btn--ghost" (click)="cancelForm()">{{ 'financeLedger.cancelButton' | translate }}</button>
-        <button type="submit" class="btn btn--primary" [disabled]="saving">
+      <div class="form-actions">
+        <button type="button" class="btn btn--outline" (click)="cancelForm()">{{ 'financeLedger.cancelButton' | translate }}</button>
+        <button type="submit" class="btn btn--solid" [disabled]="saving">
+          <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
           {{ saving ? ('financeLedger.saving' | translate) : ('financeLedger.saveButton' | translate) }}
         </button>
       </div>
     </form>
   </app-section-card>
 
-  <!-- Filters + table -->
+  <!-- ===== Filters + ledger ===== -->
   <app-section-card icon="receipt_long" [title]="'financeLedger.allTransactions' | translate" [noPadding]="true">
 
-    <div class="finance-toolbar">
-      <div class="finance-filters">
-        <div class="filter-field">
-          <mat-icon>event</mat-icon>
-          <input type="date" [(ngModel)]="filters.from" (ngModelChange)="onFilterChange()" />
+    <div class="toolbar">
+      <div class="filters">
+        <div class="field field--compact">
+          <label class="field__label" for="flFrom">{{ 'financeLedger.filterFrom' | translate }}</label>
+          <input id="flFrom" type="date" [(ngModel)]="filters.from" (ngModelChange)="onFilterChange()" />
         </div>
-        <div class="filter-field">
-          <mat-icon>event</mat-icon>
-          <input type="date" [(ngModel)]="filters.to" (ngModelChange)="onFilterChange()" />
+        <div class="field field--compact">
+          <label class="field__label" for="flTo">{{ 'financeLedger.filterTo' | translate }}</label>
+          <input id="flTo" type="date" [(ngModel)]="filters.to" (ngModelChange)="onFilterChange()" />
         </div>
-        <div class="filter-field">
-          <mat-icon>swap_vert</mat-icon>
-          <select [(ngModel)]="filters.type" (ngModelChange)="onFilterChange()">
+        <div class="field field--compact">
+          <label class="field__label" for="flType">{{ 'financeLedger.colType' | translate }}</label>
+          <select id="flType" [(ngModel)]="filters.type" (ngModelChange)="onFilterChange()">
             <option value="">{{ 'financeLedger.allTypes' | translate }}</option>
             <option value="Income">{{ 'financeLedger.typeIncome' | translate }}</option>
             <option value="Expense">{{ 'financeLedger.typeExpense' | translate }}</option>
           </select>
         </div>
-        <div class="filter-field">
-          <mat-icon>label</mat-icon>
-          <input type="text" [placeholder]="'financeLedger.categoryLabel' | translate" [(ngModel)]="filters.category"
+        <div class="field field--compact field--grow">
+          <label class="field__label" for="flCategory">{{ 'financeLedger.categoryLabel' | translate }}</label>
+          <input id="flCategory" type="text" [placeholder]="'financeLedger.categoryLabel' | translate" [(ngModel)]="filters.category"
             (ngModelChange)="onFilterChange()" />
         </div>
-        <button type="button" class="filter-reset" (click)="resetFilters()">
-          <mat-icon>restart_alt</mat-icon>
-        </button>
       </div>
-
-      <button type="button" class="btn btn--primary" (click)="openNewForm()" *ngIf="!showForm">
-        <mat-icon>add</mat-icon> {{ 'financeLedger.newEntryButton' | translate }}
+      <button type="button" class="btn btn--ghost filters__reset" (click)="resetFilters()">
+        <mat-icon>restart_alt</mat-icon> {{ 'financeLedger.resetFilters' | translate }}
       </button>
     </div>
 
-    <div class="finance-loading" *ngIf="loading">
-      <mat-icon class="finance-loading__icon">autorenew</mat-icon>
+    <div class="loading" *ngIf="loading" role="status">
+      <mat-icon>autorenew</mat-icon>
       <span>{{ 'financeLedger.loading' | translate }}</span>
     </div>
 
@@ -126,38 +149,39 @@
       [message]="'financeLedger.emptyMessage' | translate">
     </app-empty-state>
 
-    <div class="finance-table-wrap" *ngIf="!loading && entries.length > 0">
-      <table class="finance-table">
+    <div class="table-wrap" *ngIf="!loading && entries.length > 0">
+      <table class="ledger">
         <thead>
           <tr>
-            <th>{{ 'financeLedger.colDate' | translate }}</th>
-            <th>{{ 'financeLedger.colType' | translate }}</th>
-            <th>{{ 'financeLedger.colCategory' | translate }}</th>
-            <th>{{ 'financeLedger.colDescription' | translate }}</th>
-            <th class="text-right">{{ 'financeLedger.colAmount' | translate }}</th>
-            <th></th>
+            <th scope="col">{{ 'financeLedger.colDate' | translate }}</th>
+            <th scope="col">{{ 'financeLedger.colType' | translate }}</th>
+            <th scope="col">{{ 'financeLedger.colCategory' | translate }}</th>
+            <th scope="col">{{ 'financeLedger.colDescription' | translate }}</th>
+            <th scope="col" class="num">{{ 'financeLedger.colAmount' | translate }}</th>
+            <th scope="col" class="ledger__actions-col"><span class="sr-only">{{ 'financeLedger.colActions' | translate }}</span></th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let entry of entries">
-            <td>{{ entry.entryDate | date:'d MMM y' }}</td>
+            <td class="ledger__date">{{ entry.entryDate | date:'d MMM y' }}</td>
             <td>
-              <span class="type-badge" [class.type-badge--income]="entry.type === 'Income'"
-                [class.type-badge--expense]="entry.type === 'Expense'">
+              <span class="pill" [class.pill--success]="entry.type === 'Income'" [class.pill--danger]="entry.type === 'Expense'">
                 {{ entry.type === 'Income' ? ('financeLedger.typeIncome' | translate) : ('financeLedger.typeExpense' | translate) }}
               </span>
             </td>
-            <td>{{ entry.category }}</td>
-            <td class="finance-table__desc">{{ entry.description || '—' }}</td>
-            <td class="text-right" [class.text-income]="entry.type === 'Income'"
+            <td class="ledger__category">{{ entry.category }}</td>
+            <td class="ledger__desc">{{ entry.description || '—' }}</td>
+            <td class="num ledger__amount" [class.text-income]="entry.type === 'Income'"
               [class.text-expense]="entry.type === 'Expense'">
               {{ entry.type === 'Income' ? '+' : '-' }}৳{{ entry.amount | number }}
             </td>
-            <td class="finance-table__actions">
-              <button type="button" (click)="editEntry(entry)" [attr.aria-label]="'financeLedger.editAriaLabel' | translate">
+            <td class="ledger__actions">
+              <button type="button" class="icon-btn" (click)="editEntry(entry)"
+                [attr.aria-label]="'financeLedger.editAriaLabel' | translate" [attr.title]="'financeLedger.editAriaLabel' | translate">
                 <mat-icon>edit</mat-icon>
               </button>
-              <button type="button" (click)="confirmDelete(entry)" [attr.aria-label]="'financeLedger.deleteAriaLabel' | translate">
+              <button type="button" class="icon-btn icon-btn--danger" (click)="confirmDelete(entry)"
+                [attr.aria-label]="'financeLedger.deleteAriaLabel' | translate" [attr.title]="'financeLedger.deleteAriaLabel' | translate">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>
@@ -166,12 +190,14 @@
       </table>
     </div>
 
-    <nav class="finance-pagination" *ngIf="!loading && totalPages > 1">
-      <button type="button" [disabled]="pageNumber === 1" (click)="goToPage(pageNumber - 1)">
+    <nav class="pager" *ngIf="!loading && totalPages > 1" [attr.aria-label]="'financeLedger.paginationLabel' | translate">
+      <button type="button" class="icon-btn" [disabled]="pageNumber === 1" (click)="goToPage(pageNumber - 1)"
+        [attr.aria-label]="'financeLedger.prevPage' | translate">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <span>{{ pageNumber }} / {{ totalPages }}</span>
-      <button type="button" [disabled]="pageNumber === totalPages" (click)="goToPage(pageNumber + 1)">
+      <button type="button" class="icon-btn" [disabled]="pageNumber === totalPages" (click)="goToPage(pageNumber + 1)"
+        [attr.aria-label]="'financeLedger.nextPage' | translate">
         <mat-icon>chevron_right</mat-icon>
       </button>
     </nav>

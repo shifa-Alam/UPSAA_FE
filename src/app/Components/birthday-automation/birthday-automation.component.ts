@@ -99,6 +99,16 @@ export class BirthdayAutomationComponent implements OnInit {
     });
   }
 
+  /** Today's birthday wishes already posted successfully (derived from the loaded list). */
+  get postedTodayCount(): number {
+    return this.birthdays.filter(b => b.status === 'Success').length;
+  }
+
+  /** Failed entries in the loaded post history. */
+  get failedLogCount(): number {
+    return this.logs.filter(l => l.status === 'Failed').length;
+  }
+
   private loadSettings(): void {
     this.settingsLoading = true;
     this.birthdayPostService.getSettings().pipe(catchError(() => of(null))).subscribe(settings => {

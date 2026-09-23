@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { NavIconComponent, NavIconName } from '../shared/nav-icon/nav-icon.component';
 import { AuthService } from '../../Services/auth.service';
@@ -11,6 +11,8 @@ interface MenuChild {
   labelKey: string;
   route: string;
   icon: NavIconName;
+  /** Only these roles see the item; omitted = everyone in this shell. */
+  roles?: string[];
 }
 
 interface MenuGroup {
@@ -31,13 +33,20 @@ export class DashboardComponent {
   collapsed = false;
   activeRoute = '';
 
-  menuItems: MenuGroup[] = [
+  /** Which sidebar this instance renders — set per route via `data.shell`.
+   *  'admin' = back office at /dashboard, 'member' = alumni portal at /portal. */
+  shell: 'admin' | 'member' = 'admin';
+  homeRoute = '/dashboard/home';
+  menuItems: MenuGroup[] = [];
+
+  private static readonly ADMIN_MENU: MenuGroup[] = [
     {
       labelKey: 'dashboard.menuMembers',
       icon: 'users',
       expanded: false,
       children: [
-        { labelKey: 'dashboard.itemMembers', route: '/dashboard/members', icon: 'users' }
+        { labelKey: 'dashboard.itemMembers', route: '/dashboard/members', icon: 'users' },
+        { labelKey: 'userRoles.menu', route: '/dashboard/user-roles', icon: 'user-check', roles: ['SuperAdmin'] }
       ]
     },
     {
@@ -73,17 +82,61 @@ export class DashboardComponent {
       ]
     },
     {
-      // These are the same alumni-only pages logged-in members reach from the
-      // public site's "Community" nav dropdown — that dropdown lives in the
-      // top toolbar, which is hidden while inside /dashboard, so staff need a
-      // way in from here too. Routes are absolute (outside /dashboard) on purpose.
+      // Constitution is managed here (upload/replace); jobs and blood donors are the
+      // member community pages, shown inside the shell (see shellRedirectGuard).
       labelKey: 'dashboard.menuCommunity',
       icon: 'briefcase',
       expanded: false,
       children: [
-        { labelKey: 'dashboard.itemJobBoard', route: '/jobs', icon: 'briefcase' },
-        { labelKey: 'dashboard.itemBloodDonors', route: '/blood-donors', icon: 'droplet' },
-        { labelKey: 'dashboard.itemConstitutionLink', route: '/constitution', icon: 'book' }
+        { labelKey: 'dashboard.itemJobBoard', route: '/dashboard/jobs', icon: 'briefcase' },
+        { labelKey: 'dashboard.itemBloodDonors', route: '/dashboard/blood-donors', icon: 'droplet' },
+        { labelKey: 'dashboard.itemConstitutionLink', route: '/dashboard/constitution', icon: 'book' }
+      ]
+    }
+  ];
+
+  // Member portal. Everything renders inside the shell — members never see the
+  // public site (see shellRedirectGuard).
+  private static readonly MEMBER_MENU: MenuGroup[] = [
+    {
+      labelKey: 'dashboard.menuMyAccount',
+      icon: 'users',
+      expanded: false,
+      children: [
+        { labelKey: 'dashboard.itemMyProfile', route: '/portal/profile', icon: 'user-check' }
+      ]
+    },
+    {
+      labelKey: 'dashboard.menuAlumni',
+      icon: 'layers',
+      expanded: false,
+      children: [
+        { labelKey: 'dashboard.itemDirectory', route: '/portal/members', icon: 'users' },
+        { labelKey: 'dashboard.itemBatches', route: '/portal/batches', icon: 'graduation-cap' },
+        { labelKey: 'dashboard.itemAchievements', route: '/portal/achievements', icon: 'award' },
+        { labelKey: 'dashboard.itemTeachers', route: '/portal/teachers', icon: 'graduation-cap' }
+      ]
+    },
+    {
+      labelKey: 'dashboard.menuAssociation',
+      icon: 'layers',
+      expanded: false,
+      children: [
+        { labelKey: 'dashboard.itemEvents', route: '/portal/events', icon: 'calendar' },
+        { labelKey: 'dashboard.itemGallery', route: '/portal/gallery', icon: 'image' },
+        { labelKey: 'dashboard.itemCommittee', route: '/portal/committee', icon: 'users' },
+        { labelKey: 'dashboard.itemAbout', route: '/portal/about', icon: 'book' },
+        { labelKey: 'dashboard.itemContact', route: '/portal/contact', icon: 'megaphone' }
+      ]
+    },
+    {
+      labelKey: 'dashboard.menuCommunity',
+      icon: 'briefcase',
+      expanded: false,
+      children: [
+        { labelKey: 'dashboard.itemJobBoard', route: '/portal/jobs', icon: 'briefcase' },
+        { labelKey: 'dashboard.itemBloodDonors', route: '/portal/blood-donors', icon: 'droplet' },
+        { labelKey: 'dashboard.itemConstitutionLink', route: '/portal/constitution', icon: 'book' }
       ]
     }
   ];
@@ -92,10 +145,20 @@ export class DashboardComponent {
 
   constructor(
     private router: Router,
+    route: ActivatedRoute,
     public auth: AuthService,
     public theme: ThemeService,
     public lang: LanguageService
   ) {
+    this.shell = route.snapshot.data['shell'] === 'member' ? 'member' : 'admin';
+    this.homeRoute = this.shell === 'member' ? '/portal/home' : '/dashboard/home';
+    // Copy per instance: `expanded` is UI state and must not leak between shells.
+    const menu = this.shell === 'member' ? DashboardComponent.MEMBER_MENU : DashboardComponent.ADMIN_MENU;
+    const role: string = auth.getCurrentUser()?.role ?? '';
+    this.menuItems = menu
+      .map(g => ({ ...g, children: g.children.filter(c => !c.roles || c.roles.includes(role)) }))
+      .filter(g => g.children.length > 0);
+
     router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeRoute = event.urlAfterRedirects.split('?')[0];
@@ -117,7 +180,12 @@ export class DashboardComponent {
   }
 
   get roleLabelKey(): string {
-    return this.currentUser?.role === 'SuperAdmin' ? 'dashboard.roleSuperAdmin' : 'dashboard.roleAdmin';
+    switch (this.currentUser?.role) {
+      case 'SuperAdmin': return 'dashboard.roleSuperAdmin';
+      case 'Admin': return 'dashboard.roleAdmin';
+      case 'Representative': return 'dashboard.roleRepresentative';
+      default: return 'dashboard.roleMember';
+    }
   }
 
   toggleMenu(item: MenuGroup) {

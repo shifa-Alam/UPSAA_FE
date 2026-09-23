@@ -13,7 +13,7 @@
         <span class="pp-section__rule"></span>
       </header>
 
-      <article class="doc" *ngIf="documentAvailable; else comingSoon">
+      <article class="doc" *ngIf="document; else comingSoon">
         <div class="doc__cover" aria-hidden="true">
           <mat-icon>gavel</mat-icon>
           <span class="doc__cover-rule"></span>
@@ -23,19 +23,22 @@
           <span class="doc__kind"><mat-icon>picture_as_pdf</mat-icon>{{ 'constitution.document.format' | translate }}</span>
           <h3 class="doc__title">{{ 'constitution.card.title' | translate }}</h3>
           <p class="doc__desc">{{ 'constitution.card.description' | translate }}</p>
+          <span class="doc__updated" *ngIf="document.uploadedAt">
+            {{ 'constitution.document.updated' | translate }} {{ updatedOn(document) }}
+          </span>
           <div class="doc__actions">
-            <a [href]="documentUrl" target="_blank" rel="noopener" class="pp-btn pp-btn--solid">
+            <button type="button" class="pp-btn pp-btn--solid" (click)="open(document, 'view')">
               {{ 'constitution.card.action' | translate }} <mat-icon>open_in_new</mat-icon>
-            </a>
-            <a [href]="documentUrl" download class="pp-btn pp-btn--outline">
+            </button>
+            <button type="button" class="pp-btn pp-btn--outline" (click)="open(document, 'download')">
               {{ 'constitution.document.download' | translate }} <mat-icon>download</mat-icon>
-            </a>
+            </button>
           </div>
         </div>
       </article>
 
       <ng-template #comingSoon>
-        <app-empty-state icon="description" [title]="'constitution.comingSoon.title' | translate"
+        <app-empty-state *ngIf="!loading" icon="description" [title]="'constitution.comingSoon.title' | translate"
           [message]="'constitution.comingSoon.message' | translate">
         </app-empty-state>
       </ng-template>

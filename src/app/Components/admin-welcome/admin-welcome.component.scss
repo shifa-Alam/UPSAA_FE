@@ -1,0 +1,376 @@
+// Back-office landing screen — the first thing SuperAdmin/Admin see after login.
+// Same design language as the public pages (serif headings, heritage gold),
+// in the denser, card-based rhythm of the admin screens.
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  max-width: 1200px;
+}
+
+// ---------------------------- Greeting ----------------------------
+.welcome__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: clamp(16px, 2.5vw, 28px);
+  border-radius: var(--radius-xl);
+  background: var(--gradient-hero);
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 90% 10%, rgba(201, 162, 74, 0.22), transparent 45%),
+      radial-gradient(circle at 10% 100%, rgba(6, 182, 212, 0.16), transparent 50%);
+  }
+}
+
+.welcome__date {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+  margin-bottom: var(--space-3);
+}
+
+.welcome__title {
+  color: #fff;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+}
+
+.welcome__name {
+  font-style: italic;
+}
+
+.welcome__lead {
+  margin: 0;
+  max-width: 560px;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.welcome__role {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(201, 162, 74, 0.5);
+  background: rgba(201, 162, 74, 0.14);
+  color: #fff;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+
+  app-nav-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-heritage-500);
+  }
+}
+
+// ---------------------------- Blocks ----------------------------
+.welcome__heading {
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--space-4);
+}
+
+.welcome__heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  .welcome__heading { margin-bottom: var(--space-4); }
+}
+
+.welcome__more {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary-600);
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+:host-context([data-theme='dark']) .welcome__more {
+  color: var(--color-primary-300);
+}
+
+.welcome__columns {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+// ---------------------------- Stats ----------------------------
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space-4);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: transparent;
+  }
+}
+
+.stat__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+
+  app-nav-icon { width: 18px; height: 18px; }
+}
+
+:host-context([data-theme='dark']) .stat__icon {
+  color: var(--color-primary-300);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-ink-900);
+  font-variant-numeric: tabular-nums;
+  min-height: 35px;
+}
+
+.stat__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+// Pending approvals waiting — gold edge so it reads as a to-do, not just a number.
+.stat--attention {
+  border-color: var(--color-heritage-500);
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
+
+  .stat__icon {
+    background: var(--color-heritage-soft);
+    color: var(--color-heritage-500);
+  }
+}
+
+.stat__skeleton {
+  display: inline-block;
+  width: 56px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--color-ink-100), var(--color-ink-200), var(--color-ink-100));
+  background-size: 200% 100%;
+  animation: welcome-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes welcome-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+// ---------------------------- Quick actions ----------------------------
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-primary-300);
+    box-shadow: var(--shadow-sm);
+
+    .action__arrow { transform: translateX(3px); color: var(--color-primary-500); }
+  }
+}
+
+.action__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary-800);
+  color: #fff;
+
+  app-nav-icon { width: 18px; height: 18px; }
+}
+
+.action__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.action__label {
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.action__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.action__arrow {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--color-ink-400);
+  transition: transform var(--transition-base), color var(--transition-base);
+}
+
+// ---------------------------- Upcoming panel ----------------------------
+.panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.panel__empty {
+  margin: 0;
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  color: var(--color-ink-600);
+}
+
+.event {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-ink-200);
+
+  .pp-date {
+    width: 56px;
+    height: 62px;
+  }
+
+  .pp-date__day { font-size: 22px; }
+}
+
+.event__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.event__title {
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.event__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.panel__site {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-surface-sunken);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-700);
+  text-decoration: none;
+
+  app-nav-icon { width: 16px; height: 16px; }
+
+  &:hover { color: var(--color-primary-600); }
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 1024px) {
+  .welcome__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome {
+    padding: var(--space-4);
+    gap: var(--space-5);
+  }
+
+  .welcome__hero {
+    flex-direction: column-reverse;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .stat {
+    padding: var(--space-4);
+  }
+
+  .stat__value {
+    font-size: 26px;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+:host-context(html[lang='bn']) .welcome__date {
+  letter-spacing: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat__skeleton {
+    animation: none;
+  }
+}

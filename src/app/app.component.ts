@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
   title = 'upsaa';
   @ViewChild('sidenav') sidenav!: MatSidenav;
   isMobile$: Observable<boolean>;
-  /** The dashboard has its own full-height sidebar layout — the public site's top toolbar
+  /** The back office (/dashboard) and alumni portal (/portal) have their own full-height sidebar layout — the public site's top toolbar
    *  and footer don't belong around it. */
   isDashboardRoute = false;
 
@@ -58,13 +58,24 @@ export class AppComponent implements OnInit {
   isAlumniSectionActive = false;
   isCommunitySectionActive = false;
 
+  /** Community pages live inside the sidebar shell once signed in (see shellRedirectGuard);
+   *  linking there directly keeps routerLinkActive highlighting accurate. */
+  shellLink(page: string): string {
+    if (!this.authService.isLoggedIn()) return `/${page}`;
+    return `${this.authService.isStaff() ? '/dashboard' : '/portal'}/${page}`;
+  }
+
+  private isShellUrl(url: string): boolean {
+    return url.startsWith('/dashboard') || url.startsWith('/portal');
+  }
+
   ngOnInit() {
-    this.isDashboardRoute = this.router.url.startsWith('/dashboard');
+    this.isDashboardRoute = this.isShellUrl(this.router.url);
     this.updateSectionActive(this.router.url);
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(e => {
-        this.isDashboardRoute = e.urlAfterRedirects.startsWith('/dashboard');
+        this.isDashboardRoute = this.isShellUrl(e.urlAfterRedirects);
         this.updateSectionActive(e.urlAfterRedirects);
       });
 

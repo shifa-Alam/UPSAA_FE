@@ -1,438 +1,512 @@
-.page-body {
-  /* No max-width/centering — full-width inside the admin panel's main-content,
-     not the public site's reading column. */
-  padding: var(--space-4) var(--space-5);
+// Admin member management — same page rhythm as the back-office welcome screen.
+@use './members-ui';
+
+:host {
+  display: block;
+}
+
+.members {
   display: flex;
   flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  max-width: 1200px;
+  min-width: 0;
+}
+
+.tab-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+  min-width: 0;
+}
+
+// ---------------------------- Tabs ----------------------------
+.members-tabs {
+  min-width: 0;
+  --mdc-tab-indicator-active-indicator-color: var(--color-primary-600);
+  --mat-tab-header-active-label-text-color: var(--color-ink-900);
+  --mat-tab-header-active-focus-label-text-color: var(--color-ink-900);
+  --mat-tab-header-active-hover-label-text-color: var(--color-ink-900);
+  --mat-tab-header-inactive-label-text-color: var(--color-ink-600);
+  --mat-tab-header-active-focus-indicator-color: var(--color-primary-600);
+  --mat-tab-header-active-hover-indicator-color: var(--color-primary-600);
+  --mat-tab-header-divider-color: var(--color-ink-200);
+  --mat-tab-header-divider-height: 1px;
+  --mat-tab-header-label-text-font: var(--font-base);
+  --mat-tab-header-label-text-weight: 600;
+  --mat-tab-header-label-text-tracking: normal;
+}
+
+:host-context([data-theme='dark']) .members-tabs {
+  --mdc-tab-indicator-active-indicator-color: var(--color-primary-300);
+  --mat-tab-header-active-focus-indicator-color: var(--color-primary-300);
+  --mat-tab-header-active-hover-indicator-color: var(--color-primary-300);
+}
+
+// ---------------------------- Stats ----------------------------
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: var(--space-4);
 }
 
-/* ===== Summary Cards ===== */
-.stat-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-3);
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  min-width: 0;
 }
 
-/* ===== Toolbar (filters + action button) ===== */
-.member-toolbar {
+.stat__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+:host-context([data-theme='dark']) .stat__icon {
+  color: var(--color-primary-300);
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-ink-900);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.stat__cur {
+  font-family: var(--font-base);
+  font-size: 0.6em;
+  font-weight: 600;
+  color: var(--color-ink-600);
+  margin-right: 4px;
+}
+
+.stat__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+// Grand total — the one figure with a gold edge.
+.stat--total {
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
+
+  .stat__icon {
+    background: var(--color-heritage-soft);
+    color: var(--color-heritage-500);
+  }
+}
+
+// ---------------------------- Filters ----------------------------
+.filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-2);
   padding: var(--space-4) var(--space-5);
   border-bottom: 1px solid var(--color-ink-200);
+  background: var(--color-surface);
 }
 
-.member-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.filter-field {
+.filter {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  height: 34px;
+  height: 40px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-md);
-  padding: 0 var(--space-2);
-  background: var(--color-surface-alt);
+  background: var(--color-surface);
+  flex: 0 1 170px;
+  min-width: 0;
+  cursor: text;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  mat-icon {
+    flex-shrink: 0;
+    color: var(--color-ink-400);
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: 400 var(--font-size-sm) var(--font-base);
+    color: var(--color-ink-900);
+
+    &::placeholder {
+      color: var(--color-ink-400);
+    }
+  }
+
+  &:focus-within {
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+
+    mat-icon { color: var(--color-primary-500); }
+  }
 }
 
-.filter-field mat-icon {
-  color: var(--color-primary-500);
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
+.filter--grow {
+  flex: 1 1 200px;
 }
 
-.filter-field input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: var(--font-size-xs);
-  font-family: var(--font-base);
-  color: var(--color-ink-900);
-  min-width: 110px;
+.filter--batch {
+  flex: 0 1 120px;
 }
 
 .filter-select {
-  height: 34px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
+  height: 40px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--color-ink-200);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-base);
-  background: var(--color-surface-alt);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
   color: var(--color-ink-900);
+  font: 400 var(--font-size-sm) var(--font-base);
   cursor: pointer;
+  max-width: 100%;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+  }
 }
 
 .filter-reset {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-ink-600);
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  min-height: 40px;
+  padding: 0 var(--space-3);
 }
 
-.filter-reset:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.filter-reset mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  border-radius: var(--radius-sm);
-  height: 34px;
-  padding: 0 var(--space-4);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  font-family: var(--font-base);
-  cursor: pointer;
-  border: 1.5px solid transparent;
-  transition: background var(--transition-fast);
-  white-space: nowrap;
-}
-
-.btn mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.btn--primary {
-  background: var(--color-primary-500);
-  color: #fff;
-  border-color: var(--color-primary-600);
-}
-
-.btn--primary:hover {
-  background: var(--color-primary-600);
-}
-
-/* ===== Loader Overlay ===== */
-.loader-overlay {
-  position: relative;
+// ---------------------------- Loader / empty ----------------------------
+.loader {
   display: flex;
   justify-content: center;
-  align-items: center;
   padding: var(--space-6) 0;
 }
 
-/* ===== Members Table ===== */
-.table-container {
-  overflow-x: auto;
-}
-
-.members-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 700px;
-  font-size: var(--font-size-sm);
-}
-
-.members-table th {
-  text-align: left;
-  padding: var(--space-3) var(--space-5);
-  background: var(--color-surface-alt);
+.empty {
+  margin: 0;
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
   color: var(--color-ink-600);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
 }
 
-.members-table td {
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-ink-100);
-  color: var(--color-ink-700);
+// ---------------------------- Members table ----------------------------
+.members-table {
+  min-width: 720px;
 }
 
-.members-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.member-row:hover {
-  background: var(--color-surface-alt);
-}
-
-.text-right {
-  text-align: right;
-}
-
-.verified-badge {
+.member-name {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
 }
 
-.badge-icon {
+.verified {
+  flex-shrink: 0;
   font-size: 16px;
   width: 16px;
   height: 16px;
-  vertical-align: middle;
-  color: var(--color-warning);
+  color: var(--color-primary-500);
 }
 
-/* Circular icon-only action buttons — same treatment as Elections/Finance tables */
-.members-table__actions {
-  display: flex;
-  justify-content: flex-start;
-  gap: var(--space-1);
-  white-space: nowrap;
+.mono {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-600);
 }
 
-.members-table__actions.text-right {
-  justify-content: flex-end;
+.col-batch {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-600);
+  width: 72px;
 }
 
-.members-table__actions button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--color-ink-400);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.members-table__actions button:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.members-table__actions button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* Primary workflow actions (accept / activate / request) stay visibly colored at
-   rest — these are the main thing to notice in the row, unlike the neutral
-   secondary actions (view/edit/delete) that only tint on hover. */
-.members-table__action--accept {
-  background: #d1fae5;
-  color: #047857;
-}
-
-.members-table__action--accept:hover {
-  background: #a7f3d0;
-}
-
-.members-table__action--activate {
-  background: var(--color-accent-100, #cffafe);
-  color: var(--color-accent-600);
-}
-
-.members-table__action--activate:hover {
-  background: var(--color-accent-300);
-}
-
-.members-table__action--request {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.members-table__action--request:hover {
-  background: var(--color-primary-100);
-}
-
-.members-table__active-icon {
-  color: var(--color-success);
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-}
-
-/* ===== Pagination ===== */
-.members-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.members-pagination > button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-primary-600);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.members-pagination > button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-number {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-ink-700);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.page-number:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.page-number.active {
-  background: var(--color-primary-500);
-  color: #fff;
-  border-color: var(--color-primary-500);
-}
-
-.ellipsis {
-  color: var(--color-ink-400);
-  padding: 0 var(--space-1);
-}
-
-/* ===== Batch summary ===== */
-.top-1 {
-  background: linear-gradient(135deg, var(--color-primary-100), var(--color-primary-300));
-  color: var(--color-ink-900);
-  font-weight: 600;
-}
-
-.top-2 {
-  background: linear-gradient(135deg, var(--color-primary-50), var(--color-primary-200));
-  color: var(--color-ink-900);
-  font-weight: 600;
-}
-
-.top-3 {
-  background: linear-gradient(135deg, var(--color-accent-300), var(--color-accent-500));
-  color: #fff;
-  font-weight: 600;
-}
-
-.progress-container {
-  position: relative;
+.manage {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  flex-wrap: wrap;
 }
 
-.progress-bar {
-  width: 100px;
-  height: 8px;
+// Workflow actions stay tinted at rest — the thing to notice in the row.
+.icon-btn--accept {
+  background: rgba(76, 175, 80, 0.14);
+  color: #2e7d32;
+
+  &:hover { background: rgba(76, 175, 80, 0.24); color: #1b5e20; }
+}
+
+.icon-btn--activate,
+.icon-btn--request {
+  background: var(--color-primary-50);
+  color: var(--color-primary-600);
+
+  &:hover { background: var(--color-primary-100); }
+}
+
+:host-context([data-theme='dark']) {
+  .icon-btn--accept,
+  .icon-btn--accept:hover { color: #81c784; }
+
+  .icon-btn--activate,
+  .icon-btn--request { color: var(--color-primary-300); }
+}
+
+// Pending approval rows — the "needs attention" gold edge.
+.row--attention td:first-child {
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
+}
+
+// ---------------------------- Pagination ----------------------------
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+.pager__step,
+.pager__page {
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-ink-700);
+  font: 600 var(--font-size-sm) var(--font-base);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover:not(:disabled):not(.is-active) {
+    background: var(--color-ink-100);
+    color: var(--color-ink-900);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-200);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.pager__step {
+  border-color: var(--color-ink-200);
+}
+
+.pager__page.is-active {
+  background: var(--color-primary-700);
+  color: #fff;
+}
+
+:host-context([data-theme='dark']) .pager__page.is-active {
+  background: var(--color-primary-500);
+}
+
+.pager__gap {
+  padding: 0 var(--space-1);
+  color: var(--color-ink-400);
+}
+
+// ---------------------------- Batch summary ----------------------------
+.batch-table {
+  min-width: 620px;
+}
+
+.batch-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+// Top three batches get a small gold rank mark rather than a coloured row.
+.rank {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a6a1f;
+  background: var(--color-heritage-soft);
+  box-shadow: inset 0 0 0 1px var(--color-heritage-500);
+}
+
+:host-context([data-theme='dark']) .rank {
+  color: var(--color-heritage-500);
+}
+
+.top-1 .rank {
+  background: var(--color-heritage-500);
+  color: #fff;
+}
+
+.meter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 160px;
+}
+
+.meter__track {
+  position: relative;
+  flex: 1;
+  max-width: 160px;
+  height: 6px;
   border-radius: var(--radius-pill);
+  background: var(--color-ink-100);
+  overflow: hidden;
 }
 
-.percentage-text {
+.meter__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: var(--color-primary-600);
+  transition: width 400ms ease;
+}
+
+.meter__fill--accent {
+  background: var(--color-accent-500);
+}
+
+.meter__fill--warn {
+  background: var(--color-heritage-500);
+}
+
+:host-context([data-theme='dark']) .meter__fill--primary {
+  background: var(--color-primary-400);
+}
+
+.meter__value {
+  min-width: 42px;
+  text-align: right;
   font-size: var(--font-size-xs);
-  font-weight: 500;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink-700);
 }
 
-.status-badge {
-  padding: 2px var(--space-3);
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  color: #fff;
-  display: inline-block;
-}
-
-.status-badge.full-paid {
-  background: var(--color-success);
-}
-
-.status-badge.pending {
-  background: var(--color-warning);
-  color: var(--color-ink-900);
-}
-
-.no-data {
-  text-align: center;
-  padding: var(--space-6);
-  color: var(--color-ink-400);
-  font-style: italic;
-}
-
-/* ===== Mobile adjustments ===== */
+// ---------------------------- Responsive ----------------------------
 @media (max-width: 768px) {
-  .stat-row {
-    grid-template-columns: repeat(2, 1fr);
+  .members {
+    padding: var(--space-4);
+    gap: var(--space-4);
   }
 
-  .member-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+  .tab-body {
+    gap: var(--space-4);
+    padding-top: var(--space-4);
   }
 
-  .btn {
-    justify-content: center;
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
   }
 
-  .members-table {
-    font-size: var(--font-size-xs);
+  .stat {
+    padding: var(--space-4);
+  }
+
+  .stat__value {
+    font-size: 22px;
+  }
+
+  .filters {
+    padding: var(--space-4);
+  }
+
+  .filter,
+  .filter--grow,
+  .filter--batch {
+    flex: 1 1 100%;
+  }
+
+  .filter-select {
+    flex: 1 1 calc(50% - var(--space-2));
     min-width: 0;
   }
 
-  .members-table th.col-phone,
-  .members-table td.col-phone,
-  .members-table th.col-city,
-  .members-table td.col-city,
-  .members-table th.col-blood,
-  .members-table td.col-blood {
+  .filter-reset {
+    flex: 1 1 100%;
+  }
+
+  .members-table {
+    min-width: 0;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  .members-table .col-phone,
+  .members-table .col-city,
+  .members-table .col-blood {
     display: none;
   }
 }
 
-/* ===== Tabs — same quiet treatment as the rest of the admin panel, no filled
-   rectangular active state. ===== */
-::ng-deep .mat-tab-group {
-  .mat-tab-label {
-    color: var(--color-ink-600);
-    font-weight: 600;
-    font-family: var(--font-base);
-    opacity: 1;
+@media (prefers-reduced-motion: reduce) {
+  .filter,
+  .pager__step,
+  .pager__page,
+  .meter__fill {
+    transition: none;
   }
+}
 
-  .mat-tab-label.mat-tab-label-active {
-    color: var(--color-primary-600) !important;
-  }
-
-  .mat-ink-bar {
-    background-color: var(--color-primary-500) !important;
-  }
+// Long bilingual label in the header action — allow it to wrap on narrow screens.
+.header-btn {
+  white-space: normal;
+  text-align: left;
+  line-height: 1.3;
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
 }

@@ -2,105 +2,117 @@
 
   <app-admin-header [title]="'noticeAdmin.title' | translate" [subtitle]="'noticeAdmin.subtitle' | translate"></app-admin-header>
 
+  <!-- ===== Compose ===== -->
   <app-section-card icon="campaign" [title]="'noticeAdmin.postCardTitle' | translate">
-    <form class="post-form" (ngSubmit)="submit()">
-      <div class="form-field">
-        <label>{{ 'noticeAdmin.titleLabel' | translate }}</label>
-        <input type="text" [placeholder]="'noticeAdmin.titlePlaceholder' | translate" [(ngModel)]="title" name="title" />
+    <form class="notice-form" (ngSubmit)="submit()">
+      <div class="form-field notice-form__full">
+        <label for="noticeTitle">{{ 'noticeAdmin.titleLabel' | translate }}</label>
+        <input type="text" id="noticeTitle" [placeholder]="'noticeAdmin.titlePlaceholder' | translate" [(ngModel)]="title" name="title" />
+      </div>
+
+      <div class="form-field notice-form__full">
+        <label for="noticeContent">{{ 'noticeAdmin.contentLabel' | translate }}</label>
+        <textarea id="noticeContent" rows="4" [placeholder]="'noticeAdmin.contentPlaceholder' | translate" [(ngModel)]="content" name="content"></textarea>
       </div>
 
       <div class="form-field">
-        <label>{{ 'noticeAdmin.contentLabel' | translate }}</label>
-        <textarea rows="4" [placeholder]="'noticeAdmin.contentPlaceholder' | translate" [(ngModel)]="content" name="content"></textarea>
+        <label for="noticeDate">{{ 'noticeAdmin.publishedDateLabel' | translate }}</label>
+        <input type="datetime-local" id="noticeDate" [(ngModel)]="publishedDate" name="publishedDate" />
       </div>
 
-      <div class="form-field">
-        <label>{{ 'noticeAdmin.publishedDateLabel' | translate }}</label>
-        <input type="datetime-local" [(ngModel)]="publishedDate" name="publishedDate" />
-      </div>
-
-      <label class="toggle-field">
+      <label class="switch-field notice-form__switch">
         <input type="checkbox" [(ngModel)]="alumniOnly" name="alumniOnly" />
         <span>{{ 'noticeAdmin.alumniOnlyLabel' | translate }}</span>
       </label>
 
-      <button type="submit" class="post-form__submit" [disabled]="posting">
-        <mat-icon>{{ posting ? 'hourglass_top' : 'campaign' }}</mat-icon>
-        {{ posting ? ('noticeAdmin.posting' | translate) : ('noticeAdmin.postButton' | translate) }}
-      </button>
+      <div class="form-actions notice-form__full">
+        <button type="submit" class="btn btn--solid" [disabled]="posting">
+          <mat-icon>{{ posting ? 'hourglass_top' : 'campaign' }}</mat-icon>
+          {{ posting ? ('noticeAdmin.posting' | translate) : ('noticeAdmin.postButton' | translate) }}
+        </button>
+      </div>
     </form>
   </app-section-card>
 
+  <!-- ===== Posted notices ===== -->
   <app-section-card icon="notifications" [title]="'noticeAdmin.postedCardTitle' | translate" [noPadding]="true">
 
-    <div class="notice-admin__loading" *ngIf="loading">
-      <mat-icon class="notice-admin__loading-icon">autorenew</mat-icon>
+    <div class="loading" role="status" *ngIf="loading">
+      <mat-icon>autorenew</mat-icon>
       <span>{{ 'noticeAdmin.loading' | translate }}</span>
     </div>
 
     <app-empty-state *ngIf="!loading && notices.length === 0" icon="campaign" [title]="'noticeAdmin.emptyTitle' | translate"
       [message]="'noticeAdmin.emptyMessage' | translate"></app-empty-state>
 
-    <div class="notice-admin__list" *ngIf="!loading && notices.length > 0">
-      <div class="notice-admin__item" *ngFor="let notice of notices">
+    <ul class="notices" *ngIf="!loading && notices.length > 0">
+      <li class="notice" *ngFor="let notice of notices" [class.notice--editing]="editingId === notice.id">
 
         <!-- View mode -->
         <ng-container *ngIf="editingId !== notice.id">
-          <div class="notice-admin__item-body">
-            <strong>
+          <time class="pp-date notice__date" [attr.datetime]="notice.publishedDate">
+            <span class="pp-date__day">{{ notice.publishedDate | date:'d' }}</span>
+            <span class="pp-date__month">{{ notice.publishedDate | date:'MMM' }}</span>
+          </time>
+
+          <div class="notice__body">
+            <h3 class="notice__title">
               {{ notice.title }}
-              <span class="notice-admin__badge" *ngIf="notice.alumniOnly">{{ 'noticeAdmin.alumniOnlyBadge' | translate }}</span>
-            </strong>
-            <p>{{ notice.content }}</p>
-            <span class="notice-admin__date">
+              <span class="notice__badge" *ngIf="notice.alumniOnly">
+                <mat-icon>lock</mat-icon>{{ 'noticeAdmin.alumniOnlyBadge' | translate }}
+              </span>
+            </h3>
+            <p class="notice__text">{{ notice.content }}</p>
+            <span class="notice__meta">
               {{ notice.publishedDate | date:'medium' }}
               <ng-container *ngIf="notice.createdByName"> &middot; {{ 'noticeAdmin.postedBy' | translate }} {{ notice.createdByName }}</ng-container>
             </span>
           </div>
-          <div class="notice-admin__actions">
-            <button type="button" class="notice-admin__action" (click)="startEdit(notice)"
-              [attr.aria-label]="'noticeAdmin.editAriaLabel' | translate">
+
+          <div class="notice__actions">
+            <button type="button" class="icon-btn" (click)="startEdit(notice)"
+              [attr.aria-label]="'noticeAdmin.editAriaLabel' | translate" [attr.title]="'noticeAdmin.editAriaLabel' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button type="button" class="notice-admin__action notice-admin__action--danger"
+            <button type="button" class="icon-btn icon-btn--danger"
               [disabled]="deletingId === notice.id" (click)="confirmDelete(notice)"
-              [attr.aria-label]="'noticeAdmin.deleteAriaLabel' | translate">
+              [attr.aria-label]="'noticeAdmin.deleteAriaLabel' | translate" [attr.title]="'noticeAdmin.deleteAriaLabel' | translate">
               <mat-icon>{{ deletingId === notice.id ? 'hourglass_top' : 'delete' }}</mat-icon>
             </button>
           </div>
         </ng-container>
 
         <!-- Edit mode -->
-        <div class="notice-admin__edit" *ngIf="editingId === notice.id">
-          <div class="form-field">
-            <label>{{ 'noticeAdmin.titleLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="editTitle" name="editTitle-{{ notice.id }}" />
+        <div class="notice-form notice__edit" *ngIf="editingId === notice.id">
+          <div class="form-field notice-form__full">
+            <label for="editTitle-{{ notice.id }}">{{ 'noticeAdmin.titleLabel' | translate }}</label>
+            <input type="text" id="editTitle-{{ notice.id }}" [(ngModel)]="editTitle" name="editTitle-{{ notice.id }}" />
+          </div>
+          <div class="form-field notice-form__full">
+            <label for="editContent-{{ notice.id }}">{{ 'noticeAdmin.contentLabel' | translate }}</label>
+            <textarea id="editContent-{{ notice.id }}" rows="4" [(ngModel)]="editContent" name="editContent-{{ notice.id }}"></textarea>
           </div>
           <div class="form-field">
-            <label>{{ 'noticeAdmin.contentLabel' | translate }}</label>
-            <textarea rows="4" [(ngModel)]="editContent" name="editContent-{{ notice.id }}"></textarea>
+            <label for="editPublishedDate-{{ notice.id }}">{{ 'noticeAdmin.publishedDateLabel' | translate }}</label>
+            <input type="datetime-local" id="editPublishedDate-{{ notice.id }}" [(ngModel)]="editPublishedDate" name="editPublishedDate-{{ notice.id }}" />
           </div>
-          <div class="form-field">
-            <label>{{ 'noticeAdmin.publishedDateLabel' | translate }}</label>
-            <input type="datetime-local" [(ngModel)]="editPublishedDate" name="editPublishedDate-{{ notice.id }}" />
-          </div>
-          <label class="toggle-field">
+          <label class="switch-field notice-form__switch">
             <input type="checkbox" [(ngModel)]="editAlumniOnly" name="editAlumniOnly-{{ notice.id }}" />
             <span>{{ 'noticeAdmin.alumniOnlyLabel' | translate }}</span>
           </label>
-          <div class="notice-admin__edit-actions">
-            <button type="button" class="notice-admin__save" [disabled]="saving" (click)="submitEdit(notice)">
+          <div class="form-actions notice-form__full">
+            <button type="button" class="btn btn--solid" [disabled]="saving" (click)="submitEdit(notice)">
               <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
               {{ 'noticeAdmin.saveButton' | translate }}
             </button>
-            <button type="button" class="notice-admin__cancel" [disabled]="saving" (click)="cancelEdit()">
+            <button type="button" class="btn btn--outline" [disabled]="saving" (click)="cancelEdit()">
               {{ 'noticeAdmin.cancelButton' | translate }}
             </button>
           </div>
         </div>
 
-      </div>
-    </div>
+      </li>
+    </ul>
   </app-section-card>
 
 </div>

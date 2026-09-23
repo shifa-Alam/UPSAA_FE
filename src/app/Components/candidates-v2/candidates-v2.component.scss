@@ -1,323 +1,67 @@
-/* ===============================
-   Candidate Details Modal
-================================= */
-.modal-content {
-  background: var(--color-surface);
-  padding: var(--space-5);
-  border-radius: var(--radius-lg);
-  max-width: 500px;
-  margin: 80px auto;
-  position: relative;
+@use '../elections/election-admin';
+
+// ---------------------------- Table extras ----------------------------
+.name-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
 }
 
-.details-wrapper p {
-  margin: var(--space-2) 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-ink-700);
-}
-
-.modal-actions {
-  text-align: right;
-  margin-top: var(--space-5);
-}
-
-.approve-btn {
-  background: var(--color-success);
-  color: #fff;
-  padding: 8px var(--space-4);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  margin-right: var(--space-2);
-  font-weight: 600;
-  transition: filter var(--transition-fast);
-}
-
-.approve-btn:hover {
-  filter: brightness(0.92);
-}
-
-.reject-btn {
-  background: var(--color-danger);
-  color: #fff;
-  padding: 8px var(--space-4);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  margin-right: var(--space-2);
-  font-weight: 600;
-  transition: filter var(--transition-fast);
-}
-
-.reject-btn:hover {
-  filter: brightness(0.92);
-}
-
-.undo-btn {
-  background: var(--color-warning);
-  color: var(--color-ink-900);
-  padding: 8px var(--space-4);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  margin-right: var(--space-2);
-  font-weight: 600;
-  transition: filter var(--transition-fast);
-}
-
-.undo-btn:hover {
-  filter: brightness(0.92);
-}
-
-.close-btn {
-  background: var(--color-ink-100);
-  color: var(--color-ink-700);
-  padding: 8px var(--space-4);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background var(--transition-fast);
-}
-
-.close-btn:hover {
-  background: var(--color-ink-200);
-}
-
-.reject-note {
-  margin-top: var(--space-4);
-}
-
-.reject-note textarea {
-  width: 100%;
-  border-radius: var(--radius-md);
-  padding: var(--space-2);
-  border: 1px solid var(--color-ink-200);
-  resize: none;
-  font-size: var(--font-size-sm);
-  font-family: var(--font-base);
-}
-
-.confirm-reject-btn {
-  background: var(--color-danger);
-  color: #fff;
-  padding: 8px var(--space-4);
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  margin-right: var(--space-2);
-  font-weight: 600;
-}
-
-.confirm-reject-btn:disabled {
-  background: #e6a2aa;
-  cursor: not-allowed;
-}
-
-.approved-tick {
-  color: var(--color-success);
-  font-weight: bold;
-  margin-left: var(--space-2);
-}
-
-.rejected-tick {
-  color: var(--color-danger);
-  font-weight: bold;
-  margin-left: var(--space-2);
-}
-
-.pending-tick {
-  color: var(--color-warning);
-  margin-left: var(--space-2);
-}
-
-/* ===============================
-   Page body
-================================= */
-.page-body {
-  /* No max-width/centering — full-width inside the admin panel's main-content,
-     not the public site's reading column. */
-  padding: var(--space-4) var(--space-5);
-}
-
-/* ===== Summary stat row ===== */
-.stat-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-
-/* ===============================
-   Table Wrapper
-================================= */
-.table-wrapper {
-  max-height: none;
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-/* ===============================
-   Table Styles
-================================= */
-.candidates-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-  font-size: var(--font-size-sm);
-}
-
-.candidates-table th {
-  text-align: left;
-  padding: var(--space-3) var(--space-5);
-  background: var(--color-surface-alt);
+.admin-table .cell-code {
+  font-variant-numeric: tabular-nums;
   color: var(--color-ink-600);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
   white-space: nowrap;
 }
 
-.candidates-table td {
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-ink-100);
-  color: var(--color-ink-700);
+// Pending nominations wait on an admin decision — a thin gold edge marks them.
+.admin-table tbody tr.row--pending td:first-child {
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
 }
 
-.candidates-table tbody tr:last-child td {
-  border-bottom: none;
+.item-card.row--pending {
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
 }
 
-.candidates-table tr:hover {
-  background: var(--color-surface-alt);
+.filter-field--short input {
+  width: 90px;
 }
 
-.text-right {
-  text-align: right;
-}
-
-.candidates-table__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-1);
-}
-
-.candidates-table__actions button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--color-ink-400);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.candidates-table__actions button:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.candidates-table__actions button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* ===============================
-   Pagination
-================================= */
-.candidates-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  flex-wrap: wrap;
-}
-
-.candidates-pagination > button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
+.filter-reset {
+  border-color: var(--color-ink-200);
   background: var(--color-surface);
-  color: var(--color-primary-600);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
-.candidates-pagination > button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-number {
-  min-width: 32px;
-  height: 32px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-ink-700);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.page-number:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.page-number.active {
-  background: var(--color-primary-500);
-  color: #fff;
-  border-color: var(--color-primary-500);
-}
-
-.ellipsis {
-  color: var(--color-ink-400);
-  padding: 0 var(--space-1);
-}
-
-/* ===============================
-   Details modal — payment / fee
-================================= */
+// ---------------------------- Details dialog ----------------------------
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.45);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  inset: 0;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(7, 29, 64, 0.5);
 }
 
-.modal .modal-content {
-  max-height: 80vh;
+.modal-content {
+  width: 520px;
+  max-width: 100%;
+  max-height: calc(100vh - 2 * var(--space-4));
   overflow-y: auto;
-  margin: var(--space-4) auto;
-  width: 420px;
-  max-width: 90%;
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  animation: modalFade 0.2s ease-out;
+  animation: candidate-modal-in 0.2s ease-out;
 }
 
-@keyframes modalFade {
+@keyframes candidate-modal-in {
   from {
-    transform: translateY(-16px);
+    transform: translateY(-12px);
     opacity: 0;
   }
 
@@ -327,253 +71,153 @@
   }
 }
 
-.modal-content h2 {
-  margin-bottom: var(--space-4);
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--color-ink-900);
-}
-
 .modal-header {
+  position: relative;
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-4);
+  gap: var(--space-4);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-ink-200);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 40px;
+    height: 2px;
+    background: var(--color-heritage-500);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-ink-900);
+  }
 }
 
-.modal-header h2 {
-  margin-bottom: 0;
+.modal-header__text {
+  min-width: 0;
+}
+
+.modal-eyebrow {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+
+  &:empty { display: none; }
+}
+
+:host-context(html[lang='bn']) .modal-eyebrow {
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .payment-toggle {
-  color: var(--color-primary-600);
-  font-weight: 600;
-}
-
-.paid {
-  color: var(--color-success);
-  font-weight: 600;
-}
-
-.not-paid {
-  color: var(--color-danger);
-  font-weight: 600;
-}
-
-.fee-text {
-  font-size: var(--font-size-md);
-}
-
-.fee-amount {
-  color: var(--color-primary-600);
-  font-weight: 700;
-}
-
-/* ===== Toolbar (filters) ===== */
-.candidates-toolbar {
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--color-ink-200);
-}
-
-.candidates-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.filter-field {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 34px;
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  padding: 0 var(--space-2);
-  background: var(--color-surface-alt);
-}
-
-.filter-field mat-icon {
-  color: var(--color-primary-500);
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
-.filter-field input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: var(--font-size-xs);
-  font-family: var(--font-base);
-  color: var(--color-ink-900);
-  min-width: 110px;
-}
-
-.filter-select {
-  height: 34px;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-ink-200);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-base);
-  background: var(--color-surface-alt);
-  color: var(--color-ink-900);
-  cursor: pointer;
-}
-
-.filter-reset {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-ink-600);
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.filter-reset:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.filter-reset mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* ===============================
-   📱 Mobile Responsive Styles
-================================= */
-.desktop-only {
-  display: block;
-}
-
-.mobile-only {
-  display: none;
-}
-
-/* Mobile Cards */
-.candidate-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-bottom: var(--space-3);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-weight: 600;
-  color: var(--color-ink-900);
-  margin-bottom: var(--space-1);
-}
-
-.card-dates {
-  display: flex;
-  gap: var(--space-4);
-  font-size: var(--font-size-xs);
-  color: var(--color-ink-600);
-  margin-bottom: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.card-header .index {
+  flex-shrink: 0;
   font-size: var(--font-size-sm);
-  color: var(--color-ink-400);
+  font-weight: 600;
+  color: var(--color-ink-700);
 }
 
-.card-header .title {
-  font-size: var(--font-size-md);
+.details-list {
+  margin: 0;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: var(--space-3);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-ink-200);
+  font-size: var(--font-size-sm);
+
+  &:last-child { border-bottom: none; }
+
+  dt {
+    color: var(--color-ink-600);
+  }
+
+  dd {
+    margin: 0;
+    min-width: 0;
+    color: var(--color-ink-900);
+    overflow-wrap: anywhere;
+  }
+}
+
+.detail__strong {
+  font-weight: 600;
+}
+
+.detail__num {
+  font-variant-numeric: tabular-nums;
+}
+
+.detail .fee-amount {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
   font-weight: 700;
-  color: var(--color-ink-900);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-primary-700);
 }
 
-.card-actions {
+:host-context([data-theme='dark']) .detail .fee-amount {
+  color: var(--color-primary-300);
+}
+
+.reject-note {
+  margin-top: var(--space-4);
+}
+
+.modal-actions {
   display: flex;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
+  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-ink-200);
 }
 
-.card-actions button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-surface-alt);
-  color: var(--color-ink-500);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.modal-actions__close {
+  margin-right: auto;
 }
 
-.card-actions button:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.card-actions button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* 📱 Mobile */
+// ---------------------------- Responsive ----------------------------
 @media (max-width: 768px) {
+  .filter-field--short input { width: auto; }
 
-  .desktop-only {
-    display: none;
-  }
+  .filter-reset { align-self: flex-end; }
+}
 
-  .mobile-only {
-    display: block;
-  }
+@media (max-width: 520px) {
+  .modal-content { padding: var(--space-5); }
 
-  .candidates-toolbar {
-    padding: var(--space-3);
+  .modal-header { flex-direction: column; }
+
+  .detail {
+    grid-template-columns: 1fr;
+    gap: 2px;
   }
 
   .modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
+    flex-direction: column-reverse;
+
+    .btn { width: 100%; }
   }
 
-  .modal-actions button {
-    width: 100%;
-    margin-right: 0;
-  }
+  .modal-actions__close { margin-right: 0; }
 }
 
-.loading-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: var(--space-7);
-  color: var(--color-ink-600);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--color-ink-200);
-  border-top: 4px solid var(--color-primary-500);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@media (prefers-reduced-motion: reduce) {
+  .modal-content { animation: none; }
 }

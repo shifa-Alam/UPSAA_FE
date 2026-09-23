@@ -131,6 +131,18 @@
   color: #fff;
 }
 
+/* Standalone Home link above the groups */
+.menu-item--home {
+  margin-bottom: var(--space-2);
+  text-decoration: none;
+}
+
+.menu-item--home.active {
+  background: var(--color-primary-600);
+  color: #fff;
+  font-weight: 600;
+}
+
 /* Icons */
 .icon {
   width: 17px;

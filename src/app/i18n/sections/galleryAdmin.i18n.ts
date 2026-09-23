@@ -7,6 +7,7 @@ export const galleryAdminI18n: I18nSection = {
       subtitle: 'ইভেন্টের ছবি আপলোড ও পরিচালনা করুন।',
       uploadCardTitle: 'নতুন ছবি আপলোড করুন',
       chooseImage: 'ছবি নির্বাচন করুন',
+      chooseImageHint: 'ক্লিক করে আপনার ডিভাইস থেকে একটি ছবি বেছে নিন',
       titleLabel: 'শিরোনাম',
       titlePlaceholder: 'যেমনঃ গ্র্যান্ড পুনর্মিলনী ২০২৬',
       categoryLabel: 'ক্যাটাগরি',
@@ -33,6 +34,8 @@ export const galleryAdminI18n: I18nSection = {
       cancelButton: 'বাতিল',
       editSuccess: 'ছবি হালনাগাদ হয়েছে।',
       editFailedError: 'হালনাগাদ ব্যর্থ হয়েছে।',
+      filterAll: 'সব',
+      filterAriaLabel: 'ক্যাটাগরি অনুযায়ী ছবি দেখুন',
     },
   },
   en: {
@@ -41,6 +44,7 @@ export const galleryAdminI18n: I18nSection = {
       subtitle: 'Upload and manage event photos.',
       uploadCardTitle: 'Upload New Photo',
       chooseImage: 'Choose an image',
+      chooseImageHint: 'Click to pick a photo from your device',
       titleLabel: 'Title',
       titlePlaceholder: 'e.g. Grand Reunion 2026',
       categoryLabel: 'Category',
@@ -67,6 +71,8 @@ export const galleryAdminI18n: I18nSection = {
       cancelButton: 'Cancel',
       editSuccess: 'Photo updated.',
       editFailedError: 'Update failed.',
+      filterAll: 'All',
+      filterAriaLabel: 'Filter photos by category',
     },
   },
 };

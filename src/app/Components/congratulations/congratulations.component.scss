@@ -20,7 +20,7 @@ canvas#confetti-canvas {
 // ---------------------------- Hero band ----------------------------
 .congrats__hero {
   position: relative;
-  padding: clamp(48px, 8vw, 88px) 0 calc(clamp(48px, 8vw, 88px) + var(--space-7));
+  padding: clamp(32px, 5vw, 56px) 0 calc(clamp(32px, 5vw, 56px) + var(--space-7));
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -74,7 +74,7 @@ canvas#confetti-canvas {
 
 .congrats__title {
   color: #fff;
-  font-size: clamp(32px, 5vw, 52px);
+  font-size: clamp(26px, 3.6vw, 40px);
   font-weight: 700;
   line-height: 1.12;
   margin: 0 0 var(--space-3);
@@ -83,7 +83,7 @@ canvas#confetti-canvas {
 .congrats__message {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(14px, 1.6vw, 17px);
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 }

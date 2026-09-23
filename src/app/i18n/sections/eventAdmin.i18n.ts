@@ -42,6 +42,10 @@ export const eventAdminI18n: I18nSection = {
       deleteConfirm: 'ইভেন্টটি মুছে ফেলতে চান?',
       deleteFailedError: 'ইভেন্ট মুছে ফেলা যায়নি।',
       deleteSuccess: 'ইভেন্ট মুছে ফেলা হয়েছে।',
+      changePhoto: 'ছবি পরিবর্তন করুন',
+      paginationLabel: 'পৃষ্ঠা নির্বাচন',
+      prevPage: 'আগের পৃষ্ঠা',
+      nextPage: 'পরের পৃষ্ঠা',
     },
   },
   en: {
@@ -85,6 +89,10 @@ export const eventAdminI18n: I18nSection = {
       deleteConfirm: 'Do you want to delete this event?',
       deleteFailedError: 'Could not delete the event.',
       deleteSuccess: 'Event deleted.',
+      changePhoto: 'Change photo',
+      paginationLabel: 'Pagination',
+      prevPage: 'Previous page',
+      nextPage: 'Next page',
     },
   },
 };

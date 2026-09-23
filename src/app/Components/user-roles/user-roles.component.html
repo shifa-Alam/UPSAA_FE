@@ -1,0 +1,93 @@
+<div class="user-roles">
+
+  <app-admin-header [title]="'userRoles.title' | translate" [subtitle]="'userRoles.subtitle' | translate"></app-admin-header>
+
+  <div class="note">
+    <mat-icon>info</mat-icon>
+    <span>{{ 'userRoles.nextLoginNote' | translate }}</span>
+  </div>
+
+  <app-section-card icon="admin_panel_settings" [title]="'userRoles.listTitle' | translate" [noPadding]="true">
+
+    <!-- ===== Filters ===== -->
+    <div class="tools">
+      <label class="field field--search">
+        <mat-icon>search</mat-icon>
+        <input type="search" [(ngModel)]="search" (ngModelChange)="onSearchChange()"
+          [placeholder]="'userRoles.searchPlaceholder' | translate" [attr.aria-label]="'userRoles.searchPlaceholder' | translate" />
+      </label>
+      <select class="field" [(ngModel)]="roleFilter" (ngModelChange)="onRoleFilterChange()"
+        [attr.aria-label]="'userRoles.filterRole' | translate">
+        <option value="">{{ 'userRoles.allRoles' | translate }}</option>
+        <option *ngFor="let r of roles" [value]="r">{{ roleKey(r) | translate }}</option>
+      </select>
+      <button type="button" class="btn btn--outline" (click)="resetFilters()" [disabled]="!search && !roleFilter">
+        <mat-icon>restart_alt</mat-icon>{{ 'userRoles.reset' | translate }}
+      </button>
+    </div>
+
+    <div class="count" *ngIf="!loading && !loadFailed">
+      {{ formatNumber(totalItems) }} {{ 'userRoles.accounts' | translate }}
+    </div>
+
+    <div class="state" *ngIf="loading"><mat-icon class="spin">autorenew</mat-icon></div>
+    <p class="state state--text" *ngIf="!loading && loadFailed">{{ 'userRoles.loadFailed' | translate }}</p>
+    <p class="state state--text" *ngIf="!loading && !loadFailed && users.length === 0">{{ 'userRoles.empty' | translate }}</p>
+
+    <!-- ===== Rows (a table on wide screens, stacked cards on phones — same markup) ===== -->
+    <ul class="rows" *ngIf="!loading && users.length">
+      <li class="row" *ngFor="let u of users" [class.row--dirty]="isDirty(u)">
+        <div class="row__who">
+          <span class="row__avatar">{{ initials(u) }}</span>
+          <div class="row__text">
+            <span class="row__name">
+              {{ u.memberName || u.email || u.phone }}
+              <span class="you" *ngIf="u.isSelf">{{ 'userRoles.you' | translate }}</span>
+            </span>
+            <span class="row__meta">
+              <ng-container *ngIf="u.batch">{{ 'userRoles.batch' | translate }} {{ formatNumber(u.batch, true) }} · </ng-container>
+              <ng-container *ngIf="u.phone">{{ u.phone }}</ng-container>
+              <ng-container *ngIf="!u.phone && u.memberName">{{ u.email }}</ng-container>
+            </span>
+          </div>
+        </div>
+
+        <div class="row__current">
+          <span class="pill" [ngClass]="roleClass(u.role)">{{ roleKey(u.role) | translate }}</span>
+        </div>
+
+        <div class="row__change">
+          <ng-container *ngIf="!u.isSelf; else selfLock">
+            <select class="field field--role" [ngModel]="selectedRole(u)" (ngModelChange)="pick(u, $event)"
+              [disabled]="savingId === u.userId" [attr.aria-label]="'userRoles.changeFor' | translate">
+              <option value="" disabled *ngIf="!u.role">{{ 'userRoles.noRole' | translate }}</option>
+              <option *ngFor="let r of roles" [value]="r">{{ roleKey(r) | translate }}</option>
+            </select>
+            <ng-container *ngIf="isDirty(u)">
+              <button type="button" class="btn btn--solid" (click)="save(u)" [disabled]="savingId === u.userId">
+                <mat-icon>{{ savingId === u.userId ? 'hourglass_top' : 'check' }}</mat-icon>{{ 'userRoles.save' | translate }}
+              </button>
+              <button type="button" class="icon-btn" (click)="cancel(u)" [disabled]="savingId === u.userId"
+                [attr.aria-label]="'userRoles.cancel' | translate" [title]="'userRoles.cancel' | translate">
+                <mat-icon>close</mat-icon>
+              </button>
+            </ng-container>
+          </ng-container>
+          <ng-template #selfLock>
+            <span class="self-lock"><mat-icon>lock</mat-icon>{{ 'userRoles.selfLocked' | translate }}</span>
+          </ng-template>
+        </div>
+      </li>
+    </ul>
+
+    <!-- ===== Pagination ===== -->
+    <nav class="pager" *ngIf="!loading && totalPages > 1" [attr.aria-label]="'userRoles.pagination' | translate">
+      <button type="button" class="icon-btn" (click)="goTo(pageNumber - 1)" [disabled]="pageNumber === 1"
+        [attr.aria-label]="'userRoles.prev' | translate"><mat-icon>chevron_left</mat-icon></button>
+      <span class="pager__label">{{ formatNumber(pageNumber) }} / {{ formatNumber(totalPages) }}</span>
+      <button type="button" class="icon-btn" (click)="goTo(pageNumber + 1)" [disabled]="pageNumber === totalPages"
+        [attr.aria-label]="'userRoles.next' | translate"><mat-icon>chevron_right</mat-icon></button>
+    </nav>
+  </app-section-card>
+
+</div>

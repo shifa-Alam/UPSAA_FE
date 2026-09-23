@@ -1,63 +1,65 @@
-
-
-<h2 mat-dialog-title class="dialog-header">
-  {{ 'memberEdit.title' | translate }}
+<div mat-dialog-title class="dlg-head">
+  <div class="dlg-head__text">
+    <span class="eyebrow">{{ 'memberEdit.eyebrow' | translate }}</span>
+    <h2 class="dlg-head__title">{{ 'memberEdit.title' | translate }}</h2>
+  </div>
   <mat-slide-toggle [(ngModel)]="memberData.isSensitiveHidden" color="primary" class="hide-toggle"
     [attr.aria-label]="'memberEdit.hideSensitiveLabel' | translate">
     {{ 'memberEdit.hideSensitiveLabel' | translate }}
   </mat-slide-toggle>
-</h2>
-<mat-progress-bar *ngIf="submitting" mode="indeterminate">
-  </mat-progress-bar>
+</div>
+<mat-progress-bar *ngIf="submitting" mode="indeterminate" class="dlg-progress"></mat-progress-bar>
+
 <mat-dialog-content class="member-edit-content">
-  
   <form class="member-edit-form">
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="span-2">
       <mat-label>{{ 'memberEdit.memberCodeLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.memberCode" name="memberCode" disabled />
     </mat-form-field>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'memberEdit.fullNameLabel' | translate }} </mat-label>
+
+    <mat-form-field appearance="outline" class="span-2">
+      <mat-label>{{ 'memberEdit.fullNameLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.fullName" name="fullName" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline">
       <mat-label>{{ 'memberEdit.batchLabel' | translate }}</mat-label>
       <input matInput type="number" [(ngModel)]="memberData.batch" name="batch" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'memberEdit.bloodGroupLabel' | translate }}</mat-label>
+      <input matInput [(ngModel)]="memberData.bloodGroup" name="bloodGroup" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
       <mat-label>{{ 'memberEdit.phoneLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.phone" name="phone" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline">
       <mat-label>{{ 'memberEdit.emailLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.email" name="email" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
+    <mat-form-field appearance="outline" class="span-2">
       <mat-label>{{ 'memberEdit.cityLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.currentCity" name="currentCity" />
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'memberEdit.bloodGroupLabel' | translate }}</mat-label>
-      <input matInput [(ngModel)]="memberData.bloodGroup" name="bloodGroup" />
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'memberEdit.currentDesignationLabel' | translate }} </mat-label>
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'memberEdit.currentDesignationLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.currentDesignation" name="currentDesignation" />
     </mat-form-field>
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>{{ 'memberEdit.employerLabel' | translate }} </mat-label>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'memberEdit.employerLabel' | translate }}</mat-label>
       <input matInput [(ngModel)]="memberData.employer" name="employer" />
     </mat-form-field>
   </form>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end" class="dialog-actions">
-
-  <button mat-stroked-button color="warn" (click)="cancel()">{{ 'memberEdit.cancelButton' | translate }}</button>
-  <button mat-flat-button color="primary" (click)="save()">{{ 'memberEdit.saveButton' | translate }}</button>
+<mat-dialog-actions align="end" class="dlg-actions">
+  <button type="button" class="btn btn--outline" (click)="cancel()">{{ 'memberEdit.cancelButton' | translate }}</button>
+  <button type="button" class="btn btn--solid" (click)="save()">{{ 'memberEdit.saveButton' | translate }}</button>
 </mat-dialog-actions>

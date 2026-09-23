@@ -6,7 +6,7 @@
     <div class="sidebar-head">
       <div class="sidebar-brand">
         <span class="brand-tile">🏛️</span>
-        <span class="brand-text" *ngIf="!collapsed">{{ 'dashboard.brand' | translate }}</span>
+        <span class="brand-text" *ngIf="!collapsed">{{ (shell === 'member' ? 'dashboard.brandMember' : 'dashboard.brand') | translate }}</span>
       </div>
 
       <button type="button" class="rail-toggle" (click)="toggleCollapsed()"
@@ -18,6 +18,12 @@
     </div>
 
     <nav class="sidebar-menu">
+
+      <a class="menu-item menu-item--home" (click)="navigate(homeRoute)" [class.active]="activeRoute === homeRoute"
+        [title]="'dashboard.itemHome' | translate">
+        <app-nav-icon class="icon" name="dashboard"></app-nav-icon>
+        <span class="label" *ngIf="!collapsed">{{ 'dashboard.itemHome' | translate }}</span>
+      </a>
 
       <ng-container *ngFor="let item of menuItems">
 
@@ -74,7 +80,7 @@
   </aside>
 
   <!-- Main content -->
-  <main class="main-content">
+  <main class="main-content shell-content">
     <router-outlet></router-outlet>
   </main>
 

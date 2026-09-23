@@ -8,14 +8,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
-import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-candidates-v2',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatSlideToggleModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, StatCardComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, MatSlideToggleModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './candidates-v2.component.html',
   styleUrl: './candidates-v2.component.scss'
 })
@@ -151,6 +150,20 @@ export class CandidatesV2Component implements OnInit {
         return this.languageService.translate('candidates.statusWithdrawn');
       default:
         return status || '';
+    }
+  }
+
+  /** Soft pill tint for a nomination status (presentation only). */
+  nominationPillClass(status: string | null | undefined): string {
+    switch (status) {
+      case 'Approved':
+        return 'pill--success';
+      case 'Rejected':
+        return 'pill--danger';
+      case 'Pending':
+        return 'pill--heritage';
+      default:
+        return '';
     }
   }
 

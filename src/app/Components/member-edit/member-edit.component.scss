@@ -1,38 +1,91 @@
-.dialog-header {
+// Edit-info dialog — serif title row, two-column labelled form, right-aligned actions.
+@use '../member-landing/members-ui';
+
+.dlg-head {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--color-ink-900);
-  font-family: var(--font-base);
-  padding-bottom: 0.5rem;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4) !important;
   border-bottom: 1px solid var(--color-ink-200);
-}
 
-.hide-toggle {
-  font-size: 0.9rem;
-}
-
-.member-edit-content {
-  padding-top: 1rem;
-}
-
-.member-edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  .full-width {
-    width: 100%;
+  // mat-dialog-title adds a ::before baseline strut we don't need here
+  &::before {
+    display: none !important;
   }
 }
 
-.dialog-actions {
-  margin-top: 1rem;
+.dlg-head__text {
+  min-width: 0;
+}
 
-  button {
-    min-width: 100px;
-    border-radius: var(--radius-pill);
+.dlg-head__title {
+  margin: 2px 0 0;
+  font-size: var(--font-size-xl);
+  line-height: 1.25;
+  color: var(--color-ink-900);
+}
+
+.hide-toggle {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+}
+
+.dlg-progress {
+  display: block;
+}
+
+.member-edit-content {
+  padding: var(--space-5) !important;
+  max-height: min(64vh, 620px);
+}
+
+.member-edit-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1) var(--space-4);
+
+  mat-form-field {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .span-2 {
+    grid-column: 1 / -1;
+  }
+}
+
+.dlg-actions {
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5) !important;
+  border-top: 1px solid var(--color-ink-200);
+
+  .btn {
+    min-width: 104px;
+  }
+}
+
+@media (max-width: 560px) {
+  .dlg-head {
+    padding: var(--space-4) !important;
+  }
+
+  .member-edit-content {
+    padding: var(--space-4) !important;
+  }
+
+  .member-edit-form {
+    grid-template-columns: 1fr;
+  }
+
+  .dlg-actions {
+    padding: var(--space-3) var(--space-4) !important;
+
+    .btn {
+      flex: 1;
+      min-width: 0;
+    }
   }
 }

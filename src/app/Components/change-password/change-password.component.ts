@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
@@ -21,6 +22,7 @@ import { LanguageService } from '../../Services/language.service';
   MatInputModule,
   MatButtonModule,
   MatDialogModule,   // ONLY this is needed for dialog elements
+  MatIconModule,
   TranslatePipe
 ],
   templateUrl: './change-password.component.html',

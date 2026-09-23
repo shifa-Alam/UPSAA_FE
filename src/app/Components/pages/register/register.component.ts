@@ -22,6 +22,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { LanguageService } from '../../../Services/language.service';
+import { toDateOnly } from '../../../Utils/date-utils';
 
 @Component({
   selector: 'app-register',
@@ -256,7 +257,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       currentDesignation: formValue.currentDesignation || undefined,
       employer: formValue.employer || undefined, // updated
       currentCity: formValue.currentCity,
-      dob: formValue.dob ? new Date(formValue.dob).toISOString() : undefined,
+      dob: toDateOnly(formValue.dob), // "yyyy-MM-dd" — toISOString() shifted it to the previous day
       educationRecords: this.getCompletedEducationRecords(),
       fees: this.getSelectedFees(),
       captchaId: this.captchaId,

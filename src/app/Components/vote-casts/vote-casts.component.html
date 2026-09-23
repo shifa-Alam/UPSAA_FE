@@ -1,4 +1,4 @@
-<div *ngIf="loading" class="loader-container">
+<div *ngIf="loading" class="loading-wrapper" role="status">
     <div class="spinner"></div>
     <p>{{ 'voteCasts.loading' | translate }}</p>
 </div>
@@ -10,74 +10,70 @@
         <app-admin-header [title]="electionTitle + ' ' + ('voteCasts.titleSuffix' | translate)"
             [subtitle]="'voteCasts.subtitle' | translate"></app-admin-header>
 
+        <!-- Key facts: date · electorate · turnout -->
         <div class="header-meta">
-            <div class="meta-item meta-election-date">
+            <div class="meta-item">
                 <span class="meta-label">{{ 'voteCasts.electionDate' | translate }}</span>
-                <span class="meta-value">{{ electionDate |date:'d MMMM, y'}}</span>
+                <span class="meta-value meta-value--date">{{ electionDate |date:'d MMMM, y'}}</span>
             </div>
 
-            <div class="meta-item meta-total-voter">
+            <div class="meta-item">
                 <span class="meta-label">{{ 'voteCasts.totalVoter' | translate }}</span>
-                <span class="meta-value highlight">{{ totalVoter }}</span>
+                <span class="meta-value">{{ totalVoter | number }}</span>
             </div>
 
-            <div class="meta-item meta-total-vote">
-                <span class="meta-label">{{ 'voteCasts.totalVotesReceived' | translate }}</span>
-                <span class="meta-value highlight-vote">{{ totalVotes }}</span>
-
-                <!-- Progress bar -->
-                <div class="progress-bar-wrapper">
-                    <div class="progress-bar">
-                        <div class="progress" [style.width.%]="
-          totalVoter > 0 ? (totalVotes / totalVoter * 100) : 0
-        "></div>
-                    </div>
-
-                    <!-- Percentage text -->
-                    <div class="percentage-text">
+            <div class="meta-item meta-item--turnout">
+                <div class="meta-turnout-head">
+                    <span class="meta-label">{{ 'voteCasts.totalVotesReceived' | translate }}</span>
+                    <span class="percentage-text">
                         {{ (totalVoter > 0 ? (totalVotes / totalVoter * 100) : 0) | number:'1.0-1' }}%
-                    </div>
+                    </span>
+                </div>
+                <span class="meta-value">{{ totalVotes | number }}</span>
+
+                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                    [attr.aria-valuenow]="totalVoter > 0 ? (totalVotes / totalVoter * 100) : 0"
+                    [attr.aria-label]="'voteCasts.totalVotesReceived' | translate">
+                    <div class="progress" [style.width.%]="totalVoter > 0 ? (totalVotes / totalVoter * 100) : 0"></div>
                 </div>
             </div>
         </div>
 
         <!-- ================= TABS ================= -->
-        <div class="tabs-container">
-            <div class="tabs">
-                <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
-                    {{ 'voteCasts.overviewTab' | translate }}
-                </button>
-                <button class="tab-btn" [class.active]="activeTab === 'details'" (click)="setTab('details')">
-                    {{ 'voteCasts.detailsTab' | translate }}
-                </button>
-            </div>
+        <div class="tabs" role="tablist">
+            <button type="button" role="tab" class="tab-btn" [class.active]="activeTab === 'overview'"
+                [attr.aria-selected]="activeTab === 'overview'" (click)="setTab('overview')">
+                {{ 'voteCasts.overviewTab' | translate }}
+            </button>
+            <button type="button" role="tab" class="tab-btn" [class.active]="activeTab === 'details'"
+                [attr.aria-selected]="activeTab === 'details'" (click)="setTab('details')">
+                {{ 'voteCasts.detailsTab' | translate }}
+            </button>
         </div>
 
         <!-- ================= OVERVIEW ================= -->
         <ng-container *ngIf="activeTab === 'overview'">
 
             <!-- ===== KPI / Summary Cards ===== -->
-            <div class="summary-cards">
+            <div class="stats">
 
-                <div class="card">
-                    <div class="card-title">{{ 'voteCasts.totalPositions' | translate }}</div>
-                    <h3>{{ totalPosition }}</h3>
+                <div class="stat">
+                    <span class="stat__icon"><mat-icon>badge</mat-icon></span>
+                    <span class="stat__value">{{ totalPosition }}</span>
+                    <span class="stat__label">{{ 'voteCasts.totalPositions' | translate }}</span>
                 </div>
 
-                <div class="card">
-                    <div class="card-title">{{ 'voteCasts.totalCandidates' | translate }}</div>
-                    <h3>{{ totalCandidate }}</h3>
+                <div class="stat">
+                    <span class="stat__icon"><mat-icon>groups</mat-icon></span>
+                    <span class="stat__value">{{ totalCandidate }}</span>
+                    <span class="stat__label">{{ 'voteCasts.totalCandidates' | translate }}</span>
                 </div>
 
-                <!-- <div class="card">
-                    <div class="card-title">মোট ভোট</div>
-                    <h3>{{ totalVotes }}</h3>
-                </div> -->
-
-                <div class="card highlight-card" *ngIf="leadingCandidate">
-                    <div class="card-title hdTitle">{{ 'voteCasts.topVoted' | translate }}</div>
-                    <h3>{{ leadingCandidate.memberName }}</h3>
-                    <div class="vote-count">{{ leadingCandidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</div>
+                <div class="stat stat--attention stat--leader" *ngIf="leadingCandidate">
+                    <span class="stat__icon"><mat-icon>emoji_events</mat-icon></span>
+                    <span class="stat__eyebrow">{{ 'voteCasts.topVoted' | translate }}</span>
+                    <span class="stat__name">{{ leadingCandidate.memberName }}</span>
+                    <span class="stat__label">{{ leadingCandidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</span>
                 </div>
             </div>
 
@@ -92,8 +88,14 @@
 
                         <div class="candidate-row" *ngFor="let candidate of position.winners">
                             <div class="candidate-info">
-                                <span class="candidate-name">{{ candidate.memberName }} &nbsp;</span>
-                                <span class="candidate-votes">{{ candidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</span>
+                                <span class="candidate-name">{{ candidate.memberName }}</span>
+                                <span class="candidate-figures">
+                                    <span class="candidate-votes">{{ candidate.votes }} {{ 'voteCasts.votesSuffix' | translate }}</span>
+                                    <span class="percentage-text">
+                                        {{ (position.totalVotes > 0 ? (candidate.votes / position.totalVotes * 100) : 0) |
+                                        number:'1.0-1' }}%
+                                    </span>
+                                </span>
                             </div>
 
                             <div class="progress-bar">
@@ -104,12 +106,6 @@
                    ">
                                 </div>
                             </div>
-
-                            <div class="percentage-text">
-                                {{ (position.totalVotes > 0 ? (candidate.votes / position.totalVotes * 100) : 0) |
-                                number:'1.0-1' }}%
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -120,40 +116,49 @@
         <ng-container *ngIf="activeTab === 'details'">
             <app-section-card icon="table_chart" [title]="'voteCasts.detailsTab' | translate" [noPadding]="true">
 
-                <div class="results-toolbar">
-                    <div class="filter-field">
+                <div class="admin-toolbar">
+                    <label class="filter-field">
                         <mat-icon>how_to_vote</mat-icon>
-                        <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()">
+                        <select [(ngModel)]="positionId" (ngModelChange)="filterElectionResults()"
+                            [attr.aria-label]="'voteCasts.selectPosition' | translate">
                             <option [ngValue]="0" selected>{{ 'voteCasts.allPositions' | translate }}</option>
                             <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
                         </select>
-                    </div>
+                    </label>
                 </div>
 
                 <div class="table-wrapper">
-                    <table class="results-table">
+                    <table class="admin-table results-table">
                         <thead>
                             <tr>
                                 <th>{{ 'voteCasts.colPosition' | translate }}</th>
                                 <th>{{ 'voteCasts.colCandidate' | translate }}</th>
-                                <th>{{ 'voteCasts.colVotes' | translate }}</th>
+                                <th class="num">{{ 'voteCasts.colVotes' | translate }}</th>
                                 <th class="text-right">{{ 'voteCasts.colVoteRate' | translate }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Loader row -->
-                            <tr *ngIf="detailsLoading">
+                            <tr *ngIf="detailsLoading" class="state-row">
                                 <td colspan="4" class="details-loader-cell">
                                     <div class="spinner details-spinner"></div>
                                 </td>
                             </tr>
 
+                            <tr *ngIf="!detailsLoading && !candidateResults.length" class="state-row">
+                                <td colspan="4" class="details-empty-cell">{{ 'voteCasts.noResults' | translate }}</td>
+                            </tr>
+
                             <tr *ngFor="let candidate of candidateResults"
                                 [class.leading]="leadingCandidate?.candidateId === candidate.candidateId">
-                                <td>{{ candidate.positionName }}</td>
-                                <td>{{ candidate.memberName }}</td>
-                                <td>{{ candidate.votes }}</td>
-                                <td class="text-right">
+                                <td class="cell-muted">{{ candidate.positionName }}</td>
+                                <td class="cell-strong">
+                                    {{ candidate.memberName }}
+                                    <mat-icon *ngIf="leadingCandidate?.candidateId === candidate.candidateId"
+                                        class="leader-icon" [attr.aria-label]="'voteCasts.topVoted' | translate">emoji_events</mat-icon>
+                                </td>
+                                <td class="num">{{ candidate.votes }}</td>
+                                <td class="num">
                                     {{ (totalVotes > 0 ? (candidate.votes / totalVotes * 100) : 0) | number:'1.0-1' }}%
                                 </td>
                             </tr>

@@ -63,7 +63,7 @@
 
 .auth__title {
   color: #fff;
-  font-size: clamp(28px, 4vw, 46px);
+  font-size: clamp(24px, 3vw, 34px);
   font-weight: 700;
   line-height: 1.15;
   margin: 0;
@@ -80,7 +80,7 @@
 .auth__tagline {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(16px, 1.8vw, 20px);
+  font-size: clamp(14px, 1.5vw, 17px);
   line-height: var(--line-height-normal);
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
@@ -223,8 +223,8 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   margin-right: calc(var(--space-2) * -1);
   padding: 0;
   border: none;
@@ -311,6 +311,14 @@
 
   &:hover {
     text-decoration: underline;
+  }
+
+  // Inline text links grow a 44px-tall hit area on touch screens without moving the text.
+  @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--space-1);
   }
 }
 

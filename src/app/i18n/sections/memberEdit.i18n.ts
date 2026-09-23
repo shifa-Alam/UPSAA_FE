@@ -4,6 +4,7 @@ export const memberEditI18n: I18nSection = {
   bn: {
     memberEdit: {
       title: 'তথ্য সম্পাদনা',
+      eyebrow: 'সদস্য প্রোফাইল',
       hideSensitiveLabel: 'স্পর্শকাতর তথ্য লুকান',
       memberCodeLabel: 'সদস্য কোড',
       fullNameLabel: 'পূর্ণ নাম',
@@ -23,6 +24,7 @@ export const memberEditI18n: I18nSection = {
   en: {
     memberEdit: {
       title: 'Edit Info',
+      eyebrow: 'Member profile',
       hideSensitiveLabel: 'Hide sensitive information',
       memberCodeLabel: 'Member Code',
       fullNameLabel: 'Full Name',

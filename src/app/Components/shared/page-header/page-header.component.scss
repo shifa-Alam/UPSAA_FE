@@ -5,7 +5,7 @@
   overflow: hidden;
   isolation: isolate;
   background: var(--gradient-hero);
-  padding: clamp(64px, 10vw, 112px) 0 clamp(56px, 8vw, 96px);
+  padding: clamp(36px, 5vw, 60px) 0 clamp(32px, 4.5vw, 52px);
   color: #fff;
   text-align: center;
 }
@@ -21,7 +21,7 @@
 
 /* Compact band for tool-like pages (directory, forms) where content should start sooner. */
 .page-header--plain {
-  padding: clamp(40px, 6vw, 64px) 0 clamp(36px, 5vw, 56px);
+  padding: clamp(24px, 3.5vw, 40px) 0 clamp(22px, 3vw, 36px);
 }
 
 .page-header__inner {
@@ -42,34 +42,34 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-heritage-500);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .page-header__title {
   color: #fff;
-  font-size: clamp(32px, 5vw, 56px);
+  font-size: clamp(26px, 3.6vw, 40px);
   font-weight: 700;
-  line-height: 1.12;
-  max-width: 22ch;
-  margin: 0 0 var(--space-4);
+  line-height: 1.15;
+  max-width: 24ch;
+  margin: 0 0 var(--space-2);
 }
 
 .page-header--plain .page-header__title {
-  font-size: clamp(28px, 4vw, 44px);
+  font-size: clamp(22px, 3vw, 32px);
 }
 
 .page-header__subtitle {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: 1.6;
+  font-size: clamp(14px, 1.6vw, 17px);
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.85);
   max-width: 640px;
   margin: 0;
 }
 
 .page-header__extra {
-  margin-top: var(--space-5);
+  margin-top: var(--space-4);
 }
 
 .page-header__extra:empty {
@@ -84,4 +84,48 @@
   .page-header__inner {
     animation: none;
   }
+}
+
+/* Inside the sidebar shell (/dashboard, /portal) the page sits next to the admin
+   screens, so the band gives way to their understated header: left-aligned text on
+   the page background with a gold eyebrow and a hairline rule, no gradient. */
+:host-context(.shell-content) .page-header,
+:host-context(.shell-content) .page-header--plain {
+  background: transparent;
+  color: var(--color-ink-900);
+  text-align: left;
+  padding: var(--space-4) 0 var(--space-3);
+  border-bottom: 1px solid var(--color-ink-200);
+}
+
+:host-context(.shell-content) .page-header::before {
+  display: none;
+}
+
+:host-context(.shell-content) .page-header .page-header__inner {
+  align-items: flex-start;
+  animation: none;
+}
+
+:host-context(.shell-content) .page-header .page-header__eyebrow {
+  margin-bottom: var(--space-2);
+}
+
+:host-context(.shell-content) .page-header .page-header__title {
+  color: var(--color-ink-900);
+  font-size: clamp(19px, 2vw, 23px);
+  max-width: none;
+  margin: 0 0 var(--space-1);
+}
+
+:host-context(.shell-content) .page-header .page-header__subtitle {
+  font-family: var(--font-base);
+  font-style: normal;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  max-width: 720px;
+}
+
+:host-context(.shell-content) .page-header .page-header__extra {
+  margin-top: var(--space-3);
 }

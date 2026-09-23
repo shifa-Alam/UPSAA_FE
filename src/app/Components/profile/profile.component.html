@@ -1,204 +1,189 @@
-<div *ngIf="loading" class="loading-wrapper">
+<div *ngIf="loading" class="loading-wrapper" role="status">
   <div class="spinner"></div>
   <p>{{ 'profile.loading' | translate }}</p>
 </div>
-<div class="profile-container" *ngIf="member && !loading">
 
-  <!-- Cover + Avatar -->
-  <div class="cover-avatar-section">
-    <!-- Background Gradient + Pattern -->
-    <div class="cover-gradient">
-      <div class="upsaa-pattern">
-        <span *ngFor="let span of upsaaSpans" [style.--rotate]="span.rotate" [style.fontSize.px]="span.size">
-          UPSAA
+<div class="profile" *ngIf="member && !loading">
+
+  <!-- ===== Profile header ===== -->
+  <header class="profile-head">
+    <button type="button" class="avatar" (click)="fileInput.click()" [attr.aria-label]="'profile.changePhoto' | translate"
+      [title]="'profile.changePhoto' | translate">
+      <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl" [alt]="member.fullName" />
+      <ng-template #initialsAvatar>
+        <span class="avatar__initials">{{ getInitial(member.fullName) }}</span>
+      </ng-template>
+      <span class="avatar__camera"><mat-icon>photo_camera</mat-icon></span>
+    </button>
+
+    <div class="profile-head__text">
+      <span class="eyebrow">{{ 'profile.eyebrow' | translate }}</span>
+      <h1 class="profile-head__name">{{ member.fullName }}</h1>
+      <p class="profile-head__role">
+        {{ member.currentDesignation || ('profile.studentDefault' | translate) }}
+        <span class="dot" aria-hidden="true">·</span>
+        {{ member.employer || ('profile.noInfo' | translate) }}
+      </p>
+      <div class="profile-head__meta">
+        <span class="chip"><mat-icon>school</mat-icon>{{ 'profile.batchLabel' | translate }} {{ member.batch }}</span>
+        <span class="pill" [ngClass]="member.active ? 'pill--success' : 'pill--attention'">
+          {{ (member.active ? 'profile.statusActive' : 'profile.statusPending') | translate }}
         </span>
       </div>
     </div>
 
-    <!-- Avatar -->
-    <div class="avatar-wrapper" (click)="fileInput.click()">
-      
-      <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl"
-        class="avatar" />
-      <ng-template #initialsAvatar>
-        <div class="initials">{{ getInitial(member.fullName) }}</div>
-      </ng-template>
-      <div class="camera-icon"><mat-icon>photo_camera</mat-icon></div>
+    <div class="profile-head__actions">
+      <button type="button" class="btn btn--outline" (click)="openEditInfoDialog()">
+        <mat-icon>edit</mat-icon>
+        {{ 'profile.editInfo' | translate }}
+      </button>
+      <button type="button" class="btn btn--outline" (click)="openChangePasswordDialog()">
+        <mat-icon>lock</mat-icon>
+        {{ 'profile.changePassword' | translate }}
+      </button>
+      <a class="btn btn--solid" [routerLink]="['/election']">
+        <mat-icon>how_to_vote</mat-icon>
+        {{ 'profile.vote' | translate }}
+      </a>
     </div>
-
-    <!-- Profile Info -->
-    <div class="profile-info">
-      <h2>{{ member.fullName }}</h2>
-      <p class="designation">{{ member.currentDesignation || ('profile.studentDefault' | translate) }}</p>
-      <p class="designation">{{ member.employer || ('profile.noInfo' | translate) }}</p>
-
-    </div>
-  </div>
-
+  </header>
 
   <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
 
+  <!-- ===== Photo cropper ===== -->
+  <section class="card cropper-card" *ngIf="imageChangedEvent">
+    <div class="card__head">
+      <h2 class="card__title">{{ 'profile.cropTitle' | translate }}</h2>
+    </div>
+    <div class="card__body cropper-body">
+      <div class="cropper-frame">
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
+          [resizeToWidth]="500" format="png" (imageCropped)="imageCropped($event)" class="cropper">
+        </image-cropper>
+      </div>
 
-  <!-- Cropper -->
-  <div class="cropper-wrapper" *ngIf="imageChangedEvent">
-    <div class="cropper-frame small-cropper-frame">
-      <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1"
-        [resizeToWidth]="500" format="png" (imageCropped)="imageCropped($event)" class="cropper">
-      </image-cropper>
+      <div class="cropper-actions">
+        <button type="button" class="btn btn--outline" (click)="cancelCrop()">
+          <mat-icon>close</mat-icon> {{ 'profile.cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn--solid" (click)="uploadImage()" [disabled]="uploading || !croppedImage">
+          <mat-icon>cloud_upload</mat-icon> {{ uploading ? ('profile.uploading' | translate) : ('profile.uploadButton' | translate) }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Details ===== -->
+  <section class="card">
+    <div class="card__head">
+      <h2 class="card__title">{{ 'profile.detailsTitle' | translate }}</h2>
+    </div>
+    <div class="card__body">
+      <dl class="field-grid">
+        <div>
+          <dt>{{ 'profile.field.memberCode' | translate }}</dt>
+          <dd><span class="code">{{ member.memberCode }}</span></dd>
+        </div>
+        <div>
+          <dt>{{ 'profile.field.batch' | translate }}</dt>
+          <dd>{{ member.batch }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'profile.field.phone' | translate }}</dt>
+          <dd>{{ member.phone }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'profile.field.email' | translate }}</dt>
+          <dd>{{ member.email }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'profile.field.city' | translate }}</dt>
+          <dd>{{ member.currentCity }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'profile.field.bloodGroup' | translate }}</dt>
+          <dd>
+            <ng-container *ngIf="member.bloodGroup; else noBlood">{{ member.bloodGroup }}</ng-container>
+            <ng-template #noBlood><span class="field-grid__empty">{{ 'profile.noInfo' | translate }}</span></ng-template>
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ===== Education ===== -->
+  <section class="card">
+    <div class="card__head">
+      <h2 class="card__title">{{ 'profile.educationInfoTitle' | translate }}</h2>
+      <button type="button" class="btn btn--outline btn--sm" (click)="addEducation()">
+        <mat-icon>add</mat-icon> {{ 'profile.addNew' | translate }}
+      </button>
     </div>
 
-    <div class="cropper-buttons">
-      <button class="upload-btn" (click)="uploadImage()" [disabled]="uploading || !croppedImage">
-        <mat-icon>cloud_upload</mat-icon> {{ uploading ? ('profile.uploading' | translate) : ('profile.uploadButton' | translate) }}
-      </button>
-      <button class="cancel-btn" (click)="cancelCrop()">
-        <mat-icon>close</mat-icon> {{ 'profile.cancel' | translate }}
-      </button>
+    <div class="table-scroll" *ngIf="member.educationRecords.length; else noEdu">
+      <table class="data-table education-table">
+        <thead>
+          <tr>
+            <th>{{ 'profile.degree' | translate }}</th>
+            <th>{{ 'profile.institute' | translate }}</th>
+            <th>{{ 'profile.subject' | translate }}</th>
+            <th class="text-right">{{ 'profile.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let edu of member.educationRecords">
+            <td class="strong">{{ edu.degreeName }}</td>
+            <td>{{ edu.instituteName }}</td>
+            <td>{{ edu.subject }}</td>
+            <td class="text-right">
+              <span class="row-actions">
+                <button type="button" class="icon-btn" (click)="editEducation(edu)" [attr.aria-label]="'profile.editEducation' | translate"
+                  [title]="'profile.editEducation' | translate">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button type="button" class="icon-btn icon-btn--danger" (click)="deleteEducation(edu)"
+                  [attr.aria-label]="'profile.deleteEducation' | translate" [title]="'profile.deleteEducation' | translate">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </div>
 
+    <ng-template #noEdu>
+      <p class="empty">{{ 'profile.noEducationRecords' | translate }}</p>
+    </ng-template>
+  </section>
 
-
-  <!-- Tabs with Icons & Animation -->
-  <mat-tab-group class="profile-tabs" animationDuration="500ms">
-
-    <mat-tab [label]="'👤 ' + ('profile.infoTab' | translate)">
-      <div class="tab-card contact-card">
-        <div class="contact-item">
-          <p class="member-code">
-            <mat-icon>badge</mat-icon>
-            <strong>{{ 'profile.memberCodeLabel' | translate }}</strong>
-            <span class="code-value">{{ member.memberCode }}</span>
-
-
-          </p>
-
-
-
-          <p><mat-icon>calendar_today</mat-icon> <strong>{{ 'profile.batchLabel' | translate }}</strong> {{ member.batch }}</p>
-          <p><mat-icon>call</mat-icon> <strong>{{ 'profile.phoneLabel' | translate }}</strong> {{ member.phone }}</p>
-          <p><mat-icon>email</mat-icon> <strong>{{ 'profile.emailLabel' | translate }}</strong> {{ member.email }}</p>
-          <p><mat-icon>location_city</mat-icon> <strong>{{ 'profile.cityLabel' | translate }}</strong> {{ member.currentCity }}</p>
-          <p><mat-icon>favorite</mat-icon> <strong>{{ 'profile.bloodGroupLabel' | translate }}</strong> {{ member.bloodGroup || ('profile.noInfo' | translate) }}</p>
-        </div>
-        <div class="action-buttons">
-          <!-- Edit Info Button -->
-          <button mat-flat-button class="action-btn edit-btn" (click)="openEditInfoDialog()">
-            <mat-icon>edit</mat-icon>
-            {{ 'profile.editInfo' | translate }}
-          </button>
-
-          <!-- Change Password Button -->
-          <button mat-flat-button class="action-btn change-password-btn" (click)="openChangePasswordDialog()">
-            <mat-icon>lock</mat-icon>
-            {{ 'profile.changePassword' | translate }}
-          </button>
-
-          <!-- Apply For Nomination Button -->
-          <!-- <button mat-raised-button class="action-btn nomination-btn pulse-button" (click)="openCandidateForm()">
-            <mat-icon>how_to_vote</mat-icon>
-            Apply For Nomination
-          </button> -->
-          <!-- Apply For Nomination Button -->
-          <!-- <button mat-raised-button class="action-btn nomination-btn pulse-button" [routerLink]="['/nomination']">
-            <mat-icon>how_to_vote</mat-icon>
-            Apply For Nomination
-          </button> -->
-           <button mat-raised-button class="action-btn nomination-btn pulse-button" [routerLink]="['/election']">
-            <mat-icon>how_to_vote</mat-icon>
-           {{ 'profile.vote' | translate }}
-          </button>
-
-        </div>
-
-
-
-      </div>
-
-
-    </mat-tab>
-
-    <mat-tab [label]="'🎓 ' + ('profile.educationTab' | translate)">
-      <div class="tab-card education-card">
-
-        <!-- Header with title + Add button -->
-        <div class="tab-card-header">
-          <h3 class="card-title">{{ 'profile.educationInfoTitle' | translate }}</h3>
-          <button mat-raised-button class="" (click)="addEducation()">
-            <mat-icon>add</mat-icon> {{ 'profile.addNew' | translate }}
-          </button>
-        </div>
-
-        <div class="table-container" *ngIf="member.educationRecords.length; else noEdu">
-          <table class="members-table education-table">
-            <thead>
-              <tr>
-                <th>{{ 'profile.degree' | translate }}</th>
-                <th>{{ 'profile.institute' | translate }}</th>
-                <th>{{ 'profile.subject' | translate }}</th>
-
-                <th>{{ 'profile.actions' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let edu of member.educationRecords">
-                <td>{{ edu.degreeName }}</td>
-                <td>{{ edu.instituteName }}</td>
-                <td>{{ edu.subject }}</td>
-
-                <td>
-                  <button mat-icon-button color="primary" (click)="editEducation(edu)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="deleteEducation(edu)">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <ng-template #noEdu>
-          <p class="no-records">{{ 'profile.noEducationRecords' | translate }}</p>
-        </ng-template>
-
-      </div>
-    </mat-tab>
-
-
-
-
-
-
-
-    <mat-tab [label]="'💳 ' + ('profile.feesTab' | translate)" *ngIf="member.fees.length">
-      <div class="tab-card fees-card">
-        <div *ngFor="let fee of member.fees; let last = last" class="fee-item">
-          <p>
-            <mat-icon>payment</mat-icon>
-            <strong class="label">{{ 'profile.feeTypeLabel' | translate }}</strong> {{ fee.feeType }}
-          </p>
-          <p>
-            <mat-icon>attach_money</mat-icon>
-            <strong class="label">{{ 'profile.amountLabel' | translate }}</strong> ৳{{ fee.amount }}
-          </p>
-          <p>
-            <mat-icon>check_circle</mat-icon>
-            <strong class="label">{{ 'profile.statusLabel' | translate }}</strong>
-            <span class="status" [class.paid]="fee.isPaid" [class.unpaid]="!fee.isPaid">
-              {{ fee.isPaid ? ('profile.paid' | translate) : ('profile.unpaid' | translate) }}
-            </span>
-          </p>
-          <hr *ngIf="!last">
-        </div>
-      </div>
-
-
-    </mat-tab>
-
-
-  </mat-tab-group>
-
+  <!-- ===== Fees ===== -->
+  <section class="card" *ngIf="member.fees.length">
+    <div class="card__head">
+      <h2 class="card__title">{{ 'profile.feesTitle' | translate }}</h2>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table fees-table">
+        <thead>
+          <tr>
+            <th>{{ 'profile.field.feeType' | translate }}</th>
+            <th class="num">{{ 'profile.field.amount' | translate }}</th>
+            <th class="text-right">{{ 'profile.field.status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let fee of member.fees">
+            <td class="strong">{{ fee.feeType }}</td>
+            <td class="num">৳{{ fee.amount }}</td>
+            <td class="text-right">
+              <span class="pill" [class.pill--success]="fee.isPaid" [class.pill--danger]="!fee.isPaid">
+                {{ fee.isPaid ? ('profile.paid' | translate) : ('profile.unpaid' | translate) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
 </div>

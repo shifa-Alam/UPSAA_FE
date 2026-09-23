@@ -3,14 +3,9 @@ import { I18nSection } from '../i18n.types';
 export const footerI18n: I18nSection = {
   bn: {
     footer: {
-      tagline: 'Uttaran Public School অ্যালামনাই পরিবারের সাথে যুক্ত থাকুন।',
-      quickLinks: 'প্রয়োজনীয় লিংক',
-      home: 'হোম',
-      about: 'আমাদের সম্পর্কে',
-      committee: 'কমিটি',
-      gallery: 'গ্যালারি',
-      register: 'নিবন্ধন',
-      members: 'সদস্যবৃন্দ',
+      fullName: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন',
+      tagline: 'প্রজন্ম থেকে প্রজন্মে এক বন্ধন — উত্তরণ পাবলিক স্কুল অ্যালামনাই পরিবারের সাথে যুক্ত থাকুন।',
+      backToTop: 'উপরে যান',
       followUs: 'আমাদের অনুসরণ করুন',
       contact: 'যোগাযোগ',
       rights: '। সর্বস্বত্ব সংরক্ষিত।',
@@ -21,14 +16,9 @@ export const footerI18n: I18nSection = {
   },
   en: {
     footer: {
-      tagline: 'Stay connected with the Uttaran Public School alumni family.',
-      quickLinks: 'Quick Links',
-      home: 'Home',
-      about: 'About',
-      committee: 'Committee',
-      gallery: 'Gallery',
-      register: 'Register',
-      members: 'Members',
+      fullName: 'Uttaran Public School Alumni Association',
+      tagline: 'A bond across generations — stay connected with the Uttaran Public School alumni family.',
+      backToTop: 'Back to top',
       followUs: 'Follow Us',
       contact: 'Contact',
       rights: '. All rights reserved.',

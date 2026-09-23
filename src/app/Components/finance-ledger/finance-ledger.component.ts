@@ -10,23 +10,20 @@ import {
 import { SnackbarService } from '../../Services/snackbar.service';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
-import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
+import { todayDateOnly } from '../../Utils/date-utils';
 
 const PAGE_SIZE = 15;
 
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 @Component({
   selector: 'app-finance-ledger',
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatIconModule,
-    AdminHeaderComponent, SectionCardComponent, StatCardComponent, EmptyStateComponent, TranslatePipe
+    AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe
   ],
   templateUrl: './finance-ledger.component.html',
   styleUrl: './finance-ledger.component.scss'
@@ -63,7 +60,7 @@ export class FinanceLedgerComponent implements OnInit {
   }
 
   private emptyForm(): LedgerEntryInput {
-    return { entryDate: todayIso(), type: 'Income', category: '', description: '', amount: 0, reference: '' };
+    return { entryDate: todayDateOnly(), type: 'Income', category: '', description: '', amount: 0, reference: '' };
   }
 
   onFilterChange(): void {
@@ -80,6 +77,12 @@ export class FinanceLedgerComponent implements OnInit {
     if (page < 1 || page > this.totalPages || page === this.pageNumber) return;
     this.pageNumber = page;
     this.fetch();
+  }
+
+  /** Bar length for the category breakdown — a category's share of its list total. */
+  barPct(item: CategoryTotal, list: CategoryTotal[]): number {
+    const total = list.reduce((sum, c) => sum + (c.amount || 0), 0);
+    return total > 0 ? Math.max(2, (item.amount / total) * 100) : 0;
   }
 
   openNewForm(): void {

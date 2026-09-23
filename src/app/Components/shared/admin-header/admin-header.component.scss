@@ -1,28 +1,40 @@
-/* Plain, minimal page header for the admin panel — title + subtitle inline
-   with the page's own background (no hero banner), matching the reference
-   admin panel's understated dashboard header rather than the public site's
-   colorful hero treatment. */
+/* Back-office page header — the same understated treatment the public pages get
+   inside the sidebar shell (see page-header's .shell-content rules): serif title,
+   quiet subtitle and a hairline rule, with a short heritage-gold accent under it. */
 .admin-header {
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  gap: var(--space-4);
+  padding: 0 0 var(--space-3);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-ink-200);
+}
+
+.admin-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 48px;
+  height: 2px;
+  background: var(--color-heritage-500);
 }
 
 .admin-header h2 {
-  font-size: var(--font-size-lg);
+  font-size: clamp(19px, 2vw, 23px);
   font-weight: 700;
   color: var(--color-ink-900);
-  letter-spacing: -0.01em;
-  line-height: var(--line-height-tight);
+  line-height: 1.2;
   margin: 0;
 }
 
 .admin-header .sub {
   font-size: var(--font-size-sm);
   color: var(--color-ink-600);
-  margin: 2px 0 0;
+  margin: var(--space-1) 0 0;
+  max-width: 720px;
 }
 
 .header-actions {
@@ -34,4 +46,11 @@
 
 .header-actions:empty {
   display: none;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

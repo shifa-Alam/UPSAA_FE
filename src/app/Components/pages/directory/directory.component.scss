@@ -7,7 +7,7 @@
 }
 
 .directory-body {
-  padding-bottom: clamp(56px, 8vw, 96px);
+  padding-bottom: clamp(32px, 5vw, 56px);
 }
 
 // ---------------------------- Filter bar ----------------------------
@@ -140,8 +140,8 @@
 
 // ---------------------------- Results ----------------------------
 .results {
-  min-height: 320px;
-  padding-top: clamp(32px, 5vw, 56px);
+  min-height: 220px;
+  padding-top: clamp(20px, 3vw, 36px);
 }
 
 .results__loading {

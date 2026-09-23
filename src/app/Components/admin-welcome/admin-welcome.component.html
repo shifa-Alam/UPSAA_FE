@@ -1,0 +1,80 @@
+<div class="welcome">
+
+  <!-- ===== Greeting ===== -->
+  <header class="welcome__hero">
+    <div class="welcome__hero-text">
+      <span class="welcome__date">{{ today }}</span>
+      <h1 class="welcome__title">
+        {{ greetingKey | translate }}<ng-container *ngIf="displayName">, <span class="welcome__name">{{ displayName }}</span></ng-container>
+      </h1>
+      <p class="welcome__lead">{{ 'adminWelcome.lead' | translate }}</p>
+    </div>
+    <span class="welcome__role">
+      <app-nav-icon [name]="isSuperAdmin ? 'award' : 'user-check'"></app-nav-icon>
+      {{ (isSuperAdmin ? 'dashboard.roleSuperAdmin' : 'dashboard.roleAdmin') | translate }}
+    </span>
+  </header>
+
+  <!-- ===== At a glance ===== -->
+  <section class="welcome__block">
+    <h2 class="welcome__heading">{{ 'adminWelcome.glance' | translate }}</h2>
+    <div class="stats">
+      <a class="stat" *ngFor="let s of stats" [routerLink]="s.route"
+        [class.stat--attention]="s.attention && !!s.value">
+        <span class="stat__icon"><app-nav-icon [name]="s.icon"></app-nav-icon></span>
+        <span class="stat__value">
+          <ng-container *ngIf="s.value !== null; else statPending">{{ formatNumber(s.value) }}</ng-container>
+          <ng-template #statPending><span class="stat__skeleton"></span></ng-template>
+        </span>
+        <span class="stat__label">{{ s.labelKey | translate }}</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="welcome__columns">
+
+    <!-- ===== Quick actions ===== -->
+    <section class="welcome__block">
+      <h2 class="welcome__heading">{{ 'adminWelcome.quickActions' | translate }}</h2>
+      <div class="actions">
+        <a class="action" *ngFor="let a of actions" [routerLink]="a.route">
+          <span class="action__icon"><app-nav-icon [name]="a.icon"></app-nav-icon></span>
+          <span class="action__text">
+            <span class="action__label">{{ a.labelKey | translate }}</span>
+            <span class="action__hint">{{ a.hintKey | translate }}</span>
+          </span>
+          <svg class="action__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Upcoming events ===== -->
+    <section class="welcome__block">
+      <div class="welcome__heading-row">
+        <h2 class="welcome__heading">{{ 'adminWelcome.upcoming' | translate }}</h2>
+        <a routerLink="/dashboard/events" class="welcome__more">{{ 'adminWelcome.manage' | translate }}</a>
+      </div>
+
+      <div class="panel">
+        <p class="panel__empty" *ngIf="eventsLoaded && !upcoming.length">{{ 'adminWelcome.noUpcoming' | translate }}</p>
+
+        <div class="event" *ngFor="let ev of upcoming">
+          <div class="pp-date">
+            <span class="pp-date__day">{{ eventDay(ev) }}</span>
+            <span class="pp-date__month">{{ eventMonth(ev) }}</span>
+          </div>
+          <div class="event__body">
+            <span class="event__title">{{ ev.title }}</span>
+            <span class="event__meta">{{ eventTime(ev) }}<ng-container *ngIf="ev.venue"> · {{ ev.venue }}</ng-container></span>
+          </div>
+        </div>
+
+        <a routerLink="/" class="panel__site">
+          <app-nav-icon name="dashboard"></app-nav-icon>{{ 'adminWelcome.viewSite' | translate }}
+        </a>
+      </div>
+    </section>
+
+  </div>
+</div>

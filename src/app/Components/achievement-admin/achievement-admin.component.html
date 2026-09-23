@@ -1,146 +1,159 @@
-<div class="achievement-admin">
+<div class="adm">
 
   <app-admin-header [title]="'achievementAdmin.title' | translate" [subtitle]="'achievementAdmin.subtitle' | translate"></app-admin-header>
 
+  <!-- ===== Add form ===== -->
   <app-section-card icon="military_tech" [title]="'achievementAdmin.postCardTitle' | translate">
-    <form class="achievement-form" (ngSubmit)="submit()">
-      <div class="achievement-form__row">
-        <div class="achievement-form__dropzone">
-          <input type="file" id="achievementFile" accept="image/*" (change)="onFileSelected($event)" />
-          <label for="achievementFile" *ngIf="!previewUrl">
+    <form (ngSubmit)="submit()">
+      <div class="form-layout">
+        <div class="photo-pick" [class.photo-pick--filled]="previewUrl">
+          <input type="file" id="achievementFile" accept="image/*" (change)="onFileSelected($event)"
+            [attr.aria-label]="(previewUrl ? 'achievementAdmin.replacePhoto' : 'achievementAdmin.choosePhoto') | translate" />
+          <span class="photo-pick__empty" *ngIf="!previewUrl">
             <mat-icon>add_a_photo</mat-icon>
             <span>{{ 'achievementAdmin.choosePhoto' | translate }}</span>
-          </label>
-          <label for="achievementFile" class="achievement-form__preview" *ngIf="previewUrl">
-            <img [src]="previewUrl" alt="Preview" />
-          </label>
+          </span>
+          <ng-container *ngIf="previewUrl">
+            <img [src]="previewUrl" alt="" />
+            <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'achievementAdmin.replacePhoto' | translate }}</span>
+          </ng-container>
         </div>
 
-        <div class="achievement-form__fields">
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.nameLabel' | translate }}</label>
-            <input type="text" [placeholder]="'achievementAdmin.namePlaceholder' | translate" [(ngModel)]="form.fullName" name="fullName" />
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="achName">{{ 'achievementAdmin.nameLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+            <input id="achName" type="text" [placeholder]="'achievementAdmin.namePlaceholder' | translate" [(ngModel)]="form.fullName" name="fullName" />
           </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.batchLabel' | translate }}</label>
-            <input type="number" [placeholder]="'achievementAdmin.batchPlaceholder' | translate" [(ngModel)]="form.batch" name="batch" />
+          <div class="field">
+            <label class="field__label" for="achBatch">{{ 'achievementAdmin.batchLabel' | translate }}</label>
+            <input id="achBatch" type="number" [placeholder]="'achievementAdmin.batchPlaceholder' | translate" [(ngModel)]="form.batch" name="batch" />
           </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.professionLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="form.profession" name="profession" />
+          <div class="field">
+            <label class="field__label" for="achProfession">{{ 'achievementAdmin.professionLabel' | translate }}</label>
+            <input id="achProfession" type="text" [(ngModel)]="form.profession" name="profession" />
           </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.organizationLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="form.organization" name="organization" />
+          <div class="field">
+            <label class="field__label" for="achOrganization">{{ 'achievementAdmin.organizationLabel' | translate }}</label>
+            <input id="achOrganization" type="text" [(ngModel)]="form.organization" name="organization" />
           </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.achievementTitleLabel' | translate }}</label>
-            <input type="text" [placeholder]="'achievementAdmin.achievementTitlePlaceholder' | translate" [(ngModel)]="form.title" name="title" />
+          <div class="field field--full">
+            <label class="field__label" for="achTitle">{{ 'achievementAdmin.achievementTitleLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+            <input id="achTitle" type="text" [placeholder]="'achievementAdmin.achievementTitlePlaceholder' | translate" [(ngModel)]="form.title" name="title" />
           </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.descriptionLabel' | translate }}</label>
-            <textarea rows="3" [(ngModel)]="form.description" name="description"></textarea>
+          <div class="field field--full">
+            <label class="field__label" for="achDescription">{{ 'achievementAdmin.descriptionLabel' | translate }}</label>
+            <textarea id="achDescription" rows="3" [(ngModel)]="form.description" name="description"></textarea>
           </div>
-
-          <button type="submit" class="achievement-form__submit" [disabled]="posting">
-            <mat-icon>{{ posting ? 'hourglass_top' : 'military_tech' }}</mat-icon>
-            {{ posting ? ('achievementAdmin.posting' | translate) : ('achievementAdmin.postButton' | translate) }}
-          </button>
         </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--solid" [disabled]="posting">
+          <mat-icon>{{ posting ? 'hourglass_top' : 'add' }}</mat-icon>
+          {{ posting ? ('achievementAdmin.posting' | translate) : ('achievementAdmin.postButton' | translate) }}
+        </button>
       </div>
     </form>
   </app-section-card>
 
+  <!-- ===== Posted achievements ===== -->
   <app-section-card icon="emoji_events" [title]="'achievementAdmin.postedCardTitle' | translate" [noPadding]="true">
 
-    <div class="achievement-admin__loading" *ngIf="loading">
-      <mat-icon class="achievement-admin__loading-icon">autorenew</mat-icon>
+    <div class="loading" *ngIf="loading" role="status">
+      <mat-icon>autorenew</mat-icon>
       <span>{{ 'achievementAdmin.loading' | translate }}</span>
     </div>
 
     <app-empty-state *ngIf="!loading && achievements.length === 0" icon="military_tech" [title]="'achievementAdmin.emptyTitle' | translate"
       [message]="'achievementAdmin.emptyMessage' | translate"></app-empty-state>
 
-    <div class="achievement-admin__list" *ngIf="!loading && achievements.length > 0">
-      <div class="achievement-admin__item" *ngFor="let a of achievements">
+    <ul class="records" *ngIf="!loading && achievements.length > 0">
+      <li class="record" *ngFor="let a of achievements" [class.record--editing]="editingId === a.id">
 
         <!-- View mode -->
         <ng-container *ngIf="editingId !== a.id">
           <ng-container *ngIf="a.photoUrl; else initialsAvatar">
-            <img [src]="a.photoUrl" [alt]="a.fullName" class="achievement-admin__photo" />
+            <img [src]="a.photoUrl" [alt]="a.fullName" class="avatar" />
           </ng-container>
           <ng-template #initialsAvatar>
-            <div class="achievement-admin__initials">{{ a.fullName.charAt(0) }}</div>
+            <div class="avatar avatar--initials" aria-hidden="true">{{ a.fullName.charAt(0) }}</div>
           </ng-template>
 
-          <div class="achievement-admin__item-body">
-            <strong>{{ a.title }}</strong>
-            <span>{{ a.fullName }}<ng-container *ngIf="a.batch"> &middot; {{ 'achievementAdmin.batchPrefix' | translate }} {{ a.batch }}</ng-container></span>
-            <span *ngIf="a.profession || a.organization">{{ a.profession }}<ng-container *ngIf="a.profession && a.organization">, </ng-container>{{ a.organization }}</span>
-            <p *ngIf="a.description">{{ a.description }}</p>
+          <div class="record__body">
+            <span class="record__title">{{ a.title }}</span>
+            <span class="record__meta">
+              <span class="record__name">{{ a.fullName }}</span>
+              <span class="pill pill--gold" *ngIf="a.batch">{{ 'achievementAdmin.batchPrefix' | translate }} {{ a.batch }}</span>
+            </span>
+            <span class="record__meta" *ngIf="a.profession || a.organization">{{ a.profession }}<ng-container *ngIf="a.profession && a.organization">, </ng-container>{{ a.organization }}</span>
+            <p class="record__text" *ngIf="a.description">{{ a.description }}</p>
           </div>
-          <div class="achievement-admin__actions">
-            <button type="button" class="achievement-admin__action" (click)="startEdit(a)"
-              [attr.aria-label]="'achievementAdmin.editAriaLabel' | translate">
+
+          <div class="record__actions">
+            <button type="button" class="icon-btn" (click)="startEdit(a)"
+              [attr.aria-label]="'achievementAdmin.editAriaLabel' | translate" [attr.title]="'achievementAdmin.editAriaLabel' | translate">
               <mat-icon>edit</mat-icon>
             </button>
-            <button type="button" class="achievement-admin__action achievement-admin__action--danger"
+            <button type="button" class="icon-btn icon-btn--danger"
               [disabled]="deletingId === a.id" (click)="confirmDelete(a)"
-              [attr.aria-label]="'achievementAdmin.deleteAriaLabel' | translate">
+              [attr.aria-label]="'achievementAdmin.deleteAriaLabel' | translate" [attr.title]="'achievementAdmin.deleteAriaLabel' | translate">
               <mat-icon>{{ deletingId === a.id ? 'hourglass_top' : 'delete' }}</mat-icon>
             </button>
           </div>
         </ng-container>
 
         <!-- Edit mode -->
-        <div class="achievement-admin__edit" *ngIf="editingId === a.id">
-          <label class="achievement-admin__edit-photo" for="editFile-{{ a.id }}">
-            <img [src]="editPreviewUrl || a.photoUrl || ''" *ngIf="editPreviewUrl || a.photoUrl" [alt]="a.fullName" />
-            <span class="achievement-admin__edit-photo-hint">
-              <mat-icon>photo_camera</mat-icon>
-              {{ 'achievementAdmin.replacePhoto' | translate }}
-            </span>
-          </label>
-          <input type="file" id="editFile-{{ a.id }}" accept="image/*" (change)="onEditFileSelected($event)" />
+        <div *ngIf="editingId === a.id">
+          <div class="form-layout">
+            <div class="photo-pick record__edit-photo" [class.photo-pick--filled]="editPreviewUrl || a.photoUrl">
+              <input type="file" id="editFile-{{ a.id }}" accept="image/*" (change)="onEditFileSelected($event)"
+                [attr.aria-label]="'achievementAdmin.replacePhoto' | translate" />
+              <img [src]="editPreviewUrl || a.photoUrl || ''" *ngIf="editPreviewUrl || a.photoUrl" [alt]="a.fullName" />
+              <span class="record__edit-initials" *ngIf="!(editPreviewUrl || a.photoUrl)" aria-hidden="true">{{ a.fullName.charAt(0) }}</span>
+              <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'achievementAdmin.replacePhoto' | translate }}</span>
+            </div>
 
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.nameLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="editForm.fullName" name="editFullName-{{ a.id }}" />
-          </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.batchLabel' | translate }}</label>
-            <input type="number" [(ngModel)]="editForm.batch" name="editBatch-{{ a.id }}" />
-          </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.professionLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="editForm.profession" name="editProfession-{{ a.id }}" />
-          </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.organizationLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="editForm.organization" name="editOrganization-{{ a.id }}" />
-          </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.achievementTitleLabel' | translate }}</label>
-            <input type="text" [(ngModel)]="editForm.title" name="editTitle-{{ a.id }}" />
-          </div>
-          <div class="form-field">
-            <label>{{ 'achievementAdmin.descriptionLabel' | translate }}</label>
-            <textarea rows="3" [(ngModel)]="editForm.description" name="editDescription-{{ a.id }}"></textarea>
+            <div class="form-grid">
+              <div class="field">
+                <label class="field__label" for="editFullName-{{ a.id }}">{{ 'achievementAdmin.nameLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+                <input id="editFullName-{{ a.id }}" type="text" [(ngModel)]="editForm.fullName" name="editFullName-{{ a.id }}" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="editBatch-{{ a.id }}">{{ 'achievementAdmin.batchLabel' | translate }}</label>
+                <input id="editBatch-{{ a.id }}" type="number" [(ngModel)]="editForm.batch" name="editBatch-{{ a.id }}" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="editProfession-{{ a.id }}">{{ 'achievementAdmin.professionLabel' | translate }}</label>
+                <input id="editProfession-{{ a.id }}" type="text" [(ngModel)]="editForm.profession" name="editProfession-{{ a.id }}" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="editOrganization-{{ a.id }}">{{ 'achievementAdmin.organizationLabel' | translate }}</label>
+                <input id="editOrganization-{{ a.id }}" type="text" [(ngModel)]="editForm.organization" name="editOrganization-{{ a.id }}" />
+              </div>
+              <div class="field field--full">
+                <label class="field__label" for="editTitle-{{ a.id }}">{{ 'achievementAdmin.achievementTitleLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+                <input id="editTitle-{{ a.id }}" type="text" [(ngModel)]="editForm.title" name="editTitle-{{ a.id }}" />
+              </div>
+              <div class="field field--full">
+                <label class="field__label" for="editDescription-{{ a.id }}">{{ 'achievementAdmin.descriptionLabel' | translate }}</label>
+                <textarea id="editDescription-{{ a.id }}" rows="3" [(ngModel)]="editForm.description" name="editDescription-{{ a.id }}"></textarea>
+              </div>
+            </div>
           </div>
 
-          <div class="achievement-admin__edit-actions">
-            <button type="button" class="achievement-admin__save" [disabled]="saving" (click)="submitEdit(a)">
+          <div class="form-actions">
+            <button type="button" class="btn btn--outline" [disabled]="saving" (click)="cancelEdit()">
+              {{ 'achievementAdmin.cancelButton' | translate }}
+            </button>
+            <button type="button" class="btn btn--solid" [disabled]="saving" (click)="submitEdit(a)">
               <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
               {{ 'achievementAdmin.saveButton' | translate }}
-            </button>
-            <button type="button" class="achievement-admin__cancel" [disabled]="saving" (click)="cancelEdit()">
-              {{ 'achievementAdmin.cancelButton' | translate }}
             </button>
           </div>
         </div>
 
-      </div>
-    </div>
+      </li>
+    </ul>
   </app-section-card>
 
 </div>

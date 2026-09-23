@@ -23,6 +23,7 @@ export const voteCastsI18n: I18nSection = {
       colCandidate: 'প্রার্থী',
       colVotes: 'ভোট',
       colVoteRate: 'ভোটের হার',
+      noResults: 'এই পদের জন্য কোনো ফলাফল পাওয়া যায়নি।',
     },
   },
   en: {
@@ -47,6 +48,7 @@ export const voteCastsI18n: I18nSection = {
       colCandidate: 'Candidate',
       colVotes: 'Votes',
       colVoteRate: 'Vote Rate',
+      noResults: 'No results found for this position.',
     },
   },
 };

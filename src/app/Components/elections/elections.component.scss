@@ -1,403 +1,56 @@
-.required {
-  color: var(--color-danger);
-  margin-left: var(--space-1);
-  font-weight: bold;
+@use 'election-admin';
+
+// Election status → soft pill tint. Upcoming carries the heritage gold
+// (it's the one that needs preparing), ongoing is live, ended is quiet.
+.pill--upcoming {
+  background: var(--pill-heritage-bg);
+  color: var(--pill-heritage-fg);
 }
 
-.page-body {
-  /* No max-width/centering here on purpose — this sits inside the admin
-     panel's own full-width main-content, not the public site's reading
-     column, so it should use the full width next to the sidebar. */
-  padding: var(--space-4) var(--space-5);
+.pill--ongoing {
+  background: var(--pill-success-bg);
+  color: var(--pill-success-fg);
+}
+
+.pill--ended {
+  background: var(--pill-neutral-bg);
+  color: var(--pill-neutral-fg);
+}
+
+// ---------------------------- Form groups ----------------------------
+.entry-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
-/* ===== Add / Edit form (matches Finance Ledger's inline entry-form) ===== */
-.entry-form__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.form-field label {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-ink-600);
-}
-
-.form-field input {
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--font-size-sm);
-  font-family: var(--font-base);
-  background: var(--color-surface);
-  color: var(--color-ink-900);
-  outline: none;
-  transition: border-color var(--transition-fast);
-}
-
-.form-field input:focus {
-  border-color: var(--color-primary-400);
-}
-
-.entry-form__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  border-radius: var(--radius-sm);
-  height: 34px;
-  padding: 0 var(--space-4);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  font-family: var(--font-base);
-  cursor: pointer;
-  border: 1.5px solid transparent;
-  transition: background var(--transition-fast), opacity var(--transition-fast);
-}
-
-.btn mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-.btn--primary {
-  background: var(--color-primary-500);
-  color: #fff;
-  border-color: var(--color-primary-600);
-}
-
-.btn--primary:hover:not(:disabled) {
-  background: var(--color-primary-600);
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--color-ink-600);
-  border-color: var(--color-ink-200);
-}
-
-.btn--ghost:hover {
-  background: var(--color-surface-alt);
-}
-
-/* ===== Toolbar (search + add button) ===== */
-.elections-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--color-ink-200);
-}
-
-.elections-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.filter-field {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  padding: var(--space-1) var(--space-2);
-  background: var(--color-surface-alt);
-}
-
-.filter-field mat-icon {
-  color: var(--color-primary-500);
-  font-size: 16px;
-  width: 16px;
-  height: 16px;
-}
-
-.filter-field input {
+.form-group {
+  margin: 0;
+  padding: 0;
   border: none;
-  outline: none;
-  background: transparent;
-  font-size: var(--font-size-xs);
-  font-family: var(--font-base);
-  color: var(--color-ink-900);
-  min-width: 160px;
+  min-width: 0;
 }
 
-/* ===== Table ===== */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: visible;
-}
-
-.elections-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-  font-size: var(--font-size-sm);
-}
-
-.elections-table th {
-  text-align: left;
-  padding: var(--space-3) var(--space-5);
-  background: var(--color-surface-alt);
-  color: var(--color-ink-600);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-
-.elections-table td {
-  padding: var(--space-3) var(--space-5);
-  border-bottom: 1px solid var(--color-ink-100);
-  color: var(--color-ink-700);
-}
-
-.elections-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.elections-table tr:hover {
-  background: var(--color-surface-alt);
-}
-
-.text-right {
-  text-align: right;
-}
-
-/* Status badge — same pill treatment as Finance's Income/Expense type-badge */
-.status-badge {
-  display: inline-block;
-  padding: 2px var(--space-3);
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-}
-
-.status-badge--upcoming {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-
-.status-badge--ongoing {
-  background: #d1fae5;
-  color: #047857;
-}
-
-.status-badge--ended {
-  background: var(--color-ink-100);
-  color: var(--color-ink-500);
-}
-
-.elections-table__actions {
-  display: flex;
-  gap: var(--space-1);
-  justify-content: flex-end;
-}
-
-.elections-table__actions button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--color-ink-400);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--transition-fast), color var(--transition-fast);
-}
-
-.elections-table__actions button:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.elections-table__actions button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-/* ===== Pagination ===== */
-.elections-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-}
-
-.elections-pagination button {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-primary-600);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.elections-pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.elections-pagination span {
-  font-weight: 700;
-  color: var(--color-ink-700);
-  font-size: var(--font-size-sm);
-}
-
-/* ===== Mobile cards ===== */
-.desktop-only {
+.form-group__label {
   display: block;
-}
-
-.mobile-only {
-  display: none;
-}
-
-.election-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin: var(--space-3);
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  font-weight: 600;
-  color: var(--color-ink-900);
-  margin-bottom: var(--space-1);
-}
-
-.card-dates {
-  display: flex;
-  gap: var(--space-4);
-  font-size: var(--font-size-xs);
-  color: var(--color-ink-600);
+  padding: 0;
   margin-bottom: var(--space-3);
-  flex-wrap: wrap;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
 }
 
-.card-header .index {
-  font-size: var(--font-size-sm);
-  color: var(--color-ink-400);
+:host-context(html[lang='bn']) .form-group__label {
+  letter-spacing: normal;
+  text-transform: none;
 }
 
-.card-header .title {
-  font-size: var(--font-size-md);
-  font-weight: 700;
-  color: var(--color-ink-900);
+.form-field--wide {
+  max-width: 560px;
 }
 
-.card-actions {
-  display: flex;
-  gap: var(--space-1);
-  justify-content: flex-end;
-}
-
-.card-actions button {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-surface-alt);
-  color: var(--color-ink-500);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.card-actions button:hover {
-  background: var(--color-primary-50);
-  color: var(--color-primary-600);
-}
-
-.card-actions button mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none;
-  }
-
-  .mobile-only {
-    display: block;
-  }
-
-  .elections-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .entry-form__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .entry-form__actions {
-    flex-direction: column-reverse;
-  }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-.loading-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: var(--space-7);
-  color: var(--color-ink-600);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--color-ink-200);
-  border-top: 4px solid var(--color-primary-500);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.entry-form .entry-form__actions {
+  margin-top: 0;
 }

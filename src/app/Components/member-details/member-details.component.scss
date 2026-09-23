@@ -1,185 +1,183 @@
-.member-dialog-card {
-  width: 100%;
-  padding: var(--space-3);
-  max-height: 550px;
-  overflow-y: auto;
+// Member details dialog — quiet header with serif name, labelled fields,
+// a small fee ledger and the SuperAdmin password reset.
+@use '../member-landing/members-ui';
+
+:host {
+  display: block;
+}
+
+.dlg {
+  display: flex;
+  flex-direction: column;
+  max-height: min(86vh, 720px);
   font-family: var(--font-base);
-  border-radius: var(--radius-lg);
-
-  mat-card-header {
-    mat-card-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--color-ink-900);
-      margin-bottom: 2px;
-    }
-
-    mat-card-subtitle {
-      font-size: 0.85rem;
-      color: var(--color-ink-600);
-    }
-  }
-
-  mat-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    .info-section {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-
-      .info-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.85rem;
-        color: var(--color-ink-700);
-
-        mat-icon {
-          font-size: 18px;
-          color: var(--color-primary-500);
-        }
-
-        &.total-item {
-          font-weight: 700;
-          color: var(--color-ink-900);
-          border-top: 1px solid var(--color-ink-200);
-          padding-top: 4px;
-          margin-top: 4px;
-        }
-      }
-    }
-
-    .education-section {
-      margin-top: 8px;
-
-      h4 {
-        font-size: 0.95rem;
-        margin-bottom: 4px;
-        color: var(--color-primary-600);
-      }
-
-      .education-item {
-        padding: 4px 8px;
-        background-color: var(--color-surface-alt);
-        border-left: 3px solid var(--color-primary-500);
-        border-radius: var(--radius-sm);
-        font-size: 0.8rem;
-        margin-bottom: 4px;
-      }
-    }
-  }
-
-  mat-card-actions {
-    margin-top: 8px;
-    display: flex;
-    justify-content: flex-end;
-
-    button {
-      font-size: 0.8rem;
-      padding: 4px 12px;
-    }
-  }
+  color: var(--color-ink-700);
+  background: var(--color-surface);
 }
 
-mat-card-actions {
+.dlg__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-bottom: 1px solid var(--color-ink-200);
 }
 
+.dlg__avatar {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary-800);
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-heritage-500);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
 
+.dlg__heading {
+  flex: 1;
+  min-width: 0;
+}
 
-.member-code {
+.dlg__title {
+  margin: 2px 0 var(--space-1);
+  font-size: var(--font-size-xl);
+  line-height: 1.25;
+  color: var(--color-ink-900);
+  overflow-wrap: anywhere;
+}
+
+.dlg__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.code {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 2px 10px;
   border-radius: var(--radius-pill);
-  background: var(--gradient-accent);
-  color: #ffffff;
+  border: 1px solid var(--color-heritage-500);
+  background: var(--color-heritage-soft);
+  color: #8a6a1f;
+  font-size: var(--font-size-xs);
   font-weight: 600;
-  font-size: 13px;
-  box-shadow: var(--shadow-sm);
-  margin-left: 6px;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  font-variant-numeric: tabular-nums;
 }
 
-/* subtle hover effect */
-.member-code:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+:host-context([data-theme='dark']) .code {
+  color: var(--color-heritage-500);
 }
 
+.dlg__close {
+  flex-shrink: 0;
+  margin: -4px -8px 0 0;
+}
 
-
-.change-password-btn {
+.dlg__body {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-5);
+  overflow-y: auto;
 }
 
-.change-password-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.success-msg {
-  background-color: rgba(76, 175, 80, 0.12);
-  color: var(--color-success);
-}
-
-.error-msg {
-  background-color: rgba(244, 67, 54, 0.12);
-  color: var(--color-danger);
-}
-
-.password-input-inline {
+.dlg__section {
   display: flex;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
 
-  mat-form-field {
-    flex: 1;
-    margin: 0;
-  }
+.dlg__section-title {
+  margin: 0;
+  font-family: var(--font-base);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
 
-  button {
-    height: 36px;
-    font-weight: 600;
-    text-transform: uppercase;
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+// Fee ledger
+.ledger {
+  align-self: stretch;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
+.ledger__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-ink-200);
+
+  &:last-child {
+    border-bottom: none;
   }
 }
 
-
-.spacer {
-  flex: 1 1 auto;
-  /* Takes remaining space between buttons */
+.ledger__amt {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--color-ink-900);
+  text-align: right;
 }
 
-@media (max-width: 768px) {
-  .member-dialog-card {
-    max-width: 100%;
+.ledger__row--total {
+  background: var(--color-surface-sunken);
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
 
-    mat-card-content {
-      .info-section {
-        .info-item {
-          flex-direction: row;
-          font-size: 0.8rem;
-        }
-      }
+// Password reset
+.password-row {
+  align-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
 
-      .education-section .education-item {
-        font-size: 0.75rem;
-      }
-    }
+.password-row__field {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.password-row__submit {
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.dlg__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+@media (max-width: 480px) {
+  .dlg__head,
+  .dlg__body {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .dlg__actions {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .password-row__submit {
+    flex: 1 1 100%;
   }
 }

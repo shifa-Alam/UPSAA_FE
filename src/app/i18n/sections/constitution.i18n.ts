@@ -9,6 +9,8 @@ export const constitutionI18n: I18nSection = {
         subtitle: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশনের নিয়মাবলী ও গঠনতন্ত্র।',
       },
       document: {
+        updated: 'সর্বশেষ হালনাগাদ:',
+        openFailed: 'গঠনতন্ত্রটি খোলা যায়নি। আবার চেষ্টা করুন।',
         eyebrow: 'মূল দলিল',
         format: 'পিডিএফ দলিল',
         download: 'ডাউনলোড',
@@ -39,6 +41,8 @@ export const constitutionI18n: I18nSection = {
         subtitle: 'The rules and constitution of the Uttaran Public School Alumni Association.',
       },
       document: {
+        updated: 'Last updated',
+        openFailed: "Couldn't open the constitution. Please try again.",
         eyebrow: 'Governing Document',
         format: 'PDF document',
         download: 'Download',

@@ -1,0 +1,68 @@
+import { I18nSection } from '../i18n.types';
+
+export const adminWelcomeI18n: I18nSection = {
+  bn: {
+    adminWelcome: {
+      greeting: {
+        morning: 'শুভ সকাল',
+        afternoon: 'শুভ অপরাহ্ন',
+        evening: 'শুভ সন্ধ্যা',
+      },
+      lead: 'অ্যাডমিন প্যানেলে স্বাগতম। সংগঠনের সর্বশেষ অবস্থা এক নজরে দেখুন এবং বাম পাশের মেনু থেকে যেকোনো বিভাগে যান।',
+      glance: 'এক নজরে',
+      stats: {
+        members: 'নিবন্ধিত সদস্য',
+        pending: 'অনুমোদনের অপেক্ষায়',
+        upcomingEvents: 'আসন্ন ইভেন্ট',
+        notices: 'নোটিশ',
+        photos: 'গ্যালারির ছবি',
+        achievements: 'অর্জন',
+      },
+      quickActions: 'দ্রুত কাজ',
+      actions: {
+        membersHint: 'সদস্য অনুমোদন ও তথ্য হালনাগাদ',
+        noticesHint: 'নতুন ঘোষণা প্রকাশ করুন',
+        eventsHint: 'ইভেন্ট যোগ ও সম্পাদনা',
+        galleryHint: 'অনুষ্ঠানের ছবি আপলোড',
+        electionsHint: 'নির্বাচন ও ফলাফল ব্যবস্থাপনা',
+        financeHint: 'আয়-ব্যয়ের হিসাব',
+      },
+      upcoming: 'আসন্ন ইভেন্ট',
+      manage: 'ব্যবস্থাপনা',
+      noUpcoming: 'এই মুহূর্তে কোনো আসন্ন ইভেন্ট নেই।',
+      viewSite: 'পাবলিক ওয়েবসাইট দেখুন',
+    },
+  },
+  en: {
+    adminWelcome: {
+      greeting: {
+        morning: 'Good morning',
+        afternoon: 'Good afternoon',
+        evening: 'Good evening',
+      },
+      lead: 'Welcome to the admin panel. See where the association stands at a glance, and jump into any area from the menu on the left.',
+      glance: 'At a Glance',
+      stats: {
+        members: 'Registered Members',
+        pending: 'Awaiting Approval',
+        upcomingEvents: 'Upcoming Events',
+        notices: 'Notices',
+        photos: 'Gallery Photos',
+        achievements: 'Achievements',
+      },
+      quickActions: 'Quick Actions',
+      actions: {
+        membersHint: 'Approve members and update records',
+        noticesHint: 'Publish a new announcement',
+        eventsHint: 'Add and edit events',
+        galleryHint: 'Upload event photos',
+        electionsHint: 'Manage elections and results',
+        financeHint: 'Track income and expenses',
+      },
+      upcoming: 'Upcoming Events',
+      manage: 'Manage',
+      noUpcoming: 'No upcoming events right now.',
+      viewSite: 'View the public website',
+    },
+  },
+};

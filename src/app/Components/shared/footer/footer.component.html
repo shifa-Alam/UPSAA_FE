@@ -1,68 +1,78 @@
 <footer class="site-footer">
-  <div class="site-footer__accent"></div>
+  <div class="upsaa-container">
 
-  <div class="upsaa-container site-footer__grid">
-    <div class="site-footer__brand">
-      <img src="logo.png" alt="UPSAA Logo" class="site-footer__logo" />
-      <div>
-        <strong>UPSAA</strong>
-        <p>{{ 'footer.tagline' | translate }}</p>
+    <!-- ===== Brand ===== -->
+    <div class="site-footer__top">
+      <a routerLink="/" class="site-footer__brand" [attr.aria-label]="'footer.fullName' | translate">
+        <img src="logo.png" alt="" class="site-footer__logo" />
+        <span class="site-footer__brand-text">
+          <span class="site-footer__eyebrow">UPSAA</span>
+          <span class="site-footer__name">{{ 'footer.fullName' | translate }}</span>
+        </span>
+      </a>
+      <p class="site-footer__tagline">{{ 'footer.tagline' | translate }}</p>
+    </div>
+
+    <div class="site-footer__grid">
+
+      <!-- ===== Follow us ===== -->
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{{ 'footer.followUs' | translate }}</h2>
+        <ul class="site-footer__rows">
+          <li>
+            <a class="site-footer__row" href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener">
+              <span class="site-footer__icon"><mat-icon>thumb_up</mat-icon></span>
+              <span>{{ 'footer.facebookPage' | translate }}</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__row" href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener">
+              <span class="site-footer__icon"><mat-icon>groups_2</mat-icon></span>
+              <span>{{ 'footer.facebookGroup' | translate }}</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__row" href="https://wa.me/8801866293776" target="_blank" rel="noopener">
+              <span class="site-footer__icon"><mat-icon>chat</mat-icon></span>
+              <span>{{ 'footer.whatsapp' | translate }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ===== Contact ===== -->
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{{ 'footer.contact' | translate }}</h2>
+        <ul class="site-footer__rows">
+          <li>
+            <a class="site-footer__row" href="tel:+8801866293776">
+              <span class="site-footer__icon"><mat-icon>call</mat-icon></span>
+              <span>01866 293776</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__row" href="mailto:info@uttaranalumni.org">
+              <span class="site-footer__icon"><mat-icon>mail</mat-icon></span>
+              <span class="site-footer__break">info&#64;uttaranalumni.org</span>
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__row" href="https://www.google.com/maps/search/?api=1&query=Thana+Road%2C+Jhenaigati%2C+Sherpur+2120"
+              target="_blank" rel="noopener">
+              <span class="site-footer__icon"><mat-icon>place</mat-icon></span>
+              <span>Thana Road, Jhenaigati, Sherpur 2120</span>
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="site-footer__col">
-      <h4>{{ 'footer.quickLinks' | translate }}</h4>
-      <nav class="site-footer__links">
-        <a routerLink="/">{{ 'footer.home' | translate }}</a>
-        <a routerLink="/about">{{ 'footer.about' | translate }}</a>
-        <a routerLink="/committee">{{ 'footer.committee' | translate }}</a>
-        <a routerLink="/gallery">{{ 'footer.gallery' | translate }}</a>
-        <a routerLink="/register">{{ 'footer.register' | translate }}</a>
-        <a routerLink="/members">{{ 'footer.members' | translate }}</a>
-        <!-- Election cycle is currently over — hidden from nav, not deleted, in case it needs to come back.
-        <a routerLink="/election">নির্বাচন</a>
-        -->
-      </nav>
+    <!-- ===== Bottom bar ===== -->
+    <div class="site-footer__bottom">
+      <span>&copy; {{ year }} UPSAA{{ 'footer.rights' | translate }}</span>
+      <button type="button" class="site-footer__top-btn" (click)="backToTop()">
+        {{ 'footer.backToTop' | translate }} <mat-icon>arrow_upward</mat-icon>
+      </button>
     </div>
-
-    <div class="site-footer__col">
-      <h4>{{ 'footer.followUs' | translate }}</h4>
-      <div class="site-footer__contact">
-        <a class="site-footer__contact-item" href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener">
-          <span class="site-footer__contact-icon"><mat-icon>thumb_up</mat-icon></span>
-          <span>{{ 'footer.facebookPage' | translate }}</span>
-        </a>
-        <a class="site-footer__contact-item" href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener">
-          <span class="site-footer__contact-icon"><mat-icon>groups_2</mat-icon></span>
-          <span>{{ 'footer.facebookGroup' | translate }}</span>
-        </a>
-        <a class="site-footer__contact-item" href="https://wa.me/8801866293776" target="_blank" rel="noopener">
-          <span class="site-footer__contact-icon"><mat-icon>chat</mat-icon></span>
-          <span>{{ 'footer.whatsapp' | translate }}</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="site-footer__col">
-      <h4>{{ 'footer.contact' | translate }}</h4>
-      <div class="site-footer__contact">
-        <a class="site-footer__contact-item" href="tel:01866293776">
-          <span class="site-footer__contact-icon"><mat-icon>call</mat-icon></span>
-          <span>01866 293776</span>
-        </a>
-        <a class="site-footer__contact-item" href="mailto:info@uttaranalumni.org">
-          <span class="site-footer__contact-icon"><mat-icon>mail</mat-icon></span>
-          <span>info&#64;uttaranalumni.org</span>
-        </a>
-        <div class="site-footer__contact-item">
-          <span class="site-footer__contact-icon"><mat-icon>place</mat-icon></span>
-          <span>Thana Road, Jhenaigati, Sherpur 2120</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="site-footer__bottom">
-    &copy; {{ year }} UPSAA{{ 'footer.rights' | translate }}
   </div>
 </footer>

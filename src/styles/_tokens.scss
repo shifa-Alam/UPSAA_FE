@@ -49,21 +49,21 @@
   --gradient-hero: linear-gradient(135deg, var(--color-primary-800) 0%, var(--color-primary-700) 55%, var(--color-primary-500) 100%);
   --gradient-accent: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-accent-500) 100%);
 
-  // ---- Spacing (4px base) ----
+  // ---- Spacing (4px base, compact: upper steps kept tight) ----
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 44px;
 
   // ---- Radius ----
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
   --radius-pill: 999px;
 
   // ---- Shadow ----
@@ -81,19 +81,19 @@
   // Bengali glyphs, so Bangla headings still fall through to SolaimanLipiBangla.
   --font-display: 'Playfair Display', 'SolaimanLipiBangla', Georgia, 'Times New Roman', serif;
   --font-size-xs: 12px;
-  --font-size-sm: 14px;
-  --font-size-base: 15px;
-  --font-size-md: 16px;
-  --font-size-lg: 18px;
-  --font-size-xl: 22px;
-  --font-size-2xl: 28px;
-  --font-size-3xl: 36px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 17px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 30px;
   --line-height-tight: 1.25;
-  --line-height-normal: 1.55;
+  --line-height-normal: 1.5;
 
   // ---- Layout ----
-  --header-height: 68px;
-  --header-height-mobile: 56px;
+  --header-height: 56px;
+  --header-height-mobile: 52px;
   --max-content-width: 1160px;
 
   // ---- Motion ----

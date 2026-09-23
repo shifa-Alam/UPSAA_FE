@@ -10,8 +10,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 48px;
-  padding: 0 var(--space-6);
+  min-height: 40px;
+  padding: 0 var(--space-5);
   border-radius: var(--radius-pill);
   font: 600 var(--font-size-sm) / 1 var(--font-base);
   letter-spacing: 0.04em;
@@ -121,7 +121,7 @@
 // ---------------------------- Page hero (inner pages) ----------------------------
 .pp-hero {
   position: relative;
-  padding: clamp(64px, 10vw, 112px) 0 clamp(56px, 8vw, 96px);
+  padding: clamp(36px, 5vw, 60px) 0 clamp(32px, 4.5vw, 52px);
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -151,22 +151,22 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-heritage-500);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .pp-hero__title {
   color: #fff;
-  font-size: clamp(32px, 5vw, 56px);
+  font-size: clamp(26px, 3.6vw, 40px);
   font-weight: 700;
-  line-height: 1.12;
-  max-width: 20ch;
-  margin: 0 0 var(--space-4);
+  line-height: 1.15;
+  max-width: 24ch;
+  margin: 0 0 var(--space-2);
 }
 
 .pp-hero__subtitle {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(14px, 1.6vw, 17px);
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 }
@@ -178,7 +178,7 @@
 
 // ---------------------------- Sections ----------------------------
 .pp-section {
-  padding: clamp(56px, 9vw, 104px) 0;
+  padding: clamp(32px, 5vw, 60px) 0;
 }
 
 // Alternate backgrounds by position so sections hidden for lack of data
@@ -192,7 +192,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-6);
 }
 
 .pp-section__eyebrow {
@@ -201,33 +201,33 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-heritage-500);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .pp-section__title {
-  font-size: clamp(28px, 4vw, 42px);
+  font-size: clamp(22px, 3vw, 32px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.2;
   margin: 0;
 }
 
 .pp-section__rule {
   display: block;
-  width: 56px;
+  width: 48px;
   height: 2px;
-  margin: var(--space-4) auto 0;
+  margin: var(--space-3) auto 0;
   background: linear-gradient(90deg, transparent, var(--color-heritage-500), transparent);
 }
 
 .pp-section__subtitle {
-  margin: var(--space-4) 0 0;
-  font-size: var(--font-size-md);
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-base);
 }
 
 .pp-section__cta {
   display: flex;
   justify-content: center;
-  margin-top: var(--space-7);
+  margin-top: var(--space-6);
 }
 
 .pp-narrow {
@@ -237,9 +237,9 @@
 // ---------------------------- Portrait cards ----------------------------
 .pp-people {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 240px));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
   justify-content: center;
-  gap: var(--space-6) var(--space-5);
+  gap: var(--space-5) var(--space-4);
 }
 
 .pp-person {
@@ -253,11 +253,11 @@
 
 .pp-person__photo {
   width: 100%;
-  max-width: 220px;
+  max-width: 190px;
   aspect-ratio: 4 / 5;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
   background: var(--color-ink-100);
   box-shadow: var(--shadow-sm);
 
@@ -277,7 +277,7 @@
   place-items: center;
   background: var(--gradient-hero);
   font-family: var(--font-display);
-  font-size: 56px;
+  font-size: 44px;
   color: rgba(255, 255, 255, 0.85);
 }
 
@@ -287,7 +287,7 @@
 
 .pp-person__name {
   font-family: var(--font-display);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 600;
   color: var(--color-ink-900);
 }
@@ -310,8 +310,8 @@
 // ---------------------------- Date tile ----------------------------
 .pp-date {
   flex-shrink: 0;
-  width: 68px;
-  height: 76px;
+  width: 58px;
+  height: 64px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -323,7 +323,7 @@
 
 .pp-date__day {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 23px;
   font-weight: 700;
   line-height: 1;
 }
@@ -338,16 +338,16 @@
 }
 
 .pp-date--lg {
-  width: 92px;
-  height: 104px;
+  width: 76px;
+  height: 84px;
 
-  .pp-date__day { font-size: 40px; }
+  .pp-date__day { font-size: 32px; }
 }
 
 // ---------------------------- Join band ----------------------------
 .pp-join {
   position: relative;
-  padding: clamp(56px, 9vw, 104px) 0;
+  padding: clamp(32px, 5vw, 60px) 0;
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -372,26 +372,32 @@
 
 .pp-join__title {
   color: #fff;
-  font-size: clamp(30px, 4.5vw, 48px);
-  line-height: 1.15;
-  margin: 0 0 var(--space-4);
+  font-size: clamp(24px, 3.4vw, 36px);
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
 }
 
 .pp-join__body {
   color: rgba(255, 255, 255, 0.8);
-  font-size: var(--font-size-md);
-  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-base);
+  margin: 0 0 var(--space-5);
+}
+
+// Inside the sidebar shell the reader is already a signed-in member, so the
+// "join the alumni / register" closing bands don't apply there.
+.shell-content .pp-join {
+  display: none;
 }
 
 // ---------------------------- Responsive ----------------------------
 @media (max-width: 768px) {
   .pp-people {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5) var(--space-3);
+    gap: var(--space-4) var(--space-3);
   }
 
   .pp-person__name {
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-base);
   }
 }
 

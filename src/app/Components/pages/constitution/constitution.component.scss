@@ -12,7 +12,7 @@
   grid-template-columns: 200px 1fr;
   gap: var(--space-7);
   align-items: center;
-  padding: clamp(24px, 4vw, 48px);
+  padding: clamp(16px, 2.6vw, 30px);
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-xl);
@@ -94,7 +94,7 @@
 .doc__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(24px, 3vw, 32px);
+  font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-ink-900);
@@ -124,7 +124,7 @@
 
 .ask__title {
   margin: 0 0 var(--space-4);
-  font-size: clamp(24px, 3.2vw, 34px);
+  font-size: clamp(20px, 2.4vw, 27px);
   line-height: 1.2;
 }
 
@@ -170,4 +170,11 @@
     width: 100%;
     max-width: 320px;
   }
+}
+
+.doc__updated {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
 }

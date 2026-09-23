@@ -1,8 +1,11 @@
 <div class="modal" *ngIf="showDetailsModal">
-  <div class="modal-content">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="candidate-details-title">
     <!-- Header Section -->
     <div class="modal-header">
-      <h2>{{ 'candidates.detailsModalTitle' | translate }}</h2>
+      <div class="modal-header__text">
+        <span class="modal-eyebrow">{{ selectedCandidate?.positionName }}</span>
+        <h2 id="candidate-details-title">{{ 'candidates.detailsModalTitle' | translate }}</h2>
+      </div>
 
       <mat-slide-toggle class="payment-toggle" [checked]="selectedCandidate?.isPaid"
         (change)="onPaymentToggle($event.checked)">
@@ -10,65 +13,86 @@
       </mat-slide-toggle>
     </div>
 
-    <div class="details-wrapper">
-      <p><strong>{{ 'candidates.detailsName' | translate }}</strong> {{ selectedCandidate?.memberName }}</p>
-      <p><strong>{{ 'candidates.detailsMemberCode' | translate }}</strong> {{ selectedCandidate?.memberCode }}</p>
-      <p><strong>{{ 'candidates.detailsPosition' | translate }}</strong> {{ selectedCandidate?.positionName }}</p>
-      <p><strong>{{ 'candidates.detailsSupporter' | translate }}</strong> {{ selectedCandidate?.applicationReason }}</p>
-      <p><strong>{{ 'candidates.detailsBallotNumber' | translate }}</strong> {{ selectedCandidate?.ballotNumber }}</p>
-      <p><strong>{{ 'candidates.detailsBatch' | translate }}</strong> {{ selectedCandidate?.batch }}</p>
-      <p><strong>{{ 'candidates.detailsStatus' | translate }}</strong> {{ statusLabel(selectedCandidate?.nominationStatus) }}</p>
-      <p><strong>{{ 'candidates.detailsAdminNote' | translate }}</strong> {{ selectedCandidate?.adminNote }}</p>
-      <p class="fee-text">
-        <strong>{{ 'candidates.detailsFee' | translate }}</strong>
-        <span class="fee-amount">৳ {{ selectedCandidate?.fee }}</span>
-      </p>
-      <p>
-        <strong>{{ 'candidates.detailsPaymentStatus' | translate }}</strong>
+    <dl class="details-list">
+      <div class="detail">
+        <dt>{{ 'candidates.detailsName' | translate }}</dt>
+        <dd class="detail__strong">{{ selectedCandidate?.memberName }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsMemberCode' | translate }}</dt>
+        <dd>{{ selectedCandidate?.memberCode }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsPosition' | translate }}</dt>
+        <dd>{{ selectedCandidate?.positionName }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsSupporter' | translate }}</dt>
+        <dd>{{ selectedCandidate?.applicationReason }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsBallotNumber' | translate }}</dt>
+        <dd class="detail__num">{{ selectedCandidate?.ballotNumber }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsBatch' | translate }}</dt>
+        <dd class="detail__num">{{ selectedCandidate?.batch }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsStatus' | translate }}</dt>
+        <dd>
+          <span class="pill" [ngClass]="nominationPillClass(selectedCandidate?.nominationStatus)">
+            {{ statusLabel(selectedCandidate?.nominationStatus) }}
+          </span>
+        </dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsAdminNote' | translate }}</dt>
+        <dd>{{ selectedCandidate?.adminNote }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsFee' | translate }}</dt>
+        <dd class="fee-amount">৳ {{ selectedCandidate?.fee }}</dd>
+      </div>
+      <div class="detail">
+        <dt>{{ 'candidates.detailsPaymentStatus' | translate }}</dt>
+        <dd>
+          <span *ngIf="selectedCandidate?.isPaid" class="pill pill--success">{{ 'candidates.paid' | translate }}</span>
+          <span *ngIf="!selectedCandidate?.isPaid" class="pill pill--danger">{{ 'candidates.notPaid' | translate }}</span>
+        </dd>
+      </div>
+    </dl>
 
-        <span *ngIf="selectedCandidate?.isPaid" class="paid">
-          ✔ {{ 'candidates.paid' | translate }}
-        </span>
-
-        <span *ngIf="!selectedCandidate?.isPaid" class="not-paid">
-          ✖ {{ 'candidates.notPaid' | translate }}
-        </span>
-      </p>
-    </div>
-
-
-    <div *ngIf="showRejectNote" class="reject-note">
-      <label><strong>{{ 'candidates.rejectReasonLabel' | translate }}</strong></label>
-      <textarea [(ngModel)]="rejectNote" [placeholder]="'candidates.rejectReasonPlaceholder' | translate" rows="3">
+    <div *ngIf="showRejectNote" class="reject-note form-field">
+      <label for="reject-note">{{ 'candidates.rejectReasonLabel' | translate }} <span class="required">*</span></label>
+      <textarea id="reject-note" [(ngModel)]="rejectNote" [placeholder]="'candidates.rejectReasonPlaceholder' | translate" rows="3">
       </textarea>
     </div>
 
     <div class="modal-actions">
 
-      <button *ngIf="selectedCandidate?.nominationStatus === 'Pending'&& !showRejectNote" class="approve-btn"
-        (click)="approveCandidate(selectedCandidate)">
-        {{ 'candidates.approveBtn' | translate }}
+      <button type="button" class="btn btn--ghost modal-actions__close" (click)="closeDetailsModal()">{{ 'candidates.closeBtn' | translate }}</button>
+
+      <button type="button"
+        *ngIf="selectedCandidate?.nominationStatus === 'Approved' || selectedCandidate?.nominationStatus === 'Rejected'"
+        class="btn btn--outline" (click)="undoAction(selectedCandidate)">
+        <mat-icon>undo</mat-icon> {{ 'candidates.undoBtn' | translate }}
       </button>
 
-      <button *ngIf="selectedCandidate?.nominationStatus === 'Pending' && !showRejectNote" class="reject-btn"
-        (click)="showRejectNote = true">
+      <button type="button" *ngIf="selectedCandidate?.nominationStatus === 'Pending' && !showRejectNote"
+        class="btn btn--danger-outline" (click)="showRejectNote = true">
         {{ 'candidates.rejectBtn' | translate }}
       </button>
 
-
-      <button *ngIf="showRejectNote" class="confirm-reject-btn" [disabled]="!rejectNote.trim()"
+      <button type="button" *ngIf="showRejectNote" class="btn btn--danger" [disabled]="!rejectNote.trim()"
         (click)="confirmReject(selectedCandidate)">
         {{ 'candidates.confirmRejectBtn' | translate }}
       </button>
 
-
-      <button
-        *ngIf="selectedCandidate?.nominationStatus === 'Approved' || selectedCandidate?.nominationStatus === 'Rejected'"
-        class="undo-btn" (click)="undoAction(selectedCandidate)">
-        {{ 'candidates.undoBtn' | translate }}
+      <button type="button" *ngIf="selectedCandidate?.nominationStatus === 'Pending' && !showRejectNote"
+        class="btn btn--success" (click)="approveCandidate(selectedCandidate)">
+        <mat-icon>check</mat-icon> {{ 'candidates.approveBtn' | translate }}
       </button>
-
-      <button class="close-btn" (click)="closeDetailsModal()">{{ 'candidates.closeBtn' | translate }}</button>
     </div>
   </div>
 </div>
@@ -77,53 +101,70 @@
 
   <app-admin-header [title]="'candidates.title' | translate" [subtitle]="'candidates.subtitle' | translate"></app-admin-header>
 
-  <!-- Summary Cards -->
-  <div class="stat-row">
-    <app-stat-card icon="groups" [label]="'candidates.statCandidate' | translate" [value]="totalItems" tone="primary"></app-stat-card>
-    <app-stat-card icon="payments" [label]="'candidates.statTotalFee' | translate" [value]="'৳ ' + (totalFee | number:'1.0-0')" tone="accent">
-    </app-stat-card>
-    <app-stat-card icon="verified" [label]="'candidates.statPaid' | translate" [value]="'৳ ' + (paidFee | number:'1.0-0')" tone="neutral">
-    </app-stat-card>
+  <!-- Summary -->
+  <div class="stats">
+    <div class="stat">
+      <span class="stat__icon"><mat-icon>groups</mat-icon></span>
+      <span class="stat__value">{{ totalItems }}</span>
+      <span class="stat__label">{{ 'candidates.statCandidate' | translate }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat__icon"><mat-icon>payments</mat-icon></span>
+      <span class="stat__value">৳ {{ totalFee | number:'1.0-0' }}</span>
+      <span class="stat__label">{{ 'candidates.statTotalFee' | translate }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat__icon"><mat-icon>verified</mat-icon></span>
+      <span class="stat__value">৳ {{ paidFee | number:'1.0-0' }}</span>
+      <span class="stat__label">{{ 'candidates.statPaid' | translate }}</span>
+    </div>
   </div>
 
-  <div *ngIf="loading" class="loading-wrapper">
+  <div *ngIf="loading" class="loading-wrapper" role="status">
     <div class="spinner"></div>
     <p>{{ 'candidates.loading' | translate }}</p>
   </div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="!loading" class="page-stack">
     <app-section-card icon="person_search" [title]="'candidates.cardTitle' | translate" [noPadding]="true">
 
-      <div class="candidates-toolbar">
-        <div class="candidates-filters">
-          <div class="filter-field">
+      <div class="admin-toolbar">
+        <div class="admin-filters">
+          <label class="filter-field">
             <mat-icon>search</mat-icon>
-            <input type="text" [placeholder]="'candidates.filterName' | translate" [(ngModel)]="filter.memberName" (ngModelChange)="applyFilter()" />
-          </div>
-          <div class="filter-field">
+            <input type="text" [placeholder]="'candidates.filterName' | translate" [(ngModel)]="filter.memberName"
+              (ngModelChange)="applyFilter()" [attr.aria-label]="'candidates.filterName' | translate" />
+          </label>
+          <label class="filter-field">
             <mat-icon>badge</mat-icon>
-            <input type="text" [placeholder]="'candidates.filterMemberCode' | translate" [(ngModel)]="filter.memberCode" (ngModelChange)="applyFilter()" />
-          </div>
-          <div class="filter-field">
+            <input type="text" [placeholder]="'candidates.filterMemberCode' | translate" [(ngModel)]="filter.memberCode"
+              (ngModelChange)="applyFilter()" [attr.aria-label]="'candidates.filterMemberCode' | translate" />
+          </label>
+          <label class="filter-field filter-field--short">
             <mat-icon>calendar_today</mat-icon>
-            <input type="number" [placeholder]="'candidates.filterBatch' | translate" [(ngModel)]="filter.batch" (ngModelChange)="applyFilter()" />
-          </div>
-          <select class="filter-select" [(ngModel)]="filter.nominationStatusId" (ngModelChange)="applyFilter()">
+            <input type="number" [placeholder]="'candidates.filterBatch' | translate" [(ngModel)]="filter.batch"
+              (ngModelChange)="applyFilter()" [attr.aria-label]="'candidates.filterBatch' | translate" />
+          </label>
+          <select class="filter-select" [(ngModel)]="filter.nominationStatusId" (ngModelChange)="applyFilter()"
+            [attr.aria-label]="'candidates.filterNominationStatus' | translate">
             <option [ngValue]="null" selected>{{ 'candidates.filterNominationStatus' | translate }}</option>
             <option value="0">{{ 'candidates.statusPending' | translate }}</option>
             <option value="1">{{ 'candidates.statusApproved' | translate }}</option>
             <option value="2">{{ 'candidates.statusRejected' | translate }}</option>
           </select>
-          <select class="filter-select" [(ngModel)]="filter.isPaid" (ngModelChange)="applyFilter()">
+          <select class="filter-select" [(ngModel)]="filter.isPaid" (ngModelChange)="applyFilter()"
+            [attr.aria-label]="'candidates.filterPaymentStatus' | translate">
             <option [ngValue]="null" selected>{{ 'candidates.filterPaymentStatus' | translate }}</option>
             <option [ngValue]="true">{{ 'candidates.paid' | translate }}</option>
             <option [ngValue]="false">{{ 'candidates.notPaid' | translate }}</option>
           </select>
-          <select class="filter-select" [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()">
+          <select class="filter-select" [(ngModel)]="filter.positionId" (ngModelChange)="applyFilter()"
+            [attr.aria-label]="'candidates.filterPosition' | translate">
             <option [ngValue]="0" selected>{{ 'candidates.filterPosition' | translate }}</option>
             <option *ngFor="let bg of positions" [value]="bg.id">{{ bg.name }}</option>
           </select>
-          <button type="button" class="filter-reset" (click)="resetFilters()" [title]="'candidates.resetFilters' | translate">
+          <button type="button" class="icon-btn filter-reset" (click)="resetFilters()"
+            [title]="'candidates.resetFilters' | translate" [attr.aria-label]="'candidates.resetFilters' | translate">
             <mat-icon>restart_alt</mat-icon>
           </button>
         </div>
@@ -131,38 +172,48 @@
 
       <!-- Desktop Table -->
       <div class="table-wrapper desktop-only" *ngIf="candidates.length">
-        <table class="candidates-table">
+        <table class="admin-table">
           <thead>
             <tr>
-              <th>#</th>
+              <th class="col-index">#</th>
               <th>{{ 'candidates.colName' | translate }}</th>
               <th>{{ 'candidates.colMemberCode' | translate }}</th>
               <th>{{ 'candidates.colPosition' | translate }}</th>
-              <th>{{ 'candidates.colBallotNumber' | translate }}</th>
-              <th>{{ 'candidates.colBatch' | translate }}</th>
-              <th>{{ 'candidates.colFee' | translate }}</th>
-              <th class="text-right">{{ 'candidates.colActions' | translate }}</th>
+              <th class="num">{{ 'candidates.colBallotNumber' | translate }}</th>
+              <th class="num">{{ 'candidates.colBatch' | translate }}</th>
+              <th class="num">{{ 'candidates.colFee' | translate }}</th>
+              <th>{{ 'candidates.colPayment' | translate }}</th>
+              <th class="text-right col-actions">{{ 'candidates.colActions' | translate }}</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr *ngFor="let candidate of candidates; let i = index">
-              <td>{{ i + 1}} </td>
-              <td>{{ candidate.memberName }}
-                <span *ngIf="candidate.nominationStatus=== 'Approved'" class="approved-tick">✔</span>
-                <span *ngIf="candidate.nominationStatus=== 'Rejected'" class="rejected-tick">✖</span>
-                <span *ngIf="candidate.nominationStatus === 'Pending'" class="pending-tick">⏳</span>
-
+            <tr *ngFor="let candidate of candidates; let i = index"
+              [class.row--pending]="candidate.nominationStatus === 'Pending'">
+              <td class="col-index">{{ i + 1 }}</td>
+              <td>
+                <div class="name-cell">
+                  <span class="cell-strong">{{ candidate.memberName }}</span>
+                  <span *ngIf="candidate.nominationStatus" class="pill"
+                    [ngClass]="nominationPillClass(candidate.nominationStatus)">{{ statusLabel(candidate.nominationStatus) }}</span>
+                </div>
               </td>
-              <td>{{ candidate.memberCode }}</td>
+              <td class="cell-code">{{ candidate.memberCode }}</td>
               <td>{{ candidate.positionName }}</td>
-              <td>{{ candidate.ballotNumber }}</td>
-              <td>{{ candidate.batch }}</td>
-              <td>{{ candidate.fee }}</td>
-              <td class="candidates-table__actions">
-                <button type="button" (click)="viewDetails(candidate)" [attr.aria-label]="'candidates.detailsAriaLabel' | translate">
-                  <mat-icon>visibility</mat-icon>
-                </button>
+              <td class="num">{{ candidate.ballotNumber }}</td>
+              <td class="num">{{ candidate.batch }}</td>
+              <td class="num">{{ candidate.fee }}</td>
+              <td>
+                <span *ngIf="candidate?.isPaid" class="pill pill--success">{{ 'candidates.paid' | translate }}</span>
+                <span *ngIf="!candidate?.isPaid" class="pill pill--danger">{{ 'candidates.notPaid' | translate }}</span>
+              </td>
+              <td class="col-actions">
+                <div class="row-actions">
+                  <button type="button" class="icon-btn" (click)="viewDetails(candidate)"
+                    [attr.aria-label]="'candidates.detailsAriaLabel' | translate" [title]="'candidates.detailsAriaLabel' | translate">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -170,29 +221,22 @@
       </div>
 
       <!-- Mobile Cards -->
-      <div class="mobile-only" *ngIf="candidates.length">
-        <div class="candidate-card" *ngFor="let candidate of candidates; let i = index">
-
-          <div class="card-header">
-            <span class="title">{{ candidate.memberName }}
-              <span *ngIf="candidate.nominationStatus === 'Approved'" class="status-icon approved">✔</span>
-              <span *ngIf="candidate.nominationStatus === 'Rejected'" class="status-icon rejected">✖</span>
-              <span *ngIf="candidate.nominationStatus === 'Pending'" class="status-icon pending">⏳</span>
-            </span>
+      <div class="mobile-only item-list" *ngIf="candidates.length">
+        <div class="item-card" *ngFor="let candidate of candidates; let i = index"
+          [class.row--pending]="candidate.nominationStatus === 'Pending'">
+          <div class="item-card__head">
+            <span class="item-card__title">{{ candidate.memberName }}</span>
+            <span *ngIf="candidate.nominationStatus" class="pill"
+              [ngClass]="nominationPillClass(candidate.nominationStatus)">{{ statusLabel(candidate.nominationStatus) }}</span>
           </div>
-          <div class="card-dates">
+          <div class="item-card__meta">
             <span>{{ candidate.positionName }}</span>
             <span>{{ 'candidates.cardBatch' | translate }} {{ candidate.batch }}</span>
-            <span *ngIf="candidate?.isPaid" class="paid">
-              ✔ {{ 'candidates.paid' | translate }}
-            </span>
-
-            <span *ngIf="!candidate?.isPaid" class="not-paid">
-              ✖ {{ 'candidates.notPaid' | translate }}
-            </span>
+            <span *ngIf="candidate?.isPaid" class="pill pill--success">{{ 'candidates.paid' | translate }}</span>
+            <span *ngIf="!candidate?.isPaid" class="pill pill--danger">{{ 'candidates.notPaid' | translate }}</span>
           </div>
-          <div class="card-actions">
-            <button type="button" (click)="viewDetails(candidate)" [attr.aria-label]="'candidates.detailsAriaLabel' | translate">
+          <div class="item-card__actions">
+            <button type="button" class="icon-btn" (click)="viewDetails(candidate)" [attr.aria-label]="'candidates.detailsAriaLabel' | translate">
               <mat-icon>visibility</mat-icon>
             </button>
           </div>
@@ -204,19 +248,21 @@
       </app-empty-state>
 
       <!-- Pagination -->
-      <nav class="candidates-pagination" *ngIf="totalPages > 1">
-        <button type="button" [disabled]="pageNumber === 1" (click)="onPageChange(pageNumber - 1)">
+      <nav class="admin-pagination" *ngIf="totalPages > 1">
+        <button type="button" class="page-btn" [disabled]="pageNumber === 1" (click)="onPageChange(pageNumber - 1)"
+          [attr.aria-label]="'candidates.previous' | translate">
           <mat-icon>chevron_left</mat-icon>
         </button>
 
-        <button type="button" class="page-number" [class.active]="pageNumber === 1" (click)="onPageChange(1)">1</button>
+        <button type="button" class="page-btn" [class.active]="pageNumber === 1" (click)="onPageChange(1)">1</button>
         <span *ngIf="pageNumber > 3" class="ellipsis">…</span>
-        <button type="button" class="page-number" *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p"
+        <button type="button" class="page-btn" *ngFor="let p of getMiddlePages()" [class.active]="pageNumber === p"
           (click)="onPageChange(p)">{{ p }}</button>
         <span *ngIf="pageNumber < totalPages - 2" class="ellipsis">…</span>
-        <button type="button" class="page-number" [class.active]="pageNumber === totalPages" (click)="onPageChange(totalPages)">{{ totalPages }}</button>
+        <button type="button" class="page-btn" [class.active]="pageNumber === totalPages" (click)="onPageChange(totalPages)">{{ totalPages }}</button>
 
-        <button type="button" [disabled]="pageNumber === totalPages" (click)="onPageChange(pageNumber + 1)">
+        <button type="button" class="page-btn" [disabled]="pageNumber === totalPages" (click)="onPageChange(pageNumber + 1)"
+          [attr.aria-label]="'candidates.next' | translate">
           <mat-icon>chevron_right</mat-icon>
         </button>
       </nav>
