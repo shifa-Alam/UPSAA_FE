@@ -1,33 +1,48 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { VoteService, CommitteePosition } from '../../../Services/vote.service';
-import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
+import { LanguageService } from '../../../Services/language.service';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
+import { RevealDirective } from '../../shared/reveal/reveal.directive';
+import { TranslatePipe } from '../../../Pipes/translate.pipe';
 
-interface TreeNode {
+interface CommitteeCard {
   memberName: string;
   photo: string | null;
   positionName: string;
   batch?: number;
 }
 
+interface CommitteeGroup {
+  /** i18n key for the section heading; falls back to `title` (a raw position name). */
+  titleKey?: string;
+  title?: string;
+  eyebrowKey: string;
+  cards: CommitteeCard[];
+  compact?: boolean;
+}
+
 @Component({
   selector: 'app-committee',
   standalone: true,
-  imports: [CommonModule, MatIconModule, PageHeaderComponent, EmptyStateComponent],
+  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe],
   templateUrl: './committee.component.html',
   styleUrl: './committee.component.scss'
 })
 export class CommitteeComponent implements OnInit {
   loading = true;
   loadError = false;
-  electionTitle = '';
-  /** Priority-ordered positions, bucketed into visual tiers (root → leadership → secretaries → members) for the org tree. */
-  tiers: TreeNode[][] = [];
 
-  constructor(private voteService: VoteService) { }
+  /** Priority 1 (President) — shown as the featured portrait. */
+  president: CommitteeCard | null = null;
+  /** Everyone else, bucketed into the page's sections below the president. */
+  groups: CommitteeGroup[] = [];
+  electionDate: string | null = null;
+
+  constructor(private voteService: VoteService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
     this.voteService.getPublicCommittee().pipe(
@@ -40,13 +55,13 @@ export class CommitteeComponent implements OnInit {
         return;
       }
 
-      this.electionTitle = committee.electionTitle;
-      this.tiers = this.buildTiers(committee.positions);
+      this.electionDate = committee.electionDate || null;
+      this.build(committee.positions);
     });
   }
 
-  private buildTiers(positions: CommitteePosition[]): TreeNode[][] {
-    const flatten = (group: CommitteePosition[]): TreeNode[] =>
+  private build(positions: CommitteePosition[]): void {
+    const flatten = (group: CommitteePosition[]): CommitteeCard[] =>
       group.flatMap(pos => pos.members.map(m => ({
         memberName: m.memberName,
         photo: m.photo,
@@ -54,20 +69,37 @@ export class CommitteeComponent implements OnInit {
         positionName: pos.positionName,
       })));
 
-    // Too few positions to meaningfully split into tiers — one row each.
-    if (positions.length <= 3) {
-      return positions.map(pos => flatten([pos]));
-    }
+    const [first, ...rest] = flatten(positions.slice(0, 1));
+    this.president = first ?? null;
 
-    // President (priority 1) is the root; next two positions form the senior-leadership
-    // row; everything up to the last position fills the wide secretaries row; the final
-    // (lowest-priority) position — typically Executive Members — forms the base row.
-    return [
-      flatten(positions.slice(0, 1)),
-      flatten(positions.slice(1, 3)),
-      flatten(positions.slice(3, positions.length - 1)),
-      flatten(positions.slice(positions.length - 1)),
-    ].filter(tier => tier.length > 0);
+    // Too few positions to split meaningfully — everyone else is "leadership".
+    if (positions.length <= 3) {
+      this.groups = [
+        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: [...rest, ...flatten(positions.slice(1))] },
+      ];
+    } else {
+      // Next two positions are senior leadership; everything up to the last position
+      // is office bearers; the final (lowest-priority) position — typically Executive
+      // Members — gets its own compact section under its real name.
+      const last = positions[positions.length - 1];
+      this.groups = [
+        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: [...rest, ...flatten(positions.slice(1, 3))] },
+        { titleKey: 'committee.sections.officeBearers', eyebrowKey: 'committee.sections.officeBearersEyebrow', cards: flatten(positions.slice(3, positions.length - 1)) },
+        { title: last.positionName, eyebrowKey: 'committee.sections.membersEyebrow', cards: flatten([last]), compact: true },
+      ];
+    }
+    this.groups = this.groups.filter(g => g.cards.length > 0);
+  }
+
+  electedOn(): string {
+    if (!this.electionDate) return '';
+    const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(this.electionDate));
+  }
+
+  formatBatch(batch: number): string {
+    const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+    return new Intl.NumberFormat(locale, { useGrouping: false }).format(batch);
   }
 
   initials(name: string): string {

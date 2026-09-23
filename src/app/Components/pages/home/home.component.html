@@ -1,95 +1,217 @@
-<div class="home-page">
+<div class="home">
 
-  <app-page-header class="home-hero" variant="hero" eyebrow="স্বাগতম" title="উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন"
-    subtitle="প্রজন্মের সংযোগ, ভবিষ্যতের ক্ষমতায়ন। উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থীদের ঐক্যবদ্ধ পরিবার — UPSAA।">
-    <div class="hero-extra">
-      <img src="logo.png" alt="UPSAA Logo" class="hero-logo" />
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero__bg" [class.hero__bg--photo]="heroImage"
+      [style.background-image]="heroImage ? 'url(' + heroImage + ')' : null"></div>
+    <div class="hero__overlay"></div>
 
-      <div class="hero-actions">
-        <a routerLink="/register" class="primary-btn">
-          <mat-icon>how_to_reg</mat-icon> সদস্য নিবন্ধন
+    <div class="hero__content upsaa-container">
+      <img src="logo.png" alt="UPSAA Logo" class="hero__logo" />
+      <span class="hero__eyebrow">{{ 'home.hero.eyebrow' | translate }}</span>
+      <h1 class="hero__title">{{ 'home.hero.title' | translate }}</h1>
+      <p class="hero__tagline">{{ 'home.hero.tagline' | translate }}</p>
+      <p class="hero__pillars">{{ 'home.hero.pillars' | translate }}</p>
+
+      <div class="hero__actions">
+        <a routerLink="/register" class="pp-btn pp-btn--light">
+          {{ 'home.hero.joinCta' | translate }} <mat-icon>arrow_forward</mat-icon>
         </a>
-        <a routerLink="/members" class="secondary-btn">
-          <mat-icon>groups</mat-icon> সদস্য তালিকা
+        <button type="button" class="pp-btn pp-btn--ghost-light" (click)="scrollTo(aboutSection)">
+          {{ 'home.hero.exploreCta' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <button type="button" class="hero__scroll" (click)="scrollTo(aboutSection)"
+      [attr.aria-label]="'home.hero.scrollHint' | translate">
+      <mat-icon>expand_more</mat-icon>
+    </button>
+  </section>
+
+  <!-- ===== Stats band — live counts from the public batch summary + achievements ===== -->
+  <!-- [hidden] rather than *ngIf keeps the section count stable so the
+       alternating section backgrounds below never pair up. -->
+  <section class="stats" [hidden]="!stats.length">
+    <div class="upsaa-container stats__grid">
+      <div class="stat" *ngFor="let s of stats">
+        <span class="stat__value">{{ formatNumber(s.shown, s.plain) }}{{ s.suffix }}</span>
+        <span class="stat__label">{{ s.labelKey | translate }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="pp-section" #aboutSection>
+    <div class="upsaa-container about" appReveal>
+      <span class="pp-section__eyebrow">{{ 'home.about.eyebrow' | translate }}</span>
+      <h2 class="pp-section__title">{{ 'home.about.title' | translate }}</h2>
+      <span class="pp-section__rule"></span>
+      <p class="about__body">{{ 'home.about.body' | translate }}</p>
+
+      <ul class="about__pillars">
+        <li><mat-icon>celebration</mat-icon>{{ 'home.about.reunion' | translate }}</li>
+        <li><mat-icon>school</mat-icon>{{ 'home.about.guidance' | translate }}</li>
+        <li><mat-icon>bloodtype</mat-icon>{{ 'home.about.social' | translate }}</li>
+        <li><mat-icon>volunteer_activism</mat-icon>{{ 'home.about.support' | translate }}</li>
+      </ul>
+
+      <a routerLink="/about" class="pp-btn pp-btn--outline">{{ 'home.about.learnMore' | translate }}</a>
+    </div>
+  </section>
+
+  <!-- ===== Upcoming events ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'home.events.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.events.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <app-empty-state *ngIf="!eventsLoading && events.length === 0" icon="event"
+        [title]="'home.events.emptyTitle' | translate" [message]="'home.events.emptyMessage' | translate"></app-empty-state>
+
+      <div class="events" *ngIf="events.length">
+        <article class="event-card" *ngFor="let ev of events">
+          <div class="pp-date">
+            <span class="pp-date__day">{{ eventDay(ev) }}</span>
+            <span class="pp-date__month">{{ eventMonth(ev) }}</span>
+          </div>
+          <div class="event-card__body">
+            <h3 class="event-card__title">{{ ev.title }}</h3>
+            <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(ev) }}</span>
+            <span class="event-card__meta" *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</span>
+            <a routerLink="/events" class="pp-link">{{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon></a>
+          </div>
+        </article>
+      </div>
+
+      <div class="pp-section__cta">
+        <a routerLink="/events" class="pp-btn pp-btn--outline">{{ 'home.events.viewAll' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== News & notices ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container pp-narrow" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'home.notices.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.notices.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <app-empty-state *ngIf="!noticesLoading && notices.length === 0" icon="campaign"
+        [title]="'home.notices.emptyTitle' | translate" [message]="'home.notices.emptyMessage' | translate"></app-empty-state>
+
+      <ul class="news" *ngIf="notices.length">
+        <li class="news__item" *ngFor="let notice of notices">
+          <time class="news__date">{{ noticeDate(notice) }}</time>
+          <div class="news__body">
+            <h3 class="news__title">
+              {{ notice.title }}
+              <span class="news__badge" *ngIf="notice.alumniOnly">{{ 'home.notices.alumniOnlyBadge' | translate }}</span>
+            </h3>
+            <p class="news__text">{{ notice.content }}</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Our alumni, our pride — public directory, photo profiles only ===== -->
+  <section class="pp-section" *ngIf="alumni.length">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'home.alumni.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.alumni.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <div class="pp-people">
+        <a class="pp-person" *ngFor="let m of alumni" routerLink="/members" [queryParams]="{ batch: m.batch }">
+          <div class="pp-person__photo">
+            <img [src]="m.photo" [alt]="m.fullName" loading="lazy" />
+          </div>
+          <span class="pp-person__name">{{ m.fullName }}</span>
+          <span class="pp-person__label">{{ 'home.alumni.batch' | translate }} {{ formatNumber(m.batch, true) }}</span>
+          <span class="pp-person__meta" *ngIf="m.currentDesignation">{{ m.currentDesignation }}</span>
         </a>
       </div>
 
-      <a routerLink="/about" class="hero-link">
-        আমাদের সম্পর্কে বিস্তারিত জানুন <mat-icon>arrow_forward</mat-icon>
+      <div class="pp-section__cta">
+        <a routerLink="/members" class="pp-btn pp-btn--outline">{{ 'home.alumni.explore' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Achievements ===== -->
+  <section class="pp-section" *ngIf="achievements.length">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'home.achievements.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.achievements.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+        <p class="pp-section__subtitle">{{ 'home.achievements.subtitle' | translate }}</p>
+      </header>
+
+      <div class="feats">
+        <article class="feat" *ngFor="let a of achievements">
+          <div class="feat__photo">
+            <img *ngIf="a.photoUrl; else featInitials" [src]="a.photoUrl" [alt]="a.fullName" loading="lazy" />
+            <ng-template #featInitials><span class="feat__initials">{{ initials(a.fullName) }}</span></ng-template>
+          </div>
+          <div class="feat__body">
+            <mat-icon class="feat__icon">military_tech</mat-icon>
+            <h3 class="feat__title">{{ a.title }}</h3>
+            <span class="feat__name">{{ a.fullName }}</span>
+            <span class="feat__meta">
+              <ng-container *ngIf="a.batch">{{ 'home.alumni.batch' | translate }} {{ formatNumber(a.batch, true) }}</ng-container>
+              <ng-container *ngIf="a.batch && a.organization"> · </ng-container>
+              {{ a.organization }}
+            </span>
+          </div>
+        </article>
+      </div>
+
+      <div class="pp-section__cta">
+        <a routerLink="/achievements" class="pp-btn pp-btn--outline">{{ 'home.achievements.viewAll' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== School memories — gallery mosaic ===== -->
+  <section class="pp-section" *ngIf="memories.length">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'home.memories.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.memories.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <div class="mosaic" [class.mosaic--few]="memories.length < 6">
+        <a routerLink="/gallery" class="mosaic__tile" *ngFor="let photo of memories">
+          <img [src]="photo.imageUrl" [alt]="photo.title" loading="lazy" />
+          <span class="mosaic__caption">{{ photo.category || photo.title }}</span>
+        </a>
+      </div>
+
+      <div class="pp-section__cta">
+        <a routerLink="/gallery" class="pp-btn pp-btn--outline">{{ 'home.memories.viewAll' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Join CTA ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'home.join.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'home.join.body' | translate }}</p>
+      <a routerLink="/register" class="pp-btn pp-btn--light">
+        {{ 'home.join.cta' | translate }} <mat-icon>arrow_forward</mat-icon>
       </a>
     </div>
-  </app-page-header>
+  </section>
 
-  <div class="upsaa-container home-sections">
-
-    <app-section-card icon="info" title="আমাদের পরিচিতি">
-      <p>
-        উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন (UPSAA) হলো আমাদের প্রিয় শিক্ষাপ্রতিষ্ঠান
-        উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থীদের একটি ঐক্যবদ্ধ প্ল্যাটফর্ম। এই সংগঠন আত্মিক
-        বন্ধনের পাশাপাশি পেশাগত সহায়তা ও সামাজিক দায়বদ্ধতার মাধ্যমে দেশের উন্নয়নে অবদান রাখে।
-      </p>
-    </app-section-card>
-
-    <section class="home-highlights">
-      <app-stat-card icon="celebration" tone="primary" label="পুনর্মিলনী, কুইজ, খেলাধুলা ও সাংস্কৃতিক অনুষ্ঠান"
-        value="আয়োজন"></app-stat-card>
-      <app-stat-card icon="school" tone="accent" label="জুনিয়র শিক্ষার্থীদের ক্যারিয়ার গাইডেন্স ও সেমিনার"
-        value="গাইডেন্স"></app-stat-card>
-      <app-stat-card icon="bloodtype" tone="primary" label="রক্তদান কর্মসূচি ও সামাজিক সচেতনতামূলক কার্যক্রম"
-        value="সমাজসেবা"></app-stat-card>
-      <app-stat-card icon="volunteer_activism" tone="accent" label="মেধাবী ও অসহায় শিক্ষার্থীদের আর্থিক সহায়তা"
-        value="সহায়তা"></app-stat-card>
-    </section>
-
-    <!-- Leadership spotlight — real, live data from the same public committee endpoint
-         the Committee page uses. Quietly omitted if that data isn't available. -->
-    <section class="leadership-spotlight" *ngIf="leaders.length">
-      <div class="leadership-spotlight__head">
-        <span class="leadership-spotlight__eyebrow">নেতৃত্বে</span>
-        <h2>বর্তমান কার্যনির্বাহী পরিষদ</h2>
-      </div>
-
-      <div class="leadership-spotlight__grid">
-        <div class="leader-card" *ngFor="let leader of leaders">
-          <ng-container *ngIf="leader.photo; else leaderInitials">
-            <img [src]="leader.photo" [alt]="leader.name" class="leader-card__photo" />
-          </ng-container>
-          <ng-template #leaderInitials>
-            <div class="leader-card__initials">{{ initials(leader.name) }}</div>
-          </ng-template>
-
-          <div class="leader-card__body">
-            <span class="leader-card__position">{{ leader.position }}</span>
-            <span class="leader-card__name">{{ leader.name }}</span>
-          </div>
-        </div>
-      </div>
-
-      <a routerLink="/committee" class="leadership-spotlight__link">
-        পূর্ণাঙ্গ কার্যনির্বাহী কমিটি দেখুন <mat-icon>arrow_forward</mat-icon>
-      </a>
-    </section>
-
-    <!-- Connect With Us — the association's real, verified official channels. -->
-    <app-section-card icon="hub" title="আমাদের সাথে যুক্ত হোন">
-      <div class="connect-grid">
-        <a class="connect-item connect-item--facebook" href="https://www.facebook.com/uttaranalumni/"
-          target="_blank" rel="noopener">
-          <span class="connect-item__icon"><mat-icon>thumb_up</mat-icon></span>
-          <span class="connect-item__label">ফেসবুক পেজ</span>
-        </a>
-        <a class="connect-item connect-item--facebook" href="https://www.facebook.com/groups/24644376638521350/"
-          target="_blank" rel="noopener">
-          <span class="connect-item__icon"><mat-icon>groups_2</mat-icon></span>
-          <span class="connect-item__label">ফেসবুক গ্রুপ</span>
-        </a>
-        <a class="connect-item connect-item--whatsapp" href="https://wa.me/8801866293776" target="_blank"
-          rel="noopener">
-          <span class="connect-item__icon"><mat-icon>chat</mat-icon></span>
-          <span class="connect-item__label">হোয়াটসঅ্যাপ</span>
-        </a>
-      </div>
-    </app-section-card>
-
-  </div>
 </div>

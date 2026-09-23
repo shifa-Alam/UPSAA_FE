@@ -6,11 +6,14 @@ import { Init } from 'node:v8';
 import { MatFormField, MatLabel } from "@angular/material/form-field";
 import { MatOption } from "@angular/material/core";
 import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, TranslatePipe],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss'
 })
@@ -26,7 +29,7 @@ export class ForgetPasswordComponent implements OnInit {
   message: string = '';
 
   batchYears: number[] = [];
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private languageService: LanguageService) { }
   ngOnInit() {
     const startYear = 2003;
     const currentYear = new Date().getFullYear();
@@ -56,7 +59,7 @@ export class ForgetPasswordComponent implements OnInit {
   }
   sendOtp() {
     if (!this.phoneNumber || !this.batch) {
-      this.message = "Please enter phone number and batch.";
+      this.message = this.languageService.translate('forgetPassword.errors.phoneAndBatchRequired');
       this.isError = true;
       return;
     }
@@ -66,13 +69,13 @@ export class ForgetPasswordComponent implements OnInit {
       next: (res: any) => {
         this.loading = false;
         this.step = 2; // move to OTP step
-        this.message = res.message || "OTP sent successfully.";
+        this.message = res.message || this.languageService.translate('forgetPassword.errors.otpSent');
         this.isError = false;
         this.startOtpCountdown(); // optional: start resend timer
       },
       error: (err) => {
         this.loading = false;
-        this.message = err.error?.message || "Failed to send OTP.";
+        this.message = err.error?.message || this.languageService.translate('forgetPassword.errors.otpSendFailed');
         this.isError = true;
       }
     });
@@ -80,7 +83,7 @@ export class ForgetPasswordComponent implements OnInit {
 
   verifyOtp() {
     if (!this.otp || this.otp.length !== 6) {
-      this.message = "OTP must be 6 digits.";
+      this.message = this.languageService.translate('forgetPassword.errors.otpMustBe6Digits');
       this.isError = true;
       return;
     }
@@ -90,12 +93,12 @@ export class ForgetPasswordComponent implements OnInit {
       next: (res: any) => {
         this.loading = false;
         this.step = 3; // move to password reset
-        this.message = res.message || "OTP verified successfully.";
+        this.message = res.message || this.languageService.translate('forgetPassword.errors.otpVerified');
         this.isError = false;
       },
       error: (err) => {
         this.loading = false;
-        this.message = err.error?.message || "Invalid or expired OTP.";
+        this.message = err.error?.message || this.languageService.translate('forgetPassword.errors.otpInvalidOrExpired');
         this.isError = true;
       }
     });
@@ -103,13 +106,13 @@ export class ForgetPasswordComponent implements OnInit {
 
   resetPassword() {
     if (!this.newPassword || !this.confirmPassword) {
-      this.message = "Please enter password and confirm password.";
+      this.message = this.languageService.translate('forgetPassword.errors.passwordAndConfirmRequired');
       this.isError = true;
       return;
     }
 
     if (this.newPassword !== this.confirmPassword) {
-      this.message = "Passwords do not match.";
+      this.message = this.languageService.translate('forgetPassword.errors.passwordsDoNotMatch');
       this.isError = true;
       return;
     }
@@ -131,7 +134,7 @@ export class ForgetPasswordComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.message = err.error?.message || "Failed to reset password.";
+        this.message = err.error?.message || this.languageService.translate('forgetPassword.errors.changeFailed');
         this.isError = true;
       }
     });

@@ -1,0 +1,379 @@
+// Shared shell for the public auth pages (login, forgot / reset password):
+// a navy brand panel beside a calm form card. Stacks on phones, with the
+// brand panel shrinking to a compact band above the form.
+
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: calc(100vh - var(--header-height));
+  background: var(--color-surface-alt);
+}
+
+// ---------------------------- Brand panel ----------------------------
+.auth__brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4) var(--space-7);
+  background: var(--gradient-hero);
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 15% 20%, rgba(201, 162, 74, 0.22), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.18), transparent 45%);
+  }
+}
+
+.auth__brand-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 420px;
+  animation: auth-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.auth__logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  padding: 5px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12), 0 12px 30px rgba(0, 0, 0, 0.3);
+  margin-bottom: var(--space-4);
+}
+
+.auth__eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+  margin-bottom: var(--space-3);
+}
+
+.auth__title {
+  color: #fff;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.auth__rule {
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: var(--space-4) auto;
+  background: linear-gradient(90deg, transparent, var(--color-heritage-500), transparent);
+}
+
+.auth__tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: var(--line-height-normal);
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+// ---------------------------- Form side ----------------------------
+.auth__main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0 var(--space-4) var(--space-7);
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin-top: calc(var(--space-5) * -1); // overlaps the brand band on phones
+  padding: var(--space-6) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
+
+  // Thin gold heritage line along the top edge.
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: var(--space-6);
+    right: var(--space-6);
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, var(--color-heritage-500), transparent);
+  }
+}
+
+.auth-card__head {
+  text-align: center;
+  margin-bottom: var(--space-5);
+}
+
+.auth-card__title {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  color: var(--color-ink-900);
+}
+
+.auth-card__subtitle {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-ink-600);
+}
+
+// ---------------------------- Fields ----------------------------
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-field {
+  margin-bottom: var(--space-4);
+}
+
+.auth-field__label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-700);
+}
+
+.auth-field__control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 50px;
+  padding: 0 var(--space-3);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+
+  > mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-ink-400);
+    transition: color var(--transition-fast);
+  }
+
+  input,
+  select {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    padding: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-base);
+    font-size: var(--font-size-base);
+    color: var(--color-ink-900);
+
+    &::placeholder {
+      color: var(--color-ink-400);
+    }
+  }
+
+  select {
+    cursor: pointer;
+
+    option {
+      background: var(--color-surface);
+      color: var(--color-ink-900);
+    }
+  }
+
+  &:focus-within {
+    background: var(--color-surface);
+    border-color: var(--color-primary-400);
+    box-shadow: 0 0 0 3px var(--color-primary-50);
+
+    > mat-icon {
+      color: var(--color-primary-500);
+    }
+  }
+}
+
+.auth-field__control--invalid {
+  border-color: var(--color-danger);
+}
+
+.auth-field__toggle {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  margin-right: calc(var(--space-2) * -1);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-ink-400);
+  cursor: pointer;
+  transition: color var(--transition-fast), background var(--transition-fast);
+
+  &:hover {
+    color: var(--color-primary-500);
+    background: var(--color-primary-50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-400);
+    outline-offset: 1px;
+  }
+}
+
+.auth-field__error {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+}
+
+// ---------------------------- Actions & messages ----------------------------
+.auth-submit {
+  width: 100%;
+  margin-top: var(--space-2);
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.auth-message {
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-50);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-ink-700);
+  text-align: center;
+}
+
+.auth-message--success {
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--color-success);
+}
+
+.auth-message--error {
+  background: rgba(244, 67, 54, 0.08);
+  color: var(--color-danger);
+}
+
+.auth-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-ink-200);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  text-align: center;
+}
+
+.auth-card__link {
+  font-weight: 600;
+  color: var(--color-primary-600);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+:host-context([data-theme='dark']) .auth-card__link {
+  color: var(--color-primary-300);
+}
+
+@keyframes auth-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+// ---------------------------- Layout: side by side from tablet up ----------------------------
+@media (min-width: 900px) {
+  .auth {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  }
+
+  .auth__brand {
+    padding: var(--space-8) var(--space-7);
+  }
+
+  .auth__logo {
+    width: 84px;
+    height: 84px;
+    margin-bottom: var(--space-5);
+  }
+
+  .auth__main {
+    align-items: center;
+    padding: var(--space-7) var(--space-6);
+  }
+
+  .auth-card {
+    margin-top: 0;
+    padding: var(--space-7) var(--space-6);
+  }
+}
+
+@media (max-width: 899px) {
+  .auth {
+    min-height: calc(100vh - var(--header-height-mobile));
+    align-content: start;
+  }
+
+  // Compact band on phones: logo, eyebrow and welcome line only.
+  .auth__tagline,
+  .auth__rule {
+    display: none;
+  }
+}
+
+:host-context(html[lang='bn']) .auth__eyebrow {
+  letter-spacing: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth__brand-inner {
+    animation: none;
+  }
+
+  .auth-field__control,
+  .auth-field__toggle {
+    transition: none;
+  }
+}

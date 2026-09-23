@@ -5,39 +5,46 @@
     <div class="site-footer__brand">
       <img src="logo.png" alt="UPSAA Logo" class="site-footer__logo" />
       <div>
-        <strong>UPS Alumni Association</strong>
-        <p>Uttaran Public School অ্যালামনাই পরিবারের সাথে যুক্ত থাকুন।</p>
-        <div class="site-footer__social">
-          <a href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener" aria-label="Facebook Page">
-            <mat-icon>thumb_up</mat-icon>
-          </a>
-          <a href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener"
-            aria-label="Facebook Group">
-            <mat-icon>groups_2</mat-icon>
-          </a>
-          <a href="https://wa.me/8801866293776" target="_blank" rel="noopener" aria-label="WhatsApp">
-            <mat-icon>chat</mat-icon>
-          </a>
-        </div>
+        <strong>UPSAA</strong>
+        <p>{{ 'footer.tagline' | translate }}</p>
       </div>
     </div>
 
     <div class="site-footer__col">
-      <h4>Quick Links</h4>
+      <h4>{{ 'footer.quickLinks' | translate }}</h4>
       <nav class="site-footer__links">
-        <a routerLink="/">Home</a>
-        <a routerLink="/about">About</a>
-        <a routerLink="/committee">Committee</a>
-        <a routerLink="/register">Register</a>
-        <a routerLink="/members">Members</a>
+        <a routerLink="/">{{ 'footer.home' | translate }}</a>
+        <a routerLink="/about">{{ 'footer.about' | translate }}</a>
+        <a routerLink="/committee">{{ 'footer.committee' | translate }}</a>
+        <a routerLink="/gallery">{{ 'footer.gallery' | translate }}</a>
+        <a routerLink="/register">{{ 'footer.register' | translate }}</a>
+        <a routerLink="/members">{{ 'footer.members' | translate }}</a>
         <!-- Election cycle is currently over — hidden from nav, not deleted, in case it needs to come back.
-        <a routerLink="/election">Election</a>
+        <a routerLink="/election">নির্বাচন</a>
         -->
       </nav>
     </div>
 
     <div class="site-footer__col">
-      <h4>Contact</h4>
+      <h4>{{ 'footer.followUs' | translate }}</h4>
+      <div class="site-footer__contact">
+        <a class="site-footer__contact-item" href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener">
+          <span class="site-footer__contact-icon"><mat-icon>thumb_up</mat-icon></span>
+          <span>{{ 'footer.facebookPage' | translate }}</span>
+        </a>
+        <a class="site-footer__contact-item" href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener">
+          <span class="site-footer__contact-icon"><mat-icon>groups_2</mat-icon></span>
+          <span>{{ 'footer.facebookGroup' | translate }}</span>
+        </a>
+        <a class="site-footer__contact-item" href="https://wa.me/8801866293776" target="_blank" rel="noopener">
+          <span class="site-footer__contact-icon"><mat-icon>chat</mat-icon></span>
+          <span>{{ 'footer.whatsapp' | translate }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="site-footer__col">
+      <h4>{{ 'footer.contact' | translate }}</h4>
       <div class="site-footer__contact">
         <a class="site-footer__contact-item" href="tel:01866293776">
           <span class="site-footer__contact-icon"><mat-icon>call</mat-icon></span>
@@ -56,6 +63,6 @@
   </div>
 
   <div class="site-footer__bottom">
-    &copy; {{ year }} UPS Alumni Association. All rights reserved.
+    &copy; {{ year }} UPSAA{{ 'footer.rights' | translate }}
   </div>
 </footer>

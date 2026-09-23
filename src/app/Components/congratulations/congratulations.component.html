@@ -1,78 +1,135 @@
-<div class="congrats-container">
+<div class="congrats">
   <!-- Confetti canvas -->
   <canvas id="confetti-canvas"></canvas>
 
-  <mat-card class="congrats-card">
-    <div class="icon-circle">🎉</div>
-    <h2 class="title">Congratulations!</h2>
-    <p class="message">Your registration has been successfully completed.</p>
-
-    <!-- User Information -->
-    <div class="user-info">
-      <div class="info-grid">
-        <div><strong>Full Name:</strong> {{ data?.fullName }}</div>
-        <div><strong>Email:</strong> {{ data?.email }}</div>
-        <div><strong>Blood Group:</strong> {{ data?.bloodGroup }}</div>
-        <div><strong>Gender:</strong> {{ data?.gender }}</div>
-        <div><strong>Phone:</strong> {{ data?.phone }}</div>
-        <div><strong>Batch:</strong> {{ data?.batch }}</div>
-        <div><strong>Designation:</strong> {{ data?.currentDesignation || 'N/A' }}</div>
-        <div><strong>Company:</strong> {{ data?.employer || 'N/A' }}</div>
-        <div><strong>City:</strong> {{ data?.currentCity }}</div>
-        <div><strong>DOB:</strong> {{ data?.dob | date:'mediumDate' }}</div>
-      </div>
-      <br>
-      <p>Education Records</p>
-      <ul class="edu-list">
-        <li *ngFor="let edu of data?.educationRecords">
-          {{ edu.degreeName }} - {{ edu.instituteName }} ({{ edu.subject || 'N/A' }})
-        </li>
-      </ul>
-      <div class="fees-invoice" *ngIf="data?.fees?.length">
-        <h3>Fees Invoice</h3>
-        <table class="invoice-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Fee Type</th>
-              <th class="amount-col">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let fee of data?.fees; let i = index">
-              <td>{{ i + 1 }}</td>
-              <td>{{ fee.feeType }}</td>
-              <td class="amount-col">{{ fee.amount | currency:'BDT':'symbol' }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="2"><strong>Total</strong></td>
-              <td class="amount-col"><strong>{{ calculateTotalFees() | currency:'BDT':'symbol' }}</strong></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <!-- Instructional notice after fees -->
-      <div class="bkash-info">
-        <strong class="bkash-info__title">বিকাশে টাকা পাঠানোর নির্দেশনা :</strong>
-        <p>
-          অনুগ্রহ করে
-          <strong>৳ {{ calculateTotalFees() }}</strong> পাঠান।
-        </p>
-        <p>
-          <strong>বিকাশ নম্বর:</strong> 01928623875
-        </p>
-
-        <p class="bkash-info__note">
-          ✅ সেন্ড মানি করার সময় অবশ্যই রেফারেন্স হিসেবে আপনার মোবাইল নাম্বার ব্যবহার করুন,
-          যাতে আপনার আবেদন সঠিকভাবে যাচাই করা যায়।
-        </p>
-      </div>
-
+  <!-- Welcome band -->
+  <header class="congrats__hero">
+    <div class="upsaa-container congrats__hero-inner">
+      <span class="congrats__badge"><mat-icon>celebration</mat-icon></span>
+      <span class="congrats__eyebrow">{{ 'congratulations.eyebrow' | translate }}</span>
+      <h1 class="congrats__title">{{ 'congratulations.title' | translate }}</h1>
+      <p class="congrats__message">{{ 'congratulations.message' | translate }}</p>
     </div>
+  </header>
 
+  <div class="upsaa-container congrats__body">
+    <article class="congrats-card">
 
-    <button mat-raised-button color="primary" (click)="goHome()">Go Back Home</button>
-  </mat-card>
+      <!-- Submitted details -->
+      <section class="congrats-card__section">
+        <h2 class="congrats-card__heading">{{ 'congratulations.summaryTitle' | translate }}</h2>
+        <span class="congrats-card__rule"></span>
+
+        <dl class="congrats-info">
+          <div class="congrats-info__item congrats-info__item--wide">
+            <dt>{{ 'congratulations.fullNameLabel' | translate }}</dt>
+            <dd>{{ data?.fullName }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.emailLabel' | translate }}</dt>
+            <dd>{{ data?.email }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.phoneLabel' | translate }}</dt>
+            <dd>{{ data?.phone }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.batchLabel' | translate }}</dt>
+            <dd>{{ data?.batch }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.bloodGroupLabel' | translate }}</dt>
+            <dd>{{ data?.bloodGroup }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.genderLabel' | translate }}</dt>
+            <dd>{{ data?.gender }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.dobLabel' | translate }}</dt>
+            <dd>{{ data?.dob | date:'mediumDate' }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.designationLabel' | translate }}</dt>
+            <dd>{{ data?.currentDesignation || ('congratulations.noInfo' | translate) }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.employerLabel' | translate }}</dt>
+            <dd>{{ data?.employer || ('congratulations.noInfo' | translate) }}</dd>
+          </div>
+          <div class="congrats-info__item">
+            <dt>{{ 'congratulations.cityLabel' | translate }}</dt>
+            <dd>{{ data?.currentCity }}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Education -->
+      <section class="congrats-card__section" *ngIf="data?.educationRecords?.length">
+        <h3 class="congrats-card__subheading">{{ 'congratulations.educationTitle' | translate }}</h3>
+        <ul class="edu-list">
+          <li *ngFor="let edu of data?.educationRecords">
+            <mat-icon>school</mat-icon>
+            <span>
+              <strong>{{ edu.degreeName }}</strong> — {{ edu.instituteName }}
+              ({{ edu.subject || ('congratulations.noInfo' | translate) }})
+            </span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Fee invoice -->
+      <section class="congrats-card__section fees-invoice" *ngIf="data?.fees?.length">
+        <h3 class="congrats-card__subheading">{{ 'congratulations.feeInvoiceTitle' | translate }}</h3>
+        <div class="invoice-scroll">
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{{ 'congratulations.feeTypeHeader' | translate }}</th>
+                <th class="amount-col">{{ 'congratulations.amountHeader' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let fee of data?.fees; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ fee.feeType }}</td>
+                <td class="amount-col">{{ fee.amount | currency:'BDT':'symbol' }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="total-row">
+                <td colspan="2"><strong>{{ 'congratulations.totalLabel' | translate }}</strong></td>
+                <td class="amount-col"><strong>{{ calculateTotalFees() | currency:'BDT':'symbol' }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+
+      <!-- Payment instructions -->
+      <div class="bkash-info">
+        <strong class="bkash-info__title">
+          <mat-icon>account_balance_wallet</mat-icon>{{ 'congratulations.bkashInstructionTitle' | translate }}
+        </strong>
+        <p>
+          {{ 'congratulations.bkashSendPrefix' | translate }}
+          <strong>৳ {{ calculateTotalFees() }}</strong> {{ 'congratulations.bkashSendSuffix' | translate }}
+        </p>
+        <p>
+          <strong>{{ 'congratulations.bkashNumberLabel' | translate }}</strong> 01928623875
+        </p>
+        <p class="bkash-info__note">
+          {{ 'congratulations.bkashNote' | translate }}
+        </p>
+      </div>
+
+      <div class="congrats-card__actions">
+        <button type="button" class="pp-btn pp-btn--solid" (click)="goHome()">
+          {{ 'congratulations.goHomeButton' | translate }}
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </article>
+  </div>
 </div>

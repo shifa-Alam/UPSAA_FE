@@ -1,0 +1,153 @@
+<div class="jobs-page">
+
+  <app-page-header variant="plain" [eyebrow]="'jobs.hero.eyebrow' | translate" [title]="'jobs.hero.title' | translate"
+    [subtitle]="'jobs.hero.subtitle' | translate">
+  </app-page-header>
+
+  <div class="upsaa-container jobs-body">
+
+    <!-- ===== Toolbar — floats over the header's lower edge ===== -->
+    <div class="tools">
+      <div class="tools__types" role="group" [attr.aria-label]="'jobs.formJobType' | translate" *ngIf="jobs.length > 0">
+        <button type="button" class="chip" [class.chip--active]="!typeFilter" [attr.aria-pressed]="!typeFilter"
+          (click)="typeFilter = null">
+          {{ 'jobs.allTypes' | translate }}
+        </button>
+        <button type="button" class="chip" *ngFor="let t of jobTypes" [class.chip--active]="typeFilter === t"
+          [attr.aria-pressed]="typeFilter === t" (click)="typeFilter = typeFilter === t ? null : t">
+          {{ jobTypeLabelKey(t) | translate }}
+        </button>
+      </div>
+
+      <p class="tools__intro" *ngIf="jobs.length === 0">{{ 'jobs.toolbarIntro' | translate }}</p>
+
+      <div class="tools__action">
+        <button type="button" class="pp-btn pp-btn--solid" (click)="openAddForm()" *ngIf="!showForm && authService.isLoggedIn()">
+          <mat-icon>add</mat-icon> {{ 'jobs.postButton' | translate }}
+        </button>
+        <a class="pp-btn pp-btn--outline" routerLink="/login" *ngIf="!showForm && !authService.isLoggedIn()">
+          <mat-icon>login</mat-icon> {{ 'jobs.loginToPost' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="jobs-main">
+
+      <!-- ===== Add / Edit form ===== -->
+      <form class="job-form" #formEl (ngSubmit)="submit()" *ngIf="showForm">
+        <header class="job-form__head">
+          <span class="job-form__eyebrow">{{ 'jobs.hero.eyebrow' | translate }}</span>
+          <h2 class="job-form__title">{{ editMode ? ('jobs.editTitle' | translate) : ('jobs.addTitle' | translate) }}</h2>
+          <span class="job-form__rule"></span>
+        </header>
+
+        <div class="job-form__grid">
+          <div class="form-field">
+            <label for="job-title">{{ 'jobs.formTitle' | translate }} <span class="required">*</span></label>
+            <input id="job-title" type="text" [(ngModel)]="form.title" name="title" required />
+          </div>
+          <div class="form-field">
+            <label for="job-company">{{ 'jobs.formCompany' | translate }} <span class="required">*</span></label>
+            <input id="job-company" type="text" [(ngModel)]="form.companyName" name="companyName" required />
+          </div>
+          <div class="form-field">
+            <label for="job-location">{{ 'jobs.formLocation' | translate }}</label>
+            <input id="job-location" type="text" [(ngModel)]="form.location" name="location" />
+          </div>
+          <div class="form-field">
+            <label for="job-type">{{ 'jobs.formJobType' | translate }}</label>
+            <select id="job-type" [(ngModel)]="form.jobType" name="jobType">
+              <option *ngFor="let t of jobTypes" [value]="t">{{ jobTypeLabelKey(t) | translate }}</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="job-deadline">{{ 'jobs.formDeadline' | translate }}</label>
+            <input id="job-deadline" type="date" [(ngModel)]="form.deadline" name="deadline" />
+          </div>
+          <div class="form-field">
+            <label for="job-apply">{{ 'jobs.formApplyInfo' | translate }} <span class="required">*</span></label>
+            <input id="job-apply" type="text" [placeholder]="'jobs.formApplyInfoPlaceholder' | translate" [(ngModel)]="form.applyInfo" name="applyInfo" required />
+          </div>
+          <div class="form-field job-form__full">
+            <label for="job-description">{{ 'jobs.formDescription' | translate }} <span class="required">*</span></label>
+            <textarea id="job-description" rows="5" [(ngModel)]="form.description" name="description" required></textarea>
+          </div>
+        </div>
+
+        <div class="job-form__actions">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="cancelForm()">{{ 'jobs.cancelButton' | translate }}</button>
+          <button type="submit" class="pp-btn pp-btn--solid" [disabled]="saving">
+            {{ saving ? ('jobs.saving' | translate) : (editMode ? ('jobs.updateButton' | translate) : ('jobs.createButton' | translate)) }}
+          </button>
+        </div>
+      </form>
+
+      <!-- ===== Listing ===== -->
+      <div class="jobs-loading" *ngIf="loading">
+        <mat-icon class="jobs-loading__icon">autorenew</mat-icon>
+        <span>{{ 'jobs.loading' | translate }}</span>
+      </div>
+
+      <app-empty-state *ngIf="!loading && loadError" icon="work" [title]="'jobs.errorTitle' | translate"
+        [message]="'jobs.errorMessage' | translate"></app-empty-state>
+
+      <app-empty-state *ngIf="!loading && !loadError && jobs.length === 0" icon="work"
+        [title]="'jobs.emptyTitle' | translate" [message]="'jobs.emptyMessage' | translate"></app-empty-state>
+
+      <ng-container *ngIf="!loading && !loadError && jobs.length > 0">
+        <div class="results__head">
+          <p class="results__count"><strong>{{ num(visibleJobs.length) }}</strong> {{ 'jobs.countSuffix' | translate }}</p>
+        </div>
+
+        <app-empty-state *ngIf="visibleJobs.length === 0" icon="filter_alt_off"
+          [title]="'jobs.noMatchTitle' | translate" [message]="'jobs.noMatchMessage' | translate"></app-empty-state>
+
+        <div class="jobs-list" *ngIf="visibleJobs.length > 0">
+          <article class="job" *ngFor="let job of visibleJobs" [class.job--expired]="isExpired(job)">
+            <div class="job__mark" aria-hidden="true">{{ initial(job.companyName) }}</div>
+
+            <div class="job__main">
+              <header class="job__head">
+                <div class="job__heading">
+                  <span class="job__type">{{ jobTypeLabelKey(job.jobType) | translate }}</span>
+                  <h3 class="job__title">{{ job.title }}</h3>
+                  <p class="job__company">{{ job.companyName }}</p>
+                </div>
+
+                <div class="job__actions" *ngIf="job.canManage">
+                  <button type="button" (click)="startEdit(job)" [attr.aria-label]="'jobs.editAriaLabel' | translate"
+                    [title]="'jobs.editAriaLabel' | translate">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button type="button" class="job__delete" [disabled]="deletingId === job.id" (click)="confirmDelete(job)"
+                    [attr.aria-label]="'jobs.deleteAriaLabel' | translate" [title]="'jobs.deleteAriaLabel' | translate">
+                    <mat-icon>{{ deletingId === job.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+                  </button>
+                </div>
+              </header>
+
+              <ul class="job__meta" *ngIf="job.location || job.deadline">
+                <li *ngIf="job.location"><mat-icon>place</mat-icon>{{ job.location }}</li>
+                <li *ngIf="job.deadline">
+                  <mat-icon>event</mat-icon>{{ 'jobs.deadlinePrefix' | translate }} {{ date(job.deadline) }}
+                  <span class="job__expired" *ngIf="isExpired(job)">{{ 'jobs.expired' | translate }}</span>
+                </li>
+              </ul>
+
+              <p class="job__desc">{{ job.description }}</p>
+
+              <footer class="job__foot">
+                <div class="job__apply">
+                  <span class="job__apply-label"><mat-icon>send</mat-icon>{{ 'jobs.applyLabel' | translate }}</span>
+                  <span class="job__apply-info">{{ job.applyInfo }}</span>
+                </div>
+                <span class="job__posted" *ngIf="job.postedByName">{{ 'jobs.postedBy' | translate }} {{ job.postedByName }}</span>
+              </footer>
+            </div>
+          </article>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

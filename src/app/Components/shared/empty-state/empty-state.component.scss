@@ -19,6 +19,10 @@
   margin-bottom: var(--space-4);
 }
 
+:host-context([data-theme='dark']) .empty-state__icon {
+  color: var(--color-primary-300);
+}
+
 .empty-state__icon mat-icon {
   font-size: 30px;
   width: 30px;

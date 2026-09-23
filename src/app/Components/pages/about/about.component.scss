@@ -1,44 +1,206 @@
+// About — public-page kit (styles/_public-page.scss): the story, numbered
+// goals, activity cards, a pride passage, then the join band.
+
 .about-page {
-  background: var(--color-surface-alt);
+  background: var(--color-surface);
+  overflow-x: hidden;
 }
 
-.about-sections {
+// ---------------------------- Story ----------------------------
+.story__lead {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.2vw, 22px);
+  line-height: 1.8;
+  text-align: center;
+  color: var(--color-ink-700);
+}
+
+// ---------------------------- Goals ----------------------------
+.goals {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+.goal {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-heritage-500);
+  }
+}
+
+.goal__num {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-heritage-500);
+}
+
+.goal__text {
+  margin: 0;
+  padding-top: var(--space-1);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: var(--color-ink-700);
+}
+
+// ---------------------------- Activities ----------------------------
+.activities {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.activity {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-  padding-top: var(--space-7);
-  padding-bottom: var(--space-8);
-  max-width: 860px;
-  margin: 0 auto;
-}
-
-.about-list {
-  margin: 0;
-  padding-left: var(--space-5);
-  color: var(--color-ink-600);
-  line-height: var(--line-height-normal);
-}
-
-.about-list li {
-  margin-bottom: var(--space-2);
-}
-
-.about-list li::marker {
-  color: var(--color-primary-500);
-}
-
-.about-quote {
+  align-items: center;
   text-align: center;
-  margin-top: var(--space-5);
-  font-weight: 700;
-  color: var(--color-primary-700);
-  font-size: var(--font-size-lg);
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+}
+
+.activity__icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-heritage-soft);
+  border: 1px solid rgba(201, 162, 74, 0.35);
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+    color: var(--color-heritage-500);
+  }
+}
+
+.activity__text {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: 1.65;
+  color: var(--color-ink-700);
+}
+
+// ---------------------------- Pride ----------------------------
+.pride {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.pride__icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--space-4);
+  color: var(--color-heritage-500);
+}
+
+.pride__title {
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  margin: 0 0 var(--space-5);
+}
+
+.pride__body {
+  margin: 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-ink-200);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(18px, 2.2vw, 22px);
+  line-height: 1.8;
+  color: var(--color-ink-700);
+}
+
+// ---------------------------- Join ----------------------------
+.about-motto {
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(20px, 2.6vw, 26px);
+  color: var(--color-heritage-500);
+}
+
+.about-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 960px) {
+  .activities {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .about-sections {
+  .goals {
+    grid-template-columns: 1fr;
     gap: var(--space-4);
-    padding-top: var(--space-6);
-    padding-bottom: var(--space-6);
+  }
+
+  .goal {
+    padding: var(--space-5) var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .goal__num {
+    font-size: 32px;
+  }
+
+  .story__lead {
+    text-align: left;
+  }
+
+  .about-cta {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 520px) {
+  .activities {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .activity {
+    padding: var(--space-4) 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goal {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 }

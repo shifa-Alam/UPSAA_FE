@@ -1,46 +1,87 @@
-<div class="committee-page">
+<div class="committee">
 
-  <app-page-header variant="plain" eyebrow="নির্বাচিত পরিষদ" title="নির্বাচিত কমিটি"
-    [subtitle]="electionTitle ? (electionTitle + ' নির্বাচনে বিজয়ী কার্যনির্বাহী কমিটি।') : 'কার্যনির্বাহী কমিটির সদস্যবৃন্দ।'">
-  </app-page-header>
-
-  <div class="upsaa-container committee-sections">
-
-    <div class="committee-loading" *ngIf="loading">
-      <mat-icon class="committee-loading__icon">autorenew</mat-icon>
-      <span>তথ্য লোড হচ্ছে...</span>
+  <!-- ===== Hero ===== -->
+  <header class="pp-hero">
+    <div class="upsaa-container pp-hero__inner">
+      <span class="pp-hero__eyebrow">{{ 'committee.hero.eyebrow' | translate }}</span>
+      <h1 class="pp-hero__title">{{ 'committee.hero.title' | translate }}</h1>
+      <p class="pp-hero__subtitle">{{ 'committee.hero.subtitle' | translate }}</p>
+      <span class="committee__elected" *ngIf="electionDate">
+        <mat-icon>how_to_vote</mat-icon>{{ 'committee.electedOn' | translate }} {{ electedOn() }}
+      </span>
     </div>
+  </header>
 
-    <app-empty-state *ngIf="!loading && loadError" icon="groups" title="কমিটির তথ্য এখনো পাওয়া যায়নি"
-      message="নির্বাচনের ফলাফল প্রকাশিত হলে এখানে নির্বাচিত কমিটির সদস্যদের তালিকা দেখা যাবে।">
-    </app-empty-state>
+  <div class="committee__loading" *ngIf="loading">
+    <mat-icon class="committee__spinner">autorenew</mat-icon>
+    <span>{{ 'committee.loading' | translate }}</span>
+  </div>
 
-    <div class="org-tree" *ngIf="!loading && !loadError">
-      <div class="org-tier" *ngFor="let tier of tiers; let first = first">
-        <div class="org-tier__stem" *ngIf="!first"></div>
+  <section class="pp-section" *ngIf="!loading && loadError">
+    <div class="upsaa-container">
+      <app-empty-state icon="groups" [title]="'committee.emptyTitle' | translate"
+        [message]="'committee.emptyMessage' | translate"></app-empty-state>
+    </div>
+  </section>
 
-        <div class="org-tier__row" [class.org-tier__row--branched]="tier.length > 1 && tier.length <= 4"
-          [class.org-tier__row--wide]="tier.length > 4" [class.org-tier__row--root]="first">
-          <div class="org-node" *ngFor="let node of tier">
-            <div class="org-node__avatar-wrap">
-              <div class="org-node__crown" *ngIf="first">
-                <mat-icon>military_tech</mat-icon>
-              </div>
-              <ng-container *ngIf="node.photo; else initialsAvatar">
-                <img [src]="node.photo" [alt]="node.memberName" class="org-node__photo" />
-              </ng-container>
-              <ng-template #initialsAvatar>
-                <div class="org-node__initials">{{ initials(node.memberName) }}</div>
-              </ng-template>
+  <ng-container *ngIf="!loading && !loadError">
+
+    <!-- ===== President — featured ===== -->
+    <section class="pp-section" *ngIf="president">
+      <div class="upsaa-container" appReveal>
+        <article class="lead">
+          <div class="lead__photo">
+            <img *ngIf="president.photo; else leadInitials" [src]="president.photo" [alt]="president.memberName" />
+            <ng-template #leadInitials><span class="pp-person__initials">{{ initials(president.memberName) }}</span></ng-template>
+            <span class="lead__badge"><mat-icon>military_tech</mat-icon></span>
+          </div>
+          <div class="lead__body">
+            <span class="pp-section__eyebrow">{{ president.positionName }}</span>
+            <h2 class="lead__name">{{ president.memberName }}</h2>
+            <span class="pp-section__rule lead__rule"></span>
+            <span class="lead__batch" *ngIf="president.batch">
+              {{ 'committee.batchPrefix' | translate }} {{ formatBatch(president.batch) }}
+            </span>
+            <p class="lead__note">{{ 'committee.presidentNote' | translate }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Remaining sections ===== -->
+    <section class="pp-section" *ngFor="let group of groups">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ group.eyebrowKey | translate }}</span>
+          <h2 class="pp-section__title">{{ group.titleKey ? (group.titleKey | translate) : group.title }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <div class="pp-people" [class.committee__people--compact]="group.compact">
+          <div class="pp-person" *ngFor="let card of group.cards">
+            <div class="pp-person__photo">
+              <img *ngIf="card.photo; else cardInitials" [src]="card.photo" [alt]="card.memberName" loading="lazy" />
+              <ng-template #cardInitials><span class="pp-person__initials">{{ initials(card.memberName) }}</span></ng-template>
             </div>
-
-            <div class="org-node__name">{{ node.memberName }}</div>
-            <div class="org-node__position">{{ node.positionName }}</div>
-            <div class="org-node__batch" *ngIf="node.batch">ব্যাচ {{ node.batch }}</div>
+            <span class="pp-person__name">{{ card.memberName }}</span>
+            <span class="pp-person__label" *ngIf="!group.compact">{{ card.positionName }}</span>
+            <span class="pp-person__meta" *ngIf="card.batch">{{ 'committee.batchPrefix' | translate }} {{ formatBatch(card.batch) }}</span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-  </div>
+  </ng-container>
+
+  <!-- ===== Contact band ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'committee.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'committee.cta.body' | translate }}</p>
+      <a routerLink="/contact" class="pp-btn pp-btn--light">
+        {{ 'committee.cta.button' | translate }} <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+  </section>
+
 </div>

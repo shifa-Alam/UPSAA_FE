@@ -3,11 +3,13 @@
 ======================= */
 .register-page {
   min-height: calc(100vh - var(--header-height));
+  background: var(--color-surface-alt);
 }
 
 .register-page__body {
+  max-width: 920px;
   padding-top: var(--space-6);
-  padding-bottom: var(--space-7);
+  padding-bottom: var(--space-8);
 }
 
 .register-form {
@@ -16,15 +18,142 @@
   gap: var(--space-5);
 }
 
+.register-form__note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-heritage-500);
+  }
+}
+
+/* =======================
+   Numbered form sections
+======================= */
+.reg-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.reg-section__head {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6) var(--space-4);
+
+  // Gold rule under the heading, fading out to the right.
+  &::after {
+    content: '';
+    position: absolute;
+    left: var(--space-6);
+    right: var(--space-6);
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-heritage-500), transparent 70%);
+    opacity: 0.6;
+  }
+}
+
+.reg-section__num {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-heritage-soft);
+  border: 1px solid rgba(201, 162, 74, 0.45);
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-heritage-500);
+}
+
+.reg-section__heading {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.reg-section__title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  line-height: var(--line-height-tight);
+  color: var(--color-ink-900);
+}
+
+.reg-section__subtitle {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-ink-600);
+}
+
+.reg-section__body {
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+@media (max-width: 767px) {
+  .register-page__body {
+    padding-top: var(--space-5);
+    padding-bottom: var(--space-7);
+  }
+
+  .register-form {
+    gap: var(--space-4);
+  }
+
+  .reg-section__head {
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-4) var(--space-3);
+
+    &::after {
+      left: var(--space-4);
+      right: var(--space-4);
+    }
+  }
+
+  .reg-section__num {
+    width: 38px;
+    height: 38px;
+    font-size: var(--font-size-md);
+  }
+
+  .reg-section__title {
+    font-size: var(--font-size-lg);
+  }
+
+  .reg-section__body {
+    padding: var(--space-4);
+  }
+}
+
 /* =======================
    Captcha
 ======================= */
 .captcha-section {
   margin-bottom: var(--space-4);
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
+  border: 1px dashed var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
 }
 
 .captcha-image-row {
@@ -53,7 +182,8 @@
 }
 
 .captcha-input {
-  width: 220px;
+  width: 100%;
+  max-width: 260px;
 }
 
 /* =======================
@@ -61,6 +191,13 @@
 ======================= */
 mat-form-field {
   width: 100%;
+}
+
+/* Slightly tighter field height than Material's default for a more compact form. */
+::ng-deep .register-form .mat-mdc-form-field:not(.fee-amount) .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 /* =======================
@@ -80,10 +217,23 @@ mat-form-field {
    Submit Button
 ======================= */
 .submit-btn {
-  width: 100%;
-  font-weight: 700;
-  border-radius: var(--radius-pill) !important;
-  padding: var(--space-1) 0;
+  display: flex;
+  min-width: 240px;
+  margin: var(--space-2) auto 0;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .submit-btn {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 /* =======================
@@ -101,15 +251,22 @@ mat-form-field {
   gap: var(--space-2);
   align-items: flex-start;
   border: 1px solid var(--color-ink-200);
-  padding: var(--space-3);
+  border-left: 3px solid var(--color-ink-200);
+  padding: var(--space-3) var(--space-3) var(--space-1);
   border-radius: var(--radius-md);
   background: var(--color-surface-alt);
+  transition: border-color var(--transition-fast);
+
+  &:focus-within {
+    border-left-color: var(--color-heritage-500);
+  }
 }
 
 .edu-checkbox {
   flex: 1 1 100%;
-  font-weight: 500;
+  font-weight: 600;
   font-size: var(--font-size-sm);
+  color: var(--color-ink-900);
 }
 
 .edu-input {
@@ -156,22 +313,35 @@ mat-form-field {
    bKash payment instructions
 ======================= */
 .bkash-info {
-  background: var(--color-primary-50);
-  padding: var(--space-4);
+  background: var(--color-heritage-soft);
+  padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-primary-200);
-  margin-bottom: var(--space-4);
+  border-left: 3px solid var(--color-heritage-500);
+  margin-bottom: var(--space-5);
   font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
 .bkash-info__heading {
-  color: var(--color-primary-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-ink-900);
   font-size: var(--font-size-md);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-heritage-500);
+  }
 }
 
 .bkash-info__number {
   margin: var(--space-2) 0;
   color: var(--color-ink-900);
+  font-variant-numeric: tabular-nums;
 }
 
 .bkash-info__note {
@@ -194,6 +364,7 @@ mat-form-field {
   border-radius: var(--radius-md);
   overflow: hidden;
   background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .invoice-header {
@@ -276,5 +447,35 @@ mat-form-field {
 .total-amount {
   width: 120px;
   text-align: right;
+  font-family: var(--font-display);
   color: var(--color-primary-800);
+}
+
+:host-context([data-theme='dark']) {
+  .invoice-header,
+  .total-label,
+  .total-amount {
+    color: var(--color-primary-300);
+  }
+}
+
+@media (max-width: 420px) {
+  .header-amount,
+  .fee-amount-wrapper,
+  .total-amount {
+    width: 104px;
+  }
+
+  .invoice-header,
+  .fee-row,
+  .invoice-total {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .education-row {
+    transition: none;
+  }
 }

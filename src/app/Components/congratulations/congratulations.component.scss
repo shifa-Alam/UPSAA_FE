@@ -1,208 +1,335 @@
-.congrats-container {
-  display: flex;
-  justify-content: center;
-  padding: 20px;
+// Post-registration welcome: navy band with the good news, then one calm
+// summary card of what was submitted and how to pay the fee.
+
+.congrats {
+  min-height: calc(100vh - var(--header-height));
   background: var(--color-surface-alt);
-  min-height: 100vh;
   font-family: var(--font-base);
-
-  canvas#confetti-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  .congrats-card {
-    max-width: 480px;
-    width: 100%;
-    padding: 20px 25px;
-    text-align: center;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-
-    .icon-circle {
-      font-size: 50px;
-      margin-bottom: 15px;
-    }
-
-    .title {
-      font-size: var(--font-size-2xl);
-      color: var(--color-ink-900);
-      margin-bottom: 8px;
-    }
-
-    .message {
-      font-size: var(--font-size-md);
-      color: var(--color-ink-600);
-      margin-bottom: 20px;
-    }
-
-    .user-info {
-      text-align: left;
-      margin-bottom: 20px;
-
-      h3 {
-        font-size: var(--font-size-lg);
-        margin-bottom: 10px;
-      }
-
-      .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        font-size: var(--font-size-sm);
-        color: var(--color-ink-700);
-
-        div {
-          line-height: 1.4;
-        }
-      }
-
-      .edu-list {
-        list-style: disc inside;
-        padding-left: 0;
-        font-size: var(--font-size-sm);
-        color: var(--color-ink-700);
-        margin-top: 8px;
-      }
-    }
-
-    .progress-circle {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-
-      .circle {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--color-primary-50);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 28px;
-      }
-    }
-
-    button {
-      width: 100%;
-      font-size: var(--font-size-md);
-      border-radius: var(--radius-pill);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .congrats-card {
-      padding: 15px 18px;
-
-      .icon-circle {
-        font-size: 40px;
-      }
-
-      .title {
-        font-size: var(--font-size-xl);
-      }
-
-      .message {
-        font-size: var(--font-size-sm);
-      }
-
-      .user-info .info-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .progress-circle .circle {
-        width: 50px;
-        height: 50px;
-        font-size: 24px;
-      }
-    }
-  }
 }
 
-.fees-invoice {
-  margin-top: 20px;
+canvas#confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
 
-  h3 {
-    margin-bottom: 12px;
-    color: var(--color-ink-900);
-    font-weight: 600;
-  }
+// ---------------------------- Hero band ----------------------------
+.congrats__hero {
+  position: relative;
+  padding: clamp(48px, 8vw, 88px) 0 calc(clamp(48px, 8vw, 88px) + var(--space-7));
+  background: var(--gradient-hero);
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
 
-  .invoice-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--font-base);
-
-    th,
-    td {
-      padding: 10px 12px;
-      border: 1px solid var(--color-ink-200);
-    }
-
-    th {
-      background-color: var(--color-primary-600);
-      color: #fff;
-      text-align: left;
-    }
-
-    tbody tr:nth-child(even) {
-      background-color: var(--color-surface-alt);
-    }
-
-    tbody tr:hover {
-      background-color: var(--color-primary-50);
-    }
-
-    .amount-col {
-      text-align: right;
-    }
-
-    tfoot .total-row {
-      background-color: var(--color-ink-100);
-      font-weight: 600;
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 15% 20%, rgba(201, 162, 74, 0.22), transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.18), transparent 45%);
   }
 }
 
-.bkash-info {
-  background: var(--color-primary-50);
+.congrats__hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: congrats-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.congrats__badge {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-5);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(201, 162, 74, 0.6);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06);
+  color: var(--color-heritage-500);
+
+  mat-icon {
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.congrats__eyebrow {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+  margin-bottom: var(--space-3);
+}
+
+.congrats__title {
+  color: #fff;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.12;
+  margin: 0 0 var(--space-3);
+}
+
+.congrats__message {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(17px, 2vw, 21px);
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+}
+
+// ---------------------------- Summary card ----------------------------
+.congrats__body {
+  max-width: 760px;
+  padding-bottom: var(--space-8);
+}
+
+.congrats-card {
+  position: relative;
+  margin-top: calc(var(--space-7) * -1);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.congrats-card__section + .congrats-card__section {
+  margin-top: var(--space-6);
+}
+
+.congrats-card__heading {
+  margin: 0;
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
   color: var(--color-ink-900);
-  padding: 15px;
+  text-align: center;
+}
+
+.congrats-card__rule {
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: var(--space-3) auto var(--space-5);
+  background: linear-gradient(90deg, transparent, var(--color-heritage-500), transparent);
+}
+
+.congrats-card__subheading {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+// Label-over-value tiles; two columns from small tablets up.
+.congrats-info {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.congrats-info__item {
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  border: 2px solid var(--color-primary-200);
-  margin: 15px 0;
+  background: var(--color-surface-alt);
+
+  dt {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-ink-600);
+  }
+
+  dd {
+    margin: 2px 0 0;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-ink-900);
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (min-width: 560px) {
+  .congrats-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .congrats-info__item--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.edu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    color: var(--color-ink-700);
+  }
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    color: var(--color-heritage-500);
+  }
+
+  strong {
+    color: var(--color-ink-900);
+  }
+}
+
+// ---------------------------- Fee invoice ----------------------------
+.invoice-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+}
+
+.invoice-table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: var(--font-size-sm);
+
+  th,
+  td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-ink-200);
+    text-align: left;
+    color: var(--color-ink-700);
+  }
+
+  th {
+    background: var(--color-surface-alt);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-ink-600);
+  }
+
+  .amount-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  tfoot td {
+    border-bottom: none;
+    border-top: 2px solid var(--color-heritage-500);
+    color: var(--color-ink-900);
+  }
+
+  tfoot .amount-col {
+    font-family: var(--font-display);
+    font-size: var(--font-size-md);
+  }
+}
+
+// ---------------------------- Payment note ----------------------------
+.bkash-info {
+  margin: var(--space-6) 0 0;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-heritage-500);
+  background: var(--color-heritage-soft);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  color: var(--color-ink-900);
+
+  p {
+    margin: var(--space-2) 0;
+    color: var(--color-ink-700);
+  }
 }
 
 .bkash-info__title {
-  color: var(--color-primary-700);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--font-size-md);
+  color: var(--color-ink-900);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-heritage-500);
+  }
 }
 
-.bkash-info p {
-  margin: 8px 0;
-  color: var(--color-ink-700);
-}
-
-.bkash-info__note {
-  margin-top: 10px !important;
+.bkash-info .bkash-info__note {
+  margin-top: var(--space-3);
+  margin-bottom: 0;
   font-size: var(--font-size-xs);
   color: var(--color-ink-600);
 }
 
-.instruction-blue {
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--color-primary-700);
-  background-color: var(--color-primary-50);
-  padding: 10px 15px;
-  border-left: 4px solid var(--color-primary-600);
-  border-radius: var(--radius-sm);
-  margin: 12px 0 20px 0;
+.congrats-card__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
+@keyframes congrats-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 767px) {
+  .congrats {
+    min-height: calc(100vh - var(--header-height-mobile));
+  }
+
+  .congrats__body {
+    padding-bottom: var(--space-7);
+  }
+
+  .congrats-card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .congrats-card__heading {
+    font-size: var(--font-size-xl);
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .congrats-card__actions .pp-btn {
+    width: 100%;
+  }
+}
+
+:host-context(html[lang='bn']) .congrats__eyebrow {
+  letter-spacing: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .congrats__hero-inner {
+    animation: none;
+  }
 }

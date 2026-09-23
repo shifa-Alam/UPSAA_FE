@@ -1,55 +1,177 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
-import { VoteService } from '../../../Services/vote.service';
-import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
-import { SectionCardComponent } from '../../shared/section-card/section-card.component';
-import { StatCardComponent } from '../../shared/stat-card/stat-card.component';
+import { NoticeService, Notice } from '../../../Services/notice.service';
+import { GalleryService, GalleryImage } from '../../../Services/gallery.service';
+import { EventService, EventItem } from '../../../Services/event.service';
+import { AchievementService, Achievement } from '../../../Services/achievement.service';
+import { MemberService, PublicMember } from '../../../Services/member.service';
+import { LanguageService } from '../../../Services/language.service';
+import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
+import { RevealDirective } from '../../shared/reveal/reveal.directive';
+import { TranslatePipe } from '../../../Pipes/translate.pipe';
 
-interface LeaderSpotlight {
-  name: string;
-  photo: string | null;
-  position: string;
+/** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
+ *  image; while null the hero uses the newest gallery photo, then a plain gradient. */
+const HERO_IMAGE: string | null = null;
+
+const EVENTS_COUNT = 3;
+const NOTICES_COUNT = 4;
+const ALUMNI_COUNT = 4;
+const ACHIEVEMENTS_COUNT = 3;
+const MEMORIES_COUNT = 6;
+
+interface HomeStat {
+  icon: string;
+  labelKey: string;
+  value: number;
+  shown: number;
+  /** Years render without thousands separators (2005, not 2,005). */
+  plain?: boolean;
+  suffix?: string;
 }
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, SectionCardComponent, StatCardComponent],
+  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  leaders: LeaderSpotlight[] = [];
+  heroImage: string | null = HERO_IMAGE;
 
-  constructor(private voteService: VoteService) { }
+  stats: HomeStat[] = [];
+  private batchStats: HomeStat[] = [];
+  private achievementStat: HomeStat | null = null;
+
+  events: EventItem[] = [];
+  eventsLoading = true;
+
+  notices: Notice[] = [];
+  noticesLoading = true;
+
+  alumni: PublicMember[] = [];
+  achievements: Achievement[] = [];
+  memories: GalleryImage[] = [];
+
+  private isBrowser: boolean;
+
+  constructor(
+    private noticeService: NoticeService,
+    private galleryService: GalleryService,
+    private eventService: EventService,
+    private achievementService: AchievementService,
+    private memberService: MemberService,
+    private languageService: LanguageService,
+    @Inject(PLATFORM_ID) platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
-    // Public endpoint, no login required — same data source as the Committee page.
-    this.voteService.getPublicCommittee().pipe(
-      catchError(() => of(null))
-    ).subscribe(committee => {
-      if (!committee?.positions?.length) return;
-
-      const president = committee.positions[0];
-      const secretaryPos = committee.positions.find(p => p.positionName.includes('সাধারণ সম্পাদক'));
-
-      const spotlight: (LeaderSpotlight | null)[] = [
-        president?.members?.[0]
-          ? { name: president.members[0].memberName, photo: president.members[0].photo, position: president.positionName }
-          : null,
-        secretaryPos?.members?.[0]
-          ? { name: secretaryPos.members[0].memberName, photo: secretaryPos.members[0].photo, position: secretaryPos.positionName }
-          : null,
+    this.memberService.getPublicBatchSummary().pipe(catchError(() => of([]))).subscribe(batches => {
+      const active = batches.filter(b => b.alumniCount > 0);
+      if (!active.length) return;
+      this.batchStats = [
+        { icon: 'groups', labelKey: 'home.stats.alumni', value: active.reduce((sum, b) => sum + b.alumniCount, 0), shown: 0, suffix: '+' },
+        { icon: 'school', labelKey: 'home.stats.batches', value: active.length, shown: 0 },
+        { icon: 'history_edu', labelKey: 'home.stats.since', value: Math.min(...active.map(b => b.batch)), shown: 0, plain: true },
       ];
-
-      this.leaders = spotlight.filter((l): l is LeaderSpotlight => l !== null);
+      this.rebuildStats();
     });
+
+    this.achievementService.getAll().pipe(catchError(() => of([]))).subscribe(list => {
+      this.achievements = list.slice(0, ACHIEVEMENTS_COUNT);
+      if (list.length) {
+        this.achievementStat = { icon: 'military_tech', labelKey: 'home.stats.achievements', value: list.length, shown: 0 };
+        this.rebuildStats();
+      }
+    });
+
+    this.eventService.getAll().pipe(catchError(() => of([]))).subscribe(events => {
+      const now = new Date();
+      this.eventsLoading = false;
+      this.events = events
+        .filter(e => new Date(e.endDate || e.eventDate) >= now)
+        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+        .slice(0, EVENTS_COUNT);
+    });
+
+    this.noticeService.getAll().pipe(catchError(() => of([]))).subscribe(notices => {
+      this.noticesLoading = false;
+      this.notices = notices.slice(0, NOTICES_COUNT);
+    });
+
+    // Only alumni who've added a photo — this section is a visual showcase.
+    this.memberService.getPublicDirectory({ pageNumber: 1, pageSize: 24 }).pipe(catchError(() => of(null))).subscribe(res => {
+      this.alumni = (res?.members ?? []).filter(m => !!m.photo).slice(0, ALUMNI_COUNT);
+    });
+
+    this.galleryService.getAll().pipe(catchError(() => of([]))).subscribe(photos => {
+      this.memories = photos.slice(0, MEMORIES_COUNT);
+      if (!this.heroImage && photos.length) this.heroImage = photos[0].imageUrl;
+    });
+  }
+
+  scrollTo(el: HTMLElement): void {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  private get locale(): string {
+    return this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+  }
+
+  formatNumber(value: number, plain = false): string {
+    return new Intl.NumberFormat(this.locale, { useGrouping: !plain }).format(value);
+  }
+
+  eventDay(ev: EventItem): string {
+    return new Intl.DateTimeFormat(this.locale, { day: '2-digit' }).format(new Date(ev.eventDate));
+  }
+
+  eventMonth(ev: EventItem): string {
+    return new Intl.DateTimeFormat(this.locale, { month: 'short' }).format(new Date(ev.eventDate));
+  }
+
+  eventTime(ev: EventItem): string {
+    return new Intl.DateTimeFormat(this.locale, { weekday: 'long', hour: 'numeric', minute: '2-digit' }).format(new Date(ev.eventDate));
+  }
+
+  noticeDate(n: Notice): string {
+    return new Intl.DateTimeFormat(this.locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(n.publishedDate));
   }
 
   initials(name: string): string {
     return name ? name.trim().charAt(0).toUpperCase() : '?';
+  }
+
+  private rebuildStats(): void {
+    this.stats = [...this.batchStats, ...(this.achievementStat ? [this.achievementStat] : [])];
+    this.countUp();
+  }
+
+  /** Gentle count-up for the stats band; skipped on the server and for reduced motion. */
+  private countUp(): void {
+    const reduced = this.isBrowser && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!this.isBrowser || reduced) {
+      this.stats.forEach(s => s.shown = s.value);
+      return;
+    }
+    const start = performance.now();
+    const duration = 1400;
+    const tick = (t: number) => {
+      const p = Math.min((t - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      // Years count up from a nearby start so "2005" doesn't race up from 0.
+      this.stats.forEach(s => {
+        const from = s.plain ? s.value - 30 : 0;
+        s.shown = Math.round(from + (s.value - from) * eased);
+      });
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   }
 }

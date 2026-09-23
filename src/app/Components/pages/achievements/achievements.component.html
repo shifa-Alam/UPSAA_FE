@@ -1,0 +1,102 @@
+<div class="achievements-page">
+
+  <app-page-header variant="hero" [eyebrow]="'achievements.hero.eyebrow' | translate" [title]="'achievements.hero.title' | translate"
+    [subtitle]="'achievements.hero.subtitle' | translate">
+  </app-page-header>
+
+  <div class="achievements-loading" *ngIf="loading">
+    <mat-icon class="achievements-loading__icon">autorenew</mat-icon>
+    <span>{{ 'achievements.loading' | translate }}</span>
+  </div>
+
+  <section class="pp-section" *ngIf="!loading && (loadError || achievements.length === 0)">
+    <div class="upsaa-container">
+      <app-empty-state *ngIf="loadError" icon="military_tech" [title]="'achievements.errorTitle' | translate"
+        [message]="'achievements.errorMessage' | translate"></app-empty-state>
+      <app-empty-state *ngIf="!loadError" icon="military_tech" [title]="'achievements.emptyTitle' | translate"
+        [message]="'achievements.emptyMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!loading && !loadError && featured as f">
+
+    <!-- ===== Spotlight — the first achievement, told at length ===== -->
+    <section class="pp-section">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'achievements.spotlight.eyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'achievements.spotlight.title' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <article class="spotlight">
+          <div class="spotlight__photo">
+            <img *ngIf="f.photoUrl; else spotlightInitials" [src]="f.photoUrl" [alt]="f.fullName" />
+            <ng-template #spotlightInitials><span class="monogram monogram--lg">{{ initials(f.fullName) }}</span></ng-template>
+          </div>
+
+          <div class="spotlight__body">
+            <span class="medal medal--lg"><mat-icon>military_tech</mat-icon></span>
+            <h3 class="spotlight__title">{{ f.title }}</h3>
+            <div class="spotlight__person">
+              <span class="spotlight__name">{{ f.fullName }}</span>
+              <span class="honoree__batch" *ngIf="f.batch">{{ 'achievements.batchPrefix' | translate }} {{ formatBatch(f.batch) }}</span>
+            </div>
+            <ul class="honoree__work" *ngIf="f.profession || f.organization">
+              <li *ngIf="f.profession"><mat-icon>work_outline</mat-icon>{{ f.profession }}</li>
+              <li *ngIf="f.organization"><mat-icon>apartment</mat-icon>{{ f.organization }}</li>
+            </ul>
+            <p class="spotlight__desc" *ngIf="f.description">{{ f.description }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===== Wall of pride — everyone else ===== -->
+    <section class="pp-section" *ngIf="rest.length">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'achievements.wall.eyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'achievements.wall.title' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <div class="honorees">
+          <article class="honoree" *ngFor="let a of rest">
+            <div class="honoree__photo">
+              <img *ngIf="a.photoUrl; else cardInitials" [src]="a.photoUrl" [alt]="a.fullName" loading="lazy" />
+              <ng-template #cardInitials><span class="monogram">{{ initials(a.fullName) }}</span></ng-template>
+            </div>
+            <div class="honoree__body">
+              <span class="medal"><mat-icon>military_tech</mat-icon></span>
+              <h3 class="honoree__title">{{ a.title }}</h3>
+              <span class="honoree__name">{{ a.fullName }}</span>
+              <span class="honoree__batch" *ngIf="a.batch">{{ 'achievements.batchPrefix' | translate }} {{ formatBatch(a.batch) }}</span>
+              <ul class="honoree__work honoree__work--sm" *ngIf="a.profession || a.organization">
+                <li *ngIf="a.profession"><mat-icon>work_outline</mat-icon>{{ a.profession }}</li>
+                <li *ngIf="a.organization"><mat-icon>apartment</mat-icon>{{ a.organization }}</li>
+              </ul>
+              <p class="honoree__desc" *ngIf="a.description">{{ a.description }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+  <!-- ===== CTA ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'achievements.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'achievements.cta.body' | translate }}</p>
+      <div class="achievements-cta">
+        <a routerLink="/register" class="pp-btn pp-btn--light">
+          {{ 'achievements.cta.join' | translate }} <mat-icon>arrow_forward</mat-icon>
+        </a>
+        <a routerLink="/members" class="pp-btn pp-btn--ghost-light">{{ 'achievements.cta.directory' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+</div>

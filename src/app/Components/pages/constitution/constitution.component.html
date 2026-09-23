@@ -1,0 +1,64 @@
+<div class="constitution-page">
+
+  <app-page-header variant="hero" [eyebrow]="'constitution.hero.eyebrow' | translate" [title]="'constitution.hero.title' | translate"
+    [subtitle]="'constitution.hero.subtitle' | translate">
+  </app-page-header>
+
+  <!-- ===== The document ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container pp-narrow" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'constitution.document.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'constitution.card.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <article class="doc" *ngIf="documentAvailable; else comingSoon">
+        <div class="doc__cover" aria-hidden="true">
+          <mat-icon>gavel</mat-icon>
+          <span class="doc__cover-rule"></span>
+          <span class="doc__cover-lines"><span></span><span></span><span></span></span>
+        </div>
+        <div class="doc__body">
+          <span class="doc__kind"><mat-icon>picture_as_pdf</mat-icon>{{ 'constitution.document.format' | translate }}</span>
+          <h3 class="doc__title">{{ 'constitution.card.title' | translate }}</h3>
+          <p class="doc__desc">{{ 'constitution.card.description' | translate }}</p>
+          <div class="doc__actions">
+            <a [href]="documentUrl" target="_blank" rel="noopener" class="pp-btn pp-btn--solid">
+              {{ 'constitution.card.action' | translate }} <mat-icon>open_in_new</mat-icon>
+            </a>
+            <a [href]="documentUrl" download class="pp-btn pp-btn--outline">
+              {{ 'constitution.document.download' | translate }} <mat-icon>download</mat-icon>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <ng-template #comingSoon>
+        <app-empty-state icon="description" [title]="'constitution.comingSoon.title' | translate"
+          [message]="'constitution.comingSoon.message' | translate">
+        </app-empty-state>
+      </ng-template>
+    </div>
+  </section>
+
+  <!-- ===== Questions ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container pp-narrow" appReveal>
+      <div class="ask">
+        <span class="pp-section__eyebrow">{{ 'constitution.questions.eyebrow' | translate }}</span>
+        <h2 class="ask__title">{{ 'constitution.questions.title' | translate }}</h2>
+        <p class="ask__body">{{ 'constitution.questions.body' | translate }}</p>
+        <div class="ask__links">
+          <a routerLink="/committee" class="pp-link">
+            {{ 'constitution.questions.committee' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+          <a routerLink="/contact" class="pp-link">
+            {{ 'constitution.questions.contact' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

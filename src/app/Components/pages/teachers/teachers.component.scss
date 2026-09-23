@@ -1,0 +1,154 @@
+// Teachers & staff — public-page kit (styles/_public-page.scss): a quiet status
+// filter, portrait grids per status, and a closing tribute band.
+
+.teachers-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+// ---------------------------- Filter ----------------------------
+.teachers-filter {
+  padding: var(--space-7) 0 0;
+  background: var(--color-surface);
+}
+
+.teachers-filter__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+
+  button {
+    min-height: 40px;
+    padding: 0 var(--space-5);
+    border: 1px solid var(--color-ink-200);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-ink-600);
+    font: 600 var(--font-size-sm) / 1 var(--font-base);
+    cursor: pointer;
+    transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+
+    &:hover {
+      border-color: var(--color-heritage-500);
+      color: var(--color-ink-900);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-heritage-500);
+      outline-offset: 2px;
+    }
+
+    &.active {
+      background: var(--color-primary-700);
+      border-color: var(--color-primary-700);
+      color: #fff;
+    }
+  }
+}
+
+:host-context([data-theme='dark']) .teachers-filter__inner button.active {
+  background: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+// The filter already opens the page, so the first band needn't add its full top padding.
+.teachers-filter ~ .pp-section:nth-of-type(1) {
+  padding-top: var(--space-7);
+}
+
+// ---------------------------- Loading ----------------------------
+.teachers-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) 0;
+  color: var(--color-ink-400);
+}
+
+.teachers-loading__icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  animation: teachers-spin 1.1s linear infinite;
+}
+
+@keyframes teachers-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ---------------------------- Portrait extras ----------------------------
+.teacher__years {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-ink-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.teacher__message {
+  position: relative;
+  max-width: 240px;
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-ink-600);
+  white-space: pre-wrap;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 24px;
+    height: 1px;
+    background: var(--color-heritage-500);
+    transform: translateX(-50%);
+  }
+}
+
+// ---------------------------- Tribute ----------------------------
+.teachers-tribute__icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: var(--space-4);
+  color: var(--color-heritage-500);
+}
+
+.teachers-tribute__body {
+  margin-bottom: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--font-size-lg);
+  line-height: 1.7;
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 768px) {
+  .teachers-filter {
+    padding-top: var(--space-5);
+  }
+
+  .teachers-filter__inner button {
+    padding: 0 var(--space-4);
+  }
+
+  .teachers-filter ~ .pp-section:nth-of-type(1) {
+    padding-top: var(--space-6);
+  }
+
+  .teacher__message {
+    font-size: var(--font-size-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teachers-loading__icon {
+    animation: none;
+  }
+}

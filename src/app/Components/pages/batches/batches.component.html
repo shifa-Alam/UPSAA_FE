@@ -1,0 +1,87 @@
+<div class="batches-page">
+
+  <app-page-header variant="hero" [eyebrow]="'batches.hero.eyebrow' | translate" [title]="'batches.hero.title' | translate"
+    [subtitle]="'batches.hero.subtitle' | translate">
+  </app-page-header>
+
+  <div class="batches-loading" *ngIf="loading">
+    <mat-icon class="batches-loading__icon">autorenew</mat-icon>
+    <span>{{ 'batches.loading' | translate }}</span>
+  </div>
+
+  <section class="pp-section" *ngIf="!loading && (loadError || batches.length === 0)">
+    <div class="upsaa-container">
+      <app-empty-state *ngIf="loadError" icon="school" [title]="'batches.errorTitle' | translate"
+        [message]="'batches.errorMessage' | translate"></app-empty-state>
+      <app-empty-state *ngIf="!loadError" icon="school" [title]="'batches.emptyTitle' | translate"
+        [message]="'batches.emptyMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!loading && !loadError && batches.length > 0">
+
+    <!-- ===== Summary — computed from the batch list ===== -->
+    <section class="pp-section" *ngIf="stats.length">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'batches.summary.eyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'batches.summary.title' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <dl class="tally">
+          <div class="tally__item" *ngFor="let s of stats">
+            <dt class="tally__label">{{ s.labelKey | translate }}</dt>
+            <dd class="tally__value">{{ formatNumber(s.shown, s.plain) }}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ===== Year tiles, grouped by decade ===== -->
+    <section class="pp-section">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'batches.list.eyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'batches.list.title' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+          <p class="pp-section__subtitle">{{ 'batches.list.subtitle' | translate }}</p>
+        </header>
+
+        <div class="decade" *ngFor="let d of decades">
+          <h3 class="decade__label">{{ decadeLabel(d.start) }}</h3>
+          <div class="decade__grid">
+            <button type="button" class="year" *ngFor="let b of d.batches" (click)="viewAlumni(b.batch)">
+              <span class="year__eyebrow">{{ 'batches.batchLabel' | translate }}</span>
+              <span class="year__number">{{ formatNumber(b.batch, true) }}</span>
+              <span class="year__rule"></span>
+              <span class="year__count">
+                <mat-icon>groups</mat-icon>
+                {{ formatNumber(b.alumniCount) }} {{ 'batches.alumniSuffix' | translate }}
+              </span>
+              <span class="year__cta">
+                {{ 'batches.viewAlumni' | translate }} <mat-icon>arrow_forward</mat-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+  <!-- ===== CTA ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'batches.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'batches.cta.body' | translate }}</p>
+      <div class="batches-cta">
+        <a routerLink="/register" class="pp-btn pp-btn--light">
+          {{ 'batches.cta.join' | translate }} <mat-icon>arrow_forward</mat-icon>
+        </a>
+        <a routerLink="/members" class="pp-btn pp-btn--ghost-light">{{ 'batches.cta.directory' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -18,9 +18,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoadingService } from '../../../Services/loading-service.service';
 import { DataService } from '../../../Services/data.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
-import { SectionCardComponent } from '../../shared/section-card/section-card.component';
 
 import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { LanguageService } from '../../../Services/language.service';
 
 @Component({
   selector: 'app-register',
@@ -42,7 +43,7 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
     MatIconModule,
     MatTooltipModule,
     PageHeaderComponent,
-    SectionCardComponent,
+    TranslatePipe,
 
   ],
   templateUrl: './register.component.html',
@@ -58,13 +59,13 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private isBrowser: boolean;
 
   educationOptions = [
-    { id: 1, name: 'SSC' },
-    { id: 2, name: 'HSC' },
-    { id: 3, name: 'Diploma' },
-    { id: 4, name: 'Bachelor' },
-    { id: 5, name: 'Masters' },
-    { id: 6, name: 'PGD' },
-    { id: 7, name: 'PhD' }
+    { id: 1, name: 'এসএসসি' },
+    { id: 2, name: 'এইচএসসি' },
+    { id: 3, name: 'ডিপ্লোমা' },
+    { id: 4, name: 'স্নাতক' },
+    { id: 5, name: 'স্নাতকোত্তর' },
+    { id: 6, name: 'পিজিডি' },
+    { id: 7, name: 'পিএইচডি' }
   ];
   bloodGroups: string[] = [
     'A+',
@@ -92,6 +93,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private loadingService: LoadingService,
     private router: Router,
     private dataService: DataService,
+    private languageService: LanguageService,
     @Inject(PLATFORM_ID) platformId: Object
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -113,7 +115,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         this.captchaId = null;
         this.captchaImage = null;
         this.captchaLoading = false;
-        this.snackbarService.showError('Could not load captcha. Please refresh and try again.');
+        this.snackbarService.showError(this.languageService.translate('register.errors.captchaLoadFailed'));
       }
     });
   }
@@ -235,7 +237,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     if (!this.captchaId) {
-      this.snackbarService.showError('Please wait for the captcha to load.');
+      this.snackbarService.showError(this.languageService.translate('register.errors.captchaNotReady'));
       return;
     }
 

@@ -1,0 +1,317 @@
+// Achievements — public-page kit (styles/_public-page.scss): one spotlight
+// honoree told at length, then a wall of portrait cards for everyone else.
+
+.achievements-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+// ---------------------------- Loading ----------------------------
+.achievements-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) 0;
+  color: var(--color-ink-400);
+}
+
+.achievements-loading__icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  animation: achievements-spin 1.1s linear infinite;
+}
+
+@keyframes achievements-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ---------------------------- Shared pieces ----------------------------
+// No photo — a serif monogram on the hero gradient instead of an empty box.
+.monogram {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background: var(--gradient-hero);
+  font-family: var(--font-display);
+  font-size: 64px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.monogram--lg {
+  font-size: clamp(88px, 12vw, 132px);
+}
+
+.medal {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-heritage-500);
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--color-surface), var(--shadow-md);
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.medal--lg {
+  width: 56px;
+  height: 56px;
+
+  mat-icon {
+    font-size: 30px;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.honoree__batch {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+}
+
+.honoree__work {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--font-size-md);
+    color: var(--color-ink-700);
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    color: var(--color-heritage-500);
+  }
+}
+
+.honoree__work--sm li {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+// ---------------------------- Spotlight ----------------------------
+.spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  max-width: 1040px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.spotlight__photo {
+  position: relative;
+  min-height: 380px;
+  background: var(--color-ink-100);
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .monogram {
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.spotlight__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: clamp(28px, 4.5vw, 56px);
+}
+
+.spotlight__title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.spotlight__person {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--color-heritage-500);
+}
+
+.spotlight__name {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.spotlight__desc {
+  margin: 0;
+  line-height: 1.8;
+  color: var(--color-ink-700);
+  white-space: pre-wrap;
+}
+
+// ---------------------------- Wall of pride ----------------------------
+.honorees {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
+  justify-content: center;
+  gap: var(--space-6) var(--space-5);
+}
+
+.honoree {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+
+    .honoree__photo img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.honoree__photo {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-ink-100);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    transition: transform 600ms ease;
+  }
+}
+
+.honoree__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-7) var(--space-5) var(--space-5);
+
+  .medal {
+    position: absolute;
+    top: -22px;
+    left: var(--space-5);
+  }
+
+  .honoree__work {
+    margin-top: var(--space-2);
+  }
+}
+
+.honoree__title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 var(--space-1);
+}
+
+.honoree__name {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-ink-900);
+}
+
+.honoree__desc {
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-100);
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  color: var(--color-ink-600);
+  white-space: pre-wrap;
+}
+
+// ---------------------------- CTA ----------------------------
+.achievements-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 900px) {
+  .spotlight {
+    grid-template-columns: 1fr;
+  }
+
+  .spotlight__photo {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .honorees {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .achievements-cta {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+:host-context(html[lang='bn']) .honoree__batch {
+  letter-spacing: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .achievements-loading__icon {
+    animation: none;
+  }
+
+  .honoree,
+  .honoree__photo img {
+    transition: none;
+  }
+
+  .honoree:hover,
+  .honoree:hover .honoree__photo img {
+    transform: none;
+  }
+}

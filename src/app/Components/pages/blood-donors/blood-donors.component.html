@@ -1,0 +1,92 @@
+<div class="donors-page">
+
+  <app-page-header variant="plain" [eyebrow]="'bloodDonors.hero.eyebrow' | translate" [title]="'bloodDonors.hero.title' | translate"
+    [subtitle]="'bloodDonors.hero.subtitle' | translate">
+  </app-page-header>
+
+  <div class="upsaa-container donors-body">
+
+    <!-- ===== Filter bar: blood-group chips + city ===== -->
+    <div class="tools" role="search">
+      <div class="tools__groups" role="group" [attr.aria-label]="'bloodDonors.groupLabel' | translate">
+        <button type="button" class="chip" [class.chip--active]="!filters.bloodGroup" [attr.aria-pressed]="!filters.bloodGroup"
+          (click)="selectGroup('')">
+          {{ 'bloodDonors.allBloodGroups' | translate }}
+        </button>
+        <button type="button" class="chip chip--group" *ngFor="let bg of bloodGroups"
+          [class.chip--active]="filters.bloodGroup === bg" [attr.aria-pressed]="filters.bloodGroup === bg"
+          (click)="selectGroup(bg)">
+          {{ bg }}
+        </button>
+      </div>
+
+      <div class="tools__row">
+        <label class="tools__field">
+          <mat-icon>place</mat-icon>
+          <input type="text" name="city" [placeholder]="'bloodDonors.cityPlaceholder' | translate"
+            [attr.aria-label]="'bloodDonors.cityPlaceholder' | translate"
+            [(ngModel)]="filters.city" (ngModelChange)="onFilterChange()" />
+        </label>
+
+        <button type="button" class="tools__reset" [class.tools__reset--active]="filters.bloodGroup || filters.city.trim()"
+          (click)="resetFilters()">
+          <mat-icon>restart_alt</mat-icon> {{ 'bloodDonors.reset' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== Results ===== -->
+    <div class="results">
+
+      <div class="results__loading" *ngIf="loading && donors.length === 0">
+        <mat-icon class="results__spinner">autorenew</mat-icon>
+        <span>{{ 'bloodDonors.loading' | translate }}</span>
+      </div>
+
+      <app-empty-state *ngIf="!loading && loadError" icon="bloodtype" [title]="'bloodDonors.errorTitle' | translate"
+        [message]="'bloodDonors.errorMessage' | translate"></app-empty-state>
+
+      <app-empty-state *ngIf="!loading && !loadError && donors.length === 0" icon="bloodtype"
+        [title]="'bloodDonors.emptyTitle' | translate" [message]="'bloodDonors.emptyMessage' | translate"></app-empty-state>
+
+      <ng-container *ngIf="!loadError && donors.length > 0">
+        <div class="results__head">
+          <p class="results__count"><strong>{{ num(donors.length) }}</strong> {{ 'bloodDonors.donorsFound' | translate }}</p>
+          <span class="results__bar" *ngIf="loading" aria-hidden="true"></span>
+        </div>
+
+        <!-- Kept on screen (dimmed) while a new filter loads, so the list doesn't flash empty. -->
+        <div class="donors" [class.donors--busy]="loading" [attr.aria-busy]="loading">
+          <article class="donor" *ngFor="let d of donors">
+            <div class="donor__top">
+              <div class="donor__avatar">
+                <img *ngIf="d.photo; else initialsAvatar" [src]="d.photo" [alt]="d.fullName" loading="lazy" />
+                <ng-template #initialsAvatar>
+                  <span class="donor__initials">{{ initials(d.fullName) }}</span>
+                </ng-template>
+              </div>
+
+              <div class="donor__who">
+                <h3 class="donor__name">{{ d.fullName }}</h3>
+                <span class="donor__batch">{{ 'bloodDonors.batchPrefix' | translate }} {{ num(d.batch, true) }}</span>
+                <span class="donor__city" *ngIf="d.currentCity"><mat-icon>place</mat-icon>{{ d.currentCity }}</span>
+              </div>
+
+              <span class="donor__blood" *ngIf="d.bloodGroup">
+                {{ d.bloodGroup }}
+              </span>
+            </div>
+
+            <a *ngIf="d.phone !== '***'" [href]="'tel:' + d.phone" class="donor__call">
+              <mat-icon>call</mat-icon><span class="donor__phone">{{ d.phone }}</span>
+            </a>
+            <span *ngIf="d.phone === '***'" class="donor__hidden">
+              <mat-icon>visibility_off</mat-icon>{{ 'bloodDonors.contactHidden' | translate }}
+            </span>
+          </article>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

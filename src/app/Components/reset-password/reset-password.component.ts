@@ -1,14 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../Services/auth.service';
+import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { LanguageService } from '../../Services/language.service';
 
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, TranslatePipe],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
@@ -19,7 +22,11 @@ export class ResetPasswordComponent implements OnInit {
   message = '';
   isSuccess = false;
 
-  constructor(private route: ActivatedRoute, private authService: AuthService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit() {
     this.email = this.route.snapshot.queryParamMap.get('email')!;
@@ -28,18 +35,18 @@ export class ResetPasswordComponent implements OnInit {
 
   onSubmit() {
     if (!this.newPassword) {
-      this.message = 'Please enter a new password.';
+      this.message = this.languageService.translate('resetPassword.errors.passwordRequired');
       return;
     }
 
     this.authService.resetPassword(this.email, this.token, this.newPassword).subscribe({
       next: (res: any) => {
         this.isSuccess = true;
-        this.message = '✅ Password reset successful! You can now log in.';
+        this.message = this.languageService.translate('resetPassword.errors.success');
       },
       error: (err) => {
         this.isSuccess = false;
-        this.message = '❌ Invalid or expired link.';
+        this.message = this.languageService.translate('resetPassword.errors.invalidOrExpiredLink');
       }
     });
   }

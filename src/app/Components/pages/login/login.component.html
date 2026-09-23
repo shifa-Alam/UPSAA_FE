@@ -1,70 +1,77 @@
-<div class="auth-page">
-  <div class="auth-card">
-    <!-- Logo -->
-    <div class="auth-card__brand">
-      <img src="logo.png" alt="Logo" class="auth-card__logo" />
-      <h2 class="auth-card__title">UPS Alumni Association</h2>
-      <p class="auth-card__subtitle">Access your alumni dashboard</p>
+<div class="auth">
+
+  <!-- Brand panel -->
+  <aside class="auth__brand">
+    <div class="auth__brand-inner">
+      <img src="logo.png" alt="UPSAA" class="auth__logo" />
+      <span class="auth__eyebrow">{{ 'login.brand.eyebrow' | translate }}</span>
+      <h1 class="auth__title">{{ 'login.brand.title' | translate }}</h1>
+      <span class="auth__rule"></span>
+      <p class="auth__tagline">{{ 'login.brand.tagline' | translate }}</p>
     </div>
+  </aside>
 
-    <!-- Login Form -->
-    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="auth-form">
+  <main class="auth__main">
+    <div class="auth-card">
+      <header class="auth-card__head">
+        <h2 class="auth-card__title">{{ 'login.cardTitle' | translate }}</h2>
+        <p class="auth-card__subtitle">{{ 'login.subtitle' | translate }}</p>
+      </header>
 
-      <!-- Email -->
-      <!-- <div class="input-group">
-        <mat-icon>email</mat-icon>
-        <input type="email" formControlName="email" placeholder="Email"
-          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
-      </div>
-      <div class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-        <span *ngIf="loginForm.get('email')?.hasError('required')">Email is required</span>
-        <span *ngIf="loginForm.get('email')?.hasError('email')">Invalid email</span>
-      </div> -->
-      <!-- Phone -->
-      <div class="auth-field">
-        <div class="auth-field__control"
-          [class.auth-field__control--invalid]="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched">
-          <mat-icon>account_circle</mat-icon>
-          <input type="text" formControlName="phone" placeholder="Email or Phone" />
+      <form [formGroup]="loginForm" (ngSubmit)="submit()" class="auth-form">
+
+        <!-- Phone / email -->
+        <div class="auth-field">
+          <label class="auth-field__label" for="login-phone">{{ 'login.phonePlaceholder' | translate }}</label>
+          <div class="auth-field__control"
+            [class.auth-field__control--invalid]="loginForm.get('phone')?.invalid && loginForm.get('phone')?.touched">
+            <mat-icon>account_circle</mat-icon>
+            <input id="login-phone" type="text" formControlName="phone" autocomplete="username"
+              [placeholder]="'login.phonePlaceholder' | translate" />
+          </div>
+          <div class="auth-field__error" *ngIf="loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid">
+            <span *ngIf="loginForm.get('phone')?.hasError('required')">
+              {{ 'login.phoneRequired' | translate }}
+            </span>
+          </div>
         </div>
 
-        <div class="auth-field__error" *ngIf="loginForm.get('phone')?.touched && loginForm.get('phone')?.invalid">
-          <span *ngIf="loginForm.get('phone')?.hasError('required')">
-            Email or Phone is required
-          </span>
+        <!-- Password -->
+        <div class="auth-field">
+          <label class="auth-field__label" for="login-password">{{ 'login.passwordPlaceholder' | translate }}</label>
+          <div class="auth-field__control"
+            [class.auth-field__control--invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <mat-icon>lock</mat-icon>
+            <input id="login-password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+              autocomplete="current-password" [placeholder]="'login.passwordPlaceholder' | translate" />
+            <button type="button" class="auth-field__toggle" (click)="togglePassword()"
+              [attr.aria-label]="(showPassword ? 'login.hidePassword' : 'login.showPassword') | translate">
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <div class="auth-field__error"
+            *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+            {{ 'login.passwordRequired' | translate }}
+          </div>
         </div>
-      </div>
 
-      <!-- Password -->
-      <div class="auth-field">
-        <div class="auth-field__control auth-field__control--password"
-          [class.auth-field__control--invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          <mat-icon>lock</mat-icon>
-          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password" />
-          <button type="button" class="auth-field__toggle" (click)="togglePassword()"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
-            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-          </button>
+        <div class="login__forgot">
+          <a routerLink="/forgot-password" class="auth-card__link">{{ 'login.forgotPassword' | translate }}</a>
         </div>
-        <div class="auth-field__error"
-          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-          Password is required
-        </div>
-      </div>
 
-      <!-- General error -->
-      <div class="auth-field__error auth-field__error--general" *ngIf="errorMessage">{{ errorMessage }}</div>
+        <!-- General error -->
+        <p class="auth-message auth-message--error login__error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
 
-      <!-- Submit Button -->
-      <button type="submit" [disabled]="loading" class="auth-submit">
-        {{ loading ? 'Logging in...' : 'Login' }}
-      </button>
+        <button type="submit" [disabled]="loading" class="pp-btn pp-btn--solid auth-submit">
+          {{ (loading ? 'login.loggingIn' : 'login.loginButton') | translate }}
+          <mat-icon *ngIf="!loading">arrow_forward</mat-icon>
+        </button>
+      </form>
 
-      <!-- Forgot Password -->
-      <div class="auth-form__footer">
-        <a routerLink="/forgot-password">Forgot your password?</a>
-      </div>
-
-    </form>
-  </div>
+      <footer class="auth-card__footer">
+        <span>{{ 'login.noAccount' | translate }}</span>
+        <a routerLink="/register" class="auth-card__link">{{ 'login.registerLink' | translate }}</a>
+      </footer>
+    </div>
+  </main>
 </div>

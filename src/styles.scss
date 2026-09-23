@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/azure-blue.css';
 @import 'styles/tokens';
+@import 'styles/public-page';
+@import 'styles/material-dark';
 
 /* =========================================================
    Global Material overrides — pull every mat-* component onto
@@ -21,7 +23,7 @@ html {
   --mdc-outlined-text-field-outline-color: var(--color-ink-200);
   --mdc-outlined-text-field-hover-outline-color: var(--color-primary-300);
   --mdc-outlined-text-field-focus-outline-color: var(--color-primary-500);
-  --mdc-outlined-text-field-label-text-color: var(--color-ink-400);
+  --mdc-outlined-text-field-label-text-color: var(--color-ink-600); // ink-400 reads too faint on dark surfaces
   --mdc-outlined-text-field-focus-label-text-color: var(--color-primary-600);
 
   --mat-select-panel-background-color: var(--color-surface);
@@ -124,6 +126,33 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-ink-900);
   line-height: var(--line-height-tight);
   margin: 0 0 var(--space-3);
+}
+
+/* Heritage serif for page/section headings; h3–h6 (card titles, stats,
+   dialogs) stay in Inter so dense UI reads cleanly. */
+h1, h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Scroll-reveal (see shared/reveal/reveal.directive.ts) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 p {

@@ -24,6 +24,10 @@
   --color-accent-500: #06b6d4; // base accent
   --color-accent-600: #0891b2;
 
+  // ---- Heritage (warm gold — small labels/rules on public pages only) ----
+  --color-heritage-500: #c9a24a;
+  --color-heritage-soft: rgba(201, 162, 74, 0.14);
+
   // ---- Neutrals (slate scale) ----
   --color-ink-900: #0f172a;   // headings / high-emphasis text
   --color-ink-700: #334155;
@@ -68,7 +72,14 @@
   --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.14), 0 4px 10px rgba(15, 23, 42, 0.08);
 
   // ---- Typography ----
-  --font-base: 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
+  // 'Inter' covers Latin text — the same font the Inventory_FE admin panel
+  // reference uses; SolaimanLipiBangla only maps Bengali code points (see its
+  // unicode-range in styles.scss), so per-character font fallback still routes
+  // Bangla glyphs there automatically.
+  --font-base: 'Inter', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
+  // Display face for brand, hero and section headings (h1/h2). Playfair has no
+  // Bengali glyphs, so Bangla headings still fall through to SolaimanLipiBangla.
+  --font-display: 'Playfair Display', 'SolaimanLipiBangla', Georgia, 'Times New Roman', serif;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-base: 15px;

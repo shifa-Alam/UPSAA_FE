@@ -2,18 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, switchMap } from 'rxjs/operators';
 import { MemberService, PublicMember, PublicMemberFilter } from '../../../Services/member.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
+import { RevealDirective } from '../../shared/reveal/reveal.directive';
+import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { LanguageService } from '../../../Services/language.service';
 
 const PAGE_SIZE = 24;
 
 @Component({
   selector: 'app-directory',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponent, EmptyStateComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
   templateUrl: './directory.component.html',
   styleUrl: './directory.component.scss'
 })
@@ -37,9 +41,19 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   private refresh$ = new Subject<void>();
 
-  constructor(private memberService: MemberService) { }
+  constructor(
+    private memberService: MemberService,
+    private route: ActivatedRoute,
+    private languageService: LanguageService
+  ) { }
 
   ngOnInit(): void {
+    // Deep link from the Batch Directory page, e.g. /members?batch=2008.
+    const batchParam = this.route.snapshot.queryParamMap.get('batch');
+    if (batchParam) {
+      this.filters.batch = batchParam;
+    }
+
     this.refresh$.pipe(
       debounceTime(300),
       switchMap(() => {
@@ -95,6 +109,17 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   private fetch(): void {
     this.refresh$.next();
+  }
+
+  get hasFilters(): boolean {
+    const f = this.filters;
+    return !!(f.name.trim() || f.bloodGroup || f.city.trim() || f.batch.trim());
+  }
+
+  /** Locale digits (Bangla numerals in bn); `plain` drops grouping for years. */
+  num(value: number, plain = false): string {
+    const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+    return new Intl.NumberFormat(locale, { useGrouping: !plain }).format(value);
   }
 
   initials(name: string): string {

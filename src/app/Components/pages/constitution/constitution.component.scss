@@ -1,0 +1,173 @@
+// Constitution (members only) — public-page kit (styles/_public-page.scss):
+// the document itself as a quiet "cover + details" card, then where to ask.
+
+.constitution-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+// ---------------------------- Document ----------------------------
+.doc {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--space-7);
+  align-items: center;
+  padding: clamp(24px, 4vw, 48px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+}
+
+// A stylised title page — gradient cover with a gold rule and ruled lines.
+.doc__cover {
+  aspect-ratio: 3 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--gradient-hero);
+  box-shadow: var(--shadow-lg), 6px 6px 0 -1px var(--color-ink-100);
+
+  mat-icon {
+    font-size: 44px;
+    width: 44px;
+    height: 44px;
+    color: var(--color-heritage-500);
+  }
+}
+
+.doc__cover-rule {
+  width: 48px;
+  height: 2px;
+  background: var(--color-heritage-500);
+}
+
+.doc__cover-lines {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  span:last-child {
+    width: 60%;
+  }
+}
+
+.doc__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.doc__kind {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-heritage-500);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.doc__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-ink-900);
+}
+
+.doc__desc {
+  margin: 0;
+  font-size: var(--font-size-md);
+  line-height: 1.75;
+  color: var(--color-ink-600);
+}
+
+.doc__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+// ---------------------------- Questions ----------------------------
+.ask {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ask__title {
+  margin: 0 0 var(--space-4);
+  font-size: clamp(24px, 3.2vw, 34px);
+  line-height: 1.2;
+}
+
+.ask__body {
+  margin: 0;
+  max-width: 60ch;
+  font-size: var(--font-size-md);
+  line-height: 1.75;
+  color: var(--color-ink-600);
+}
+
+.ask__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--space-6);
+  margin-top: var(--space-3);
+}
+
+:host-context(html[lang='bn']) .doc__kind {
+  letter-spacing: normal;
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 720px) {
+  .doc {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    justify-items: center;
+    text-align: center;
+  }
+
+  .doc__cover {
+    width: 150px;
+  }
+
+  .doc__body {
+    align-items: center;
+  }
+
+  .doc__actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+  }
+}

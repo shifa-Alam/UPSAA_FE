@@ -1,10 +1,143 @@
 <div class="events-page">
 
-  <app-page-header variant="hero" eyebrow="ইভেন্ট" title="আসন্ন ইভেন্টসমূহ"
-    subtitle="UPSAA-এর পুনর্মিলনী, সেমিনার ও অন্যান্য কার্যক্রমের সময়সূচি শীঘ্রই এখানে প্রকাশ করা হবে।"></app-page-header>
+  <app-page-header variant="hero" [eyebrow]="'events.hero.eyebrow' | translate" [title]="'events.hero.title' | translate"
+    [subtitle]="'events.hero.subtitle' | translate"></app-page-header>
 
-  <div class="upsaa-container events-body">
-    <app-empty-state icon="event" title="এই মুহূর্তে কোনো নির্ধারিত ইভেন্ট নেই"
-      message="নতুন ইভেন্টের তথ্য প্রকাশিত হলে এই পাতায় জানানো হবে। অনুগ্রহ করে পরে আবার দেখুন।"></app-empty-state>
+  <div class="events-loading" *ngIf="loading">
+    <mat-icon class="events-loading__icon">autorenew</mat-icon>
+    <span>{{ 'events.loading' | translate }}</span>
   </div>
+
+  <section class="pp-section" *ngIf="!loading && (loadError || !hasAny)">
+    <div class="upsaa-container">
+      <app-empty-state *ngIf="loadError" icon="event" [title]="'events.errorTitle' | translate"
+        [message]="'events.errorMessage' | translate"></app-empty-state>
+      <app-empty-state *ngIf="!loadError" icon="event" [title]="'events.empty.title' | translate"
+        [message]="'events.empty.message' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!loading && !loadError && hasAny">
+
+    <!-- ===== Upcoming: featured next event + the rest ===== -->
+    <section class="pp-section">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'events.upcomingEyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'events.upcomingTitle' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <app-empty-state *ngIf="!next" icon="event_upcoming" [title]="'events.noUpcoming.title' | translate"
+          [message]="'events.noUpcoming.message' | translate"></app-empty-state>
+
+        <article class="feature" *ngIf="next">
+          <div class="feature__media">
+            <img *ngIf="next.photoUrl; else featurePlaceholder" [src]="next.photoUrl" [alt]="next.title" />
+            <ng-template #featurePlaceholder>
+              <div class="feature__placeholder"><mat-icon>celebration</mat-icon></div>
+            </ng-template>
+            <span class="feature__live" *ngIf="isOngoing(next)"><span class="feature__pulse"></span>{{ 'events.liveNow' | translate }}</span>
+          </div>
+
+          <div class="feature__body">
+            <div class="feature__top">
+              <div class="pp-date pp-date--lg">
+                <span class="pp-date__day">{{ day(next) }}</span>
+                <span class="pp-date__month">{{ month(next) }}</span>
+              </div>
+              <div>
+                <span class="pp-section__eyebrow">{{ 'events.nextUp' | translate }}</span>
+                <h3 class="feature__title">{{ next.title }}</h3>
+              </div>
+            </div>
+
+            <ul class="meta">
+              <li><mat-icon>schedule</mat-icon>{{ when(next) }}</li>
+              <li *ngIf="next.venue"><mat-icon>place</mat-icon>{{ next.venue }}</li>
+              <li *ngIf="next.organizerName"><mat-icon>groups</mat-icon>{{ next.organizerName }}</li>
+            </ul>
+
+            <p class="feature__desc" *ngIf="next.description">{{ next.description }}</p>
+
+            <a *ngIf="next.registrationUrl" [href]="next.registrationUrl" target="_blank" rel="noopener"
+              class="pp-btn pp-btn--solid">
+              {{ 'events.registerButton' | translate }} <mat-icon>open_in_new</mat-icon>
+            </a>
+          </div>
+        </article>
+
+        <div class="upcoming" *ngIf="upcoming.length">
+          <article class="upcoming-card" *ngFor="let ev of upcoming">
+            <div class="upcoming-card__media" *ngIf="ev.photoUrl">
+              <img [src]="ev.photoUrl" [alt]="ev.title" loading="lazy" />
+            </div>
+            <div class="upcoming-card__body">
+              <div class="upcoming-card__top">
+                <div class="pp-date">
+                  <span class="pp-date__day">{{ day(ev) }}</span>
+                  <span class="pp-date__month">{{ month(ev) }}</span>
+                </div>
+                <h3 class="upcoming-card__title">{{ ev.title }}</h3>
+              </div>
+              <ul class="meta meta--sm">
+                <li><mat-icon>schedule</mat-icon>{{ when(ev) }}</li>
+                <li *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</li>
+              </ul>
+              <p class="upcoming-card__desc" *ngIf="ev.description">{{ ev.description }}</p>
+              <a *ngIf="ev.registrationUrl" [href]="ev.registrationUrl" target="_blank" rel="noopener" class="pp-link">
+                {{ 'events.registerButton' | translate }} <mat-icon>arrow_forward</mat-icon>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Past events — archive timeline by year ===== -->
+    <section class="pp-section" *ngIf="pastByYear.length">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'events.pastEyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'events.pastTitle' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <div class="archive">
+          <div class="archive__year" *ngFor="let group of pastByYear">
+            <h3 class="archive__label">{{ formatYear(group.year) }}</h3>
+            <div class="archive__grid">
+              <article class="past-card" *ngFor="let ev of group.events">
+                <div class="past-card__media">
+                  <img *ngIf="ev.photoUrl; else pastPlaceholder" [src]="ev.photoUrl" [alt]="ev.title" loading="lazy" />
+                  <ng-template #pastPlaceholder><div class="past-card__placeholder"><mat-icon>event</mat-icon></div></ng-template>
+                </div>
+                <div class="past-card__body">
+                  <span class="past-card__date">{{ shortDate(ev) }}</span>
+                  <h4 class="past-card__title">{{ ev.title }}</h4>
+                  <span class="past-card__venue" *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+  <!-- ===== CTA ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'events.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'events.cta.body' | translate }}</p>
+      <div class="events-cta">
+        <a routerLink="/register" class="pp-btn pp-btn--light">
+          {{ 'events.cta.join' | translate }} <mat-icon>arrow_forward</mat-icon>
+        </a>
+        <a routerLink="/gallery" class="pp-btn pp-btn--ghost-light">{{ 'events.cta.gallery' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
 </div>

@@ -1,0 +1,138 @@
+import { I18nSection } from '../i18n.types';
+
+export const homeI18n: I18nSection = {
+  bn: {
+    home: {
+      hero: {
+        eyebrow: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন',
+        title: 'আমাদের অ্যালামনাই পরিবারে স্বাগতম',
+        tagline: 'একটি স্কুল। অনেক প্রজন্ম। একটি পরিবার।',
+        pillars: 'পুনর্মিলন • স্মৃতিচারণ • অনুপ্রেরণা • প্রতিদান',
+        joinCta: 'অ্যালামনাইতে যুক্ত হোন',
+        exploreCta: 'ঘুরে দেখুন',
+        scrollHint: 'নিচে দেখুন',
+      },
+      stats: {
+        alumni: 'নিবন্ধিত অ্যালামনাই',
+        batches: 'ব্যাচ',
+        since: 'প্রথম ব্যাচ',
+        achievements: 'গর্বিত অর্জন',
+      },
+      about: {
+        eyebrow: 'আমাদের পরিচিতি',
+        title: 'প্রজন্ম থেকে প্রজন্মে এক বন্ধন',
+        body: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন (UPSAA) আমাদের প্রিয় বিদ্যালয়ের প্রাক্তন শিক্ষার্থীদের একটি ঐক্যবদ্ধ প্ল্যাটফর্ম — যারা একই শ্রেণিকক্ষ, একই স্মৃতি, একই বন্ধুত্ব ভাগ করে নিয়েছে। আত্মিক বন্ধনের পাশাপাশি পেশাগত সহায়তা ও সামাজিক দায়বদ্ধতার মাধ্যমে আমরা দেশের উন্নয়নে অবদান রাখি।',
+        learnMore: 'আরও জানুন',
+        reunion: 'পুনর্মিলনী ও সাংস্কৃতিক আয়োজন',
+        guidance: 'জুনিয়রদের ক্যারিয়ার গাইডেন্স',
+        social: 'রক্তদান ও সমাজসেবা',
+        support: 'মেধাবী শিক্ষার্থীদের সহায়তা',
+      },
+      events: {
+        eyebrow: 'সামনে যা আছে',
+        title: 'আসন্ন অনুষ্ঠান',
+        details: 'বিস্তারিত',
+        viewAll: 'সব অনুষ্ঠান দেখুন',
+        emptyTitle: 'এই মুহূর্তে কোনো আসন্ন অনুষ্ঠান নেই',
+        emptyMessage: 'নতুন অনুষ্ঠান ঘোষণা হলে এখানে দেখানো হবে।',
+      },
+      notices: {
+        eyebrow: 'সর্বশেষ',
+        title: 'খবর ও নোটিশ',
+        viewAll: 'সব নোটিশ দেখুন',
+        emptyTitle: 'এই মুহূর্তে কোনো নোটিশ নেই',
+        emptyMessage: 'নতুন কোনো ঘোষণা এলে এখানে দেখানো হবে।',
+        alumniOnlyBadge: 'শুধু অ্যালামনাই',
+      },
+      alumni: {
+        eyebrow: 'আমাদের মানুষ',
+        title: 'আমাদের অ্যালামনাই, আমাদের গর্ব',
+        batch: 'ব্যাচ',
+        explore: 'অ্যালামনাই তালিকা দেখুন',
+      },
+      achievements: {
+        eyebrow: 'সাফল্যের গল্প',
+        title: 'অ্যালামনাই অর্জন',
+        subtitle: 'আমাদের প্রাক্তন শিক্ষার্থীদের সাফল্য উদযাপন',
+        viewAll: 'সব অর্জন দেখুন',
+      },
+      memories: {
+        eyebrow: 'ফিরে দেখা',
+        title: 'স্কুলের স্মৃতি',
+        viewAll: 'গ্যালারি দেখুন',
+      },
+      join: {
+        title: 'আপনার গল্পও আমাদের গল্পের অংশ',
+        body: 'আপনি কি উত্তরণ পাবলিক স্কুলের প্রাক্তন শিক্ষার্থী? আজই আপনার অ্যালামনাই পরিবারে যুক্ত হোন।',
+        cta: 'অ্যালামনাইতে যুক্ত হোন',
+      },
+    },
+  },
+  en: {
+    home: {
+      hero: {
+        eyebrow: 'Uttaran Public School Alumni Association',
+        title: 'Welcome Home, Alumni',
+        tagline: 'One School. Many Generations. One Community.',
+        pillars: 'Reconnect • Remember • Inspire • Give Back',
+        joinCta: 'Join the Alumni',
+        exploreCta: 'Explore',
+        scrollHint: 'Scroll down',
+      },
+      stats: {
+        alumni: 'Registered Alumni',
+        batches: 'Batches',
+        since: 'First Batch',
+        achievements: 'Proud Achievements',
+      },
+      about: {
+        eyebrow: 'About Us',
+        title: 'A Bond Across Generations',
+        body: 'The Uttaran Public School Alumni Association (UPSAA) brings together generations of students who shared the same school, the same memories and the same friendships. Alongside those personal bonds, we contribute to the nation through professional support and social responsibility.',
+        learnMore: 'Learn More',
+        reunion: 'Reunions & cultural events',
+        guidance: 'Career guidance for juniors',
+        social: 'Blood drives & community service',
+        support: 'Support for talented students',
+      },
+      events: {
+        eyebrow: "What's Ahead",
+        title: 'Upcoming Events',
+        details: 'Details',
+        viewAll: 'View All Events',
+        emptyTitle: 'No upcoming events right now',
+        emptyMessage: 'New events will appear here as soon as they are announced.',
+      },
+      notices: {
+        eyebrow: 'Latest',
+        title: 'News & Notices',
+        viewAll: 'View All Notices',
+        emptyTitle: 'No notices right now',
+        emptyMessage: 'New announcements will appear here as soon as they are posted.',
+        alumniOnlyBadge: 'Alumni only',
+      },
+      alumni: {
+        eyebrow: 'Our People',
+        title: 'Our Alumni, Our Pride',
+        batch: 'Batch',
+        explore: 'Explore Alumni',
+      },
+      achievements: {
+        eyebrow: 'Success Stories',
+        title: 'Alumni Achievements',
+        subtitle: 'Celebrating the accomplishments of our alumni',
+        viewAll: 'View All',
+      },
+      memories: {
+        eyebrow: 'Looking Back',
+        title: 'School Memories',
+        viewAll: 'View Gallery',
+      },
+      join: {
+        title: 'Your Story Is Part of Our Story',
+        body: 'Are you a former student of Uttaran Public School? Join your alumni family today.',
+        cta: 'Join the Alumni',
+      },
+    },
+  },
+};

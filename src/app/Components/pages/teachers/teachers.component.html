@@ -1,0 +1,75 @@
+<div class="teachers-page">
+
+  <app-page-header variant="hero" [eyebrow]="'teachers.hero.eyebrow' | translate" [title]="'teachers.hero.title' | translate"
+    [subtitle]="'teachers.hero.subtitle' | translate">
+  </app-page-header>
+
+  <nav class="teachers-filter" *ngIf="!loading && !loadError && allTeachers.length > 0"
+    [attr.aria-label]="'teachers.filterLabel' | translate">
+    <div class="upsaa-container teachers-filter__inner">
+      <button type="button" [class.active]="activeFilter === ''" [attr.aria-pressed]="activeFilter === ''"
+        (click)="filterBy('')">{{ 'teachers.filterAll' | translate }}</button>
+      <button type="button" [class.active]="activeFilter === 'Current'" [attr.aria-pressed]="activeFilter === 'Current'"
+        (click)="filterBy('Current')">{{ 'teachers.filterCurrent' | translate }}</button>
+      <button type="button" [class.active]="activeFilter === 'Former'" [attr.aria-pressed]="activeFilter === 'Former'"
+        (click)="filterBy('Former')">{{ 'teachers.filterFormer' | translate }}</button>
+      <button type="button" [class.active]="activeFilter === 'Retired'" [attr.aria-pressed]="activeFilter === 'Retired'"
+        (click)="filterBy('Retired')">{{ 'teachers.filterRetired' | translate }}</button>
+    </div>
+  </nav>
+
+  <div class="teachers-loading" *ngIf="loading">
+    <mat-icon class="teachers-loading__icon">autorenew</mat-icon>
+    <span>{{ 'teachers.loading' | translate }}</span>
+  </div>
+
+  <section class="pp-section" *ngIf="!loading && (loadError || teachers.length === 0)">
+    <div class="upsaa-container">
+      <app-empty-state *ngIf="loadError" icon="school" [title]="'teachers.errorTitle' | translate"
+        [message]="'teachers.errorMessage' | translate"></app-empty-state>
+
+      <app-empty-state *ngIf="!loadError && allTeachers.length === 0" icon="school"
+        [title]="'teachers.emptyTitle' | translate" [message]="'teachers.emptyMessage' | translate"></app-empty-state>
+
+      <app-empty-state *ngIf="!loadError && allTeachers.length > 0" icon="school"
+        [title]="'teachers.emptyFilterTitle' | translate" [message]="'teachers.emptyFilterMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <!-- ===== One portrait section per status ===== -->
+  <ng-container *ngIf="!loading && !loadError">
+    <section class="pp-section" *ngFor="let group of groups">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ group.eyebrowKey | translate }}</span>
+          <h2 class="pp-section__title">{{ group.titleKey | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <div class="pp-people teachers__people">
+          <article class="pp-person" *ngFor="let t of group.teachers">
+            <div class="pp-person__photo">
+              <img *ngIf="t.photoUrl; else teacherInitials" [src]="t.photoUrl" [alt]="t.fullName" loading="lazy" />
+              <ng-template #teacherInitials><span class="pp-person__initials">{{ initials(t.fullName) }}</span></ng-template>
+            </div>
+            <span class="pp-person__name">{{ t.fullName }}</span>
+            <span class="pp-person__label" *ngIf="t.designation">{{ t.designation }}</span>
+            <span class="pp-person__meta" *ngIf="t.subject">{{ t.subject }}</span>
+            <span class="teacher__years" *ngIf="t.serviceStartYear">{{ servicePeriod(t) }}</span>
+            <p class="teacher__message" *ngIf="t.message">{{ t.message }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+
+  <!-- ===== Tribute ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <mat-icon class="teachers-tribute__icon">auto_stories</mat-icon>
+      <h2 class="pp-join__title">{{ 'teachers.tribute.title' | translate }}</h2>
+      <p class="pp-join__body teachers-tribute__body">{{ 'teachers.tribute.body' | translate }}</p>
+    </div>
+  </section>
+
+</div>

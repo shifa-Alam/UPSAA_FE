@@ -1,0 +1,101 @@
+<div class="gallery-page">
+
+  <app-page-header variant="hero" [eyebrow]="'gallery.hero.eyebrow' | translate" [title]="'gallery.hero.title' | translate"
+    [subtitle]="'gallery.hero.subtitle' | translate">
+  </app-page-header>
+
+  <!-- ===== Collection — category filter + mosaic ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'gallery.section.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'gallery.section.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <div class="filters" *ngIf="categories.length > 0" role="group" [attr.aria-label]="'gallery.filterAriaLabel' | translate">
+        <div class="filters__track">
+          <button type="button" class="filters__pill" [class.filters__pill--active]="activeCategory === ''"
+            [attr.aria-pressed]="activeCategory === ''" (click)="filterByCategory('')">
+            {{ 'gallery.allPhotos' | translate }}
+          </button>
+          <button type="button" class="filters__pill" *ngFor="let cat of categories"
+            [class.filters__pill--active]="activeCategory === cat" [attr.aria-pressed]="activeCategory === cat"
+            (click)="filterByCategory(cat)">
+            {{ cat }}
+          </button>
+        </div>
+      </div>
+
+      <div class="gallery-loading" *ngIf="loading">
+        <mat-icon class="gallery-loading__icon">autorenew</mat-icon>
+        <span>{{ 'gallery.loading' | translate }}</span>
+      </div>
+
+      <app-empty-state *ngIf="!loading && loadError" icon="photo_library" [title]="'gallery.errorTitle' | translate"
+        [message]="'gallery.errorMessage' | translate"></app-empty-state>
+
+      <app-empty-state *ngIf="!loading && !loadError && photos.length === 0" icon="photo_library"
+        [title]="'gallery.emptyTitle' | translate" [message]="'gallery.emptyMessage' | translate">
+      </app-empty-state>
+
+      <ng-container *ngIf="!loading && !loadError && photos.length > 0">
+        <p class="gallery-count">{{ photoCount }}</p>
+
+        <div class="mosaic" [class.mosaic--few]="photos.length < 5">
+          <button type="button" class="mosaic__tile" *ngFor="let photo of photos" (click)="open(photo)"
+            [attr.aria-label]="photo.title">
+            <img [src]="photo.imageUrl" [alt]="photo.title" loading="lazy" />
+            <span class="mosaic__caption">
+              <span class="mosaic__category" *ngIf="photo.category">{{ photo.category }}</span>
+              <span class="mosaic__title">{{ photo.title }}</span>
+            </span>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'gallery.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'gallery.cta.body' | translate }}</p>
+      <div class="gallery-cta">
+        <a routerLink="/register" class="pp-btn pp-btn--light">
+          {{ 'gallery.cta.join' | translate }} <mat-icon>arrow_forward</mat-icon>
+        </a>
+        <a routerLink="/events" class="pp-btn pp-btn--ghost-light">{{ 'gallery.cta.events' | translate }}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" *ngIf="selected" (click)="close()" role="dialog" aria-modal="true" [attr.aria-label]="selected.title">
+    <button type="button" class="lightbox__btn lightbox__close" (click)="close()" [attr.aria-label]="'gallery.closeAriaLabel' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+
+    <ng-container *ngIf="photos.length > 1">
+      <button type="button" class="lightbox__btn lightbox__nav lightbox__nav--prev" (click)="step(-1, $event)"
+        [attr.aria-label]="'gallery.prevAriaLabel' | translate">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button type="button" class="lightbox__btn lightbox__nav lightbox__nav--next" (click)="step(1, $event)"
+        [attr.aria-label]="'gallery.nextAriaLabel' | translate">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </ng-container>
+
+    <figure class="lightbox__figure" (click)="$event.stopPropagation()">
+      <img [src]="selected.imageUrl" [alt]="selected.title" />
+      <figcaption class="lightbox__caption">
+        <span class="lightbox__category" *ngIf="selected.category">{{ selected.category }}</span>
+        <strong class="lightbox__title">{{ selected.title }}</strong>
+        <span class="lightbox__counter" *ngIf="photos.length > 1">
+          {{ formatNumber(selectedIndex + 1) }} / {{ formatNumber(photos.length) }}
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</div>

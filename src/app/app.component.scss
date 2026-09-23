@@ -65,6 +65,7 @@ content-area router-outlet {
 }
 
 .logo {
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--font-size-md);
   color: var(--color-ink-900);
@@ -78,10 +79,33 @@ content-area router-outlet {
   gap: var(--space-1);
 }
 
-.desktop-menu a.mat-mdc-button {
+.desktop-menu a.mat-mdc-button,
+.desktop-menu button.mat-mdc-button {
   color: var(--color-ink-700);
   font-weight: 500;
   border-radius: var(--radius-md);
+}
+
+.nav-menu-caret {
+  color: var(--color-ink-400);
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-left: 2px;
+  vertical-align: middle;
+}
+
+.dashboard-link {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-primary-600) !important;
+}
+
+.dashboard-link mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .menu-button {
@@ -110,15 +134,42 @@ content-area router-outlet {
   margin: 0 var(--space-1);
 }
 
+.lang-toggle-button {
+  color: var(--color-primary-600);
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  border-color: var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  min-width: 0;
+  padding: 0 var(--space-3) !important;
+  margin: 0 var(--space-1);
+}
+
+.toggle-row-mobile {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
 .theme-toggle-mobile {
-  width: 100%;
+  flex: 1;
   justify-content: center !important;
   display: flex !important;
   align-items: center;
   gap: var(--space-2);
   border-radius: var(--radius-pill);
   color: var(--color-ink-700);
-  margin-bottom: var(--space-3);
+}
+
+.lang-toggle-mobile {
+  flex: 0 0 auto;
+  justify-content: center !important;
+  display: flex !important;
+  align-items: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  color: var(--color-primary-600);
+  font-weight: 700;
 }
 
 /* ===== Mobile ===== */
@@ -177,6 +228,15 @@ content-area router-outlet {
 .mobile-menu a.active-link {
   background-color: var(--color-primary-50);
   border-radius: var(--radius-md);
+}
+
+.mobile-nav-section-label {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-400);
 }
 
 .mobile-nav-links a {

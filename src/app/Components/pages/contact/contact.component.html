@@ -1,35 +1,76 @@
 <div class="contact-page">
 
-  <app-page-header variant="hero" eyebrow="যোগাযোগ" title="আমাদের সাথে যোগাযোগ করুন"
-    subtitle="যেকোনো জিজ্ঞাসা, পরামর্শ বা সহায়তার জন্য নিচের মাধ্যমগুলোতে আমাদের সাথে যোগাযোগ করতে পারেন।"></app-page-header>
+  <app-page-header variant="hero" [eyebrow]="'contact.hero.eyebrow' | translate" [title]="'contact.hero.title' | translate"
+    [subtitle]="'contact.hero.subtitle' | translate"></app-page-header>
 
-  <div class="upsaa-container contact-body">
-    <app-section-card icon="contact_mail" title="যোগাযোগের তথ্য">
-      <div class="contact-list">
-        <a class="contact-row" href="tel:01866293776">
-          <mat-icon>call</mat-icon>
-          <div class="contact-row__text">
-            <span class="contact-row__label">ফোন</span>
-            <span class="contact-row__value">01866 293776</span>
-          </div>
+  <!-- ===== Contact methods ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'contact.info.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'contact.info.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+
+      <div class="methods">
+        <a class="method" href="tel:01866293776">
+          <span class="method__icon"><mat-icon>call</mat-icon></span>
+          <span class="method__label">{{ 'contact.info.phoneLabel' | translate }}</span>
+          <span class="method__value">01866 293776</span>
+          <span class="pp-link">{{ 'contact.info.phoneAction' | translate }} <mat-icon>arrow_forward</mat-icon></span>
         </a>
 
-        <a class="contact-row" href="mailto:info@uttaranalumni.org">
-          <mat-icon>mail</mat-icon>
-          <div class="contact-row__text">
-            <span class="contact-row__label">ইমেইল</span>
-            <span class="contact-row__value">info&#64;uttaranalumni.org</span>
-          </div>
+        <a class="method" href="mailto:info@uttaranalumni.org">
+          <span class="method__icon"><mat-icon>mail</mat-icon></span>
+          <span class="method__label">{{ 'contact.info.emailLabel' | translate }}</span>
+          <span class="method__value">info&#64;uttaranalumni.org</span>
+          <span class="pp-link">{{ 'contact.info.emailAction' | translate }} <mat-icon>arrow_forward</mat-icon></span>
         </a>
 
-        <div class="contact-row contact-row--static">
-          <mat-icon>place</mat-icon>
-          <div class="contact-row__text">
-            <span class="contact-row__label">ঠিকানা</span>
-            <span class="contact-row__value">Thana Road, Jhenaigati, Sherpur 2120</span>
-          </div>
-        </div>
+        <a class="method" [href]="mapUrl" target="_blank" rel="noopener">
+          <span class="method__icon"><mat-icon>place</mat-icon></span>
+          <span class="method__label">{{ 'contact.info.addressLabel' | translate }}</span>
+          <span class="method__value">{{ address }}</span>
+          <span class="pp-link">{{ 'contact.info.mapAction' | translate }} <mat-icon>open_in_new</mat-icon></span>
+        </a>
       </div>
-    </app-section-card>
-  </div>
+    </div>
+  </section>
+
+  <!-- ===== Social channels ===== -->
+  <section class="pp-section">
+    <div class="upsaa-container pp-narrow" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'contact.social.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'contact.social.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+        <p class="pp-section__subtitle">{{ 'contact.social.subtitle' | translate }}</p>
+      </header>
+
+      <ul class="channels">
+        <li *ngFor="let ch of channels">
+          <a class="channel" [href]="ch.url" target="_blank" rel="noopener">
+            <span class="channel__icon"><mat-icon>{{ ch.icon }}</mat-icon></span>
+            <span class="channel__text">
+              <span class="channel__name">{{ ch.nameKey | translate }}</span>
+              <span class="channel__hint">{{ ch.hintKey | translate }}</span>
+            </span>
+            <mat-icon class="channel__arrow">open_in_new</mat-icon>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== Membership band ===== -->
+  <section class="pp-join">
+    <div class="upsaa-container pp-join__inner" appReveal>
+      <h2 class="pp-join__title">{{ 'contact.cta.title' | translate }}</h2>
+      <p class="pp-join__body">{{ 'contact.cta.body' | translate }}</p>
+      <a routerLink="/register" class="pp-btn pp-btn--light">
+        {{ 'contact.cta.button' | translate }} <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+  </section>
+
 </div>

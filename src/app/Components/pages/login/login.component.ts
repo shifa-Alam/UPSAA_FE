@@ -4,12 +4,14 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../Services/auth.service';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { LanguageService } from '../../../Services/language.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, ReactiveFormsModule, RouterModule, MatIconModule
+    CommonModule, ReactiveFormsModule, RouterModule, MatIconModule, TranslatePipe
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -23,7 +25,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private languageService: LanguageService
   ) {
     // Initialize form here, after fb is available
     this.loginForm = this.fb.group({
@@ -49,12 +52,12 @@ export class LoginComponent {
         if (this.authService.hasRole('SuperAdmin')) {
           this.router.navigate(['/dashboard']); // admin dashboard
         } else {
-          this.router.navigate(['/profile']); // regular member
+          this.router.navigate(['/member-dashboard']); // regular member
         }
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = err.error?.message || 'Login failed';
+        this.errorMessage = err.error?.message || this.languageService.translate('login.errors.loginFailed');
       }
     });
   }

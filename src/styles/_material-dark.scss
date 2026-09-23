@@ -1,0 +1,243 @@
+// =============================================================
+// Angular Material in dark mode. The prebuilt azure-blue theme is
+// light-only (v18 bakes literal colors into its --mdc/--mat tokens),
+// so form text, labels, hints, menus and dialogs stayed near-black on
+// the dark surfaces. This remaps every token that carried one of the
+// theme's neutral light-scheme colors onto the site's own ink/surface
+// scale, which already flips in [data-theme='dark'].
+//
+// Generated from @angular/material/prebuilt-themes/azure-blue.css —
+// neutrals only (on-surface #1a1b1f and its rgba() tints, on-surface-
+// variant #44474e, outline #74777f, surfaces #faf9fd…). Primary, error
+// and tonal-container colors are left alone. Tokens the app already
+// remaps in styles.scss's html {} block are skipped. Re-generate if
+// the Material version or prebuilt theme changes.
+//
+// The theme re-declares checkbox/radio/form-field tokens on its palette
+// classes (.mat-primary.mat-mdc-checkbox, …), so the block targets those
+// too — otherwise their labels keep the light-scheme text color.
+// =============================================================
+html[data-theme='dark'],
+html[data-theme='dark'] .mat-primary,
+html[data-theme='dark'] .mat-accent,
+html[data-theme='dark'] .mat-warn {
+  --mat-app-background-color: var(--color-surface);
+  --mat-app-text-color: var(--color-ink-900);
+  --mat-autocomplete-background-color: var(--color-surface);
+  --mat-bottom-sheet-container-background-color: var(--color-surface);
+  --mat-bottom-sheet-container-text-color: var(--color-ink-900);
+  --mat-checkbox-disabled-label-color: rgba(241, 245, 249, 0.38);
+  --mat-checkbox-label-text-color: var(--color-ink-900);
+  --mat-chip-selected-disabled-trailing-icon-color: var(--color-ink-900);
+  --mat-chip-trailing-action-state-layer-color: var(--color-ink-600);
+  --mat-datepicker-calendar-body-label-text-color: var(--color-ink-900);
+  --mat-datepicker-calendar-container-background-color: var(--color-surface-sunken);
+  --mat-datepicker-calendar-container-text-color: var(--color-ink-900);
+  --mat-datepicker-calendar-date-disabled-state-text-color: rgba(241, 245, 249, 0.38);
+  --mat-datepicker-calendar-date-focus-state-background-color: rgba(241, 245, 249, 0.12);
+  --mat-datepicker-calendar-date-hover-state-background-color: rgba(241, 245, 249, 0.08);
+  --mat-datepicker-calendar-date-in-overlap-range-selected-state-background-color: var(--color-ink-600);
+  --mat-datepicker-calendar-date-selected-disabled-state-background-color: rgba(241, 245, 249, 0.38);
+  --mat-datepicker-calendar-date-text-color: var(--color-ink-900);
+  --mat-datepicker-calendar-date-today-disabled-state-outline-color: rgba(241, 245, 249, 0.38);
+  --mat-datepicker-calendar-header-text-color: var(--color-ink-600);
+  --mat-datepicker-calendar-navigation-button-icon-color: var(--color-ink-600);
+  --mat-datepicker-calendar-period-button-icon-color: var(--color-ink-600);
+  --mat-datepicker-calendar-period-button-text-color: var(--color-ink-600);
+  --mat-datepicker-range-input-disabled-state-separator-color: rgba(241, 245, 249, 0.38);
+  --mat-datepicker-range-input-disabled-state-text-color: rgba(241, 245, 249, 0.38);
+  --mat-datepicker-range-input-separator-color: var(--color-ink-900);
+  --mat-datepicker-toggle-active-state-icon-color: var(--color-ink-600);
+  --mat-datepicker-toggle-icon-color: var(--color-ink-600);
+  --mat-divider-color: var(--color-ink-400);
+  --mat-expansion-actions-divider-color: var(--color-ink-400);
+  --mat-expansion-container-background-color: var(--color-surface);
+  --mat-expansion-container-text-color: var(--color-ink-900);
+  --mat-expansion-header-description-color: var(--color-ink-600);
+  --mat-expansion-header-disabled-state-text-color: rgba(241, 245, 249, 0.38);
+  --mat-expansion-header-focus-state-layer-color: rgba(241, 245, 249, 0.12);
+  --mat-expansion-header-hover-state-layer-color: rgba(241, 245, 249, 0.08);
+  --mat-expansion-header-indicator-color: var(--color-ink-600);
+  --mat-expansion-header-text-color: var(--color-ink-900);
+  --mat-fab-disabled-state-container-color: rgba(241, 245, 249, 0.12);
+  --mat-fab-disabled-state-foreground-color: rgba(241, 245, 249, 0.38);
+  --mat-fab-small-disabled-state-container-color: rgba(241, 245, 249, 0.12);
+  --mat-fab-small-disabled-state-foreground-color: rgba(241, 245, 249, 0.38);
+  --mat-filled-button-disabled-state-layer-color: var(--color-ink-600);
+  --mat-form-field-disabled-input-text-placeholder-color: rgba(241, 245, 249, 0.38);
+  --mat-form-field-disabled-leading-icon-color: rgba(241, 245, 249, 0.38);
+  --mat-form-field-disabled-select-arrow-color: rgba(241, 245, 249, 0.38);
+  --mat-form-field-disabled-trailing-icon-color: rgba(241, 245, 249, 0.38);
+  --mat-form-field-enabled-select-arrow-color: var(--color-ink-600);
+  --mat-form-field-leading-icon-color: var(--color-ink-600);
+  --mat-form-field-select-disabled-option-text-color: rgba(241, 245, 249, 0.38);
+  --mat-form-field-select-option-text-color: var(--color-ink-900);
+  --mat-form-field-state-layer-color: var(--color-ink-900);
+  --mat-form-field-trailing-icon-color: var(--color-ink-600);
+  --mat-full-pseudo-checkbox-disabled-selected-checkmark-color: var(--color-surface);
+  --mat-full-pseudo-checkbox-disabled-selected-icon-color: rgba(241, 245, 249, 0.38);
+  --mat-full-pseudo-checkbox-disabled-unselected-icon-color: rgba(241, 245, 249, 0.38);
+  --mat-full-pseudo-checkbox-unselected-icon-color: var(--color-ink-600);
+  --mat-icon-button-disabled-state-layer-color: var(--color-ink-600);
+  --mat-icon-button-state-layer-color: var(--color-ink-600);
+  --mat-menu-divider-color: var(--color-ink-100);
+  --mat-menu-item-focus-state-layer-color: rgba(241, 245, 249, 0.12);
+  --mat-menu-item-hover-state-layer-color: rgba(241, 245, 249, 0.08);
+  --mat-menu-item-icon-color: var(--color-ink-600);
+  --mat-minimal-pseudo-checkbox-disabled-selected-checkmark-color: rgba(241, 245, 249, 0.38);
+  --mat-optgroup-label-text-color: var(--color-ink-600);
+  --mat-option-focus-state-layer-color: rgba(241, 245, 249, 0.12);
+  --mat-option-hover-state-layer-color: rgba(241, 245, 249, 0.08);
+  --mat-option-label-text-color: var(--color-ink-900);
+  --mat-outlined-button-disabled-state-layer-color: var(--color-ink-600);
+  --mat-paginator-container-background-color: var(--color-surface);
+  --mat-paginator-container-text-color: var(--color-ink-900);
+  --mat-paginator-disabled-icon-color: rgba(241, 245, 249, 0.38);
+  --mat-paginator-enabled-icon-color: var(--color-ink-600);
+  --mat-protected-button-disabled-state-layer-color: var(--color-ink-600);
+  --mat-radio-disabled-label-color: rgba(241, 245, 249, 0.38);
+  --mat-radio-label-text-color: var(--color-ink-900);
+  --mat-radio-ripple-color: var(--color-ink-900);
+  --mat-ripple-color: rgba(241, 245, 249, 0.1);
+  --mat-select-disabled-arrow-color: rgba(241, 245, 249, 0.38);
+  --mat-select-disabled-trigger-text-color: rgba(241, 245, 249, 0.38);
+  --mat-select-enabled-arrow-color: var(--color-ink-600);
+  --mat-select-enabled-trigger-text-color: var(--color-ink-900);
+  --mat-select-placeholder-text-color: var(--color-ink-600);
+  --mat-sidenav-container-background-color: var(--color-surface);
+  --mat-sidenav-container-text-color: var(--color-ink-600);
+  --mat-sidenav-content-background-color: var(--color-surface);
+  --mat-sidenav-content-text-color: var(--color-ink-900);
+  --mat-sort-arrow-color: var(--color-ink-900);
+  --mat-standard-button-toggle-disabled-selected-state-background-color: rgba(241, 245, 249, 0.12);
+  --mat-standard-button-toggle-disabled-selected-state-text-color: rgba(241, 245, 249, 0.38);
+  --mat-standard-button-toggle-disabled-state-text-color: rgba(241, 245, 249, 0.38);
+  --mat-standard-button-toggle-divider-color: var(--color-ink-400);
+  --mat-standard-button-toggle-state-layer-color: var(--color-ink-900);
+  --mat-standard-button-toggle-text-color: var(--color-ink-900);
+  --mat-stepper-container-color: var(--color-surface);
+  --mat-stepper-header-icon-background-color: var(--color-ink-600);
+  --mat-stepper-header-icon-foreground-color: var(--color-surface);
+  --mat-stepper-header-label-text-color: var(--color-ink-600);
+  --mat-stepper-header-optional-label-text-color: var(--color-ink-600);
+  --mat-stepper-header-selected-state-label-text-color: var(--color-ink-600);
+  --mat-stepper-line-color: var(--color-ink-400);
+  --mat-switch-disabled-unselected-track-outline-color: var(--color-ink-900);
+  --mat-switch-label-text-color: var(--color-ink-900);
+  --mat-switch-track-outline-color: var(--color-ink-400);
+  --mat-tab-header-active-focus-label-text-color: var(--color-ink-900);
+  --mat-tab-header-active-hover-label-text-color: var(--color-ink-900);
+  --mat-tab-header-active-label-text-color: var(--color-ink-900);
+  --mat-tab-header-active-ripple-color: var(--color-ink-900);
+  --mat-tab-header-divider-color: var(--color-ink-100);
+  --mat-tab-header-inactive-focus-label-text-color: var(--color-ink-900);
+  --mat-tab-header-inactive-hover-label-text-color: var(--color-ink-900);
+  --mat-tab-header-inactive-label-text-color: var(--color-ink-900);
+  --mat-tab-header-inactive-ripple-color: var(--color-ink-900);
+  --mat-tab-header-pagination-icon-color: var(--color-ink-900);
+  --mat-table-background-color: var(--color-surface);
+  --mat-table-header-headline-color: var(--color-ink-900);
+  --mat-table-row-item-label-text-color: var(--color-ink-900);
+  --mat-table-row-item-outline-color: var(--color-ink-400);
+  --mat-text-button-disabled-state-layer-color: var(--color-ink-600);
+  --mat-tree-container-background-color: var(--color-surface);
+  --mat-tree-node-text-color: var(--color-ink-900);
+  --mdc-checkbox-disabled-selected-checkmark-color: var(--color-surface);
+  --mdc-checkbox-disabled-selected-icon-color: rgba(241, 245, 249, 0.38);
+  --mdc-checkbox-disabled-unselected-icon-color: rgba(241, 245, 249, 0.38);
+  --mdc-checkbox-selected-pressed-state-layer-color: var(--color-ink-900);
+  --mdc-checkbox-unselected-focus-icon-color: var(--color-ink-900);
+  --mdc-checkbox-unselected-focus-state-layer-color: var(--color-ink-900);
+  --mdc-checkbox-unselected-hover-icon-color: var(--color-ink-900);
+  --mdc-checkbox-unselected-hover-state-layer-color: var(--color-ink-900);
+  --mdc-checkbox-unselected-icon-color: var(--color-ink-600);
+  --mdc-chip-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-chip-disabled-outline-color: rgba(241, 245, 249, 0.12);
+  --mdc-chip-flat-disabled-selected-container-color: rgba(241, 245, 249, 0.12);
+  --mdc-chip-focus-outline-color: var(--color-ink-600);
+  --mdc-chip-focus-state-layer-color: var(--color-ink-600);
+  --mdc-chip-hover-state-layer-color: var(--color-ink-600);
+  --mdc-chip-label-text-color: var(--color-ink-600);
+  --mdc-chip-outline-color: var(--color-ink-400);
+  --mdc-chip-with-icon-disabled-icon-color: var(--color-ink-900);
+  --mdc-chip-with-icon-icon-color: var(--color-ink-600);
+  --mdc-chip-with-trailing-icon-disabled-trailing-icon-color: var(--color-ink-900);
+  --mdc-chip-with-trailing-icon-trailing-icon-color: var(--color-ink-600);
+  --mdc-dialog-container-color: var(--color-surface);
+  --mdc-dialog-subhead-color: var(--color-ink-900);
+  --mdc-dialog-supporting-text-color: var(--color-ink-600);
+  --mdc-elevated-card-container-color: var(--color-surface);
+  --mdc-filled-button-disabled-container-color: rgba(241, 245, 249, 0.12);
+  --mdc-filled-button-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-filled-text-field-active-indicator-color: var(--color-ink-600);
+  --mdc-filled-text-field-container-color: var(--color-ink-100);
+  --mdc-filled-text-field-disabled-active-indicator-color: rgba(241, 245, 249, 0.38);
+  --mdc-filled-text-field-disabled-container-color: rgba(241, 245, 249, 0.04);
+  --mdc-filled-text-field-disabled-input-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-filled-text-field-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-filled-text-field-hover-active-indicator-color: var(--color-ink-900);
+  --mdc-filled-text-field-hover-label-text-color: var(--color-ink-600);
+  --mdc-filled-text-field-input-text-color: var(--color-ink-900);
+  --mdc-filled-text-field-input-text-placeholder-color: var(--color-ink-600);
+  --mdc-filled-text-field-label-text-color: var(--color-ink-600);
+  --mdc-icon-button-disabled-icon-color: rgba(241, 245, 249, 0.38);
+  --mdc-icon-button-icon-color: var(--color-ink-600);
+  --mdc-list-list-item-disabled-label-text-color: var(--color-ink-900);
+  --mdc-list-list-item-disabled-leading-icon-color: var(--color-ink-900);
+  --mdc-list-list-item-disabled-state-layer-color: var(--color-ink-900);
+  --mdc-list-list-item-disabled-trailing-icon-color: var(--color-ink-900);
+  --mdc-list-list-item-focus-label-text-color: var(--color-ink-900);
+  --mdc-list-list-item-focus-state-layer-color: var(--color-ink-900);
+  --mdc-list-list-item-hover-label-text-color: var(--color-ink-900);
+  --mdc-list-list-item-hover-state-layer-color: var(--color-ink-900);
+  --mdc-list-list-item-label-text-color: var(--color-ink-900);
+  --mdc-list-list-item-leading-icon-color: var(--color-ink-600);
+  --mdc-list-list-item-supporting-text-color: var(--color-ink-600);
+  --mdc-list-list-item-trailing-icon-color: var(--color-ink-600);
+  --mdc-list-list-item-trailing-supporting-text-color: var(--color-ink-600);
+  --mdc-outlined-button-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-outlined-button-disabled-outline-color: rgba(241, 245, 249, 0.12);
+  --mdc-outlined-card-container-color: var(--color-surface);
+  --mdc-outlined-card-outline-color: var(--color-ink-200);
+  --mdc-outlined-text-field-disabled-input-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-outlined-text-field-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-outlined-text-field-disabled-outline-color: rgba(241, 245, 249, 0.12);
+  --mdc-outlined-text-field-hover-label-text-color: var(--color-ink-900);
+  --mdc-outlined-text-field-input-text-color: var(--color-ink-900);
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--color-ink-600);
+  --mdc-plain-tooltip-supporting-text-color: var(--color-surface);
+  --mdc-protected-button-disabled-container-color: rgba(241, 245, 249, 0.12);
+  --mdc-protected-button-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+  --mdc-radio-disabled-selected-icon-color: var(--color-ink-900);
+  --mdc-radio-disabled-unselected-icon-color: var(--color-ink-900);
+  --mdc-radio-unselected-focus-icon-color: var(--color-ink-900);
+  --mdc-radio-unselected-hover-icon-color: var(--color-ink-900);
+  --mdc-radio-unselected-icon-color: var(--color-ink-600);
+  --mdc-radio-unselected-pressed-icon-color: var(--color-ink-900);
+  --mdc-slider-disabled-active-track-color: var(--color-ink-900);
+  --mdc-slider-disabled-handle-color: var(--color-ink-900);
+  --mdc-slider-disabled-inactive-track-color: var(--color-ink-900);
+  --mdc-slider-inactive-track-color: var(--color-ink-100);
+  --mdc-slider-with-tick-marks-disabled-container-color: var(--color-ink-900);
+  --mdc-slider-with-tick-marks-inactive-container-color: var(--color-ink-600);
+  --mdc-snackbar-supporting-text-color: var(--color-surface);
+  --mdc-switch-disabled-selected-handle-color: var(--color-surface);
+  --mdc-switch-disabled-selected-icon-color: var(--color-ink-900);
+  --mdc-switch-disabled-selected-track-color: var(--color-ink-900);
+  --mdc-switch-disabled-unselected-handle-color: var(--color-ink-900);
+  --mdc-switch-disabled-unselected-icon-color: var(--color-ink-100);
+  --mdc-switch-disabled-unselected-track-color: var(--color-ink-100);
+  --mdc-switch-unselected-focus-handle-color: var(--color-ink-600);
+  --mdc-switch-unselected-focus-state-layer-color: var(--color-ink-900);
+  --mdc-switch-unselected-focus-track-color: var(--color-ink-100);
+  --mdc-switch-unselected-handle-color: var(--color-ink-400);
+  --mdc-switch-unselected-hover-handle-color: var(--color-ink-600);
+  --mdc-switch-unselected-hover-state-layer-color: var(--color-ink-900);
+  --mdc-switch-unselected-hover-track-color: var(--color-ink-100);
+  --mdc-switch-unselected-icon-color: var(--color-ink-100);
+  --mdc-switch-unselected-pressed-handle-color: var(--color-ink-600);
+  --mdc-switch-unselected-pressed-state-layer-color: var(--color-ink-900);
+  --mdc-switch-unselected-pressed-track-color: var(--color-ink-100);
+  --mdc-switch-unselected-track-color: var(--color-ink-100);
+  --mdc-text-button-disabled-label-text-color: rgba(241, 245, 249, 0.38);
+}

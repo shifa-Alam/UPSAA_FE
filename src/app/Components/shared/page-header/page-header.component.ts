@@ -12,6 +12,6 @@ export class PageHeaderComponent {
   @Input() title = '';
   @Input() subtitle = '';
   @Input() eyebrow = '';
-  /** 'hero' = full dark gradient band (top-level pages), 'plain' = compact light header (inner/admin pages) */
+  /** 'hero' = full-height band (content pages), 'plain' = same look, compact (directory/forms) */
   @Input() variant: 'hero' | 'plain' = 'hero';
 }
