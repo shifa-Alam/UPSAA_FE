@@ -73,7 +73,7 @@
         <!-- View mode -->
         <ng-container *ngIf="editingId !== a.id">
           <ng-container *ngIf="a.photoUrl; else initialsAvatar">
-            <img [src]="a.photoUrl" [alt]="a.fullName" class="avatar" />
+            <img [src]="a.photoUrl | sizedImage:400" [alt]="a.fullName" class="avatar" />
           </ng-container>
           <ng-template #initialsAvatar>
             <div class="avatar avatar--initials" aria-hidden="true">{{ a.fullName.charAt(0) }}</div>
@@ -108,7 +108,7 @@
             <div class="photo-pick record__edit-photo" [class.photo-pick--filled]="editPreviewUrl || a.photoUrl">
               <input type="file" id="editFile-{{ a.id }}" accept="image/*" (change)="onEditFileSelected($event)"
                 [attr.aria-label]="'achievementAdmin.replacePhoto' | translate" />
-              <img [src]="editPreviewUrl || a.photoUrl || ''" *ngIf="editPreviewUrl || a.photoUrl" [alt]="a.fullName" />
+              <img [src]="editPreviewUrl || a.photoUrl || '' | sizedImage:800" *ngIf="editPreviewUrl || a.photoUrl" [alt]="a.fullName" />
               <span class="record__edit-initials" *ngIf="!(editPreviewUrl || a.photoUrl)" aria-hidden="true">{{ a.fullName.charAt(0) }}</span>
               <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'achievementAdmin.replacePhoto' | translate }}</span>
             </div>

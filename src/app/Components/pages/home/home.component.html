@@ -137,7 +137,7 @@
       <div class="pp-people">
         <a class="pp-person" *ngFor="let m of alumni" routerLink="/members" [queryParams]="{ batch: m.batch }">
           <div class="pp-person__photo">
-            <img [src]="m.photo" [alt]="m.fullName" loading="lazy" />
+            <img [src]="m.photo | sizedImage:400" [attr.srcset]="m.photo | sizedSrcset" sizes="(max-width: 768px) 50vw, 240px" [alt]="m.fullName" loading="lazy" />
           </div>
           <span class="pp-person__name">{{ m.fullName }}</span>
           <span class="pp-person__label">{{ 'home.alumni.batch' | translate }} {{ formatNumber(m.batch, true) }}</span>
@@ -164,7 +164,7 @@
       <div class="feats">
         <article class="feat" *ngFor="let a of achievements">
           <div class="feat__photo">
-            <img *ngIf="a.photoUrl; else featInitials" [src]="a.photoUrl" [alt]="a.fullName" loading="lazy" />
+            <img *ngIf="a.photoUrl; else featInitials" [src]="a.photoUrl | sizedImage:800" [attr.srcset]="a.photoUrl | sizedSrcset" sizes="(max-width: 768px) 100vw, 380px" [alt]="a.fullName" loading="lazy" />
             <ng-template #featInitials><span class="feat__initials">{{ initials(a.fullName) }}</span></ng-template>
           </div>
           <div class="feat__body">
@@ -196,8 +196,10 @@
       </header>
 
       <div class="mosaic" [class.mosaic--few]="memories.length < 6">
-        <a routerLink="/gallery" class="mosaic__tile" *ngFor="let photo of memories">
-          <img [src]="photo.imageUrl" [alt]="photo.title" loading="lazy" />
+        <a routerLink="/gallery" class="mosaic__tile" *ngFor="let photo of memories; let first = first">
+          <img [src]="imageAt(photo.imageUrl, 800)" [attr.srcset]="imageSrcset(photo.imageUrl) || null"
+            [attr.sizes]="first && memories.length >= 6 ? '(max-width: 768px) 100vw, 760px' : '(max-width: 768px) 50vw, 380px'"
+            [alt]="photo.title" loading="lazy" decoding="async" />
           <span class="mosaic__caption">{{ photo.category || photo.title }}</span>
         </a>
       </div>

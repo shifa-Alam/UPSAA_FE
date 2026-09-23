@@ -5,7 +5,7 @@
     <!-- Profile Section -->
     <div class="mobile-profile" *ngIf="authService.isLoggedIn() && !authService.isStaff(); ">
       <ng-container *ngIf="profileImageUrl; else initialsMobile">
-        <img [src]="profileImageUrl" alt="User" class="avatar-img-mobile">
+        <img [src]="profileImageUrl | sizedImage:400" alt="User" class="avatar-img-mobile">
       </ng-container>
       <ng-template #initialsMobile>
         <div class="name-avatar-mobile">{{ userInitial }}</div>
@@ -310,7 +310,7 @@
             <ng-container *ngIf="authService.isLoggedIn(); else loginBtn">
               <button mat-button [matMenuTriggerFor]="userMenu" class="user-avatar-button">
                 <ng-container *ngIf="profileImageUrl; else nameAvatar">
-                  <img [src]="profileImageUrl" alt="User" class="avatar-img">
+                  <img [src]="profileImageUrl | sizedImage:400" alt="User" class="avatar-img">
                 </ng-container>
                 <ng-template #nameAvatar>
                   <div class="name-avatar">{{ userInitial }}</div>

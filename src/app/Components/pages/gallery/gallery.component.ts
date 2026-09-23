@@ -10,6 +10,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { imageAt, imageSrcset } from '../../../Utils/image-url';
 
 @Component({
   selector: 'app-gallery',
@@ -19,6 +20,9 @@ import { TranslatePipe } from '../../../Pipes/translate.pipe';
   styleUrl: './gallery.component.scss'
 })
 export class GalleryComponent implements OnInit {
+  readonly imageAt = imageAt;
+  readonly imageSrcset = imageSrcset;
+
   photos: GalleryImage[] = [];
   categories: string[] = [];
   activeCategory = '';

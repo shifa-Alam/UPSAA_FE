@@ -31,7 +31,7 @@
 
         <article class="spotlight">
           <div class="spotlight__photo">
-            <img *ngIf="f.photoUrl; else spotlightInitials" [src]="f.photoUrl" [alt]="f.fullName" />
+            <img *ngIf="f.photoUrl; else spotlightInitials" [src]="f.photoUrl | sizedImage:800" [attr.srcset]="f.photoUrl | sizedSrcset" sizes="(max-width: 900px) 100vw, 520px" [alt]="f.fullName" />
             <ng-template #spotlightInitials><span class="monogram monogram--lg">{{ initials(f.fullName) }}</span></ng-template>
           </div>
 
@@ -64,7 +64,7 @@
         <div class="honorees">
           <article class="honoree" *ngFor="let a of rest">
             <div class="honoree__photo">
-              <img *ngIf="a.photoUrl; else cardInitials" [src]="a.photoUrl" [alt]="a.fullName" loading="lazy" />
+              <img *ngIf="a.photoUrl; else cardInitials" [src]="a.photoUrl | sizedImage:800" [attr.srcset]="a.photoUrl | sizedSrcset" sizes="(max-width: 768px) 100vw, 380px" [alt]="a.fullName" loading="lazy" />
               <ng-template #cardInitials><span class="monogram">{{ initials(a.fullName) }}</span></ng-template>
             </div>
             <div class="honoree__body">

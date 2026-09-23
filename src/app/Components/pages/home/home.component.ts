@@ -13,6 +13,8 @@ import { EmptyStateComponent } from '../../shared/empty-state/empty-state.compon
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { CountUpDirective } from '../../shared/count-up/count-up.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { backgroundWidth, imageAt, imageSrcset } from '../../../Utils/image-url';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 /** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
  *  image; while null the hero crossfades through the newest gallery photos, then
@@ -39,11 +41,14 @@ interface HomeStat {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe],
+  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  readonly imageAt = imageAt;
+  readonly imageSrcset = imageSrcset;
+
   /** Hero photos in order; only the current and next one ever get a background URL. */
   heroImages: string[] = HERO_IMAGE ? [HERO_IMAGE] : [];
   heroIndex = 0;
@@ -118,7 +123,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.galleryService.getAll().pipe(catchError(() => of([]))).subscribe(photos => {
       this.memories = photos.slice(0, MEMORIES_COUNT);
       if (!HERO_IMAGE && photos.length) {
-        this.heroImages = photos.slice(0, HERO_SLIDES).map(p => p.imageUrl);
+        // Screen-sized copies — a phone gets ~800px wide, not the full-resolution original.
+        const width = backgroundWidth();
+        this.heroImages = photos.slice(0, HERO_SLIDES).map(p => imageAt(p.imageUrl, width));
         this.startHeroSlides();
       }
     });

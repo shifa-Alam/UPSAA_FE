@@ -14,6 +14,7 @@ import { CandidateAddComponent } from '../candidate-add/candidate-add.component'
 import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 
 @Component({
   selector: 'app-profile',
@@ -26,7 +27,7 @@ import { LanguageService } from '../../Services/language.service';
     MatTabsModule,
     MatTableModule,
     MatButtonModule,
-    TranslatePipe],
+    TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })

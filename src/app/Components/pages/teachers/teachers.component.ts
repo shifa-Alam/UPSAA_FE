@@ -8,6 +8,7 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 interface TeacherGroup {
   status: TeacherStatus;
@@ -25,7 +26,7 @@ const GROUP_ORDER: { status: TeacherStatus; key: string }[] = [
 @Component({
   selector: 'app-teachers',
   standalone: true,
-  imports: [CommonModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [CommonModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './teachers.component.html',
   styleUrl: './teachers.component.scss'
 })

@@ -73,7 +73,7 @@
         <div class="members" [class.members--busy]="loading" [attr.aria-busy]="loading">
           <article class="member" *ngFor="let m of members">
             <div class="member__avatar">
-              <img *ngIf="m.photo; else memberInitials" [src]="m.photo" [alt]="m.fullName" loading="lazy" />
+              <img *ngIf="m.photo; else memberInitials" [src]="m.photo | sizedImage:400" [alt]="m.fullName" loading="lazy" />
               <ng-template #memberInitials>
                 <span class="member__initials">{{ initials(m.fullName) }}</span>
               </ng-template>

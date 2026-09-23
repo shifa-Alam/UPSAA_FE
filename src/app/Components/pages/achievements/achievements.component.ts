@@ -9,11 +9,12 @@ import { PageHeaderComponent } from '../../shared/page-header/page-header.compon
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 @Component({
   selector: 'app-achievements',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './achievements.component.html',
   styleUrl: './achievements.component.scss'
 })

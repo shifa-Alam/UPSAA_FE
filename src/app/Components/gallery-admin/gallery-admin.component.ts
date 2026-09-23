@@ -14,6 +14,7 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
+import { imageAt, imageSrcset } from '../../Utils/image-url';
 
 @Component({
   selector: 'app-gallery-admin',
@@ -23,6 +24,9 @@ import { LanguageService } from '../../Services/language.service';
   styleUrl: './gallery-admin.component.scss'
 })
 export class GalleryAdminComponent implements OnInit {
+  readonly imageAt = imageAt;
+  readonly imageSrcset = imageSrcset;
+
   private confirmService = inject(ConfirmService);
   images: GalleryImage[] = [];
   categories: string[] = [];

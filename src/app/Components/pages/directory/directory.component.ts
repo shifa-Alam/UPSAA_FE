@@ -11,13 +11,14 @@ import { EmptyStateComponent } from '../../shared/empty-state/empty-state.compon
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { LanguageService } from '../../../Services/language.service';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 const PAGE_SIZE = 24;
 
 @Component({
   selector: 'app-directory',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './directory.component.html',
   styleUrl: './directory.component.scss'
 })

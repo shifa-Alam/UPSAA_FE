@@ -118,7 +118,7 @@
             <tr *ngFor="let member of birthdays">
               <td class="rt-title">
                 <span class="person">
-                  <img *ngIf="member.photo" [src]="member.photo" [alt]="member.fullName" class="avatar" />
+                  <img *ngIf="member.photo" [src]="member.photo | sizedImage:400" [alt]="member.fullName" class="avatar" />
                   <span *ngIf="!member.photo" class="avatar avatar--initials" aria-hidden="true">{{ member.fullName.charAt(0) }}</span>
                   <span class="person__name">{{ member.fullName }}</span>
                 </span>

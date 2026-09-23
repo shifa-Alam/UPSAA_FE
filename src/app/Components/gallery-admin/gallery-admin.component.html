@@ -107,7 +107,8 @@
         <!-- View mode -->
         <ng-container *ngIf="editingId !== image.id">
           <div class="tile__media">
-            <img [src]="image.imageUrl" [alt]="image.title" loading="lazy" />
+            <img [src]="imageAt(image.imageUrl, 400)" [attr.srcset]="imageSrcset(image.imageUrl) || null"
+              sizes="(max-width: 768px) 50vw, 280px" [alt]="image.title" loading="lazy" decoding="async" />
             <span class="tile__category" *ngIf="image.category">{{ image.category }}</span>
             <div class="tile__actions">
               <button type="button" class="tile__action" (click)="startEdit(image)"

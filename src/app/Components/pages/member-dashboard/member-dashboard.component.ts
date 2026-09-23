@@ -8,6 +8,7 @@ import { EventService, EventItem } from '../../../Services/event.service';
 import { LanguageService } from '../../../Services/language.service';
 import { NavIconComponent, NavIconName } from '../../shared/nav-icon/nav-icon.component';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 interface QuickLink {
   icon: NavIconName;
@@ -32,7 +33,7 @@ const PROFILE_CHECKS: { key: string; filled: (m: Member) => boolean }[] = [
 @Component({
   selector: 'app-member-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, NavIconComponent, TranslatePipe],
+  imports: [CommonModule, RouterModule, NavIconComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './member-dashboard.component.html',
   styleUrl: './member-dashboard.component.scss'
 })

@@ -9,7 +9,7 @@
   <header class="profile-head">
     <button type="button" class="avatar" (click)="fileInput.click()" [attr.aria-label]="'profile.changePhoto' | translate"
       [title]="'profile.changePhoto' | translate">
-      <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl" [alt]="member.fullName" />
+      <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl | sizedImage:400" [alt]="member.fullName" />
       <ng-template #initialsAvatar>
         <span class="avatar__initials">{{ getInitial(member.fullName) }}</span>
       </ng-template>

@@ -33,7 +33,7 @@
 
         <article class="feature" *ngIf="next">
           <div class="feature__media">
-            <img *ngIf="next.photoUrl; else featurePlaceholder" [src]="next.photoUrl" [alt]="next.title" />
+            <img *ngIf="next.photoUrl; else featurePlaceholder" [src]="next.photoUrl | sizedImage:800" [attr.srcset]="next.photoUrl | sizedSrcset" sizes="(max-width: 900px) 100vw, 640px" [alt]="next.title" />
             <ng-template #featurePlaceholder>
               <div class="feature__placeholder"><mat-icon>celebration</mat-icon></div>
             </ng-template>
@@ -76,7 +76,7 @@
         <div class="upcoming" *ngIf="upcoming.length">
           <article class="upcoming-card" *ngFor="let ev of upcoming">
             <div class="upcoming-card__media" *ngIf="ev.photoUrl">
-              <img [src]="ev.photoUrl" [alt]="ev.title" loading="lazy" />
+              <img [src]="ev.photoUrl | sizedImage:800" [attr.srcset]="ev.photoUrl | sizedSrcset" sizes="(max-width: 768px) 100vw, 380px" [alt]="ev.title" loading="lazy" />
             </div>
             <div class="upcoming-card__body">
               <div class="upcoming-card__top">
@@ -118,7 +118,7 @@
             <div class="archive__grid">
               <article class="past-card" *ngFor="let ev of group.events">
                 <div class="past-card__media">
-                  <img *ngIf="ev.photoUrl; else pastPlaceholder" [src]="ev.photoUrl" [alt]="ev.title" loading="lazy" />
+                  <img *ngIf="ev.photoUrl; else pastPlaceholder" [src]="ev.photoUrl | sizedImage:400" [attr.srcset]="ev.photoUrl | sizedSrcset" sizes="(max-width: 768px) 50vw, 300px" [alt]="ev.title" loading="lazy" />
                   <ng-template #pastPlaceholder><div class="past-card__placeholder"><mat-icon>event</mat-icon></div></ng-template>
                 </div>
                 <div class="past-card__body">

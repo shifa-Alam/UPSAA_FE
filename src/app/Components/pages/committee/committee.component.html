@@ -31,7 +31,7 @@
       <div class="upsaa-container" appReveal>
         <article class="lead">
           <div class="lead__photo">
-            <img *ngIf="president.photo; else leadInitials" [src]="president.photo" [alt]="president.memberName" />
+            <img *ngIf="president.photo; else leadInitials" [src]="president.photo | sizedImage:800" [attr.srcset]="president.photo | sizedSrcset" sizes="(max-width: 768px) 72vw, 340px" [alt]="president.memberName" />
             <ng-template #leadInitials><span class="pp-person__initials">{{ initials(president.memberName) }}</span></ng-template>
             <span class="lead__badge"><mat-icon>military_tech</mat-icon></span>
           </div>
@@ -60,7 +60,7 @@
         <div class="pp-people" [class.committee__people--compact]="group.compact">
           <div class="pp-person" *ngFor="let card of group.cards">
             <div class="pp-person__photo">
-              <img *ngIf="card.photo; else cardInitials" [src]="card.photo" [alt]="card.memberName" loading="lazy" />
+              <img *ngIf="card.photo; else cardInitials" [src]="card.photo | sizedImage:400" [attr.srcset]="card.photo | sizedSrcset" sizes="(max-width: 768px) 50vw, 240px" [alt]="card.memberName" loading="lazy" />
               <ng-template #cardInitials><span class="pp-person__initials">{{ initials(card.memberName) }}</span></ng-template>
             </div>
             <span class="pp-person__name">{{ card.memberName }}</span>

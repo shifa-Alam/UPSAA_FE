@@ -49,7 +49,7 @@
         <div class="pp-people teachers__people">
           <article class="pp-person" *ngFor="let t of group.teachers">
             <div class="pp-person__photo">
-              <img *ngIf="t.photoUrl; else teacherInitials" [src]="t.photoUrl" [alt]="t.fullName" loading="lazy" />
+              <img *ngIf="t.photoUrl; else teacherInitials" [src]="t.photoUrl | sizedImage:400" [attr.srcset]="t.photoUrl | sizedSrcset" sizes="(max-width: 768px) 50vw, 240px" [alt]="t.fullName" loading="lazy" />
               <ng-template #teacherInitials><span class="pp-person__initials">{{ initials(t.fullName) }}</span></ng-template>
             </div>
             <span class="pp-person__name">{{ t.fullName }}</span>

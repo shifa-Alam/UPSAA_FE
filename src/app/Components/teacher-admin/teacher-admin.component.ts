@@ -11,6 +11,7 @@ import { AdminHeaderComponent } from '../shared/admin-header/admin-header.compon
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 
 const emptyForm = (): TeacherSave => ({
   fullName: '', designation: '', subject: '', status: 'Current', serviceStartYear: null, serviceEndYear: null, message: ''
@@ -19,7 +20,7 @@ const emptyForm = (): TeacherSave => ({
 @Component({
   selector: 'app-teacher-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './teacher-admin.component.html',
   styleUrl: './teacher-admin.component.scss'
 })

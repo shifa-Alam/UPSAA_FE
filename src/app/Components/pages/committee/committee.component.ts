@@ -8,6 +8,7 @@ import { LanguageService } from '../../../Services/language.service';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 interface CommitteeCard {
   memberName: string;
@@ -28,7 +29,7 @@ interface CommitteeGroup {
 @Component({
   selector: 'app-committee',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './committee.component.html',
   styleUrl: './committee.component.scss'
 })

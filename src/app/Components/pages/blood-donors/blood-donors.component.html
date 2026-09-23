@@ -60,7 +60,7 @@
           <article class="donor" *ngFor="let d of donors">
             <div class="donor__top">
               <div class="donor__avatar">
-                <img *ngIf="d.photo; else initialsAvatar" [src]="d.photo" [alt]="d.fullName" loading="lazy" />
+                <img *ngIf="d.photo; else initialsAvatar" [src]="d.photo | sizedImage:400" [alt]="d.fullName" loading="lazy" />
                 <ng-template #initialsAvatar>
                   <span class="donor__initials">{{ initials(d.fullName) }}</span>
                 </ng-template>

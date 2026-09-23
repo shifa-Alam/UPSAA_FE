@@ -53,9 +53,12 @@
         <p class="gallery-count">{{ photoCount }}</p>
 
         <div class="mosaic" [class.mosaic--few]="photos.length < 5">
-          <button type="button" class="mosaic__tile" *ngFor="let photo of photos" (click)="open(photo)"
+          <button type="button" class="mosaic__tile" *ngFor="let photo of photos; let i = index" (click)="open(photo)"
             [attr.aria-label]="photo.title">
-            <img [src]="photo.imageUrl" [alt]="photo.title" loading="lazy" />
+            <!-- Every 10th tile (1st, 11th…) is the 2x2 feature tile unless the grid is in "few" mode. -->
+            <img [src]="imageAt(photo.imageUrl, 800)" [attr.srcset]="imageSrcset(photo.imageUrl) || null"
+              [attr.sizes]="i % 10 === 0 && photos.length >= 5 ? '(max-width: 768px) 100vw, 620px' : '(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 300px'"
+              [alt]="photo.title" loading="lazy" decoding="async" />
             <span class="mosaic__caption">
               <span class="mosaic__category" *ngIf="photo.category">{{ photo.category }}</span>
               <span class="mosaic__title">{{ photo.title }}</span>

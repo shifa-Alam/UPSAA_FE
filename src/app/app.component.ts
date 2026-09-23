@@ -20,6 +20,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { SizedImagePipe } from './Pipes/sized-image.pipe';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -35,6 +36,7 @@ import { filter, map } from 'rxjs/operators';
     MatMenuModule,
     FooterComponent,
     TranslatePipe,
+    SizedImagePipe,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'

@@ -4,7 +4,7 @@
   <header class="welcome__hero">
     <div class="member-hero">
       <div class="member-hero__avatar" *ngIf="member">
-        <img *ngIf="member.photo; else heroInitials" [src]="member.photo" [alt]="member.fullName" />
+        <img *ngIf="member.photo; else heroInitials" [src]="member.photo | sizedImage:400" [alt]="member.fullName" />
         <ng-template #heroInitials><span>{{ initials(member.fullName) }}</span></ng-template>
       </div>
       <div class="welcome__hero-text">
