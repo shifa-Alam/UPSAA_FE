@@ -229,6 +229,9 @@ p {
 
 .sidenav-container {
   height: 100vh;
+  // Mobile 100vh ignores the browser's address bar, which pushed the bottom of the
+  // page off-screen where it could never be scrolled to; dvh tracks the visible area.
+  height: 100dvh;
   overflow: auto; // now only this container scrolls
 }
 
