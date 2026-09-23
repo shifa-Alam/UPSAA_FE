@@ -150,6 +150,10 @@
       <a mat-button (click)="sidenav.close()" routerLink="/dashboard/vote-casts" routerLinkActive="active-link">
         <mat-icon>analytics</mat-icon><span>{{ 'dashboard.itemVoteHistory' | translate }}</span>
       </a>
+      <a mat-button *ngIf="authService.hasRole('SuperAdmin')" (click)="sidenav.close()" routerLink="/dashboard/committee"
+        routerLinkActive="active-link">
+        <mat-icon>emoji_people</mat-icon><span>{{ 'committeeAdmin.menu' | translate }}</span>
+      </a>
 
       <div class="mobile-nav-section-label">{{ 'dashboard.menuContent' | translate }}</div>
       <a mat-button (click)="sidenav.close()" routerLink="/dashboard/gallery" routerLinkActive="active-link">

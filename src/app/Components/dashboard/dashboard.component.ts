@@ -57,7 +57,8 @@ export class DashboardComponent {
         { labelKey: 'dashboard.itemElections', route: '/dashboard/elections', icon: 'calendar' },
         { labelKey: 'dashboard.itemPositions', route: '/dashboard/positions', icon: 'tag' },
         { labelKey: 'dashboard.itemCandidates', route: '/dashboard/candidates', icon: 'user-check' },
-        { labelKey: 'dashboard.itemVoteHistory', route: '/dashboard/vote-casts', icon: 'clock' }
+        { labelKey: 'dashboard.itemVoteHistory', route: '/dashboard/vote-casts', icon: 'clock' },
+        { labelKey: 'committeeAdmin.menu', route: '/dashboard/committee', icon: 'award', roles: ['SuperAdmin'] }
       ]
     },
     {

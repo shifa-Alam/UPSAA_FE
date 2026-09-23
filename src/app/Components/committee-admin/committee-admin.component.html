@@ -1,0 +1,199 @@
+<div class="committee-admin">
+
+  <app-admin-header [title]="'committeeAdmin.title' | translate" [subtitle]="'committeeAdmin.subtitle' | translate"></app-admin-header>
+
+  <!-- ===== Published committees ===== -->
+  <app-section-card icon="groups" [title]="'committeeAdmin.listTitle' | translate" [noPadding]="true">
+    <div class="state" *ngIf="listLoading"><mat-icon class="spin">autorenew</mat-icon></div>
+    <p class="state state--text" *ngIf="!listLoading && committees.length === 0">{{ 'committeeAdmin.none' | translate }}</p>
+
+    <ul class="terms" *ngIf="!listLoading && committees.length">
+      <li class="term" *ngFor="let c of committees" [class.term--editing]="editingId === c.id">
+        <div class="term__info">
+          <span class="term__label">
+            {{ c.termLabel }}
+            <span class="pill pill--gold" *ngIf="c.isCurrent">{{ 'committeeAdmin.current' | translate }}</span>
+          </span>
+          <span class="term__meta">
+            {{ formatNumber(c.memberCount) }} {{ 'committeeAdmin.seats' | translate }}
+            <ng-container *ngIf="c.electionTitle"> · {{ c.electionTitle }}</ng-container>
+            · {{ 'committeeAdmin.publishedOn' | translate }} {{ formatDate(c.publishedAt) }}
+            <ng-container *ngIf="c.publishedByName"> · {{ c.publishedByName }}</ng-container>
+          </span>
+        </div>
+        <div class="term__actions">
+          <button type="button" class="btn btn--outline" (click)="startEdit(c.id)">
+            <mat-icon>edit</mat-icon>{{ 'committeeAdmin.edit' | translate }}
+          </button>
+          <button type="button" class="btn btn--outline" *ngIf="!c.isCurrent" (click)="makeCurrent(c)">
+            <mat-icon>verified</mat-icon>{{ 'committeeAdmin.makeCurrent' | translate }}
+          </button>
+          <button type="button" class="icon-btn icon-btn--danger" (click)="remove(c)"
+            [attr.aria-label]="'committeeAdmin.delete' | translate" [title]="'committeeAdmin.delete' | translate">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </app-section-card>
+
+  <!-- ===== Editor ===== -->
+  <app-section-card *ngIf="editingId !== null" icon="edit_note" [title]="'committeeAdmin.editTitle' | translate"
+    [subtitle]="'committeeAdmin.editHint' | translate">
+    <div class="state" *ngIf="editLoading"><mat-icon class="spin">autorenew</mat-icon></div>
+
+    <ng-container *ngIf="!editLoading">
+      <div class="fields">
+        <label class="field">
+          <span>{{ 'committeeAdmin.term' | translate }} *</span>
+          <input type="text" [(ngModel)]="editTerm" placeholder="২০২৬–২৮" />
+        </label>
+        <label class="field">
+          <span>{{ 'committeeAdmin.termStart' | translate }}</span>
+          <input type="date" [(ngModel)]="editStart" />
+        </label>
+        <label class="field">
+          <span>{{ 'committeeAdmin.termEnd' | translate }}</span>
+          <input type="date" [(ngModel)]="editEnd" />
+        </label>
+      </div>
+
+      <ol class="seats">
+        <li class="seat" *ngFor="let s of seats; let i = index; let first = first; let last = last; trackBy: trackSeat">
+          <div class="seat__order">
+            <button type="button" class="icon-btn" (click)="move(s, -1)" [disabled]="first"
+              [attr.aria-label]="'committeeAdmin.moveUp' | translate"><mat-icon>arrow_upward</mat-icon></button>
+            <button type="button" class="icon-btn" (click)="move(s, 1)" [disabled]="last"
+              [attr.aria-label]="'committeeAdmin.moveDown' | translate"><mat-icon>arrow_downward</mat-icon></button>
+          </div>
+          <label class="field field--position">
+            <span>{{ 'committeeAdmin.position' | translate }}</span>
+            <input type="text" [(ngModel)]="s.positionName" />
+          </label>
+          <label class="field field--priority">
+            <span>{{ 'committeeAdmin.priority' | translate }}</span>
+            <input type="number" min="1" [(ngModel)]="s.positionPriority" />
+          </label>
+          <label class="field field--name">
+            <span>
+              {{ 'committeeAdmin.name' | translate }}
+              <mat-icon class="linked" *ngIf="s.memberId" [title]="'committeeAdmin.linked' | translate">link</mat-icon>
+            </span>
+            <input type="text" [(ngModel)]="s.memberName" />
+          </label>
+          <label class="field field--batch">
+            <span>{{ 'committeeAdmin.batch' | translate }}</span>
+            <input type="number" [(ngModel)]="s.batch" />
+          </label>
+          <button type="button" class="icon-btn icon-btn--danger seat__remove" (click)="removeSeat(s)"
+            [attr.aria-label]="'committeeAdmin.removeSeat' | translate" [title]="'committeeAdmin.removeSeat' | translate">
+            <mat-icon>close</mat-icon>
+          </button>
+        </li>
+      </ol>
+
+      <!-- Add a seat: pick a member from the directory, or type a name -->
+      <div class="add">
+        <h3 class="add__title">{{ 'committeeAdmin.addSeat' | translate }}</h3>
+        <div class="fields fields--add">
+          <label class="field">
+            <span>{{ 'committeeAdmin.position' | translate }} *</span>
+            <input type="text" [(ngModel)]="newPosition" (change)="onPositionChosen()" list="committee-positions" />
+            <datalist id="committee-positions">
+              <option *ngFor="let p of positionOptions" [value]="p.name"></option>
+            </datalist>
+          </label>
+          <label class="field field--priority">
+            <span>{{ 'committeeAdmin.priority' | translate }}</span>
+            <input type="number" min="1" [(ngModel)]="newPriority" />
+          </label>
+          <label class="field field--search">
+            <span>{{ 'committeeAdmin.memberSearch' | translate }} *</span>
+            <input type="text" [(ngModel)]="newName" (ngModelChange)="onNameInput()" autocomplete="off" />
+            <ul class="suggest" *ngIf="suggestions.length">
+              <li *ngFor="let m of suggestions">
+                <button type="button" (click)="pickMember(m)">
+                  <strong>{{ m.fullName }}</strong>
+                  <span>{{ 'committeeAdmin.batch' | translate }} {{ formatNumber(m.batch, true) }}</span>
+                </button>
+              </li>
+            </ul>
+          </label>
+          <label class="field field--batch">
+            <span>{{ 'committeeAdmin.batch' | translate }}</span>
+            <input type="number" [(ngModel)]="newBatch" />
+          </label>
+        </div>
+        <p class="hint">
+          <mat-icon>{{ newMemberId ? 'link' : 'info' }}</mat-icon>
+          {{ (newMemberId ? 'committeeAdmin.linkedHint' : 'committeeAdmin.unlinkedHint') | translate }}
+        </p>
+        <button type="button" class="btn btn--outline" (click)="addSeat()" [disabled]="!canAddSeat">
+          <mat-icon>person_add</mat-icon>{{ 'committeeAdmin.addSeatButton' | translate }}
+        </button>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn--outline" (click)="cancelEdit()" [disabled]="saving">{{ 'committeeAdmin.close' | translate }}</button>
+        <button type="button" class="btn btn--solid" (click)="save()" [disabled]="saving">
+          <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>{{ 'committeeAdmin.save' | translate }}
+        </button>
+      </div>
+    </ng-container>
+  </app-section-card>
+
+  <!-- ===== Publish from an election ===== -->
+  <app-section-card icon="how_to_vote" [title]="'committeeAdmin.publishTitle' | translate"
+    [subtitle]="'committeeAdmin.publishHint' | translate">
+    <div class="fields">
+      <label class="field field--wide">
+        <span>{{ 'committeeAdmin.election' | translate }} *</span>
+        <select [(ngModel)]="publishElectionId" (ngModelChange)="onElectionPicked()">
+          <option [ngValue]="null" disabled>{{ 'committeeAdmin.chooseElection' | translate }}</option>
+          <option *ngFor="let e of elections" [ngValue]="e.id">{{ e.title }} ({{ formatDate(e.startTime) }})</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>{{ 'committeeAdmin.term' | translate }} *</span>
+        <input type="text" [(ngModel)]="publishTerm" placeholder="২০২৬–২৮" />
+      </label>
+      <label class="field">
+        <span>{{ 'committeeAdmin.termStart' | translate }}</span>
+        <input type="date" [(ngModel)]="publishStart" />
+      </label>
+      <label class="field">
+        <span>{{ 'committeeAdmin.termEnd' | translate }}</span>
+        <input type="date" [(ngModel)]="publishEnd" />
+      </label>
+    </div>
+
+    <div class="actions actions--start">
+      <button type="button" class="btn btn--outline" (click)="loadPreview()" [disabled]="!publishElectionId || previewLoading">
+        <mat-icon>{{ previewLoading ? 'hourglass_top' : 'visibility' }}</mat-icon>{{ 'committeeAdmin.preview' | translate }}
+      </button>
+    </div>
+
+    <div class="preview" *ngIf="preview">
+      <p class="state state--text" *ngIf="!previewSeatCount">{{ 'committeeAdmin.noWinners' | translate }}</p>
+      <div class="preview__group" *ngFor="let p of preview.positions">
+        <h3 class="preview__position">{{ p.positionName }}</h3>
+        <ul class="preview__list">
+          <li *ngFor="let m of p.members">
+            <span class="preview__name">{{ m.memberName }}</span>
+            <span class="preview__meta">
+              <ng-container *ngIf="m.batch">{{ 'committeeAdmin.batch' | translate }} {{ formatNumber(m.batch, true) }} · </ng-container>
+              {{ formatNumber(m.votes) }} {{ 'committeeAdmin.votes' | translate }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="actions" *ngIf="previewSeatCount">
+        <button type="button" class="btn btn--solid" (click)="publish()" [disabled]="!publishTerm.trim() || publishing">
+          <mat-icon>{{ publishing ? 'hourglass_top' : 'publish' }}</mat-icon>{{ 'committeeAdmin.publish' | translate }}
+        </button>
+      </div>
+    </div>
+  </app-section-card>
+
+</div>

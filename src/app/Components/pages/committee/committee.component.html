@@ -4,13 +4,33 @@
   <header class="pp-hero">
     <div class="upsaa-container pp-hero__inner">
       <span class="pp-hero__eyebrow">{{ 'committee.hero.eyebrow' | translate }}</span>
-      <h1 class="pp-hero__title">{{ 'committee.hero.title' | translate }}</h1>
+      <h1 class="pp-hero__title">
+        <!-- A published committee carries its real term; the live-count fallback keeps the old title. -->
+        <ng-container *ngIf="termLabel; else defaultTitle">{{ 'committee.hero.titleBase' | translate }} {{ termLabel }}</ng-container>
+        <ng-template #defaultTitle>{{ 'committee.hero.title' | translate }}</ng-template>
+      </h1>
       <p class="pp-hero__subtitle">{{ 'committee.hero.subtitle' | translate }}</p>
       <span class="committee__elected" *ngIf="electionDate">
         <mat-icon>how_to_vote</mat-icon>{{ 'committee.electedOn' | translate }} {{ electedOn() }}
       </span>
+
+      <!-- Previous terms — only once more than one committee has been published. -->
+      <nav class="committee__terms" *ngIf="history.length > 1" [attr.aria-label]="'committee.termsLabel' | translate">
+        <button type="button" class="committee__term" *ngFor="let term of history"
+          [class.committee__term--active]="isSelected(term)" [attr.aria-pressed]="isSelected(term)"
+          (click)="selectTerm(term.id)">
+          {{ term.termLabel }}
+          <span class="committee__term-now" *ngIf="term.isCurrent">{{ 'committee.currentBadge' | translate }}</span>
+        </button>
+      </nav>
     </div>
   </header>
+
+  <div class="committee__past-note" *ngIf="viewingPast && !loading">
+    <mat-icon>history</mat-icon>
+    <span>{{ 'committee.pastNote' | translate }}</span>
+    <button type="button" class="committee__past-link" (click)="selectTerm(null)">{{ 'committee.viewCurrent' | translate }}</button>
+  </div>
 
   <div class="committee__loading" *ngIf="loading">
     <mat-icon class="committee__spinner">autorenew</mat-icon>

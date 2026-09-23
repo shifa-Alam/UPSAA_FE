@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
-import { VoteService, CommitteePosition } from '../../../Services/vote.service';
+import { CommitteeService, Committee, CommitteePosition, CommitteeSummary } from '../../../Services/committee.service';
 import { LanguageService } from '../../../Services/language.service';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
@@ -14,7 +14,7 @@ interface CommitteeCard {
   memberName: string;
   photo: string | null;
   positionName: string;
-  batch?: number;
+  batch?: number | null;
 }
 
 interface CommitteeGroup {
@@ -42,23 +42,59 @@ export class CommitteeComponent implements OnInit {
   /** Everyone else, bucketed into the page's sections below the president. */
   groups: CommitteeGroup[] = [];
   electionDate: string | null = null;
+  termLabel: string | null = null;
 
-  constructor(private voteService: VoteService, private languageService: LanguageService) { }
+  /** Published committees, newest first — the term picker shows when there's more than one. */
+  history: CommitteeSummary[] = [];
+  /** Committee id on screen; null = the current one. */
+  viewingId: number | null = null;
+  currentId: number | null = null;
+
+  constructor(private committeeService: CommitteeService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
-    this.voteService.getPublicCommittee().pipe(
-      catchError(() => of(null))
-    ).subscribe(committee => {
-      this.loading = false;
-
-      if (!committee || !committee.positions || !committee.positions.length) {
-        this.loadError = true;
-        return;
-      }
-
-      this.electionDate = committee.electionDate || null;
-      this.build(committee.positions);
+    // current() emits this browser's saved copy first (instant on repeat visits), then
+    // the fresh one if it changed.
+    this.committeeService.current().pipe(catchError(() => of(null))).subscribe(committee => {
+      this.currentId = committee?.committeeId ?? null;
+      if (this.viewingId === null || this.viewingId === this.currentId) this.show(committee);
     });
+
+    this.committeeService.history().pipe(catchError(() => of([]))).subscribe(list => this.history = list);
+  }
+
+  /** Switch to a published term (null = current). */
+  selectTerm(id: number | null): void {
+    const target = id === this.currentId ? null : id;
+    if (target === this.viewingId) return;
+    this.viewingId = target;
+    this.loading = true;
+    const source$ = target === null ? this.committeeService.current() : this.committeeService.get(target);
+    source$.pipe(catchError(() => of(null))).subscribe(c => this.show(c));
+  }
+
+  get viewingPast(): boolean {
+    return this.viewingId !== null && this.viewingId !== this.currentId;
+  }
+
+  isSelected(term: CommitteeSummary): boolean {
+    return this.viewingId === null ? term.isCurrent : term.id === this.viewingId;
+  }
+
+  private show(committee: Committee | null): void {
+    this.loading = false;
+
+    if (!committee || !committee.positions || !committee.positions.length) {
+      this.loadError = true;
+      this.president = null;
+      this.groups = [];
+      return;
+    }
+
+    this.loadError = false;
+    this.electionDate = committee.electionDate || null;
+    this.termLabel = committee.termLabel;
+    this.build(committee.positions);
   }
 
   private build(positions: CommitteePosition[]): void {

@@ -131,6 +131,11 @@ export const routes: Routes = [
         loadComponent: () => import('./Components/member-landing/member-landing.component').then(m => m.MemberLandingComponent)
       },
       {
+        path: 'committee', title: 'pageTitles.committeeAdmin',
+        loadComponent: () => import('./Components/committee-admin/committee-admin.component').then(m => m.CommitteeAdminComponent),
+        canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } // SuperAdmin only, also enforced by the API
+      },
+      {
         path: 'user-roles', title: 'pageTitles.userRoles',
         loadComponent: () => import('./Components/user-roles/user-roles.component').then(m => m.UserRolesComponent),
         canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } // SuperAdmin only, also enforced by the API
