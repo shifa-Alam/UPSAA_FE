@@ -24,6 +24,7 @@ export class ForgetPasswordComponent implements OnInit {
   phoneNumber: string = '';
   batch: number = 0;
   otp: string = '';
+  private resetToken: string = '';
   newPassword: string = '';
   confirmPassword: string = '';
   message: string = '';
@@ -90,9 +91,10 @@ export class ForgetPasswordComponent implements OnInit {
 
     this.loading = true;
     this.authService.verifyOtp(this.phoneNumber, this.otp).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.loading = false;
         this.step = 3; // move to password reset
+        this.resetToken = res.resetToken;
         this.message = res.message || this.languageService.translate('forgetPassword.errors.otpVerified');
         this.isError = false;
       },
@@ -118,7 +120,7 @@ export class ForgetPasswordComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.resetPasswordWithOtp(this.phoneNumber, this.newPassword).subscribe({
+    this.authService.resetPasswordWithOtp(this.resetToken, this.newPassword).subscribe({
       next: (res: any) => {
         this.loading = false;
         this.isError = false;

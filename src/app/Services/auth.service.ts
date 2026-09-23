@@ -117,14 +117,16 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/forgot-password-otp`, { phoneNumber: phone, batch });
   }
 
-  // Step 2: Verify OTP
-  verifyOtp(phone: string, otp: string) {
-    return this.http.post(`${this.apiUrl}/verify-otp`, { phoneNumber: phone, otp });
+  // Step 2: Verify OTP — the response carries a resetToken that proves this
+  // step succeeded; step 3 requires it (the backend no longer accepts a bare
+  // phone number for the reset).
+  verifyOtp(phone: string, otp: string): Observable<{ message: string; resetToken: string }> {
+    return this.http.post<{ message: string; resetToken: string }>(`${this.apiUrl}/verify-otp`, { phoneNumber: phone, otp });
   }
 
   // Step 3: Reset Password
-  resetPasswordWithOtp(phone: string, newPassword: string) {
-    return this.http.post(`${this.apiUrl}/reset-password-otp`, { phoneNumber: phone, newPassword });
+  resetPasswordWithOtp(resetToken: string, newPassword: string) {
+    return this.http.post(`${this.apiUrl}/reset-password-otp`, { resetToken, newPassword });
   }
 
   createUsersForActiveMembers() {
