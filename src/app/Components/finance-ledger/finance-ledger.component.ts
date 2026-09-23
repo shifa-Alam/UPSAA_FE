@@ -51,6 +51,10 @@ export class FinanceLedgerComponent implements OnInit {
   saving = false;
   editingId: number | null = null;
   form: LedgerEntryInput = this.emptyForm();
+  selectedFile: File | null = null;
+  selectedFileName = '';
+  existingAttachmentUrl: string | null = null;
+  downloadingId: number | null = null;
 
   constructor(private financeService: FinanceService, private snackbar: SnackbarService, private languageService: LanguageService) { }
 
@@ -88,6 +92,8 @@ export class FinanceLedgerComponent implements OnInit {
   openNewForm(): void {
     this.editingId = null;
     this.form = this.emptyForm();
+    this.clearFile();
+    this.existingAttachmentUrl = null;
     this.showForm = true;
   }
 
@@ -101,12 +107,49 @@ export class FinanceLedgerComponent implements OnInit {
       amount: entry.amount,
       reference: entry.reference ?? ''
     };
+    this.clearFile();
+    this.existingAttachmentUrl = entry.attachmentUrl ?? null;
     this.showForm = true;
   }
 
   cancelForm(): void {
     this.showForm = false;
     this.editingId = null;
+    this.clearFile();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.selectedFile = file;
+    this.selectedFileName = file?.name ?? '';
+  }
+
+  clearFile(): void {
+    this.selectedFile = null;
+    this.selectedFileName = '';
+  }
+
+  downloadAttachment(entry: LedgerEntry): void {
+    if (!entry.attachmentUrl) return;
+
+    this.downloadingId = entry.id;
+    this.financeService.downloadAttachment(entry.attachmentUrl).pipe(
+      catchError(() => {
+        this.snackbar.showError(this.languageService.translate('financeLedger.downloadFailedError'));
+        return of(null);
+      })
+    ).subscribe(blob => {
+      this.downloadingId = null;
+      if (!blob) return;
+
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = `${entry.category}-${entry.entryDate.slice(0, 10)}`;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    });
   }
 
   submitForm(): void {
@@ -128,8 +171,8 @@ export class FinanceLedgerComponent implements OnInit {
     };
 
     const request = this.editingId
-      ? this.financeService.updateEntry(this.editingId, payload)
-      : this.financeService.createEntry(payload);
+      ? this.financeService.updateEntry(this.editingId, payload, this.selectedFile)
+      : this.financeService.createEntry(payload, this.selectedFile);
 
     request.pipe(
       catchError(err => {
@@ -145,6 +188,7 @@ export class FinanceLedgerComponent implements OnInit {
         : this.languageService.translate('financeLedger.addSuccess'));
       this.showForm = false;
       this.editingId = null;
+      this.clearFile();
       this.loadCategories();
       this.fetch();
     });

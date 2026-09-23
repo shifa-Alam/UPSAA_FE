@@ -36,6 +36,10 @@ export const galleryAdminI18n: I18nSection = {
       editFailedError: 'হালনাগাদ ব্যর্থ হয়েছে।',
       filterAll: 'সব',
       filterAriaLabel: 'ক্যাটাগরি অনুযায়ী ছবি দেখুন',
+      addMoreImages: 'আরও ছবি যোগ করুন',
+      removeSelectedAriaLabel: 'নির্বাচন থেকে সরান',
+      selectedCount: '{count}টি ছবি নির্বাচিত হয়েছে',
+      uploadMultipleSuccess: '{count}টি ছবি সফলভাবে আপলোড হয়েছে।',
     },
   },
   en: {
@@ -73,6 +77,10 @@ export const galleryAdminI18n: I18nSection = {
       editFailedError: 'Update failed.',
       filterAll: 'All',
       filterAriaLabel: 'Filter photos by category',
+      addMoreImages: 'Add more photos',
+      removeSelectedAriaLabel: 'Remove from selection',
+      selectedCount: '{count} photos selected',
+      uploadMultipleSuccess: '{count} photos uploaded successfully.',
     },
   },
 };

@@ -5,22 +5,36 @@
   <!-- ===== Upload ===== -->
   <app-section-card icon="cloud_upload" [title]="'galleryAdmin.uploadCardTitle' | translate">
     <form class="upload-form" (ngSubmit)="submit()">
-      <div class="dropzone" [class.dropzone--filled]="!!previewUrl">
-        <input type="file" id="galleryFile" accept="image/*" (change)="onFileSelected($event)"
+      <div class="dropzone" [class.dropzone--filled]="previewUrls.length > 0">
+        <input type="file" id="galleryFile" accept="image/*" multiple (change)="onFileSelected($event)"
           [attr.aria-label]="'galleryAdmin.chooseImage' | translate" />
-        <label for="galleryFile" class="dropzone__empty" *ngIf="!previewUrl">
+        <label for="galleryFile" class="dropzone__empty" *ngIf="previewUrls.length === 0">
           <span class="dropzone__icon"><mat-icon>add_photo_alternate</mat-icon></span>
           <span class="dropzone__title">{{ 'galleryAdmin.chooseImage' | translate }}</span>
           <span class="dropzone__hint">{{ 'galleryAdmin.chooseImageHint' | translate }}</span>
         </label>
-        <label for="galleryFile" class="dropzone__preview" *ngIf="previewUrl">
-          <img [src]="previewUrl" alt="Preview" />
+        <label for="galleryFile" class="dropzone__preview" *ngIf="previewUrls.length > 0">
+          <img [src]="previewUrls[0]" alt="Preview" />
           <span class="dropzone__change">
             <mat-icon>photo_camera</mat-icon>
-            {{ 'galleryAdmin.replaceImage' | translate }}
+            {{ 'galleryAdmin.addMoreImages' | translate }}
           </span>
         </label>
       </div>
+
+      <!-- Extra thumbnails when more than one file is queued — each removable before upload. -->
+      <div class="selected-files" *ngIf="previewUrls.length > 1">
+        <div class="selected-files__item" *ngFor="let url of previewUrls; let i = index">
+          <img [src]="url" alt="" />
+          <button type="button" class="selected-files__remove" (click)="removeSelectedFile(i)"
+            [attr.aria-label]="'galleryAdmin.removeSelectedAriaLabel' | translate">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <span class="selected-files__count" *ngIf="previewUrls.length > 1">
+        {{ selectedCountLabel }}
+      </span>
 
       <div class="upload-form__fields">
         <div class="form-field">

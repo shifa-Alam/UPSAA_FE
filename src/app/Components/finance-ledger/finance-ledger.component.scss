@@ -195,6 +195,11 @@
   margin-left: 2px;
 }
 
+.field__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-500);
+}
+
 .field input,
 .field select,
 .field textarea {

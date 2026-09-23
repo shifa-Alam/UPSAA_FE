@@ -96,6 +96,14 @@
           <label class="field__label" for="leDescription">{{ 'financeLedger.descriptionLabel' | translate }}</label>
           <input id="leDescription" type="text" [(ngModel)]="form.description" name="description" />
         </div>
+        <div class="field field--full">
+          <label class="field__label" for="leAttachment">{{ 'financeLedger.attachmentLabel' | translate }}</label>
+          <input id="leAttachment" type="file" accept="image/*,.pdf" (change)="onFileSelected($event)" />
+          <span class="field__hint" *ngIf="selectedFileName">{{ selectedFileName }}</span>
+          <span class="field__hint" *ngIf="!selectedFileName && existingAttachmentUrl">
+            {{ 'financeLedger.attachmentKeepHint' | translate }}
+          </span>
+        </div>
       </div>
 
       <div class="form-actions">
@@ -176,6 +184,11 @@
               {{ entry.type === 'Income' ? '+' : '-' }}৳{{ entry.amount | number }}
             </td>
             <td class="ledger__actions rt-actions">
+              <button type="button" class="icon-btn" *ngIf="entry.attachmentUrl" [disabled]="downloadingId === entry.id"
+                (click)="downloadAttachment(entry)"
+                [attr.aria-label]="'financeLedger.downloadAriaLabel' | translate" [attr.title]="'financeLedger.downloadAriaLabel' | translate">
+                <mat-icon>{{ downloadingId === entry.id ? 'hourglass_top' : 'attach_file' }}</mat-icon>
+              </button>
               <button type="button" class="icon-btn" (click)="editEntry(entry)"
                 [attr.aria-label]="'financeLedger.editAriaLabel' | translate" [attr.title]="'financeLedger.editAriaLabel' | translate">
                 <mat-icon>edit</mat-icon>

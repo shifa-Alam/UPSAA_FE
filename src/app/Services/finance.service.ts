@@ -13,6 +13,7 @@ export interface LedgerEntry {
   description?: string | null;
   amount: number;
   reference?: string | null;
+  attachmentUrl?: string | null;
 }
 
 export interface LedgerEntryInput {
@@ -68,15 +69,36 @@ export class FinanceService {
     return this.http.get<string[]>(`${this.apiUrl}/Categories${query}`);
   }
 
-  createEntry(entry: LedgerEntryInput): Observable<LedgerEntry> {
-    return this.http.post<LedgerEntry>(`${this.apiUrl}/CreateEntry`, entry);
+  /** file is the proof/receipt to attach — optional, image or PDF. */
+  createEntry(entry: LedgerEntryInput, file?: File | null): Observable<LedgerEntry> {
+    return this.http.post<LedgerEntry>(`${this.apiUrl}/CreateEntry`, this.toFormData(entry, file));
   }
 
-  updateEntry(id: number, entry: LedgerEntryInput): Observable<LedgerEntry> {
-    return this.http.put<LedgerEntry>(`${this.apiUrl}/${id}`, entry);
+  /** Omit file to leave the existing attachment (if any) untouched. */
+  updateEntry(id: number, entry: LedgerEntryInput, file?: File | null): Observable<LedgerEntry> {
+    return this.http.put<LedgerEntry>(`${this.apiUrl}/${id}`, this.toFormData(entry, file));
+  }
+
+  private toFormData(entry: LedgerEntryInput, file?: File | null): FormData {
+    const formData = new FormData();
+    formData.append('EntryDate', entry.entryDate);
+    formData.append('Type', entry.type);
+    formData.append('Category', entry.category);
+    if (entry.description) formData.append('Description', entry.description);
+    formData.append('Amount', String(entry.amount));
+    if (entry.reference) formData.append('Reference', entry.reference);
+    if (file) formData.append('File', file);
+    return formData;
   }
 
   deleteEntry(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  /** Attachment endpoints are staff-only, so a plain <a href> won't carry the
+   *  JWT — fetch as a blob through HttpClient (the auth interceptor attaches
+   *  the token) and the caller turns that into a browser download. */
+  downloadAttachment(url: string): Observable<Blob> {
+    return this.http.get(url, { responseType: 'blob' });
   }
 }

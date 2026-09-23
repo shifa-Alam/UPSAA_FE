@@ -23,8 +23,8 @@ export class GalleryAdminComponent implements OnInit {
   categories: string[] = [];
   loading = true;
 
-  selectedFile: File | null = null;
-  previewUrl: string | null = null;
+  selectedFiles: File[] = [];
+  previewUrls: string[] = [];
   title = '';
   category = '';
   uploading = false;
@@ -80,17 +80,28 @@ export class GalleryAdminComponent implements OnInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-    this.selectedFile = file;
+    const files = input.files ? Array.from(input.files) : [];
+    this.setSelectedFiles(files);
+  }
 
-    if (this.previewUrl) {
-      URL.revokeObjectURL(this.previewUrl);
-    }
-    this.previewUrl = file ? URL.createObjectURL(file) : null;
+  removeSelectedFile(index: number): void {
+    const files = this.selectedFiles.slice();
+    files.splice(index, 1);
+    this.setSelectedFiles(files);
+  }
+
+  private setSelectedFiles(files: File[]): void {
+    this.previewUrls.forEach(url => URL.revokeObjectURL(url));
+    this.selectedFiles = files;
+    this.previewUrls = files.map(f => URL.createObjectURL(f));
+  }
+
+  get selectedCountLabel(): string {
+    return this.languageService.translate('galleryAdmin.selectedCount').replace('{count}', String(this.selectedFiles.length));
   }
 
   submit(): void {
-    if (!this.selectedFile) {
+    if (this.selectedFiles.length === 0) {
       this.snackbar.showError(this.languageService.translate('galleryAdmin.selectImageError'));
       return;
     }
@@ -104,7 +115,7 @@ export class GalleryAdminComponent implements OnInit {
     }
 
     this.uploading = true;
-    this.galleryService.upload(this.selectedFile, this.title.trim(), this.category.trim()).pipe(
+    this.galleryService.uploadMultiple(this.selectedFiles, this.title.trim(), this.category.trim()).pipe(
       catchError(err => {
         this.snackbar.showError(err?.error?.message || this.languageService.translate('galleryAdmin.uploadFailedError'));
         return of(null);
@@ -113,7 +124,9 @@ export class GalleryAdminComponent implements OnInit {
       this.uploading = false;
       if (!result) return;
 
-      this.snackbar.showSuccess(this.languageService.translate('galleryAdmin.uploadSuccess'));
+      this.snackbar.showSuccess(result.length > 1
+        ? this.languageService.translate('galleryAdmin.uploadMultipleSuccess').replace('{count}', String(result.length))
+        : this.languageService.translate('galleryAdmin.uploadSuccess'));
       this.resetForm();
       this.loadImages();
       this.loadCategories();
@@ -192,9 +205,9 @@ export class GalleryAdminComponent implements OnInit {
   }
 
   private resetForm(): void {
-    this.selectedFile = null;
-    if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
-    this.previewUrl = null;
+    this.previewUrls.forEach(url => URL.revokeObjectURL(url));
+    this.selectedFiles = [];
+    this.previewUrls = [];
     this.title = '';
     this.category = '';
   }

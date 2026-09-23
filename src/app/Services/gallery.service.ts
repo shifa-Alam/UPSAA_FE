@@ -41,6 +41,15 @@ export class GalleryService {
     return this.http.post<GalleryImage>(`${this.apiUrl}/Upload`, formData);
   }
 
+  /** SuperAdmin/Admin only. Uploads all files under one Title/Category — one gallery entry per file. */
+  uploadMultiple(files: File[], title: string, category: string): Observable<GalleryImage[]> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('Files', file));
+    formData.append('Title', title);
+    formData.append('Category', category);
+    return this.http.post<GalleryImage[]>(`${this.apiUrl}/UploadMultiple`, formData);
+  }
+
   /** SuperAdmin/Admin only. */
   delete(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
