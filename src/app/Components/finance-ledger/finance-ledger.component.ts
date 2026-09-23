@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { catchError, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import {
   FinanceService, LedgerEntry, LedgerEntryInput, LedgerFilter,
-  LedgerType, CategoryTotal
+  LedgerType, CategoryTotal, MonthlyTotal, LedgerSummaryResponse
 } from '../../Services/finance.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
@@ -13,9 +13,25 @@ import { SectionCardComponent } from '../shared/section-card/section-card.compon
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
-import { todayDateOnly } from '../../Utils/date-utils';
+import { toDateOnly, todayDateOnly } from '../../Utils/date-utils';
 
 const PAGE_SIZE = 15;
+// Export/print need every filtered row, not one page.
+const EXPORT_PAGE_SIZE = 100000;
+
+export type PeriodPreset = 'thisMonth' | 'lastMonth' | 'thisYear' | 'lastYear';
+
+function csvCell(value: string | number): string {
+  if (typeof value === 'number') return String(value);
+  // Leading =,+,-,@ would make Excel evaluate the cell as a formula.
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return /[",\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 
 
 @Component({
@@ -35,6 +51,12 @@ export class FinanceLedgerComponent implements OnInit {
   totalIncome = 0;
   totalExpense = 0;
   balance = 0;
+  monthlyTotals: MonthlyTotal[] = [];
+  openingBalance: number | null = null;
+
+  readonly presets: PeriodPreset[] = ['thisMonth', 'lastMonth', 'thisYear', 'lastYear'];
+  exporting = false;
+  printing = false;
 
   pageNumber = 1;
   totalPages = 0;
@@ -75,6 +97,182 @@ export class FinanceLedgerComponent implements OnInit {
   resetFilters(): void {
     this.filters = { from: '', to: '', type: '', category: '' };
     this.onFilterChange();
+  }
+
+  applyPreset(preset: PeriodPreset): void {
+    const { from, to } = this.presetRange(preset);
+    this.filters.from = from;
+    this.filters.to = to;
+    this.onFilterChange();
+  }
+
+  isPresetActive(preset: PeriodPreset): boolean {
+    const { from, to } = this.presetRange(preset);
+    return this.filters.from === from && this.filters.to === to;
+  }
+
+  private presetRange(preset: PeriodPreset): { from: string; to: string } {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth();
+    switch (preset) {
+      case 'thisMonth': return { from: toDateOnly(new Date(y, m, 1))!, to: toDateOnly(new Date(y, m + 1, 0))! };
+      case 'lastMonth': return { from: toDateOnly(new Date(y, m - 1, 1))!, to: toDateOnly(new Date(y, m, 0))! };
+      case 'thisYear': return { from: `${y}-01-01`, to: `${y}-12-31` };
+      case 'lastYear': return { from: `${y - 1}-01-01`, to: `${y - 1}-12-31` };
+    }
+  }
+
+  get closingBalance(): number | null {
+    return this.openingBalance === null ? null : this.openingBalance + this.balance;
+  }
+
+  monthLabel(m: MonthlyTotal): string {
+    const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+    return new Date(m.year, m.month - 1, 1).toLocaleDateString(locale, { month: 'short', year: 'numeric' });
+  }
+
+  exportCsv(): void {
+    this.exporting = true;
+    this.fetchAll().subscribe(res => {
+      this.exporting = false;
+      if (!res) return;
+
+      const t = (k: string) => this.languageService.translate(`financeLedger.${k}`);
+      const rows: (string | number)[][] = [
+        [t('colDate'), t('colType'), t('colCategory'), t('colDescription'), t('referenceLabel'), t('typeIncome'), t('typeExpense')],
+        ...res.entries.map(e => [
+          e.entryDate.slice(0, 10),
+          e.type === 'Income' ? t('typeIncome') : t('typeExpense'),
+          e.category,
+          e.description ?? '',
+          e.reference ?? '',
+          e.type === 'Income' ? e.amount : '',
+          e.type === 'Expense' ? e.amount : ''
+        ]),
+        [],
+        [t('statIncome'), '', '', '', '', res.totalIncome, ''],
+        [t('statExpense'), '', '', '', '', '', res.totalExpense],
+        [t('statBalance'), '', '', '', '', res.balance, '']
+      ];
+      if (res.openingBalance !== null) {
+        rows.push([t('openingBalance'), '', '', '', '', res.openingBalance, '']);
+        rows.push([t('closingBalance'), '', '', '', '', res.openingBalance + res.balance, '']);
+      }
+
+      const csv = rows.map(r => r.map(csvCell).join(',')).join('\r\n');
+      // BOM so Excel opens Bangla text as UTF-8.
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+      this.saveBlob(blob, `ledger-${this.periodSlug()}.csv`);
+    });
+  }
+
+  printReport(): void {
+    // Open synchronously inside the click so popup blockers allow it; fill it once data arrives.
+    const win = window.open('', '_blank');
+    if (!win) {
+      this.snackbar.showError(this.languageService.translate('financeLedger.popupBlockedError'));
+      return;
+    }
+    win.document.write(`<p style="font-family:sans-serif">${escapeHtml(this.languageService.translate('financeLedger.loading'))}</p>`);
+
+    this.printing = true;
+    this.fetchAll().subscribe(res => {
+      this.printing = false;
+      if (!res) {
+        win.close();
+        return;
+      }
+      win.document.open();
+      win.document.write(this.buildReportHtml(res));
+      win.document.close();
+      win.focus();
+      win.print();
+    });
+  }
+
+  private buildReportHtml(res: LedgerSummaryResponse): string {
+    const t = (k: string) => escapeHtml(this.languageService.translate(`financeLedger.${k}`));
+    const lang = this.languageService.lang();
+    const money = (n: number) => '৳' + n.toLocaleString(lang === 'bn' ? 'bn-BD' : 'en-IN', { maximumFractionDigits: 2 });
+    const period = this.filters.from || this.filters.to
+      ? `${escapeHtml(this.filters.from || '…')} — ${escapeHtml(this.filters.to || '…')}`
+      : t('allTime');
+    const filterNotes = [
+      this.filters.type ? `${t('colType')}: ${this.filters.type === 'Income' ? t('typeIncome') : t('typeExpense')}` : '',
+      this.filters.category ? `${t('colCategory')}: ${escapeHtml(this.filters.category)}` : ''
+    ].filter(Boolean).join(' · ');
+
+    const summaryRows = [
+      res.openingBalance !== null ? `<tr><th>${t('openingBalance')}</th><td>${money(res.openingBalance)}</td></tr>` : '',
+      `<tr><th>${t('statIncome')}</th><td class="inc">${money(res.totalIncome)}</td></tr>`,
+      `<tr><th>${t('statExpense')}</th><td class="exp">${money(res.totalExpense)}</td></tr>`,
+      `<tr><th>${t('netForPeriod')}</th><td>${money(res.balance)}</td></tr>`,
+      res.openingBalance !== null ? `<tr class="strong"><th>${t('closingBalance')}</th><td>${money(res.openingBalance + res.balance)}</td></tr>` : ''
+    ].join('');
+
+    const monthRows = res.monthlyTotals.map(m => `
+      <tr><td>${escapeHtml(this.monthLabel(m))}</td><td class="num inc">${money(m.income)}</td>
+      <td class="num exp">${money(m.expense)}</td><td class="num">${money(m.income - m.expense)}</td></tr>`).join('');
+
+    const entryRows = res.entries.map(e => `
+      <tr><td>${escapeHtml(e.entryDate.slice(0, 10))}</td>
+      <td>${e.type === 'Income' ? t('typeIncome') : t('typeExpense')}</td>
+      <td>${escapeHtml(e.category)}</td>
+      <td>${escapeHtml(e.description ?? '')}${e.reference ? ` <small>(${escapeHtml(e.reference)})</small>` : ''}</td>
+      <td class="num ${e.type === 'Income' ? 'inc' : 'exp'}">${e.type === 'Income' ? '+' : '-'}${money(e.amount)}</td></tr>`).join('');
+
+    return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8">
+<title>${t('reportTitle')} — ${period}</title>
+<style>
+  body{font-family:'Noto Sans Bengali','Segoe UI',Arial,sans-serif;color:#111;margin:24px;font-size:12px}
+  h1{font-size:18px;margin:0 0 4px}
+  .meta{color:#555;margin:0 0 16px}
+  h2{font-size:14px;margin:20px 0 8px}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top}
+  thead th{background:#f1f3f5}
+  .summary{width:auto;min-width:320px}
+  .summary th{background:#f8f9fa;font-weight:600}
+  .summary td{text-align:right}
+  .strong th,.strong td{font-weight:700}
+  .num{text-align:right;white-space:nowrap}
+  .inc{color:#2e7d32}.exp{color:#c62828}
+  small{color:#666}
+  @media print{body{margin:0}thead{display:table-header-group}tr{page-break-inside:avoid}}
+</style></head><body>
+<h1>${t('reportTitle')}</h1>
+<p class="meta">${t('reportPeriod')}: ${period}${filterNotes ? ' · ' + filterNotes : ''} · ${t('reportGenerated')}: ${escapeHtml(new Date().toLocaleString(lang === 'bn' ? 'bn-BD' : 'en-GB'))}</p>
+<table class="summary">${summaryRows}</table>
+${res.monthlyTotals.length > 1 ? `<h2>${t('monthlyBreakdown')}</h2>
+<table><thead><tr><th>${t('colMonth')}</th><th class="num">${t('typeIncome')}</th><th class="num">${t('typeExpense')}</th><th class="num">${t('colNet')}</th></tr></thead><tbody>${monthRows}</tbody></table>` : ''}
+<h2>${t('allTransactions')} (${res.totalItems})</h2>
+<table><thead><tr><th>${t('colDate')}</th><th>${t('colType')}</th><th>${t('colCategory')}</th><th>${t('colDescription')}</th><th class="num">${t('colAmount')}</th></tr></thead>
+<tbody>${entryRows}</tbody></table>
+</body></html>`;
+  }
+
+  private fetchAll(): Observable<LedgerSummaryResponse | null> {
+    return this.financeService.filter({ ...this.currentFilter(), pageNumber: 1, pageSize: EXPORT_PAGE_SIZE }).pipe(
+      catchError(() => {
+        this.snackbar.showError(this.languageService.translate('financeLedger.reportFailedError'));
+        return of(null);
+      })
+    );
+  }
+
+  private periodSlug(): string {
+    if (!this.filters.from && !this.filters.to) return 'all';
+    return `${this.filters.from || 'start'}_to_${this.filters.to || todayDateOnly()}`;
+  }
+
+  private saveBlob(blob: Blob, fileName: string): void {
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(objectUrl);
   }
 
   goToPage(page: number): void {
@@ -142,13 +340,7 @@ export class FinanceLedgerComponent implements OnInit {
     ).subscribe(blob => {
       this.downloadingId = null;
       if (!blob) return;
-
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = objectUrl;
-      link.download = `${entry.category}-${entry.entryDate.slice(0, 10)}`;
-      link.click();
-      URL.revokeObjectURL(objectUrl);
+      this.saveBlob(blob, `${entry.category}-${entry.entryDate.slice(0, 10)}`);
     });
   }
 
@@ -209,9 +401,8 @@ export class FinanceLedgerComponent implements OnInit {
     });
   }
 
-  private fetch(): void {
-    this.loading = true;
-    const filter: LedgerFilter = {
+  private currentFilter(): LedgerFilter {
+    return {
       from: this.filters.from || undefined,
       to: this.filters.to || undefined,
       type: this.filters.type || undefined,
@@ -219,8 +410,11 @@ export class FinanceLedgerComponent implements OnInit {
       pageNumber: this.pageNumber,
       pageSize: PAGE_SIZE
     };
+  }
 
-    this.financeService.filter(filter).pipe(catchError(() => of(null))).subscribe(res => {
+  private fetch(): void {
+    this.loading = true;
+    this.financeService.filter(this.currentFilter()).pipe(catchError(() => of(null))).subscribe(res => {
       this.loading = false;
       if (!res) return;
 
@@ -232,6 +426,8 @@ export class FinanceLedgerComponent implements OnInit {
       this.balance = res.balance;
       this.incomeByCategory = res.incomeByCategory;
       this.expenseByCategory = res.expenseByCategory;
+      this.monthlyTotals = res.monthlyTotals ?? [];
+      this.openingBalance = res.openingBalance ?? null;
     });
   }
 

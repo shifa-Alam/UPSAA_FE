@@ -1,6 +1,12 @@
 <div class="adm">
 
   <app-admin-header [title]="'financeLedger.title' | translate" [subtitle]="'financeLedger.subtitle' | translate">
+    <button type="button" class="btn btn--outline" (click)="exportCsv()" [disabled]="exporting || totalItems === 0">
+      <mat-icon>{{ exporting ? 'hourglass_top' : 'download' }}</mat-icon> {{ 'financeLedger.exportCsvButton' | translate }}
+    </button>
+    <button type="button" class="btn btn--outline" (click)="printReport()" [disabled]="printing || totalItems === 0">
+      <mat-icon>{{ printing ? 'hourglass_top' : 'print' }}</mat-icon> {{ 'financeLedger.printReportButton' | translate }}
+    </button>
     <button type="button" class="btn btn--solid" (click)="openNewForm()" *ngIf="!showForm">
       <mat-icon>add</mat-icon> {{ 'financeLedger.newEntryButton' | translate }}
     </button>
@@ -22,6 +28,38 @@
       <span class="stat__icon"><mat-icon>{{ balance >= 0 ? 'account_balance_wallet' : 'warning' }}</mat-icon></span>
       <span class="stat__value">৳{{ balance | number }}</span>
       <span class="stat__label">{{ 'financeLedger.statBalance' | translate }}</span>
+    </div>
+  </section>
+
+  <div class="period-balance" *ngIf="openingBalance !== null">
+    <span>{{ 'financeLedger.openingBalance' | translate }}: <strong>৳{{ openingBalance | number }}</strong></span>
+    <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+    <span>{{ 'financeLedger.closingBalance' | translate }}:
+      <strong [class.text-expense]="(closingBalance ?? 0) < 0">৳{{ closingBalance | number }}</strong></span>
+  </div>
+
+  <!-- ===== Monthly breakdown ===== -->
+  <section class="panel" *ngIf="monthlyTotals.length > 1">
+    <h3 class="panel__title">{{ 'financeLedger.monthlyBreakdown' | translate }}</h3>
+    <div class="table-wrap">
+      <table class="monthly">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'financeLedger.colMonth' | translate }}</th>
+            <th scope="col" class="num">{{ 'financeLedger.typeIncome' | translate }}</th>
+            <th scope="col" class="num">{{ 'financeLedger.typeExpense' | translate }}</th>
+            <th scope="col" class="num">{{ 'financeLedger.colNet' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let m of monthlyTotals">
+            <td>{{ monthLabel(m) }}</td>
+            <td class="num text-income">৳{{ m.income | number }}</td>
+            <td class="num text-expense">৳{{ m.expense | number }}</td>
+            <td class="num" [class.text-expense]="m.income - m.expense < 0">৳{{ m.income - m.expense | number }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -118,6 +156,13 @@
 
   <!-- ===== Filters + ledger ===== -->
   <app-section-card icon="receipt_long" [title]="'financeLedger.allTransactions' | translate" [noPadding]="true">
+
+    <div class="presets" role="group" [attr.aria-label]="'financeLedger.periodLabel' | translate">
+      <button type="button" class="preset" *ngFor="let p of presets" [class.preset--active]="isPresetActive(p)"
+        [attr.aria-pressed]="isPresetActive(p)" (click)="applyPreset(p)">
+        {{ ('financeLedger.preset_' + p) | translate }}
+      </button>
+    </div>
 
     <div class="toolbar">
       <div class="filters">

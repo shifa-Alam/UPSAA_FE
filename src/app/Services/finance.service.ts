@@ -39,6 +39,13 @@ export interface CategoryTotal {
   amount: number;
 }
 
+export interface MonthlyTotal {
+  year: number;
+  month: number;
+  income: number;
+  expense: number;
+}
+
 export interface LedgerSummaryResponse {
   entries: LedgerEntry[];
   totalItems: number;
@@ -50,6 +57,9 @@ export interface LedgerSummaryResponse {
   balance: number;
   incomeByCategory: CategoryTotal[];
   expenseByCategory: CategoryTotal[];
+  monthlyTotals: MonthlyTotal[];
+  /** Null unless a start date is set with no type/category filter. */
+  openingBalance: number | null;
 }
 
 @Injectable({
