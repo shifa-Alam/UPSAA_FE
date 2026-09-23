@@ -7,7 +7,7 @@
 
 /* ===== Sidebar — deep navy rail, distinct from the light admin content area ===== */
 .sidebar {
-  width: 232px;
+  width: 216px;
   background: linear-gradient(180deg, var(--color-primary-900) 0%, #020617 100%);
   color: #e5e7eb;
   display: flex;
@@ -18,7 +18,13 @@
 }
 
 .sidebar.collapsed {
-  width: 68px;
+  width: 60px;
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 192px;
+  }
 }
 
 /* ===== Head: brand + collapse toggle ===== */

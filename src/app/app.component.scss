@@ -59,8 +59,8 @@ content-area router-outlet {
 }
 
 .logo-img {
-  height: 42px;
-  width: 42px;
+  height: 36px;
+  width: 36px;
   object-fit: contain;
 }
 
@@ -172,18 +172,26 @@ content-area router-outlet {
   font-weight: 700;
 }
 
+/* Full link bar needs ~900px (more when signed in), so tablets get the hamburger too. */
+@media (max-width: 1024px) {
+  .desktop-menu {
+    display: none;
+  }
+
+  .menu-button {
+    display: inline-flex;
+    color: var(--color-ink-700);
+  }
+}
+
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
   .app-toolbar {
     height: var(--header-height-mobile);
   }
 
-  .desktop-menu {
-    display: none;
-  }
-
   .content-area {
-    padding-bottom: 76px;
+    padding-bottom: 56px;
     /* height of mobile footer */
   }
 
@@ -194,11 +202,6 @@ content-area router-outlet {
   .logo-img {
     height: 34px;
     width: 34px;
-  }
-
-  .menu-button {
-    display: inline-flex;
-    color: var(--color-ink-700);
   }
 }
 

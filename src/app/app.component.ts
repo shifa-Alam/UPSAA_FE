@@ -17,7 +17,7 @@ import { TranslatePipe } from './Pipes/translate.pipe';
 
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 @Component({
@@ -110,7 +110,8 @@ export class AppComponent implements OnInit {
     private memberService: MemberService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     this.isMobile$ = this.breakpointObserver
-      .observe([Breakpoints.Handset])
+      // Must match the CSS breakpoint that hides the dashboard sidebar, or tablets lose all navigation.
+      .observe(['(max-width: 768px)'])
       .pipe(map(result => result.matches));
   }
 

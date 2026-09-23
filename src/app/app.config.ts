@@ -6,6 +6,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { authInterceptor } from './Services/auth.interceptor';
 
 
@@ -21,5 +22,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([authInterceptor]) // <-- Add interceptor here
     ),
     provideNativeDateAdapter(),
+    // Material's default 80vw cap leaves phone dialogs cramped.
+    { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxWidth: '96vw', autoFocus: 'first-tabbable', hasBackdrop: true } },
   ]
 };

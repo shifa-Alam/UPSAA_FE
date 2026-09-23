@@ -85,7 +85,7 @@
 
           <!-- Members table -->
           <div class="table-scroll">
-            <table class="data-table members-table">
+            <table class="data-table members-table rt">
               <thead>
                 <tr>
                   <th class="col-batch" *ngIf="!isMobile">{{ 'memberLanding.colBatch' | translate }}</th>
@@ -100,19 +100,19 @@
               </thead>
               <tbody>
                 <tr *ngFor="let member of members" [class.row--attention]="member.statusId == 'Pending'">
-                  <td class="col-batch" *ngIf="!isMobile">{{ member.batch }}</td>
-                  <td class="col-name">
+                  <td class="col-batch" *ngIf="!isMobile" [attr.data-label]="'memberLanding.colBatch' | translate">{{ member.batch }}</td>
+                  <td class="col-name rt-title">
                     <span class="member-name">
                       <span class="strong">{{ member.fullName }}</span>
                       <mat-icon *ngIf="member.active" class="verified" [title]="'memberLanding.memberActive' | translate">verified</mat-icon>
                     </span>
                   </td>
-                  <td class="col-phone mono">{{ member.memberCode }}</td>
-                  <td class="col-city">{{ member.currentCity }}</td>
-                  <td class="col-blood">{{ member.bloodGroup }}</td>
-                  <td class="num" *ngIf="isSuperAdmin()">{{ member.fees | memberFeeAmount:'Total' }}</td>
+                  <td class="col-phone mono" [attr.data-label]="'memberLanding.colMemberCode' | translate">{{ member.memberCode }}</td>
+                  <td class="col-city" [attr.data-label]="'memberLanding.colCity' | translate">{{ member.currentCity }}</td>
+                  <td class="col-blood" [attr.data-label]="'memberLanding.colBloodGroup' | translate">{{ member.bloodGroup }}</td>
+                  <td class="num" *ngIf="isSuperAdmin()" [attr.data-label]="'memberLanding.colTotal' | translate">{{ member.fees | memberFeeAmount:'Total' }}</td>
 
-                  <td class="col-manage" *ngIf="isSuperAdmin() || isRepresentative()">
+                  <td class="col-manage rt-wide" *ngIf="isSuperAdmin() || isRepresentative()" [attr.data-label]="'memberLanding.colManage' | translate">
                     <div class="manage">
                       <!-- Representative: request activation for own batch -->
                       <button type="button" class="icon-btn icon-btn--request"
@@ -145,7 +145,7 @@
                     </div>
                   </td>
 
-                  <td class="text-right">
+                  <td class="text-right rt-actions">
                     <button type="button" class="icon-btn" (click)="viewMemberDetails(member)"
                       [attr.aria-label]="'memberLanding.detailsTooltip' | translate" [title]="'memberLanding.detailsTooltip' | translate">
                       <mat-icon>visibility</mat-icon>
@@ -215,7 +215,7 @@
           </div>
 
           <div class="table-scroll" *ngIf="batchSummaries.length > 0; else noData">
-            <table class="data-table batch-table">
+            <table class="data-table batch-table rt">
               <thead>
                 <tr>
                   <th>{{ 'memberLanding.colBatch' | translate }}</th>
@@ -228,15 +228,15 @@
               <tbody>
                 <tr *ngFor="let batch of batchSummaries; let i = index"
                   [ngClass]="{'top-1': i === 0, 'top-2': i === 1, 'top-3': i === 2}">
-                  <td>
+                  <td class="rt-title">
                     <span class="batch-cell">
                       <span class="rank" *ngIf="i < 3">{{ i + 1 }}</span>
                       <span class="strong">{{ batch.batch }}</span>
                     </span>
                   </td>
-                  <td class="num">{{ batch.registeredMembers }}</td>
-                  <td class="num">{{ batch.totalAmount | number:'1.0-0' }}</td>
-                  <td>
+                  <td class="num" [attr.data-label]="'memberLanding.colRegistered' | translate">{{ batch.registeredMembers }}</td>
+                  <td class="num" [attr.data-label]="'memberLanding.colAmountBdt' | translate">{{ batch.totalAmount | number:'1.0-0' }}</td>
+                  <td class="rt-wide" [attr.data-label]="'memberLanding.colPercentPaid' | translate">
                     <div class="meter" [attr.aria-label]="batch.percentagePaid + '%'">
                       <span class="meter__track">
                         <span class="meter__fill" [ngClass]="'meter__fill--' + (batch.progressColor || 'primary')"
@@ -245,7 +245,7 @@
                       <span class="meter__value">{{ batch.percentagePaid }}%</span>
                     </div>
                   </td>
-                  <td>
+                  <td [attr.data-label]="'memberLanding.colStatus' | translate">
                     <span class="pill" [ngClass]="batch.percentagePaid === 100 ? 'pill--success' : (batch.percentagePaid > 0 ? 'pill--attention' : 'pill--danger')">
                       {{ getStatusBadgeLabel(batch.statusBadge) }}
                     </span>

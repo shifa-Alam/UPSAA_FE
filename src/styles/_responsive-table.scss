@@ -1,0 +1,113 @@
+// =============================================================
+// Responsive tables — add class "rt" to a <table> and a data-label to
+// each <td>. On phones every row becomes a compact card: fields in two
+// columns, each with its small label above the value. Global and
+// !important on purpose: it has to beat each component's own
+// encapsulated table rules (min-width, paddings, borders).
+//   td.rt-title   → card heading across the top (no label)
+//   td.rt-actions → buttons pinned to the card's top-right corner
+//   td.rt-wide    → long value that needs the full card width
+// =============================================================
+@media (max-width: 640px) {
+  table.rt {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: var(--space-2);
+    border-collapse: separate;
+  }
+
+  table.rt thead {
+    display: none !important;
+  }
+
+  table.rt tbody,
+  table.rt tfoot {
+    display: flex !important;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100% !important;
+  }
+
+  table.rt tr {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px var(--space-3);
+    width: 100% !important;
+    padding: var(--space-2) var(--space-3) !important;
+    border: 1px solid var(--color-ink-200) !important;
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+  }
+
+  table.rt td {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1px;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    text-align: left !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+  }
+
+  table.rt td::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-ink-400);
+  }
+
+  table.rt td:not([data-label])::before,
+  table.rt td[data-label='']::before {
+    display: none;
+  }
+
+  table.rt td:empty {
+    display: none !important;
+  }
+
+  // Colspan status rows (loading / "no results") keep the full width.
+  table.rt td[colspan] {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center !important;
+  }
+
+  table.rt td.rt-wide {
+    grid-column: 1 / -1;
+  }
+
+  table.rt td.rt-title {
+    order: -1;
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    padding-bottom: 6px !important;
+    border-bottom: 1px solid var(--color-ink-200) !important;
+  }
+
+  table.rt tr:has(td.rt-actions) td.rt-title {
+    padding-right: 84px !important;
+    min-height: 32px;
+  }
+
+  table.rt td.rt-actions {
+    position: absolute;
+    top: 6px;
+    right: var(--space-2);
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+  }
+}

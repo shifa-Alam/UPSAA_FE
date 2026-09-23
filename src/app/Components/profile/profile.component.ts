@@ -142,12 +142,12 @@ export class ProfileComponent implements OnInit {
 
   openChangePasswordDialog() {
     this.dialog.open(ChangePasswordComponent, {
-      width: '90%'
+      width: '440px'
     });
   }
   openEditInfoDialog() {
     const dialogRef = this.dialog.open(MemberEditComponent, {
-      width: '90%',
+      width: '720px',
       data: this.member, // pass current member data
     });
 
@@ -184,7 +184,7 @@ export class ProfileComponent implements OnInit {
   }
   openCandidateForm() {
     // Option 1: open Angular Material dialog
-    this.dialog.open(CandidateAddComponent, { width: '98%' });
+    this.dialog.open(CandidateAddComponent, { width: '560px' });
 
     // Option 2: navigate to route
     // this.router.navigate(['/candidate-form', this.member.id]);

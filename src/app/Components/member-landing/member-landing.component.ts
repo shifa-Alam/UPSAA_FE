@@ -188,7 +188,7 @@ onTabChange(event: any) {
   viewMemberDetails(member: any) {
     this.dialog.open(MemberDetailsComponent, {
       data: member,
-      width: '500px'
+      width: '520px'
     });
   }
   getMiddlePages(): number[] {

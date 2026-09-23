@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 var(--space-5);
   border-radius: var(--radius-pill);
   font: 600 var(--font-size-sm) / 1 var(--font-base);
@@ -121,7 +121,7 @@
 // ---------------------------- Page hero (inner pages) ----------------------------
 .pp-hero {
   position: relative;
-  padding: clamp(36px, 5vw, 60px) 0 clamp(32px, 4.5vw, 52px);
+  padding: clamp(22px, 3.2vw, 38px) 0 clamp(20px, 2.8vw, 34px);
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -156,7 +156,7 @@
 
 .pp-hero__title {
   color: #fff;
-  font-size: clamp(26px, 3.6vw, 40px);
+  font-size: clamp(21px, 2.8vw, 32px);
   font-weight: 700;
   line-height: 1.15;
   max-width: 24ch;
@@ -166,7 +166,7 @@
 .pp-hero__subtitle {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(14px, 1.6vw, 17px);
+  font-size: clamp(13px, 1.4vw, 15px);
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 }
@@ -178,7 +178,7 @@
 
 // ---------------------------- Sections ----------------------------
 .pp-section {
-  padding: clamp(32px, 5vw, 60px) 0;
+  padding: clamp(22px, 3.4vw, 40px) 0;
 }
 
 // Alternate backgrounds by position so sections hidden for lack of data
@@ -205,7 +205,7 @@
 }
 
 .pp-section__title {
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: clamp(19px, 2.4vw, 26px);
   font-weight: 700;
   line-height: 1.2;
   margin: 0;
@@ -237,7 +237,7 @@
 // ---------------------------- Portrait cards ----------------------------
 .pp-people {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 200px));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 170px));
   justify-content: center;
   gap: var(--space-5) var(--space-4);
 }
@@ -253,7 +253,7 @@
 
 .pp-person__photo {
   width: 100%;
-  max-width: 190px;
+  max-width: 170px;
   aspect-ratio: 4 / 5;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -277,7 +277,7 @@
   place-items: center;
   background: var(--gradient-hero);
   font-family: var(--font-display);
-  font-size: 44px;
+  font-size: 36px;
   color: rgba(255, 255, 255, 0.85);
 }
 
@@ -347,7 +347,7 @@
 // ---------------------------- Join band ----------------------------
 .pp-join {
   position: relative;
-  padding: clamp(32px, 5vw, 60px) 0;
+  padding: clamp(22px, 3.4vw, 40px) 0;
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -372,7 +372,7 @@
 
 .pp-join__title {
   color: #fff;
-  font-size: clamp(24px, 3.4vw, 36px);
+  font-size: clamp(20px, 2.6vw, 28px);
   line-height: 1.2;
   margin: 0 0 var(--space-3);
 }

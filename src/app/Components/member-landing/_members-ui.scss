@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 40px;
+  min-height: 36px;
   padding: 0 var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid transparent;
@@ -195,7 +195,7 @@
 
   th {
     text-align: left;
-    padding: var(--space-3) var(--space-5);
+    padding: var(--space-2) var(--space-4);
     font-size: var(--font-size-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
@@ -207,7 +207,7 @@
   }
 
   td {
-    padding: 14px var(--space-5);
+    padding: 9px var(--space-4);
     border-bottom: 1px solid var(--color-ink-200);
     color: var(--color-ink-700);
     vertical-align: middle;

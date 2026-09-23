@@ -128,7 +128,7 @@
                 </div>
 
                 <div class="table-wrapper">
-                    <table class="admin-table results-table">
+                    <table class="admin-table results-table rt">
                         <thead>
                             <tr>
                                 <th>{{ 'voteCasts.colPosition' | translate }}</th>
@@ -151,14 +151,14 @@
 
                             <tr *ngFor="let candidate of candidateResults"
                                 [class.leading]="leadingCandidate?.candidateId === candidate.candidateId">
-                                <td class="cell-muted">{{ candidate.positionName }}</td>
-                                <td class="cell-strong">
+                                <td class="cell-muted" [attr.data-label]="'voteCasts.colPosition' | translate">{{ candidate.positionName }}</td>
+                                <td class="cell-strong rt-title">
                                     {{ candidate.memberName }}
                                     <mat-icon *ngIf="leadingCandidate?.candidateId === candidate.candidateId"
                                         class="leader-icon" [attr.aria-label]="'voteCasts.topVoted' | translate">emoji_events</mat-icon>
                                 </td>
-                                <td class="num">{{ candidate.votes }}</td>
-                                <td class="num">
+                                <td class="num" [attr.data-label]="'voteCasts.colVotes' | translate">{{ candidate.votes }}</td>
+                                <td class="num" [attr.data-label]="'voteCasts.colVoteRate' | translate">
                                     {{ (totalVotes > 0 ? (candidate.votes / totalVotes * 100) : 0) | number:'1.0-1' }}%
                                 </td>
                             </tr>

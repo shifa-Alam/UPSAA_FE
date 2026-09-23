@@ -121,7 +121,7 @@
     </div>
 
     <div class="table-scroll" *ngIf="member.educationRecords.length; else noEdu">
-      <table class="data-table education-table">
+      <table class="data-table education-table rt">
         <thead>
           <tr>
             <th>{{ 'profile.degree' | translate }}</th>
@@ -132,10 +132,10 @@
         </thead>
         <tbody>
           <tr *ngFor="let edu of member.educationRecords">
-            <td class="strong">{{ edu.degreeName }}</td>
-            <td>{{ edu.instituteName }}</td>
-            <td>{{ edu.subject }}</td>
-            <td class="text-right">
+            <td class="strong rt-title">{{ edu.degreeName }}</td>
+            <td class="rt-wide" [attr.data-label]="'profile.institute' | translate">{{ edu.instituteName }}</td>
+            <td [attr.data-label]="'profile.subject' | translate">{{ edu.subject }}</td>
+            <td class="text-right rt-actions">
               <span class="row-actions">
                 <button type="button" class="icon-btn" (click)="editEducation(edu)" [attr.aria-label]="'profile.editEducation' | translate"
                   [title]="'profile.editEducation' | translate">
@@ -163,7 +163,7 @@
       <h2 class="card__title">{{ 'profile.feesTitle' | translate }}</h2>
     </div>
     <div class="table-scroll">
-      <table class="data-table fees-table">
+      <table class="data-table fees-table rt">
         <thead>
           <tr>
             <th>{{ 'profile.field.feeType' | translate }}</th>
@@ -173,9 +173,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let fee of member.fees">
-            <td class="strong">{{ fee.feeType }}</td>
-            <td class="num">৳{{ fee.amount }}</td>
-            <td class="text-right">
+            <td class="strong rt-title">{{ fee.feeType }}</td>
+            <td class="num" [attr.data-label]="'profile.field.amount' | translate">৳{{ fee.amount }}</td>
+            <td class="text-right" [attr.data-label]="'profile.field.status' | translate">
               <span class="pill" [class.pill--success]="fee.isPaid" [class.pill--danger]="!fee.isPaid">
                 {{ fee.isPaid ? ('profile.paid' | translate) : ('profile.unpaid' | translate) }}
               </span>

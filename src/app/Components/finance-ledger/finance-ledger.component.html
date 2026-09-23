@@ -150,7 +150,7 @@
     </app-empty-state>
 
     <div class="table-wrap" *ngIf="!loading && entries.length > 0">
-      <table class="ledger">
+      <table class="ledger rt">
         <thead>
           <tr>
             <th scope="col">{{ 'financeLedger.colDate' | translate }}</th>
@@ -163,19 +163,19 @@
         </thead>
         <tbody>
           <tr *ngFor="let entry of entries">
-            <td class="ledger__date">{{ entry.entryDate | date:'d MMM y' }}</td>
-            <td>
+            <td class="ledger__date" [attr.data-label]="'financeLedger.colDate' | translate">{{ entry.entryDate | date:'d MMM y' }}</td>
+            <td [attr.data-label]="'financeLedger.colType' | translate">
               <span class="pill" [class.pill--success]="entry.type === 'Income'" [class.pill--danger]="entry.type === 'Expense'">
                 {{ entry.type === 'Income' ? ('financeLedger.typeIncome' | translate) : ('financeLedger.typeExpense' | translate) }}
               </span>
             </td>
-            <td class="ledger__category">{{ entry.category }}</td>
-            <td class="ledger__desc">{{ entry.description || '—' }}</td>
-            <td class="num ledger__amount" [class.text-income]="entry.type === 'Income'"
+            <td class="ledger__category rt-title">{{ entry.category }}</td>
+            <td class="ledger__desc rt-wide" [attr.data-label]="'financeLedger.colDescription' | translate">{{ entry.description || '—' }}</td>
+            <td class="num ledger__amount" [attr.data-label]="'financeLedger.colAmount' | translate" [class.text-income]="entry.type === 'Income'"
               [class.text-expense]="entry.type === 'Expense'">
               {{ entry.type === 'Income' ? '+' : '-' }}৳{{ entry.amount | number }}
             </td>
-            <td class="ledger__actions">
+            <td class="ledger__actions rt-actions">
               <button type="button" class="icon-btn" (click)="editEntry(entry)"
                 [attr.aria-label]="'financeLedger.editAriaLabel' | translate" [attr.title]="'financeLedger.editAriaLabel' | translate">
                 <mat-icon>edit</mat-icon>

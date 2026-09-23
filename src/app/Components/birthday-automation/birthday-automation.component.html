@@ -106,7 +106,7 @@
         [title]="'birthdayAutomation.noBirthdaysTitle' | translate" [message]="'birthdayAutomation.noBirthdaysMessage' | translate"></app-empty-state>
 
       <div class="table-wrapper" *ngIf="!birthdaysLoading && birthdays.length > 0">
-        <table class="data-table">
+        <table class="data-table rt">
           <thead>
             <tr>
               <th>{{ 'birthdayAutomation.colName' | translate }}</th>
@@ -116,15 +116,15 @@
           </thead>
           <tbody>
             <tr *ngFor="let member of birthdays">
-              <td>
+              <td class="rt-title">
                 <span class="person">
                   <img *ngIf="member.photo" [src]="member.photo" [alt]="member.fullName" class="avatar" />
                   <span *ngIf="!member.photo" class="avatar avatar--initials" aria-hidden="true">{{ member.fullName.charAt(0) }}</span>
                   <span class="person__name">{{ member.fullName }}</span>
                 </span>
               </td>
-              <td class="num">{{ member.batch }}</td>
-              <td>
+              <td class="num" [attr.data-label]="'birthdayAutomation.colBatch' | translate">{{ member.batch }}</td>
+              <td [attr.data-label]="'birthdayAutomation.colStatus' | translate">
                 <span class="status-pill" [ngClass]="{
                   'status-pill--success': member.status === 'Success',
                   'status-pill--failed': member.status === 'Failed',
@@ -155,7 +155,7 @@
       [title]="'birthdayAutomation.noLogsTitle' | translate" [message]="'birthdayAutomation.noLogsMessage' | translate"></app-empty-state>
 
     <div class="table-wrapper" *ngIf="!logsLoading && logs.length > 0">
-      <table class="data-table data-table--wide">
+      <table class="data-table data-table--wide rt">
         <thead>
           <tr>
             <th>{{ 'birthdayAutomation.colDate' | translate }}</th>
@@ -166,9 +166,9 @@
         </thead>
         <tbody>
           <tr *ngFor="let log of logs">
-            <td class="date-cell">{{ log.postDate | date:'mediumDate' }}</td>
-            <td class="strong-cell">{{ log.memberName }}</td>
-            <td>
+            <td class="date-cell" [attr.data-label]="'birthdayAutomation.colDate' | translate">{{ log.postDate | date:'mediumDate' }}</td>
+            <td class="strong-cell rt-title">{{ log.memberName }}</td>
+            <td [attr.data-label]="'birthdayAutomation.colStatus' | translate">
               <span class="status-pill" [ngClass]="{
                 'status-pill--success': log.status === 'Success',
                 'status-pill--failed': log.status === 'Failed'
@@ -176,7 +176,7 @@
                 {{ log.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate) : ('birthdayAutomation.statusFailed' | translate) }}
               </span>
             </td>
-            <td class="details-cell" [class.details-cell--error]="log.status === 'Failed'"
+            <td class="details-cell rt-wide" [attr.data-label]="'birthdayAutomation.colDetails' | translate" [class.details-cell--error]="log.status === 'Failed'"
               [attr.title]="log.status === 'Success' ? log.facebookPostId : log.errorMessage">{{ log.status === 'Success' ? log.facebookPostId : log.errorMessage }}</td>
           </tr>
         </tbody>
