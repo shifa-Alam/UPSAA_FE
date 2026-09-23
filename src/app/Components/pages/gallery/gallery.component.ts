@@ -12,6 +12,9 @@ import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { imageAt, imageSrcset } from '../../../Utils/image-url';
 
+/** Photos per request — more arrive with "show more". */
+const PAGE_SIZE = 24;
+
 @Component({
   selector: 'app-gallery',
   standalone: true,
@@ -24,6 +27,11 @@ export class GalleryComponent implements OnInit {
   readonly imageSrcset = imageSrcset;
 
   photos: GalleryImage[] = [];
+  /** Photos matching the current filter on the server (more than `photos` until all are loaded). */
+  total = 0;
+  loadingMore = false;
+  /** Ignores a slow response that arrives after the filter changed. */
+  private requestId = 0;
   categories: string[] = [];
   activeCategory = '';
   loading = true;
@@ -58,18 +66,40 @@ export class GalleryComponent implements OnInit {
     this.fetch();
   }
 
+  private get filter() {
+    return { category: this.activeCategory || undefined, eventId: this.eventId ?? undefined };
+  }
+
   private fetch(): void {
+    const id = ++this.requestId;
     this.loading = true;
     this.loadError = false;
-    this.galleryService.getAll(this.activeCategory || undefined, this.eventId ?? undefined).pipe(
+    this.galleryService.getPage({ ...this.filter, take: PAGE_SIZE }).pipe(
       catchError(() => of(null))
-    ).subscribe(photos => {
+    ).subscribe(page => {
+      if (id !== this.requestId) return;
       this.loading = false;
-      if (!photos) {
+      if (!page) {
         this.loadError = true;
         return;
       }
-      this.photos = photos;
+      this.photos = page.items;
+      this.total = page.total;
+    });
+  }
+
+  showMore(): void {
+    if (this.loadingMore) return;
+    const id = this.requestId;
+    this.loadingMore = true;
+    this.galleryService.getPage({ ...this.filter, skip: this.photos.length, take: PAGE_SIZE }).pipe(
+      catchError(() => of(null))
+    ).subscribe(page => {
+      this.loadingMore = false;
+      if (!page || id !== this.requestId) return;
+      const seen = new Set(this.photos.map(p => p.id));
+      this.photos = [...this.photos, ...page.items.filter(p => !seen.has(p.id))];
+      this.total = page.total;
     });
   }
 
@@ -111,7 +141,7 @@ export class GalleryComponent implements OnInit {
 
   /** "12 photos" / "১২টি ছবি" — `#` in the i18n string is the count. */
   get photoCount(): string {
-    const n = this.photos.length;
+    const n = this.total;
     const key = n === 1 ? 'gallery.countOne' : 'gallery.countMany';
     return this.languageService.translate(key).replace('#', this.formatNumber(n));
   }

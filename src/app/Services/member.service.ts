@@ -2,8 +2,9 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 export interface MemberEducationDto {
   degreeId: number;
@@ -179,7 +180,7 @@ export class MemberService {
 
   private apiUrl = environment.baseUrl + '/member';
   private authApiUrl = environment.baseUrl + '/auth'; // Auth controller
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   registerMember(member: MemberCreateDto): Observable<any> {
     // Note: concatenate the path as a string
@@ -238,9 +239,28 @@ export class MemberService {
   }
   // At the bottom of MemberService class
 
+  /** The signed-in member's profile, fetched once and shared by the header, dashboard,
+   *  profile, voting and nomination screens. Tied to the login token, so another login
+   *  fetches afresh; a failed request isn't kept, and profile edits clear it. */
   getProfile(): Observable<Member> {
-    return this.http.get<Member>(`${this.apiUrl}/GetProfile`);
+    const token = this.auth.getToken();
+    if (!this.profile$ || this.profileToken !== token) {
+      this.profileToken = token;
+      this.profile$ = this.http.get<Member>(`${this.apiUrl}/GetProfile`).pipe(
+        tap({ error: () => this.clearProfileCache() }),
+        shareReplay({ bufferSize: 1, refCount: false })
+      );
+    }
+    return this.profile$;
   }
+
+  clearProfileCache(): void {
+    this.profile$ = undefined;
+    this.profileToken = null;
+  }
+
+  private profile$?: Observable<Member>;
+  private profileToken: string | null = null;
   getProfileImage(fileName: string) {
     return this.http.get(`${this.apiUrl}/GetProfileImageFile/${fileName}`);
   }
@@ -250,9 +270,11 @@ export class MemberService {
     const formData = new FormData();
     formData.append('File', file); // Must match the property name in DTO
 
-    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/UploadProfileImage`, formData);
+    return this.http.post<{ imageUrl: string }>(`${this.apiUrl}/UploadProfileImage`, formData)
+      .pipe(tap(() => this.clearProfileCache()));
   }
   updateMember(member: Member) {
-    return this.http.post(`${this.apiUrl}/UpdateMember`, member);
+    return this.http.post(`${this.apiUrl}/UpdateMember`, member)
+      .pipe(tap(() => this.clearProfileCache()));
   }
 }

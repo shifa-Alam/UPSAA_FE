@@ -93,26 +93,25 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.rebuildStats();
     });
 
-    this.achievementService.getAll().pipe(catchError(() => of([]))).subscribe(list => {
-      this.achievements = list.slice(0, ACHIEVEMENTS_COUNT);
-      if (list.length) {
-        this.achievementStat = { icon: 'military_tech', labelKey: 'home.stats.achievements', value: list.length };
+    // Each section asks only for the rows it shows; the total comes back alongside.
+    const noRows = { items: [], total: 0 };
+
+    this.achievementService.getPage({ take: ACHIEVEMENTS_COUNT }).pipe(catchError(() => of(noRows))).subscribe(page => {
+      this.achievements = page.items;
+      if (page.total) {
+        this.achievementStat = { icon: 'military_tech', labelKey: 'home.stats.achievements', value: page.total };
         this.rebuildStats();
       }
     });
 
-    this.eventService.getAll().pipe(catchError(() => of([]))).subscribe(events => {
-      const now = new Date();
+    this.eventService.getPage({ when: 'upcoming', take: EVENTS_COUNT }).pipe(catchError(() => of(noRows))).subscribe(page => {
       this.eventsLoading = false;
-      this.events = events
-        .filter(e => new Date(e.endDate || e.eventDate) >= now)
-        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
-        .slice(0, EVENTS_COUNT);
+      this.events = page.items;
     });
 
-    this.noticeService.getAll().pipe(catchError(() => of([]))).subscribe(notices => {
+    this.noticeService.getPage({ take: NOTICES_COUNT }).pipe(catchError(() => of(noRows))).subscribe(page => {
       this.noticesLoading = false;
-      this.notices = notices.slice(0, NOTICES_COUNT);
+      this.notices = page.items;
     });
 
     // Only alumni who've added a photo — this section is a visual showcase.
@@ -120,7 +119,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.alumni = (res?.members ?? []).filter(m => !!m.photo).slice(0, ALUMNI_COUNT);
     });
 
-    this.galleryService.getAll().pipe(catchError(() => of([]))).subscribe(photos => {
+    this.galleryService.getPage({ take: Math.max(MEMORIES_COUNT, HERO_SLIDES) }).pipe(catchError(() => of(noRows))).subscribe(({ items: photos }) => {
       this.memories = photos.slice(0, MEMORIES_COUNT);
       if (!HERO_IMAGE && photos.length) {
         // Screen-sized copies — a phone gets ~800px wide, not the full-resolution original.

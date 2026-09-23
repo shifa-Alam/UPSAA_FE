@@ -134,6 +134,12 @@
             </div>
           </div>
         </div>
+
+        <div class="show-more" *ngIf="hasMorePast">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="showMorePast()" [disabled]="loadingMore">
+            {{ 'events.showMorePast' | translate }}
+          </button>
+        </div>
       </div>
     </section>
 

@@ -70,19 +70,15 @@ export class MemberDashboardComponent implements OnInit {
       this.member = member;
     });
 
-    this.noticeService.getAll().pipe(catchError(() => of([]))).subscribe(notices => {
+    this.noticeService.getPage({ take: 4 }).pipe(catchError(() => of({ items: [], total: 0 }))).subscribe(page => {
       this.noticesLoading = false;
-      this.notices = notices.slice(0, 4);
+      this.notices = page.items;
     });
 
-    this.eventService.getAll().pipe(catchError(() => of([]))).subscribe(events => {
+    this.eventService.getPage({ when: 'upcoming', take: 3 }).pipe(catchError(() => of({ items: [], total: 0 }))).subscribe(page => {
       this.eventsLoading = false;
-      const now = new Date();
-      const upcoming = events
-        .filter(e => new Date(e.endDate || e.eventDate) >= now)
-        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
-      this.upcomingTotal = upcoming.length;
-      this.upcomingEvents = upcoming.slice(0, 3);
+      this.upcomingTotal = page.total;
+      this.upcomingEvents = page.items;
     });
   }
 

@@ -65,6 +65,12 @@
             </span>
           </button>
         </div>
+
+        <div class="show-more" *ngIf="photos.length < total">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="showMore()" [disabled]="loadingMore">
+            {{ 'gallery.showMore' | translate }}
+          </button>
+        </div>
       </ng-container>
     </div>
   </section>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ListPage, listParams, toListPage } from './list-page';
 
 export type JobType = 'FullTime' | 'PartTime' | 'Internship' | 'Contract';
 
@@ -41,6 +42,12 @@ export class JobPostService {
   /** Alumni-only — requires login (any role). */
   getAll(): Observable<JobPost[]> {
     return this.http.get<JobPost[]>(`${this.apiUrl}/GetAll`);
+  }
+
+  /** A page of the list plus the total count — for previews and "load more" lists. */
+  getPage(query: { skip?: number; take?: number }): Observable<ListPage<JobPost>> {
+    return this.http.get<JobPost[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
+      .pipe(map(res => toListPage(res)));
   }
 
   /** Any logged-in alumni can post. */

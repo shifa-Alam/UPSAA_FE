@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ListPage, listParams, toListPage } from './list-page';
 
 export interface Notice {
   id: number;
@@ -26,6 +27,17 @@ export class NoticeService {
    *  any logged-in alumni also gets the alumni-only ones. */
   getAll(): Observable<Notice[]> {
     return this.http.get<Notice[]>(`${this.apiUrl}/GetAll`);
+  }
+
+  /** One notice by id (404 for an alumni-only notice when signed out). */
+  get(id: number): Observable<Notice> {
+    return this.http.get<Notice>(`${this.apiUrl}/${id}`);
+  }
+
+  /** A page of the list plus the total count — for previews and "load more" lists. */
+  getPage(query: { skip?: number; take?: number; search?: string }): Observable<ListPage<Notice>> {
+    return this.http.get<Notice[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
+      .pipe(map(res => toListPage(res)));
   }
 
   /** SuperAdmin/Admin only. publishedDate omitted defaults to now. */

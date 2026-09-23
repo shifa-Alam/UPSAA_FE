@@ -39,7 +39,6 @@ export interface CandidateFilterDto {
   batch?: number;
   isPaid?: boolean | null;
   fee?: number;
-  active?: boolean;
 
   pageNumber: number;
   pageSize: number;

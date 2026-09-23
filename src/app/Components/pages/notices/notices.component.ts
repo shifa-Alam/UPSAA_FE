@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { catchError, of } from 'rxjs';
+import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
 import { NoticeService, Notice } from '../../../Services/notice.service';
 import { AuthService } from '../../../Services/auth.service';
 import { LanguageService } from '../../../Services/language.service';
@@ -34,47 +34,71 @@ export class NoticesComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   auth = inject(AuthService);
 
+  /** The loaded pages (server-side search + "show more", PAGE_SIZE at a time). */
   notices: Notice[] = [];
+  /** Matches for the current search. */
+  total = 0;
+  /** All visible notices, ignoring the search — decides "empty board" vs "no match". */
+  boardTotal = 0;
   loading = true;
+  loadingMore = false;
   loadError = false;
 
   search = '';
-  visibleCount = PAGE_SIZE;
   selectedId: number | null = null;
+  /** The ?id= notice, fetched on its own when it isn't among the loaded ones. */
+  private fetched: Notice | null = null;
+  selectedLoading = false;
+
+  private search$ = new Subject<string>();
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = Number(params.get('id'));
       this.selectedId = Number.isInteger(id) && id > 0 ? id : null;
+      this.loadSelected();
       if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
     });
 
-    this.noticeService.getAll().pipe(catchError(() => of(null))).subscribe(notices => {
+    this.search$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(q => this.noticeService.getPage({ search: q, take: PAGE_SIZE }).pipe(catchError(() => of(null)))),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(page => {
+      if (!page) return;
+      this.notices = page.items;
+      this.total = page.total;
+    });
+
+    this.noticeService.getPage({ take: PAGE_SIZE }).pipe(catchError(() => of(null))).subscribe(page => {
       this.loading = false;
-      if (!notices) {
+      if (!page) {
         this.loadError = true;
         return;
       }
-      this.notices = notices;
+      this.notices = page.items;
+      this.total = this.boardTotal = page.total;
     });
   }
 
   get selected(): Notice | null {
-    return this.selectedId === null ? null : this.notices.find(n => n.id === this.selectedId) ?? null;
+    if (this.selectedId === null) return null;
+    return this.notices.find(n => n.id === this.selectedId) ?? (this.fetched?.id === this.selectedId ? this.fetched : null);
   }
 
-  get filtered(): Notice[] {
-    const q = this.search.trim().toLowerCase();
-    if (!q) return this.notices;
-    return this.notices.filter(n => n.title.toLowerCase().includes(q) || n.content.toLowerCase().includes(q));
-  }
-
-  get visible(): Notice[] {
-    return this.filtered.slice(0, this.visibleCount);
+  private loadSelected(): void {
+    const id = this.selectedId;
+    if (id === null || this.notices.some(n => n.id === id) || this.fetched?.id === id) return;
+    this.selectedLoading = true;
+    this.noticeService.get(id).pipe(catchError(() => of(null))).subscribe(n => {
+      this.selectedLoading = false;
+      if (n && this.selectedId === id) this.fetched = n;
+    });
   }
 
   onSearchChange(): void {
-    this.visibleCount = PAGE_SIZE;
+    this.search$.next(this.search.trim());
   }
 
   clearSearch(): void {
@@ -83,7 +107,17 @@ export class NoticesComponent implements OnInit {
   }
 
   showMore(): void {
-    this.visibleCount += PAGE_SIZE;
+    if (this.loadingMore) return;
+    this.loadingMore = true;
+    this.noticeService.getPage({ search: this.search.trim(), skip: this.notices.length, take: PAGE_SIZE })
+      .pipe(catchError(() => of(null)))
+      .subscribe(page => {
+        this.loadingMore = false;
+        if (!page) return;
+        const seen = new Set(this.notices.map(n => n.id));
+        this.notices = [...this.notices, ...page.items.filter(n => !seen.has(n.id))];
+        this.total = page.total;
+      });
   }
 
   isNew(n: Notice): boolean {

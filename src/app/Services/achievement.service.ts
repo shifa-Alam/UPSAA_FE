@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ListPage, listParams, toListPage } from './list-page';
 
 export interface Achievement {
   id: number;
@@ -37,6 +38,12 @@ export class AchievementService {
   /** Public — no login required. */
   getAll(): Observable<Achievement[]> {
     return this.http.get<Achievement[]>(`${this.apiUrl}/GetAll`);
+  }
+
+  /** A page of the list plus the total count — for previews and "load more" lists. */
+  getPage(query: { skip?: number; take?: number }): Observable<ListPage<Achievement>> {
+    return this.http.get<Achievement[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
+      .pipe(map(res => toListPage(res)));
   }
 
   /** SuperAdmin/Admin only. */

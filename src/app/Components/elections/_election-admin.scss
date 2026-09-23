@@ -513,13 +513,15 @@
 }
 
 // ---------------------------- Mobile item cards ----------------------------
-.desktop-only { display: block; }
-.mobile-only { display: none; }
-
 .item-list {
   display: flex;
   flex-direction: column;
 }
+
+// After .item-list on purpose: same specificity, so this must come last to hide
+// the card list on desktop (otherwise its display: flex wins and both views show).
+.desktop-only { display: block; }
+.mobile-only { display: none; }
 
 .item-card {
   display: flex;
@@ -672,6 +674,7 @@
 
   .desktop-only { display: none; }
   .mobile-only { display: block; }
+  .mobile-only.item-list { display: flex; }
 
   .admin-toolbar {
     flex-direction: column;

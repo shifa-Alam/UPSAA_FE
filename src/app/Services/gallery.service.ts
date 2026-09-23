@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ListPage, listParams, toListPage } from './list-page';
 
 export interface GalleryImage {
   id: number;
@@ -34,6 +35,12 @@ export class GalleryService {
     if (eventId) params.set('eventId', String(eventId));
     const query = params.toString() ? `?${params}` : '';
     return this.http.get<GalleryImage[]>(`${this.apiUrl}/GetAll${query}`);
+  }
+
+  /** A page of the list plus the total count — for previews and "load more" lists. */
+  getPage(query: { skip?: number; take?: number; category?: string; eventId?: number }): Observable<ListPage<GalleryImage>> {
+    return this.http.get<GalleryImage[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
+      .pipe(map(res => toListPage(res)));
   }
 
   /** Public — no login required. */

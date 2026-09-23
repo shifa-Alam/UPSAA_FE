@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { catchError, of } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { EventService, EventItem } from '../../../Services/event.service';
 import { LanguageService } from '../../../Services/language.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
@@ -10,6 +10,11 @@ import { EmptyStateComponent } from '../../shared/empty-state/empty-state.compon
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
+
+/** Past events per request — the archive grows, so older ones come with "show more". */
+const PAST_PAGE_SIZE = 12;
+/** Upcoming events are few; this is just the server's page cap. */
+const UPCOMING_MAX = 100;
 
 interface PastYear {
   year: number;
@@ -29,39 +34,62 @@ export class EventsComponent implements OnInit {
   upcoming: EventItem[] = [];
   /** Past events, newest year first, for the archive timeline. */
   pastByYear: PastYear[] = [];
+  /** Loaded past events (newest first) and how many exist in total. */
+  private past: EventItem[] = [];
+  pastTotal = 0;
+  loadingMore = false;
   loading = true;
   loadError = false;
 
   constructor(private eventService: EventService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
-    this.eventService.getAll().pipe(
+    // The server splits upcoming/past (Bangladesh time) and sorts them.
+    forkJoin({
+      upcoming: this.eventService.getPage({ when: 'upcoming', take: UPCOMING_MAX }),
+      past: this.eventService.getPage({ when: 'past', take: PAST_PAGE_SIZE })
+    }).pipe(
       catchError(() => of(null))
-    ).subscribe(events => {
+    ).subscribe(res => {
       this.loading = false;
 
-      if (!events) {
+      if (!res) {
         this.loadError = true;
         return;
       }
 
-      const now = new Date();
-      const upcoming = events
-        .filter(e => new Date(e.endDate || e.eventDate) >= now)
-        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
-      this.next = upcoming[0] ?? null;
-      this.upcoming = upcoming.slice(1);
-
-      const past = events
-        .filter(e => new Date(e.endDate || e.eventDate) < now)
-        .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
-      const years = new Map<number, EventItem[]>();
-      for (const ev of past) {
-        const y = new Date(ev.eventDate).getFullYear();
-        years.set(y, [...(years.get(y) ?? []), ev]);
-      }
-      this.pastByYear = [...years].map(([year, evs]) => ({ year, events: evs }));
+      this.next = res.upcoming.items[0] ?? null;
+      this.upcoming = res.upcoming.items.slice(1);
+      this.setPast(res.past.items, res.past.total);
     });
+  }
+
+  showMorePast(): void {
+    if (this.loadingMore) return;
+    this.loadingMore = true;
+    this.eventService.getPage({ when: 'past', skip: this.past.length, take: PAST_PAGE_SIZE }).pipe(
+      catchError(() => of(null))
+    ).subscribe(page => {
+      this.loadingMore = false;
+      if (!page) return;
+      const seen = new Set(this.past.map(e => e.id));
+      this.setPast([...this.past, ...page.items.filter(e => !seen.has(e.id))], page.total);
+    });
+  }
+
+  get hasMorePast(): boolean {
+    return this.past.length < this.pastTotal;
+  }
+
+  private setPast(past: EventItem[], total: number): void {
+    this.past = past;
+    this.pastTotal = total;
+    const years = new Map<number, EventItem[]>();
+    for (const ev of past) {
+      const y = new Date(ev.eventDate).getFullYear();
+      years.set(y, [...(years.get(y) ?? []), ev]);
+    }
+    this.pastByYear = [...years].map(([year, evs]) => ({ year, events: evs }));
   }
 
   get hasAny(): boolean {

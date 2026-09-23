@@ -150,27 +150,24 @@ export class AdminWelcomeComponent implements OnInit {
       this.setStat('adminWelcome.stats.pending', batches.reduce((sum, b) => sum + (Number(b.pendingMembersCount) || 0), 0));
     });
 
-    this.eventService.getAll().pipe(catchError(() => of(null))).subscribe(events => {
+    this.eventService.getPage({ when: 'upcoming', take: UPCOMING_COUNT }).pipe(catchError(() => of(null))).subscribe(page => {
       this.eventsLoaded = true;
-      if (!events) return;
-      const now = new Date();
-      const upcoming = events
-        .filter(e => new Date(e.endDate || e.eventDate) >= now)
-        .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime());
-      this.upcoming = upcoming.slice(0, UPCOMING_COUNT);
-      this.setStat('adminWelcome.stats.upcomingEvents', upcoming.length);
+      if (!page) return;
+      this.upcoming = page.items;
+      this.setStat('adminWelcome.stats.upcomingEvents', page.total);
     });
 
-    this.noticeService.getAll().pipe(catchError(() => of(null))).subscribe(list => {
-      if (list) this.setStat('adminWelcome.stats.notices', list.length);
+    // Counts only — take: 0 returns no rows, just the X-Total-Count header.
+    this.noticeService.getPage({ take: 0 }).pipe(catchError(() => of(null))).subscribe(page => {
+      if (page) this.setStat('adminWelcome.stats.notices', page.total);
     });
 
-    this.galleryService.getAll().pipe(catchError(() => of(null))).subscribe(list => {
-      if (list) this.setStat('adminWelcome.stats.photos', list.length);
+    this.galleryService.getPage({ take: 0 }).pipe(catchError(() => of(null))).subscribe(page => {
+      if (page) this.setStat('adminWelcome.stats.photos', page.total);
     });
 
-    this.achievementService.getAll().pipe(catchError(() => of(null))).subscribe(list => {
-      if (list) this.setStat('adminWelcome.stats.achievements', list.length);
+    this.achievementService.getPage({ take: 0 }).pipe(catchError(() => of(null))).subscribe(page => {
+      if (page) this.setStat('adminWelcome.stats.achievements', page.total);
     });
   }
 

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ListPage, listParams, toListPage } from './list-page';
 
 export type TeacherStatus = 'Current' | 'Former' | 'Retired';
 
@@ -41,6 +42,12 @@ export class TeacherService {
   /** Public — no login required. */
   getAll(): Observable<Teacher[]> {
     return this.http.get<Teacher[]>(`${this.apiUrl}/GetAll`);
+  }
+
+  /** A page of the list plus the total count — for previews and "load more" lists. */
+  getPage(query: { skip?: number; take?: number }): Observable<ListPage<Teacher>> {
+    return this.http.get<Teacher[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
+      .pipe(map(res => toListPage(res)));
   }
 
   /** SuperAdmin/Admin only. */

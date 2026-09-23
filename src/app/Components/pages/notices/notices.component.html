@@ -20,6 +20,10 @@
         <mat-icon>arrow_back</mat-icon> {{ 'notices.backToAll' | translate }}
       </a>
 
+      <div class="notices-loading" role="status" *ngIf="!selected && selectedLoading">
+        <span>{{ 'notices.loading' | translate }}</span>
+      </div>
+
       <article class="notice-detail" *ngIf="selected as n; else notFound">
         <div class="notice-detail__meta">
           <span><mat-icon>event</mat-icon>{{ fullDate(n) }}</span>
@@ -31,17 +35,19 @@
       </article>
 
       <ng-template #notFound>
-        <app-empty-state icon="search_off" [title]="'notices.notFoundTitle' | translate"
-          [message]="(auth.isLoggedIn() ? 'notices.notFoundMessage' : 'notices.notFoundMessageGuest') | translate"></app-empty-state>
-        <div class="not-found-actions" *ngIf="!auth.isLoggedIn()">
-          <a routerLink="/login" class="pp-btn pp-btn--solid">{{ 'notices.loginButton' | translate }}</a>
-        </div>
+        <ng-container *ngIf="!selectedLoading">
+          <app-empty-state icon="search_off" [title]="'notices.notFoundTitle' | translate"
+            [message]="(auth.isLoggedIn() ? 'notices.notFoundMessage' : 'notices.notFoundMessageGuest') | translate"></app-empty-state>
+          <div class="not-found-actions" *ngIf="!auth.isLoggedIn()">
+            <a routerLink="/login" class="pp-btn pp-btn--solid">{{ 'notices.loginButton' | translate }}</a>
+          </div>
+        </ng-container>
       </ng-template>
     </ng-container>
 
     <!-- ===== List ===== -->
     <ng-container *ngIf="!loading && !loadError && selectedId === null">
-      <div class="tools" role="search" *ngIf="notices.length">
+      <div class="tools" role="search" *ngIf="boardTotal">
         <label class="tools__field">
           <mat-icon>search</mat-icon>
           <input type="text" name="search" [placeholder]="'notices.searchPlaceholder' | translate"
@@ -52,18 +58,18 @@
           </button>
         </label>
         <span class="tools__count" aria-live="polite">
-          {{ filtered.length }} {{ 'notices.countSuffix' | translate }}
+          {{ total }} {{ 'notices.countSuffix' | translate }}
         </span>
       </div>
 
-      <app-empty-state *ngIf="notices.length === 0" icon="campaign" [title]="'notices.emptyTitle' | translate"
+      <app-empty-state *ngIf="boardTotal === 0" icon="campaign" [title]="'notices.emptyTitle' | translate"
         [message]="'notices.emptyMessage' | translate"></app-empty-state>
 
-      <app-empty-state *ngIf="notices.length > 0 && filtered.length === 0" icon="search_off"
+      <app-empty-state *ngIf="boardTotal > 0 && total === 0" icon="search_off"
         [title]="'notices.noMatchTitle' | translate" [message]="'notices.noMatchMessage' | translate"></app-empty-state>
 
-      <ul class="notice-list" *ngIf="visible.length">
-        <li *ngFor="let n of visible">
+      <ul class="notice-list" *ngIf="notices.length">
+        <li *ngFor="let n of notices">
           <a class="notice-card" [routerLink]="[]" [queryParams]="{ id: n.id }" queryParamsHandling="merge">
             <div class="pp-date notice-card__date">
               <span class="pp-date__day">{{ day(n) }}</span>
@@ -83,13 +89,13 @@
         </li>
       </ul>
 
-      <div class="show-more" *ngIf="visible.length < filtered.length">
-        <button type="button" class="pp-btn pp-btn--outline" (click)="showMore()">
+      <div class="show-more" *ngIf="notices.length < total">
+        <button type="button" class="pp-btn pp-btn--outline" (click)="showMore()" [disabled]="loadingMore">
           {{ 'notices.showMore' | translate }}
         </button>
       </div>
 
-      <p class="guest-hint" *ngIf="!auth.isLoggedIn() && notices.length">
+      <p class="guest-hint" *ngIf="!auth.isLoggedIn() && boardTotal">
         <mat-icon>lock</mat-icon>
         <span>{{ 'notices.guestHint' | translate }} <a routerLink="/login">{{ 'notices.loginButton' | translate }}</a></span>
       </p>

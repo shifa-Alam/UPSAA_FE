@@ -23,6 +23,7 @@ export const galleryI18n: I18nSection = {
       filterAriaLabel: 'বিভাগ অনুযায়ী ছবি দেখুন',
       countOne: '#টি ছবি',
       countMany: '#টি ছবি',
+      showMore: 'আরও ছবি দেখুন',
       section: {
         eyebrow: 'ফ্রেমে বন্দি মুহূর্ত',
         title: 'আমাদের সংগ্রহ',
@@ -57,6 +58,7 @@ export const galleryI18n: I18nSection = {
       filterAriaLabel: 'Filter photos by category',
       countOne: '# photo',
       countMany: '# photos',
+      showMore: 'Show more photos',
       section: {
         eyebrow: 'Moments in Frame',
         title: 'Our Collection',
