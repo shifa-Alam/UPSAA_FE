@@ -31,6 +31,7 @@ export const memberDashboardI18n: I18nSection = {
       eventsTitle: 'আসন্ন ইভেন্ট',
       eventsEmpty: 'কোনো আসন্ন ইভেন্ট নেই।',
       viewAllEvents: 'সকল ইভেন্ট দেখুন',
+      viewAllNotices: 'সকল নোটিশ দেখুন',
     },
   },
   en: {
@@ -63,6 +64,7 @@ export const memberDashboardI18n: I18nSection = {
       eventsTitle: 'Upcoming Events',
       eventsEmpty: 'No upcoming events.',
       viewAllEvents: 'View all events',
+      viewAllNotices: 'View all notices',
     },
   },
 };

@@ -32,6 +32,7 @@ import { voteCastsI18n } from './sections/voteCasts.i18n';
 import { galleryAdminI18n } from './sections/galleryAdmin.i18n';
 import { financeLedgerI18n } from './sections/financeLedger.i18n';
 import { noticeAdminI18n } from './sections/noticeAdmin.i18n';
+import { noticesI18n } from './sections/notices.i18n';
 import { birthdayAutomationI18n } from './sections/birthdayAutomation.i18n';
 import { batchesI18n } from './sections/batches.i18n';
 import { achievementAdminI18n } from './sections/achievementAdmin.i18n';
@@ -85,6 +86,7 @@ const sections = [
   galleryAdminI18n,
   financeLedgerI18n,
   noticeAdminI18n,
+  noticesI18n,
   birthdayAutomationI18n,
   batchesI18n,
   achievementAdminI18n,

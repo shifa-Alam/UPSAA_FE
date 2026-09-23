@@ -109,16 +109,19 @@
 
       <!-- ===== Recent notices ===== -->
       <section class="welcome__block">
-        <h2 class="welcome__heading">{{ 'memberDashboard.noticesTitle' | translate }}</h2>
+        <div class="welcome__heading-row">
+          <h2 class="welcome__heading">{{ 'memberDashboard.noticesTitle' | translate }}</h2>
+          <a routerLink="/portal/notices" class="welcome__more">{{ 'memberDashboard.viewAllNotices' | translate }}</a>
+        </div>
         <div class="panel">
           <p class="panel__empty" *ngIf="!noticesLoading && notices.length === 0">{{ 'memberDashboard.noticesEmpty' | translate }}</p>
-          <div class="notice" *ngFor="let n of notices">
+          <a class="notice" *ngFor="let n of notices" routerLink="/portal/notices" [queryParams]="{ id: n.id }">
             <span class="notice__title">
               {{ n.title }}
               <span class="notice__badge" *ngIf="n.alumniOnly">{{ 'memberDashboard.alumniOnlyBadge' | translate }}</span>
             </span>
             <span class="notice__date">{{ shortDate(n.publishedDate) }}</span>
-          </div>
+          </a>
         </div>
       </section>
 

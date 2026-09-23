@@ -1,0 +1,396 @@
+// Notice board — searchable list plus a single-notice reading view.
+
+.notices-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+.notices-body {
+  max-width: 860px;
+  padding-bottom: clamp(32px, 5vw, 56px);
+}
+
+.notices-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-7) 0;
+  color: var(--color-ink-600);
+
+  mat-icon {
+    color: var(--color-primary-500);
+    animation: notices-spin 1.1s linear infinite;
+  }
+}
+
+@keyframes notices-spin {
+  to { transform: rotate(360deg); }
+}
+
+// ---------------------------- Search bar ----------------------------
+.tools {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.tools__field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  height: 48px;
+  padding: 0 var(--space-2) 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-sunken);
+  cursor: text;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+
+  &:focus-within {
+    background: var(--color-surface);
+    border-color: var(--color-heritage-500);
+    box-shadow: 0 0 0 3px var(--color-heritage-soft);
+  }
+
+  > mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-heritage-500);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--color-ink-900);
+    font: 400 var(--font-size-md) var(--font-base);
+
+    &::placeholder {
+      color: var(--color-ink-400);
+    }
+  }
+}
+
+.tools__clear {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-ink-400);
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-ink-100);
+    color: var(--color-ink-900);
+    outline: none;
+  }
+}
+
+.tools__count {
+  flex-shrink: 0;
+  padding-right: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  white-space: nowrap;
+}
+
+// ---------------------------- List ----------------------------
+.notice-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.notice-card {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-primary-200);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+
+    .notice-card__more {
+      gap: var(--space-2);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+  }
+}
+
+.notice-card__date {
+  height: auto;
+  padding: var(--space-2) 0;
+}
+
+.notice-card__year {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.notice-card__body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.notice-card__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-ink-900);
+  overflow-wrap: anywhere;
+}
+
+.notice-card__excerpt {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-ink-600);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.notice-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  transition: gap var(--transition-fast);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+:host-context([data-theme='dark']) .notice-card__more {
+  color: var(--color-primary-300);
+}
+
+.badge {
+  display: inline-block;
+  margin-left: var(--space-2);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.badge--gold {
+  background: var(--color-heritage-soft);
+  color: var(--color-heritage-500);
+}
+
+.badge--new {
+  background: rgba(76, 175, 80, 0.14);
+  color: #2e7d32;
+}
+
+:host-context([data-theme='dark']) .badge--new {
+  color: #81c784;
+}
+
+.show-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-5);
+}
+
+.guest-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: var(--space-6) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  text-align: center;
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-heritage-500);
+  }
+
+  a {
+    font-weight: 600;
+    color: var(--color-primary-700);
+  }
+}
+
+// ---------------------------- Single notice ----------------------------
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: var(--space-5) 0 var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary-700);
+  text-decoration: none;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+:host-context([data-theme='dark']) .back-link {
+  color: var(--color-primary-300);
+}
+
+.notice-detail {
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: inset 3px 0 0 var(--color-heritage-500);
+}
+
+.notice-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+
+  > span:not(.badge) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--color-heritage-500);
+  }
+
+  .badge {
+    margin-left: 0;
+  }
+}
+
+.notice-detail__title {
+  margin: var(--space-3) 0 var(--space-4);
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.6vw, 28px);
+  line-height: 1.3;
+  color: var(--color-ink-900);
+  overflow-wrap: anywhere;
+}
+
+// Content is plain text from the admin form — keep the line breaks they typed.
+.notice-detail__content {
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  color: var(--color-ink-700);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+// ---------------------------- Responsive ----------------------------
+@media (max-width: 560px) {
+  .tools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tools__count {
+    padding: 0 var(--space-2);
+  }
+
+  .notice-card {
+    padding: var(--space-3);
+    gap: var(--space-3);
+  }
+
+  .badge {
+    margin: 0 var(--space-1) 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notices-loading mat-icon {
+    animation: none;
+  }
+
+  .notice-card,
+  .notice-card__more {
+    transition: none;
+  }
+
+  .notice-card:hover {
+    transform: none;
+  }
+}

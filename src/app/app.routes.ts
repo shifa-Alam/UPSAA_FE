@@ -45,6 +45,7 @@ import { GalleryAdminComponent } from './Components/gallery-admin/gallery-admin.
 import { NoticeAdminComponent } from './Components/notice-admin/notice-admin.component';
 import { BirthdayAutomationComponent } from './Components/birthday-automation/birthday-automation.component';
 import { FinanceLedgerComponent } from './Components/finance-ledger/finance-ledger.component';
+import { NoticesComponent } from './Components/pages/notices/notices.component';
 
 // Every public route carries shellRedirectGuard: signed-in members are kept inside
 // /portal (never the public site), and staff open the community pages in /dashboard.
@@ -53,6 +54,8 @@ export const routes: Routes = [
   { path: 'home', redirectTo: '', pathMatch: 'full' },
   { path: 'about', component: AboutComponent, canActivate: [shellRedirectGuard] },
   { path: 'events', component: EventsComponent, canActivate: [shellRedirectGuard] },
+  // Public — visitors see public notices; signed-in alumni also get alumni-only ones.
+  { path: 'notices', component: NoticesComponent, canActivate: [shellRedirectGuard] },
   { path: 'register', component: RegisterComponent, canActivate: [shellRedirectGuard] },
   {
     path: 'profile', component: ProfileComponent,
@@ -72,6 +75,7 @@ export const routes: Routes = [
       { path: 'members', component: DirectoryComponent },
       { path: 'batches', component: BatchesComponent },
       { path: 'events', component: EventsComponent },
+      { path: 'notices', component: NoticesComponent },
       { path: 'gallery', component: GalleryComponent },
       { path: 'achievements', component: AchievementsComponent },
       { path: 'teachers', component: TeachersComponent },

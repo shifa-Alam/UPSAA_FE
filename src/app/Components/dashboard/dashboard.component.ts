@@ -123,6 +123,7 @@ export class DashboardComponent {
       expanded: false,
       children: [
         { labelKey: 'dashboard.itemEvents', route: '/portal/events', icon: 'calendar' },
+        { labelKey: 'dashboard.itemNotices', route: '/portal/notices', icon: 'megaphone' },
         { labelKey: 'dashboard.itemGallery', route: '/portal/gallery', icon: 'image' },
         { labelKey: 'dashboard.itemCommittee', route: '/portal/committee', icon: 'users' },
         { labelKey: 'dashboard.itemAbout', route: '/portal/about', icon: 'book' },

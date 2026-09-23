@@ -317,6 +317,22 @@
   margin: 0 0 var(--space-1);
 }
 
+.news__link {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+  }
+}
+
+:host-context([data-theme='dark']) .news__link:hover,
+:host-context([data-theme='dark']) .news__link:focus-visible {
+  color: var(--color-primary-300);
+}
+
 .news__badge {
   display: inline-block;
   margin-left: var(--space-2);

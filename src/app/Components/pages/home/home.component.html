@@ -110,13 +110,17 @@
           <time class="news__date">{{ noticeDate(notice) }}</time>
           <div class="news__body">
             <h3 class="news__title">
-              {{ notice.title }}
+              <a class="news__link" routerLink="/notices" [queryParams]="{ id: notice.id }">{{ notice.title }}</a>
               <span class="news__badge" *ngIf="notice.alumniOnly">{{ 'home.notices.alumniOnlyBadge' | translate }}</span>
             </h3>
             <p class="news__text">{{ notice.content }}</p>
           </div>
         </li>
       </ul>
+
+      <div class="pp-section__cta" *ngIf="notices.length">
+        <a routerLink="/notices" class="pp-btn pp-btn--outline">{{ 'home.notices.viewAll' | translate }}</a>
+      </div>
     </div>
   </section>
 
