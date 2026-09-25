@@ -27,6 +27,7 @@ import { PwaService } from './Services/pwa.service';
 import { PushService } from './Services/push.service';
 import { PushToggleComponent } from './Components/shared/push-toggle/push-toggle.component';
 import { installImageFadeIn } from './Utils/image-fade';
+import { ScrollPositionService } from './Services/scroll-position.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -82,6 +83,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.pwa.init();
+    this.scrollPositions.init(); // new page → top; Back → where you were
     // Signed in (now or on a later login): tie this phone's notifications to the member.
     this.authService.user$.pipe(filter(u => !!u)).subscribe(() => this.push.linkToCurrentUser());
     this.isDashboardRoute = this.isShellUrl(this.router.url);
@@ -124,6 +126,7 @@ export class AppComponent implements OnInit {
     private memberService: MemberService,
     public pwa: PwaService,
     private push: PushService,
+    private scrollPositions: ScrollPositionService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     // Before any page renders, so the first photos get the blur-up too.
     if (isPlatformBrowser(platformId)) installImageFadeIn(document);
