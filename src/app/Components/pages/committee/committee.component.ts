@@ -26,10 +26,11 @@ interface CommitteeGroup {
   compact?: boolean;
 }
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-committee',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './committee.component.html',
   styleUrl: './committee.component.scss'
 })

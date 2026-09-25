@@ -15,10 +15,11 @@ import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe
 
 const PAGE_SIZE = 24;
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-directory',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './directory.component.html',
   styleUrl: './directory.component.scss'
 })
@@ -35,6 +36,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   filters = {
     name: '',
+    profession: '',
     bloodGroup: '',
     city: '',
     batch: '',
@@ -54,6 +56,10 @@ export class DirectoryComponent implements OnInit, OnDestroy {
     if (batchParam) {
       this.filters.batch = batchParam;
     }
+    const professionParam = this.route.snapshot.queryParamMap.get('profession');
+    if (professionParam) {
+      this.filters.profession = professionParam;
+    }
 
     this.refresh$.pipe(
       debounceTime(300),
@@ -64,6 +70,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
           pageNumber: this.pageNumber,
           pageSize: PAGE_SIZE,
           fullName: this.filters.name.trim() || undefined,
+          profession: this.filters.profession.trim() || undefined,
           bloodGroup: this.filters.bloodGroup || undefined,
           currentCity: this.filters.city.trim() || undefined,
           batch: this.filters.batch.trim() ? Number(this.filters.batch.trim()) : undefined,
@@ -104,7 +111,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
   }
 
   resetFilters(): void {
-    this.filters = { name: '', bloodGroup: '', city: '', batch: '' };
+    this.filters = { name: '', profession: '', bloodGroup: '', city: '', batch: '' };
     this.onFilterChange();
   }
 
@@ -114,7 +121,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   get hasFilters(): boolean {
     const f = this.filters;
-    return !!(f.name.trim() || f.bloodGroup || f.city.trim() || f.batch.trim());
+    return !!(f.name.trim() || f.profession.trim() || f.bloodGroup || f.city.trim() || f.batch.trim());
   }
 
   /** Locale digits (Bangla numerals in bn); `plain` drops grouping for years. */

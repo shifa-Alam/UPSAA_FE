@@ -18,10 +18,7 @@
     </div>
   </nav>
 
-  <div class="teachers-loading" *ngIf="loading">
-    <mat-icon class="teachers-loading__icon">autorenew</mat-icon>
-    <span>{{ 'teachers.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="people" [count]="6" [contained]="true" [label]="'teachers.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && (loadError || teachers.length === 0)">
     <div class="upsaa-container">

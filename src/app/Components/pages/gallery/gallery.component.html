@@ -37,10 +37,7 @@
         </div>
       </div>
 
-      <div class="gallery-loading" *ngIf="loading">
-        <mat-icon class="gallery-loading__icon">autorenew</mat-icon>
-        <span>{{ 'gallery.loading' | translate }}</span>
-      </div>
+      <app-skeleton *ngIf="loading" variant="photos" [count]="8" [label]="'gallery.loading' | translate"></app-skeleton>
 
       <app-empty-state *ngIf="!loading && loadError" icon="photo_library" [title]="'gallery.errorTitle' | translate"
         [message]="'gallery.errorMessage' | translate"></app-empty-state>

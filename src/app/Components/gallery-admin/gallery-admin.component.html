@@ -93,10 +93,7 @@
       </div>
     </div>
 
-    <div class="loading" role="status" *ngIf="loading">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'galleryAdmin.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="photos" [count]="8" [label]="'galleryAdmin.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && images.length === 0" icon="photo_library" [title]="'galleryAdmin.emptyTitle' | translate"
       [message]="'galleryAdmin.emptyMessage' | translate"></app-empty-state>

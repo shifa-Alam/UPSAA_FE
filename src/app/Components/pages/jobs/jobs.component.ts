@@ -17,10 +17,11 @@ const emptyForm = (): JobPostSave => ({
   title: '', companyName: '', location: '', jobType: 'FullTime', description: '', applyInfo: '', deadline: null
 });
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-jobs',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, RouterModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.scss'
 })

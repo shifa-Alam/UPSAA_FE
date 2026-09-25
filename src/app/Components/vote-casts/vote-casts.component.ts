@@ -18,10 +18,11 @@ interface Position {
   positionName: string;
   topCandidate: Candidate;
 }
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-vote-casts',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './vote-casts.component.html',
   styleUrl: './vote-casts.component.scss'
 })

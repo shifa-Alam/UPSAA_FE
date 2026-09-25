@@ -15,6 +15,13 @@
           [(ngModel)]="filters.name" (ngModelChange)="onFilterChange()" />
       </label>
 
+      <label class="tools__field tools__field--profession">
+        <mat-icon>work_outline</mat-icon>
+        <input type="text" name="profession" [placeholder]="'directory.filters.professionPlaceholder' | translate"
+          [attr.aria-label]="'directory.filters.professionPlaceholder' | translate"
+          [(ngModel)]="filters.profession" (ngModelChange)="onFilterChange()" />
+      </label>
+
       <label class="tools__field">
         <mat-icon>school</mat-icon>
         <input type="text" name="batch" inputmode="numeric" [placeholder]="'directory.filters.batchPlaceholder' | translate"
@@ -47,10 +54,7 @@
     <!-- ===== Results ===== -->
     <div class="results">
 
-      <div class="results__loading" *ngIf="loading && members.length === 0">
-        <mat-icon class="results__spinner">autorenew</mat-icon>
-        <span>{{ 'directory.loading' | translate }}</span>
-      </div>
+      <app-skeleton *ngIf="loading && members.length === 0" variant="people" [count]="8" [label]="'directory.loading' | translate"></app-skeleton>
 
       <app-empty-state *ngIf="!loading && loadError" icon="groups" [title]="'directory.errorTitle' | translate"
         [message]="'directory.errorMessage' | translate"></app-empty-state>
@@ -71,7 +75,9 @@
 
         <!-- Kept on screen (dimmed) while a new filter loads, so the grid doesn't flash empty. -->
         <div class="members" [class.members--busy]="loading" [attr.aria-busy]="loading">
-          <article class="member" *ngFor="let m of members">
+          <!-- Relative link: /members/:id on the public site, /portal/members/:id in the portal. -->
+          <a class="member" *ngFor="let m of members" [routerLink]="[m.id]"
+            [attr.aria-label]="m.fullName + ' — ' + ('memberProfile.viewProfile' | translate)">
             <div class="member__avatar">
               <img *ngIf="m.photo; else memberInitials" [src]="m.photo | sizedImage:400" [alt]="m.fullName" loading="lazy" />
               <ng-template #memberInitials>
@@ -89,7 +95,7 @@
               <span class="member__tag" *ngIf="m.currentCity"><mat-icon>place</mat-icon>{{ m.currentCity }}</span>
               <span class="member__tag member__tag--blood" *ngIf="m.bloodGroup"><mat-icon>bloodtype</mat-icon>{{ m.bloodGroup }}</span>
             </div>
-          </article>
+          </a>
         </div>
 
         <nav class="pager" *ngIf="totalPages > 1" [attr.aria-label]="'directory.pagination.label' | translate">

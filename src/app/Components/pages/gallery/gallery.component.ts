@@ -15,10 +15,11 @@ import { imageAt, imageSrcset } from '../../../Utils/image-url';
 /** Photos per request — more arrive with "show more". */
 const PAGE_SIZE = 24;
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe],
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss'
 })

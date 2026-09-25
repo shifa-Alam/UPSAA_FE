@@ -4,6 +4,7 @@ export const navI18n: I18nSection = {
   bn: {
     nav: {
       home: 'হোম',
+      brandTagline: 'উত্তরণ অ্যালামনাই',
       committee: 'কমিটি',
       events: 'ইভেন্ট',
       alumniMenu: 'অ্যালামনাই',
@@ -40,6 +41,7 @@ export const navI18n: I18nSection = {
   en: {
     nav: {
       home: 'Home',
+      brandTagline: 'Uttaran Alumni',
       committee: 'Committee',
       events: 'Events',
       alumniMenu: 'Alumni',

@@ -104,6 +104,9 @@
       <a mat-button (click)="sidenav.close()" routerLink="/portal/committee" routerLinkActive="active-link">
         <mat-icon>emoji_people</mat-icon><span>{{ 'dashboard.itemCommittee' | translate }}</span>
       </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/portal/accounts" routerLinkActive="active-link">
+        <mat-icon>account_balance_wallet</mat-icon><span>{{ 'dashboard.itemAccounts' | translate }}</span>
+      </a>
       <a mat-button (click)="sidenav.close()" routerLink="/portal/about" routerLinkActive="active-link">
         <mat-icon>info</mat-icon><span>{{ 'dashboard.itemAbout' | translate }}</span>
       </a>
@@ -192,17 +195,7 @@
       </a>
     </nav>
 
-    <!-- Theme + language toggle -->
-    <div class="toggle-row-mobile">
-      <button mat-stroked-button class="theme-toggle-mobile" (click)="themeService.toggle()">
-        <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
-        {{ themeService.theme() === 'dark' ? ('nav.lightMode' | translate) : ('nav.darkMode' | translate) }}
-      </button>
-      <button mat-stroked-button class="lang-toggle-mobile" (click)="languageService.toggle()">
-        <mat-icon>translate</mat-icon>
-        {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
-      </button>
-    </div>
+    <!-- Language and theme toggles live in the top header on phones/tablets. -->
     <app-push-toggle [compact]="true" class="push-toggle-mobile"></app-push-toggle>
 
     <!-- Logout -->
@@ -232,14 +225,27 @@
         <div class="toolbar-content upsaa-container">
           <a routerLink="/" class="brand">
             <img src="logo.png" alt="Logo" class="logo-img" />
-            <span class="logo">UPSAA</span>
+            <span class="brand__text">
+              <span class="logo">UPSAA</span>
+              <span class="brand__tagline">{{ 'nav.brandTagline' | translate }}</span>
+            </span>
           </a>
 
-          <!-- Hamburger Icon -->
-          <button class="menu-button" mat-icon-button (click)="sidenav.toggle()"
-            [attr.aria-label]="'nav.openMenu' | translate">
-            <mat-icon>menu</mat-icon>
-          </button>
+          <!-- Phone/tablet header actions: language, theme, then the menu -->
+          <div class="mobile-actions">
+            <button type="button" class="mobile-actions__lang" (click)="languageService.toggle()"
+              [attr.aria-label]="languageService.lang() === 'bn' ? ('nav.switchToEnglish' | translate) : ('nav.switchToBangla' | translate)">
+              {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
+            </button>
+            <button mat-icon-button class="mobile-actions__theme" (click)="themeService.toggle()"
+              [attr.aria-label]="themeService.theme() === 'dark' ? ('nav.switchToLight' | translate) : ('nav.switchToDark' | translate)">
+              <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+            </button>
+            <button class="menu-button" mat-icon-button (click)="sidenav.toggle()"
+              [attr.aria-label]="'nav.openMenu' | translate">
+              <mat-icon>menu</mat-icon>
+            </button>
+          </div>
 
           <!-- Desktop Menu -->
           <div class="desktop-menu">

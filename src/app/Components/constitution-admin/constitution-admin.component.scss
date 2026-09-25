@@ -1,73 +1,15 @@
 // Constitution management — one current PDF, plus an upload/replace card.
 // Same rhythm and controls as the other content screens (notice/gallery admin).
 
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 .constitution-admin {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   padding: clamp(12px, 2.2vw, 20px);
   max-width: 1280px;
-}
-
-// ---------------------------- Buttons ----------------------------
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 42px;
-  padding: 0 var(--space-5);
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  font: 600 var(--font-size-sm) / 1 var(--font-base);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--color-primary-400);
-    outline-offset: 2px;
-  }
-}
-
-.btn--solid {
-  background: var(--color-primary-700);
-  color: #fff;
-
-  &:hover:not(:disabled) { background: var(--color-primary-800); }
-}
-
-.btn--outline {
-  background: transparent;
-  border-color: var(--color-ink-200);
-  color: var(--color-ink-700);
-
-  &:hover:not(:disabled) {
-    border-color: var(--color-primary-300);
-    color: var(--color-primary-700);
-  }
-}
-
-.btn--danger {
-  background: transparent;
-  border-color: rgba(244, 67, 54, 0.35);
-  color: var(--color-danger);
-
-  &:hover:not(:disabled) { background: rgba(244, 67, 54, 0.08); }
-}
-
-:host-context([data-theme='dark']) .btn--outline:hover:not(:disabled) {
+}:host-context([data-theme='dark']) .btn--outline:hover:not(:disabled) {
   color: var(--color-primary-300);
 }
 

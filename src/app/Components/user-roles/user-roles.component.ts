@@ -16,10 +16,11 @@ const PAGE_SIZE = 20;
 const ROLE_ORDER = ['SuperAdmin', 'Admin', 'Representative', 'Member'];
 
 /** SuperAdmin only: every login account, with a per-row role picker. */
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-user-roles',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './user-roles.component.html',
   styleUrl: './user-roles.component.scss'
 })

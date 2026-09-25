@@ -74,6 +74,11 @@ export class FinanceService {
     return this.http.post<LedgerSummaryResponse>(`${this.apiUrl}/Filter`, filter);
   }
 
+  /** Any logged-in alumni: the same report, read-only, without receipts or reference numbers. */
+  overview(filter: LedgerFilter): Observable<LedgerSummaryResponse> {
+    return this.http.post<LedgerSummaryResponse>(`${environment.baseUrl}/FinanceOverview/Filter`, filter);
+  }
+
   getCategories(type?: LedgerType): Observable<string[]> {
     const query = type ? `?type=${type}` : '';
     return this.http.get<string[]>(`${this.apiUrl}/Categories${query}`);

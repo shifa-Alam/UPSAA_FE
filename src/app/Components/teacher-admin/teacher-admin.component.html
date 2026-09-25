@@ -67,10 +67,7 @@
   <!-- ===== Teachers & staff ===== -->
   <app-section-card icon="groups" [title]="'teacherAdmin.postedCardTitle' | translate" [noPadding]="true">
 
-    <div class="loading" *ngIf="loading" role="status">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'teacherAdmin.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="list" [count]="4" [label]="'teacherAdmin.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && teachers.length === 0" icon="school" [title]="'teacherAdmin.emptyTitle' | translate"
       [message]="'teacherAdmin.emptyMessage' | translate"></app-empty-state>

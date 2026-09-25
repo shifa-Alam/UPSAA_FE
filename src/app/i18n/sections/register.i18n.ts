@@ -36,6 +36,26 @@ export const registerI18n: I18nSection = {
         dobHint: '🎉 আমাদের পক্ষ থেকে শুভেচ্ছা পেতে আপনার জন্ম তারিখ জানান!',
       },
 
+      contact: {
+        sectionTitle: 'যোগাযোগ ও পেশা',
+        sectionSubtitle: 'যোগাযোগের জন্য ফোন ও ইমেইল, আর আপনি এখন কোথায় কী করছেন',
+      },
+
+      confirm: {
+        sectionTitle: 'সদস্য ফি ও জমা দিন',
+        sectionSubtitle: 'ফি দেখে নিন, তারপর যাচাই করে জমা দিন',
+      },
+
+      steps: {
+        label: 'রেজিস্ট্রেশনের ধাপ',
+        personal: 'ব্যক্তিগত',
+        contact: 'যোগাযোগ',
+        education: 'শিক্ষা',
+        confirm: 'জমা দিন',
+        next: 'পরের ধাপ',
+        back: 'আগের ধাপ',
+      },
+
       education: {
         stepNumber: '২',
         sectionTitle: 'শিক্ষাগত তথ্য',
@@ -117,6 +137,26 @@ export const registerI18n: I18nSection = {
         dob: 'Date of Birth',
         dobPlaceholder: 'Select a date',
         dobHint: '🎉 Let us know your birthday so we can wish you!',
+      },
+
+      contact: {
+        sectionTitle: 'Contact & work',
+        sectionSubtitle: 'How to reach you, and where you are and what you do now',
+      },
+
+      confirm: {
+        sectionTitle: 'Membership fee & submit',
+        sectionSubtitle: 'Check the fee, then verify and submit',
+      },
+
+      steps: {
+        label: 'Registration steps',
+        personal: 'Personal',
+        contact: 'Contact',
+        education: 'Education',
+        confirm: 'Submit',
+        next: 'Next',
+        back: 'Back',
       },
 
       education: {

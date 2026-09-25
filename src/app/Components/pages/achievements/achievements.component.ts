@@ -11,10 +11,11 @@ import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-achievements',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './achievements.component.html',
   styleUrl: './achievements.component.scss'
 })

@@ -153,6 +153,17 @@ html {
   animation-duration: 420ms;
 }
 
+// The prebuilt Material theme types its buttons, menus, dialogs and snackbars in
+// Roboto; point every Material type role at the site font so Bangla there uses
+// Hind Siliguri too.
+html {
+  @each $role in display, headline, title, body, label {
+    @each $size in large, medium, small {
+      --mat-sys-#{$role}-#{$size}-font: var(--font-base);
+    }
+  }
+}
+
 html,
 body {
   font-family: var(--font-base);
@@ -307,5 +318,37 @@ a, button, input, select, textarea, label, [role='button'], .mat-mdc-button-base
 @media (max-width: 768px) {
   .mat-mdc-snack-bar-container.snackbar-update {
     margin-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 8px);
+  }
+}
+
+/* =========================================================
+   Photo blur-up (see Utils/image-fade.ts): lazy photos show a
+   soft placeholder, then sharpen in once they've arrived.
+   ========================================================= */
+// While downloading: a soft grey box; the first pixels arrive blurred…
+img[loading='lazy']:not(.is-loaded) {
+  background-color: var(--color-ink-100);
+  filter: blur(14px);
+  // Failsafe: never leave a photo blurred if the load event was missed.
+  animation: img-reveal 0s linear 4s forwards;
+}
+
+// …and sharpen once the whole photo is in.
+img[loading='lazy'].is-loaded {
+  filter: none;
+  transition: filter 450ms ease;
+}
+
+@keyframes img-reveal {
+  to { filter: none; background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  img[loading='lazy']:not(.is-loaded) {
+    filter: none;
+  }
+
+  img[loading='lazy'].is-loaded {
+    transition: none;
   }
 }

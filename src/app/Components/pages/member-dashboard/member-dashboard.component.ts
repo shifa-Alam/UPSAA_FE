@@ -17,17 +17,7 @@ interface QuickLink {
   route: string;
 }
 
-/** Only fields members can fill in themselves (edit dialog, photo upload, education tab). */
-const PROFILE_CHECKS: { key: string; filled: (m: Member) => boolean }[] = [
-  { key: 'photo', filled: m => !!m.photo },
-  { key: 'phone', filled: m => !!m.phone?.trim() },
-  { key: 'email', filled: m => !!m.email?.trim() },
-  { key: 'bloodGroup', filled: m => !!m.bloodGroup?.trim() },
-  { key: 'currentCity', filled: m => !!m.currentCity?.trim() },
-  { key: 'currentDesignation', filled: m => !!m.currentDesignation?.trim() },
-  { key: 'employer', filled: m => !!m.employer?.trim() },
-  { key: 'education', filled: m => (m.educationRecords?.length ?? 0) > 0 },
-];
+import { missingProfileFields, profileCompletion } from '../../../Utils/profile-completeness';
 
 /** Alumni portal welcome — the member's first screen after login (/portal/home). */
 import { PushToggleComponent } from '../../shared/push-toggle/push-toggle.component';
@@ -95,14 +85,11 @@ export class MemberDashboardComponent implements OnInit {
 
   /** i18n keys (memberDashboard.profileField.*) of the profile fields still empty. */
   get missingProfileFields(): string[] {
-    const m = this.member;
-    return m ? PROFILE_CHECKS.filter(c => !c.filled(m)).map(c => `memberDashboard.profileField.${c.key}`) : [];
+    return this.member ? missingProfileFields(this.member).map(k => `memberDashboard.profileField.${k}`) : [];
   }
 
   get profileCompletion(): number {
-    if (!this.member) return 0;
-    const done = PROFILE_CHECKS.length - this.missingProfileFields.length;
-    return Math.round((done / PROFILE_CHECKS.length) * 100);
+    return this.member ? profileCompletion(this.member) : 0;
   }
 
   get paidFeeCount(): number {

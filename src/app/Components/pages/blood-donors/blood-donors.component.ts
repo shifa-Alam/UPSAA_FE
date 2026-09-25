@@ -11,10 +11,11 @@ import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { LanguageService } from '../../../Services/language.service';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-blood-donors',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './blood-donors.component.html',
   styleUrl: './blood-donors.component.scss'
 })

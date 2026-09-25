@@ -2,68 +2,15 @@
 // Mirrors the homepage "News & notices" list (date block, alumni-only badge in
 // heritage tint) in the denser rhythm of the back-office screens.
 
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 .notice-admin {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   padding: clamp(12px, 2.2vw, 20px);
   max-width: 1280px;
-}
-
-// ---------------------------- Form controls ----------------------------
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-
-  > label {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--color-ink-700);
-  }
-
-  input,
-  textarea {
-    width: 100%;
-    min-height: 44px;
-    padding: 10px var(--space-3);
-    border: 1px solid var(--color-ink-200);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    color: var(--color-ink-900);
-    font: 400 var(--font-size-base) / 1.4 var(--font-base);
-    outline: none;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-
-    &::placeholder {
-      color: var(--color-ink-400);
-    }
-
-    &:hover {
-      border-color: var(--color-ink-400);
-    }
-
-    &:focus,
-    &:focus-visible {
-      border-color: var(--color-primary-500);
-      box-shadow: 0 0 0 3px var(--color-primary-100);
-    }
-  }
-
-  textarea {
-    min-height: 112px;
-    resize: vertical;
-  }
-}
-
-.field-hint {
-  font-size: var(--font-size-xs);
-  color: var(--color-ink-600);
-  line-height: 1.45;
-}
-
-// Checkbox rendered as a switch — still a native, keyboard-operable checkbox.
+}// Checkbox rendered as a switch — still a native, keyboard-operable checkbox.
 .switch-field {
   display: flex;
   align-items: flex-start;
@@ -135,122 +82,14 @@
 
 :host-context([data-theme='dark']) .switch-field:has(input:checked) {
   border-color: var(--color-primary-600);
-}
-
-// ---------------------------- Buttons ----------------------------
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 42px;
-  padding: 0 var(--space-5);
-  border: 1px solid transparent;
-  border-radius: var(--radius-pill);
-  font: 600 var(--font-size-sm) / 1 var(--font-base);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast),
-    color var(--transition-fast), box-shadow var(--transition-fast);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--color-primary-200);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.btn--solid {
-  background: var(--color-primary-700);
-  color: #fff;
-
-  &:hover:not(:disabled) {
-    background: var(--color-primary-800);
-    box-shadow: var(--shadow-sm);
-  }
-}
-
-.btn--outline {
-  background: transparent;
-  border-color: var(--color-ink-200);
-  color: var(--color-ink-700);
-
-  &:hover:not(:disabled) {
-    border-color: var(--color-primary-300);
-    color: var(--color-primary-700);
-  }
-}
-
-:host-context([data-theme='dark']) .btn--outline:hover:not(:disabled) {
+}:host-context([data-theme='dark']) .btn--outline:hover:not(:disabled) {
   color: var(--color-primary-300);
-}
-
-.btn--sm {
-  min-height: 36px;
-  padding: 0 var(--space-4);
-}
-
-.form-actions {
+}.form-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-3);
-}
-
-// Quiet square icon button for row actions.
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-ink-600);
-  cursor: pointer;
-  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:hover:not(:disabled) {
-    border-color: var(--color-primary-300);
-    color: var(--color-primary-600);
-    background: var(--color-primary-50);
-  }
-
-  &:focus-visible {
-    outline: none;
-    border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 3px var(--color-primary-100);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.icon-btn--danger:hover:not(:disabled) {
-  border-color: rgba(220, 38, 38, 0.4);
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.08);
-}
-
-:host-context([data-theme='dark']) {
+}:host-context([data-theme='dark']) {
   .icon-btn:hover:not(:disabled) {
     color: var(--color-primary-300);
   }

@@ -6,10 +6,7 @@
     </button>
   </app-admin-header>
 
-  <div *ngIf="loading" class="loading" role="status">
-    <mat-icon>autorenew</mat-icon>
-    <span>{{ 'eventAdmin.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'eventAdmin.loading' | translate"></app-skeleton>
 
   <ng-container *ngIf="!loading">
 

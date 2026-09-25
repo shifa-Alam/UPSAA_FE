@@ -72,11 +72,11 @@
   --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.14), 0 4px 10px rgba(15, 23, 42, 0.08);
 
   // ---- Typography ----
-  // 'Inter' covers Latin text — the same font the Inventory_FE admin panel
-  // reference uses; SolaimanLipiBangla only maps Bengali code points (see its
-  // unicode-range in styles.scss), so per-character font fallback still routes
-  // Bangla glyphs there automatically.
-  --font-base: 'Inter', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
+  // 'Inter' covers Latin text; it has no Bengali glyphs, so Bangla falls through
+  // per character to Hind Siliguri, which ships real 400–700 weights (SolaimanLipi
+  // has one weight, so every bold Bangla label was synthesized). SolaimanLipi stays
+  // as the offline/slow-network fallback.
+  --font-base: 'Inter', 'Hind Siliguri', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
   // Display face for brand, hero and section headings (h1/h2). Playfair has no
   // Bengali glyphs, so Bangla characters fall through to Noto Serif Bengali — a
   // serif with real 500–800 weights to match Playfair's bold headings. Google Fonts
@@ -105,6 +105,20 @@
 
   // ---- Theme (light is the default; see [data-theme="dark"] below) ----
   color-scheme: light;
+}
+
+// Larger text on desktop: at the phone scale above, Bangla read too small on wide screens.
+@media (min-width: 1024px) {
+  :root {
+    --font-size-xs: 13px;
+    --font-size-sm: 14.5px;
+    --font-size-base: 15.5px;
+    --font-size-md: 16.5px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 25px;
+    --font-size-3xl: 30px;
+  }
 }
 
 // =============================================================

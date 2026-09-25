@@ -10,6 +10,7 @@ export const directoryI18n: I18nSection = {
       },
       filters: {
         namePlaceholder: 'নাম দিয়ে খুঁজুন',
+        professionPlaceholder: 'পেশা বা প্রতিষ্ঠান (যেমনঃ ডাক্তার)',
         allBloodGroups: 'সকল রক্তের গ্রুপ',
         cityPlaceholder: 'শহর দিয়ে খুঁজুন',
         batchPlaceholder: 'ব্যাচ (যেমনঃ ২০১৫)',
@@ -19,7 +20,7 @@ export const directoryI18n: I18nSection = {
       errorTitle: 'তালিকা লোড করা যায়নি',
       errorMessage: 'কিছুক্ষণ পর আবার চেষ্টা করুন।',
       emptyTitle: 'কোনো সদস্য পাওয়া যায়নি',
-      emptyMessage: 'ভিন্ন নাম, ব্যাচ, শহর বা রক্তের গ্রুপ দিয়ে খুঁজে দেখুন।',
+      emptyMessage: 'ভিন্ন নাম, পেশা, ব্যাচ, শহর বা রক্তের গ্রুপ দিয়ে খুঁজে দেখুন।',
       meta: {
         totalPrefix: 'মোট',
         activeMembers: 'জন সক্রিয় সদস্য',
@@ -48,6 +49,7 @@ export const directoryI18n: I18nSection = {
       },
       filters: {
         namePlaceholder: 'Search by name',
+        professionPlaceholder: 'Profession or employer (e.g. doctor)',
         allBloodGroups: 'All Blood Groups',
         cityPlaceholder: 'Search by city',
         batchPlaceholder: 'Batch (e.g. 2015)',
@@ -57,7 +59,7 @@ export const directoryI18n: I18nSection = {
       errorTitle: 'List Could Not Be Loaded',
       errorMessage: 'Please try again shortly.',
       emptyTitle: 'No Members Found',
-      emptyMessage: 'Try searching with a different name, batch, city or blood group.',
+      emptyMessage: 'Try searching with a different name, profession, batch, city or blood group.',
       meta: {
         totalPrefix: 'Total',
         activeMembers: 'active members',

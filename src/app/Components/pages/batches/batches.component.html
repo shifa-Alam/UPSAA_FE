@@ -4,10 +4,7 @@
     [subtitle]="'batches.hero.subtitle' | translate">
   </app-page-header>
 
-  <div class="batches-loading" *ngIf="loading">
-    <mat-icon class="batches-loading__icon">autorenew</mat-icon>
-    <span>{{ 'batches.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="tiles" [count]="12" [contained]="true" [label]="'batches.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && (loadError || batches.length === 0)">
     <div class="upsaa-container">

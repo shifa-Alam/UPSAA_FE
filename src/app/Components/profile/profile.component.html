@@ -1,54 +1,105 @@
-<div *ngIf="loading" class="loading-wrapper" role="status">
-  <div class="spinner"></div>
-  <p>{{ 'profile.loading' | translate }}</p>
-</div>
+<app-skeleton *ngIf="loading" class="page-skeleton" variant="list" [count]="3" [label]="'profile.loading' | translate"></app-skeleton>
 
 <div class="profile" *ngIf="member && !loading">
 
   <!-- ===== Profile header ===== -->
-  <header class="profile-head">
-    <button type="button" class="avatar" (click)="fileInput.click()" [attr.aria-label]="'profile.changePhoto' | translate"
-      [title]="'profile.changePhoto' | translate">
-      <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl | sizedImage:400" [alt]="member.fullName" />
-      <ng-template #initialsAvatar>
-        <span class="avatar__initials">{{ getInitial(member.fullName) }}</span>
-      </ng-template>
-      <span class="avatar__camera"><mat-icon>photo_camera</mat-icon></span>
-    </button>
+  <header class="hero">
+    <!-- Cover band: navy with a gold edge, like the front of a membership card. -->
+    <div class="hero__cover">
+      <span class="hero__eyebrow">{{ 'profile.eyebrow' | translate }}</span>
+      <span class="hero__watermark" aria-hidden="true">UPSAA</span>
+    </div>
 
-    <div class="profile-head__text">
-      <span class="eyebrow">{{ 'profile.eyebrow' | translate }}</span>
-      <h1 class="profile-head__name">{{ member.fullName }}</h1>
-      <p class="profile-head__role">
-        {{ member.currentDesignation || ('profile.studentDefault' | translate) }}
-        <span class="dot" aria-hidden="true">·</span>
-        {{ member.employer || ('profile.noInfo' | translate) }}
-      </p>
-      <div class="profile-head__meta">
-        <span class="chip"><mat-icon>school</mat-icon>{{ 'profile.batchLabel' | translate }} {{ member.batch }}</span>
-        <span class="pill" [ngClass]="member.active ? 'pill--success' : 'pill--attention'">
-          {{ (member.active ? 'profile.statusActive' : 'profile.statusPending') | translate }}
-        </span>
+    <div class="hero__body">
+      <button type="button" class="avatar" (click)="fileInput.click()" [attr.aria-label]="'profile.changePhoto' | translate"
+        [title]="'profile.changePhoto' | translate">
+        <img *ngIf="croppedImage || profileImageUrl; else initialsAvatar" [src]="croppedImage || profileImageUrl | sizedImage:400" [alt]="member.fullName" />
+        <ng-template #initialsAvatar>
+          <span class="avatar__initials">{{ getInitial(member.fullName) }}</span>
+        </ng-template>
+        <span class="avatar__camera"><mat-icon>photo_camera</mat-icon></span>
+      </button>
+
+      <div class="hero__identity">
+        <h1 class="hero__name">
+          {{ member.fullName }}
+          <mat-icon class="hero__verified" *ngIf="member.active" [attr.aria-label]="'profile.statusActive' | translate"
+            [title]="'profile.statusActive' | translate">verified</mat-icon>
+        </h1>
+        <p class="hero__role">
+          {{ member.currentDesignation || ('profile.studentDefault' | translate) }}
+          <ng-container *ngIf="member.employer"><span class="dot" aria-hidden="true">·</span>{{ member.employer }}</ng-container>
+        </p>
+        <div class="hero__badges">
+          <span class="member-code" *ngIf="member.memberCode">
+            <mat-icon>badge</mat-icon>{{ member.memberCode }}
+          </span>
+          <span class="pill" [ngClass]="member.active ? 'pill--success' : 'pill--attention'">
+            {{ (member.active ? 'profile.statusActive' : 'profile.statusPending') | translate }}
+          </span>
+        </div>
+      </div>
+
+      <div class="hero__actions">
+        <button type="button" class="btn btn--solid" (click)="openEditInfoDialog()">
+          <mat-icon>edit</mat-icon>
+          {{ 'profile.editInfo' | translate }}
+        </button>
+        <button type="button" class="btn btn--outline" (click)="openChangePasswordDialog()">
+          <mat-icon>lock</mat-icon>
+          {{ 'profile.changePassword' | translate }}
+        </button>
+        <!-- Election cycle is currently over — hidden, not deleted, in case it needs to come back.
+        <a class="btn btn--solid" [routerLink]="['/election']">
+          <mat-icon>how_to_vote</mat-icon>
+          {{ 'profile.vote' | translate }}
+        </a>
+        -->
       </div>
     </div>
 
-    <div class="profile-head__actions">
-      <button type="button" class="btn btn--outline" (click)="openEditInfoDialog()">
-        <mat-icon>edit</mat-icon>
-        {{ 'profile.editInfo' | translate }}
-      </button>
-      <button type="button" class="btn btn--outline" (click)="openChangePasswordDialog()">
-        <mat-icon>lock</mat-icon>
-        {{ 'profile.changePassword' | translate }}
-      </button>
-      <!-- Election cycle is currently over — hidden, not deleted, in case it needs to come back.
-      <a class="btn btn--solid" [routerLink]="['/election']">
-        <mat-icon>how_to_vote</mat-icon>
-        {{ 'profile.vote' | translate }}
-      </a>
-      -->
-    </div>
+    <!-- At a glance -->
+    <dl class="hero__stats">
+      <div class="stat-tile">
+        <span class="stat-tile__icon"><mat-icon>school</mat-icon></span>
+        <dt>{{ 'profile.field.batch' | translate }}</dt>
+        <dd>{{ formatPlain(member.batch) }}</dd>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-tile__icon"><mat-icon>location_on</mat-icon></span>
+        <dt>{{ 'profile.field.city' | translate }}</dt>
+        <dd>{{ member.currentCity || '—' }}</dd>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-tile__icon stat-tile__icon--blood"><mat-icon>bloodtype</mat-icon></span>
+        <dt>{{ 'profile.field.bloodGroup' | translate }}</dt>
+        <dd>{{ member.bloodGroup || '—' }}</dd>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-tile__icon"><mat-icon>task_alt</mat-icon></span>
+        <dt>{{ 'profile.field.completion' | translate }}</dt>
+        <dd>
+          {{ formatPlain(completion) }}%
+          <span class="stat-tile__bar" aria-hidden="true"><span [style.width.%]="completion"></span></span>
+        </dd>
+      </div>
+    </dl>
   </header>
+
+  <!-- ===== Privacy — first thing after the header so members see it straight away ===== -->
+  <section class="privacy" [class.privacy--on]="member.isSensitiveHidden">
+    <span class="privacy__icon" aria-hidden="true">
+      <mat-icon>{{ member.isSensitiveHidden ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </span>
+    <div class="privacy__text">
+      <strong id="privacyTitle">{{ 'profile.privacyTitle' | translate }}</strong>
+      <span>{{ (member.isSensitiveHidden ? 'profile.privacyOnHint' : 'profile.privacyOffHint') | translate }}</span>
+    </div>
+    <button type="button" role="switch" class="switch" [attr.aria-checked]="member.isSensitiveHidden"
+      aria-labelledby="privacyTitle" [disabled]="savingPrivacy" (click)="togglePrivacy()">
+      <span class="switch__thumb"></span>
+    </button>
+  </section>
 
   <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
 
@@ -81,35 +132,39 @@
       <h2 class="card__title">{{ 'profile.detailsTitle' | translate }}</h2>
     </div>
     <div class="card__body">
-      <dl class="field-grid">
-        <div>
-          <dt>{{ 'profile.field.memberCode' | translate }}</dt>
-          <dd><span class="code">{{ member.memberCode }}</span></dd>
-        </div>
-        <div>
-          <dt>{{ 'profile.field.batch' | translate }}</dt>
-          <dd>{{ member.batch }}</dd>
-        </div>
-        <div>
-          <dt>{{ 'profile.field.phone' | translate }}</dt>
-          <dd>{{ member.phone }}</dd>
-        </div>
-        <div>
-          <dt>{{ 'profile.field.email' | translate }}</dt>
-          <dd>{{ member.email }}</dd>
-        </div>
-        <div>
-          <dt>{{ 'profile.field.city' | translate }}</dt>
-          <dd>{{ member.currentCity }}</dd>
-        </div>
-        <div>
-          <dt>{{ 'profile.field.bloodGroup' | translate }}</dt>
-          <dd>
-            <ng-container *ngIf="member.bloodGroup; else noBlood">{{ member.bloodGroup }}</ng-container>
-            <ng-template #noBlood><span class="field-grid__empty">{{ 'profile.noInfo' | translate }}</span></ng-template>
-          </dd>
-        </div>
-      </dl>
+      <ul class="contact-list">
+        <li class="contact-item">
+          <span class="contact-item__icon"><mat-icon>call</mat-icon></span>
+          <span class="contact-item__text">
+            <span class="contact-item__label">{{ 'profile.field.phone' | translate }}</span>
+            <span class="contact-item__value">{{ member.phone || ('profile.noInfo' | translate) }}</span>
+          </span>
+        </li>
+        <li class="contact-item">
+          <span class="contact-item__icon"><mat-icon>mail</mat-icon></span>
+          <span class="contact-item__text">
+            <span class="contact-item__label">{{ 'profile.field.email' | translate }}</span>
+            <span class="contact-item__value">{{ member.email || ('profile.noInfo' | translate) }}</span>
+          </span>
+        </li>
+        <li class="contact-item">
+          <span class="contact-item__icon"><mat-icon>cake</mat-icon></span>
+          <span class="contact-item__text">
+            <span class="contact-item__label">{{ 'profile.field.dob' | translate }}</span>
+            <span class="contact-item__value">{{ formatDate(member.dob) || ('profile.noInfo' | translate) }}</span>
+          </span>
+        </li>
+        <li class="contact-item">
+          <span class="contact-item__icon"><mat-icon>work_outline</mat-icon></span>
+          <span class="contact-item__text">
+            <span class="contact-item__label">{{ 'profile.field.work' | translate }}</span>
+            <span class="contact-item__value">{{ member.employer || ('profile.noInfo' | translate) }}</span>
+          </span>
+        </li>
+      </ul>
+      <p class="contact-note" *ngIf="member.isSensitiveHidden">
+        <mat-icon>visibility_off</mat-icon>{{ 'profile.hiddenFromMembers' | translate }}
+      </p>
     </div>
   </section>
 
@@ -117,42 +172,70 @@
   <section class="card">
     <div class="card__head">
       <h2 class="card__title">{{ 'profile.educationInfoTitle' | translate }}</h2>
-      <button type="button" class="btn btn--outline btn--sm" (click)="addEducation()">
+      <button type="button" class="btn btn--outline btn--sm" (click)="addEducation()"
+        *ngIf="!educationForm && member.educationRecords.length < degrees.length">
         <mat-icon>add</mat-icon> {{ 'profile.addNew' | translate }}
       </button>
     </div>
 
-    <div class="table-scroll" *ngIf="member.educationRecords.length; else noEdu">
-      <table class="data-table education-table rt">
-        <thead>
-          <tr>
-            <th>{{ 'profile.degree' | translate }}</th>
-            <th>{{ 'profile.institute' | translate }}</th>
-            <th>{{ 'profile.subject' | translate }}</th>
-            <th class="text-right">{{ 'profile.actions' | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let edu of member.educationRecords">
-            <td class="strong rt-title">{{ edu.degreeName }}</td>
-            <td class="rt-wide" [attr.data-label]="'profile.institute' | translate">{{ edu.instituteName }}</td>
-            <td [attr.data-label]="'profile.subject' | translate">{{ edu.subject }}</td>
-            <td class="text-right rt-actions">
-              <span class="row-actions">
-                <button type="button" class="icon-btn" (click)="editEducation(edu)" [attr.aria-label]="'profile.editEducation' | translate"
-                  [title]="'profile.editEducation' | translate">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button type="button" class="icon-btn icon-btn--danger" (click)="deleteEducation(edu)"
-                  [attr.aria-label]="'profile.deleteEducation' | translate" [title]="'profile.deleteEducation' | translate">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Add / edit form -->
+    <form class="edu-form" *ngIf="educationForm as f" (ngSubmit)="saveEducation()">
+      <h3 class="edu-form__title">{{ (f.id ? 'profile.editEducationTitle' : 'profile.addEducationTitle') | translate }}</h3>
+      <div class="edu-form__grid">
+        <label class="edu-field">
+          <span class="edu-field__label">{{ 'profile.degree' | translate }}</span>
+          <select name="degreeId" [(ngModel)]="f.degreeId" required>
+            <option *ngFor="let d of availableDegrees" [ngValue]="d.id">{{ ('profile.degrees.' + d.key) | translate }}</option>
+          </select>
+        </label>
+        <label class="edu-field">
+          <span class="edu-field__label">{{ 'profile.institute' | translate }}</span>
+          <input type="text" name="instituteName" [(ngModel)]="f.instituteName" maxlength="200" />
+        </label>
+        <label class="edu-field">
+          <span class="edu-field__label">{{ 'profile.subject' | translate }}</span>
+          <input type="text" name="subject" [(ngModel)]="f.subject" maxlength="150" />
+        </label>
+        <label class="edu-check">
+          <input type="checkbox" name="isCompleted" [(ngModel)]="f.isCompleted" />
+          <span>{{ 'profile.degreeCompleted' | translate }}</span>
+        </label>
+      </div>
+      <div class="edu-form__actions">
+        <button type="button" class="btn btn--outline btn--sm" (click)="cancelEducation()" [disabled]="savingEducation">
+          {{ 'profile.cancel' | translate }}
+        </button>
+        <button type="submit" class="btn btn--solid btn--sm" [disabled]="savingEducation">
+          <mat-icon>{{ savingEducation ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'profile.save' | translate }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Timeline, highest degree first -->
+    <ol class="timeline" *ngIf="member.educationRecords.length; else noEdu">
+      <li class="timeline__item" *ngFor="let edu of sortedEducation" [class.timeline__item--pending]="!edu.isCompleted">
+        <span class="timeline__dot" aria-hidden="true"><mat-icon>{{ edu.isCompleted ? 'school' : 'hourglass_top' }}</mat-icon></span>
+        <div class="timeline__content">
+          <div class="timeline__head">
+            <strong class="timeline__degree">{{ degreeLabel(edu.degreeId, edu.degreeName) }}</strong>
+            <span class="edu-pending" *ngIf="!edu.isCompleted">{{ 'profile.degreeInProgress' | translate }}</span>
+          </div>
+          <span class="timeline__institute" *ngIf="edu.instituteName">{{ edu.instituteName }}</span>
+          <span class="timeline__subject" *ngIf="edu.subject">{{ edu.subject }}</span>
+        </div>
+        <span class="row-actions">
+          <button type="button" class="icon-btn" (click)="editEducation(edu)" [attr.aria-label]="'profile.editEducation' | translate"
+            [title]="'profile.editEducation' | translate">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button type="button" class="icon-btn icon-btn--danger" (click)="deleteEducation(edu)"
+            [disabled]="deletingEducationId === edu.id"
+            [attr.aria-label]="'profile.deleteEducation' | translate" [title]="'profile.deleteEducation' | translate">
+            <mat-icon>{{ deletingEducationId === edu.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+          </button>
+        </span>
+      </li>
+    </ol>
 
     <ng-template #noEdu>
       <p class="empty">{{ 'profile.noEducationRecords' | translate }}</p>

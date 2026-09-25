@@ -6,10 +6,7 @@
 
   <div class="upsaa-container notices-body">
 
-    <div class="notices-loading" role="status" *ngIf="loading">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'notices.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="list" [count]="5" [label]="'notices.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && loadError" icon="campaign" [title]="'notices.errorTitle' | translate"
       [message]="'notices.errorMessage' | translate"></app-empty-state>

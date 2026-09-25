@@ -12,10 +12,11 @@ import { SectionCardComponent } from '../shared/section-card/section-card.compon
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-notice-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './notice-admin.component.html',
   styleUrl: './notice-admin.component.scss'
 })

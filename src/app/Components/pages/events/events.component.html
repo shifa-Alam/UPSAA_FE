@@ -3,10 +3,7 @@
   <app-page-header variant="hero" [eyebrow]="'events.hero.eyebrow' | translate" [title]="'events.hero.title' | translate"
     [subtitle]="'events.hero.subtitle' | translate"></app-page-header>
 
-  <div class="events-loading" *ngIf="loading">
-    <mat-icon class="events-loading__icon">autorenew</mat-icon>
-    <span>{{ 'events.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="cards" [count]="3" [contained]="true" [label]="'events.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && (loadError || !hasAny)">
     <div class="upsaa-container">

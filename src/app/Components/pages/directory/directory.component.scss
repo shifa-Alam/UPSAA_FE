@@ -15,7 +15,7 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)) auto;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.5fr) repeat(3, minmax(0, 1fr)) auto;
   gap: var(--space-3);
   margin-top: calc(-1 * var(--space-6));
   padding: var(--space-3);
@@ -228,6 +228,9 @@
   flex-direction: column;
   align-items: center;
   min-width: 0;
+  color: inherit;          // the card is a link to the profile
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
   padding: var(--space-6) var(--space-4) var(--space-5);
   text-align: center;
   background: var(--color-surface);
@@ -235,6 +238,11 @@
   border-radius: var(--radius-lg);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
   animation: directory-in 420ms ease both;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-600);
+    outline-offset: 2px;
+  }
 
   &:hover {
     transform: translateY(-4px);
@@ -460,7 +468,11 @@
     padding: 0 var(--space-3);
   }
 
-  // Search on top, batch | city, then blood group | reset.
+  // Name, then profession, then batch | city, then blood group | reset.
+  .tools__field--profession {
+    grid-column: 1 / -1;
+  }
+
   .tools__reset {
     grid-column: auto;
     justify-self: stretch;

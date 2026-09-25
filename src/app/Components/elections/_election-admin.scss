@@ -6,6 +6,8 @@
 // cards, navy primary, heritage gold only for "needs attention".
 // =============================================================
 
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 :host {
   display: block;
 
@@ -59,60 +61,7 @@
 .required {
   color: var(--color-danger);
   margin-left: 2px;
-}
-
-// ---------------------------- Buttons ----------------------------
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 40px;
-  padding: 0 var(--space-5);
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  background: transparent;
-  font: 600 var(--font-size-sm) / 1 var(--font-base);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast),
-    border-color var(--transition-fast), box-shadow var(--transition-fast);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.btn--primary {
-  background: var(--color-primary-700);
-  color: #fff;
-
-  &:hover:not(:disabled) { background: var(--color-primary-800); }
-}
-
-.btn--outline {
-  color: var(--color-primary-700);
-  border-color: var(--color-primary-200);
-
-  &:hover:not(:disabled) {
-    background: var(--color-primary-50);
-    border-color: var(--color-primary-300);
-  }
-}
-
-:host-context([data-theme='dark']) .btn--primary {
+}:host-context([data-theme='dark']) .btn--primary {
   background: var(--color-primary-600);
 
   &:hover:not(:disabled) { background: var(--color-primary-500); }
@@ -121,72 +70,7 @@
 :host-context([data-theme='dark']) .btn--outline {
   color: var(--color-primary-300);
   border-color: var(--color-primary-700);
-}
-
-.btn--ghost {
-  color: var(--color-ink-700);
-  border-color: var(--color-ink-200);
-
-  &:hover:not(:disabled) { background: var(--color-surface-sunken); }
-}
-
-.btn--success {
-  background: var(--color-success);
-  color: #fff;
-
-  &:hover:not(:disabled) { filter: brightness(0.93); }
-}
-
-.btn--danger {
-  background: var(--color-danger);
-  color: #fff;
-
-  &:hover:not(:disabled) { filter: brightness(0.93); }
-}
-
-.btn--danger-outline {
-  color: var(--pill-danger-fg);
-  border-color: currentColor;
-
-  &:hover:not(:disabled) { background: var(--pill-danger-bg); }
-}
-
-// Round icon-only row action (edit / delete / view).
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--color-ink-600);
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:hover {
-    background: var(--color-primary-50);
-    color: var(--color-primary-600);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: var(--focus-ring);
-  }
-}
-
-.icon-btn--danger:hover {
-  background: var(--pill-danger-bg);
-  color: var(--pill-danger-fg);
-}
-
-:host-context([data-theme='dark']) .icon-btn:not(.icon-btn--danger):hover {
+}:host-context([data-theme='dark']) .icon-btn:not(.icon-btn--danger):hover {
   color: var(--color-primary-300);
 }
 
@@ -286,50 +170,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-4) var(--space-5);
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-
-  label {
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: var(--color-ink-700);
-  }
-
-  input,
-  select,
-  textarea {
-    width: 100%;
-    min-height: 42px;
-    padding: 0 var(--space-3);
-    border: 1px solid var(--color-ink-200);
-    border-radius: var(--radius-md);
-    background: var(--color-surface);
-    color: var(--color-ink-900);
-    font: 400 var(--font-size-sm) var(--font-base);
-    outline: none;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-
-    &:hover { border-color: var(--color-ink-400); }
-
-    &:focus {
-      border-color: var(--color-primary-500);
-      box-shadow: var(--focus-ring);
-    }
-  }
-
-  textarea {
-    padding: var(--space-3);
-    line-height: var(--line-height-normal);
-    resize: vertical;
-  }
-}
-
-:host-context([data-theme='dark']) .form-field input {
+}:host-context([data-theme='dark']) .form-field input {
   color-scheme: dark;
 }
 
@@ -412,39 +253,7 @@
 :host-context(html[lang='bn']) .admin-table th {
   letter-spacing: normal;
   text-transform: none;
-}
-
-// ---------------------------- Pills ----------------------------
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: nowrap;
-  background: var(--pill-neutral-bg);
-  color: var(--pill-neutral-fg);
-
-  &::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-  }
-}
-
-.pill--success { background: var(--pill-success-bg); color: var(--pill-success-fg); }
-.pill--warning { background: var(--pill-warning-bg); color: var(--pill-warning-fg); }
-.pill--danger { background: var(--pill-danger-bg); color: var(--pill-danger-fg); }
-.pill--info { background: var(--pill-info-bg); color: var(--pill-info-fg); }
-.pill--heritage { background: var(--pill-heritage-bg); color: var(--pill-heritage-fg); }
-
-// ---------------------------- Pagination ----------------------------
+}// ---------------------------- Pagination ----------------------------
 .admin-pagination {
   display: flex;
   align-items: center;

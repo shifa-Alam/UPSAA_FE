@@ -83,10 +83,7 @@
       </form>
 
       <!-- ===== Listing ===== -->
-      <div class="jobs-loading" *ngIf="loading">
-        <mat-icon class="jobs-loading__icon">autorenew</mat-icon>
-        <span>{{ 'jobs.loading' | translate }}</span>
-      </div>
+      <app-skeleton *ngIf="loading" variant="list" [count]="4" [label]="'jobs.loading' | translate"></app-skeleton>
 
       <app-empty-state *ngIf="!loading && loadError" icon="work" [title]="'jobs.errorTitle' | translate"
         [message]="'jobs.errorMessage' | translate"></app-empty-state>

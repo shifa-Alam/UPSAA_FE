@@ -1,0 +1,342 @@
+// =============================================================
+// Admin kit — the one set of buttons, icon buttons, status pills
+// and form fields every back-office screen uses (Finance, Gallery,
+// Notices, Events, Achievements, Teachers, Committee, Elections…).
+//
+// Imported by each admin component's stylesheet, so the rules stay
+// scoped to that component (Angular encapsulation) and never reach
+// the public site. A screen keeps only what is genuinely its own —
+// layouts and one-off variants (e.g. an event's "ended" pill).
+// =============================================================
+
+// ---- Status tints (light; dark below) ----
+:host {
+  --adm-income: #2e7d32;
+  --adm-expense: #c62828;
+  --adm-focus: 0 0 0 3px rgba(11, 94, 215, 0.18);
+
+  --pill-success-bg: rgba(76, 175, 80, 0.14);
+  --pill-success-fg: #2e7d32;
+  --pill-warning-bg: rgba(245, 166, 35, 0.16);
+  --pill-warning-fg: #92600a;
+  --pill-danger-bg: rgba(244, 67, 54, 0.12);
+  --pill-danger-fg: #c62828;
+  --pill-info-bg: var(--color-primary-50);
+  --pill-info-fg: var(--color-primary-600);
+  --pill-heritage-bg: var(--color-heritage-soft);
+  --pill-heritage-fg: #8a6a22;
+  --pill-neutral-bg: var(--color-ink-100);
+  --pill-neutral-fg: var(--color-ink-600);
+}
+
+:host-context([data-theme='dark']) {
+  --adm-income: #81c784;
+  --adm-expense: #f19a93;
+  --adm-focus: 0 0 0 3px rgba(111, 165, 246, 0.32);
+
+  --pill-success-bg: rgba(76, 175, 80, 0.16);
+  --pill-success-fg: #86d08a;
+  --pill-warning-bg: rgba(245, 166, 35, 0.16);
+  --pill-warning-fg: #f5c46e;
+  --pill-danger-bg: rgba(244, 67, 54, 0.16);
+  --pill-danger-fg: #f19b94;
+  --pill-info-fg: var(--color-primary-300);
+  --pill-heritage-fg: var(--color-heritage-500);
+}
+
+// ---- Buttons ----
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-ink-700);
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast), box-shadow var(--transition-fast);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--adm-focus);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.btn--solid,
+.btn--primary {
+  background: var(--color-primary-700);
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-800);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.btn--outline {
+  border-color: var(--color-ink-200);
+  color: var(--color-ink-700);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary-300);
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+  }
+}
+
+.btn--ghost {
+  padding: 0 var(--space-4);
+  color: var(--color-ink-700);
+
+  &:hover:not(:disabled) {
+    background: var(--color-ink-100);
+    color: var(--color-ink-900);
+  }
+}
+
+.btn--success {
+  background: var(--color-success);
+  color: #fff;
+
+  &:hover:not(:disabled) { filter: brightness(0.93); }
+}
+
+.btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+
+  &:hover:not(:disabled) { filter: brightness(0.93); }
+}
+
+.btn--danger-outline {
+  border-color: currentColor;
+  color: var(--pill-danger-fg);
+
+  &:hover:not(:disabled) { background: var(--pill-danger-bg); }
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+}
+
+// ---- Round icon buttons (row actions: edit, delete…) ----
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-ink-600);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary-300);
+    background: var(--color-primary-50);
+    color: var(--color-primary-600);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--adm-focus);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.icon-btn--danger:hover:not(:disabled) {
+  border-color: rgba(244, 67, 54, 0.4);
+  background: var(--pill-danger-bg);
+  color: var(--pill-danger-fg);
+}
+
+// ---- Status pills ----
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--pill-neutral-bg);
+  color: var(--pill-neutral-fg);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.85;
+  }
+}
+
+.pill--success { background: var(--pill-success-bg); color: var(--pill-success-fg); }
+.pill--warning { background: var(--pill-warning-bg); color: var(--pill-warning-fg); }
+.pill--danger { background: var(--pill-danger-bg); color: var(--pill-danger-fg); }
+.pill--info { background: var(--pill-info-bg); color: var(--pill-info-fg); }
+.pill--neutral { background: var(--pill-neutral-bg); color: var(--pill-neutral-fg); }
+
+.pill--primary,
+.pill--navy {
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+}
+
+.pill--gold,
+.pill--heritage {
+  background: var(--pill-heritage-bg);
+  color: var(--pill-heritage-fg);
+
+  &::before { display: none; }
+}
+
+// ---- Form fields ----
+// Two markups are in use and both look the same:
+//   <label class="field"><span class="field__label">…</span><input></label>
+//   <div class="form-field"><label>…</label><input></div>
+.field,
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.field__label,
+.field > span:not([class]),
+.form-field > label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-700);
+}
+
+.field__req {
+  margin-left: 2px;
+  color: var(--color-danger);
+}
+
+.field__hint,
+.field-hint {
+  font-size: var(--font-size-xs);
+  line-height: 1.45;
+  color: var(--color-ink-600);
+}
+
+.field input,
+.field select,
+.field textarea,
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-ink-900);
+  font: 400 var(--font-size-base) / 1.4 var(--font-base);
+  box-sizing: border-box;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &::placeholder {
+    color: var(--color-ink-400);
+  }
+
+  &:hover {
+    border-color: var(--color-ink-400);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: var(--adm-focus);
+  }
+
+  &:disabled {
+    background-color: var(--color-surface-alt);
+    cursor: not-allowed;
+  }
+}
+
+.field textarea,
+.form-field textarea {
+  min-height: 96px;
+  padding: 10px var(--space-3);
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.field select,
+.form-field select {
+  appearance: none;
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+  cursor: pointer;
+}
+
+// Checkboxes/radios inside a field keep their native size.
+.field input[type='checkbox'],
+.field input[type='radio'],
+.form-field input[type='checkbox'],
+.form-field input[type='radio'] {
+  width: auto;
+  min-height: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+// File inputs are styled by their own drop zones.
+.field input[type='file'],
+.form-field input[type='file'] {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}

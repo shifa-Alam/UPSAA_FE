@@ -59,17 +59,49 @@ content-area router-outlet {
 }
 
 .logo-img {
-  height: 36px;
-  width: 36px;
+  height: 40px;
+  width: 40px;
   object-fit: contain;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
 }
 
 .logo {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--font-size-md);
-  color: var(--color-ink-900);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-800);
   white-space: nowrap;
+}
+
+.brand__tagline {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-heritage-500);
+  white-space: nowrap;
+}
+
+:host-context([data-theme='dark']) .logo {
+  color: #fff;
+}
+
+:host-context(html[lang='bn']) .brand__tagline {
+  letter-spacing: normal;
+}
+
+// Between the desktop breakpoint and ~1200px the menu needs the tagline's width.
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .brand__tagline {
+    display: none;
+  }
 }
 
 /* ===== Desktop Menu ===== */
@@ -145,39 +177,45 @@ content-area router-outlet {
   margin: 0 var(--space-1);
 }
 
-.toggle-row-mobile {
-  display: flex;
-  gap: var(--space-2);
-  margin: var(--space-3) 0 var(--space-2);
+/* Phone/tablet header actions (language, theme, menu) — replaced by .desktop-menu above 1024px. */
+.mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 2px;
 }
 
-.theme-toggle-mobile {
-  flex: 1;
-  justify-content: center !important;
-  display: flex !important;
-  align-items: center;
-  gap: var(--space-2);
+.mobile-actions__lang {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-pill);
-  color: var(--color-ink-700);
-}
-
-.lang-toggle-mobile {
-  flex: 0 0 auto;
-  min-width: 0 !important;
-  padding: 0 var(--space-3) !important;
-  justify-content: center !important;
-  display: flex !important;
-  align-items: center;
-  gap: var(--space-2);
-  border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--color-primary-600);
-  font-weight: 700;
+  font: 700 var(--font-size-xs) / 1 var(--font-base);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--color-primary-200);
+  }
 }
+
+.mobile-actions__theme {
+  color: var(--color-ink-600);
+}
+
 
 /* Full link bar needs ~900px (more when signed in), so tablets get the hamburger too. */
 @media (max-width: 1024px) {
   .desktop-menu {
     display: none;
+  }
+
+  .mobile-actions {
+    display: flex;
   }
 
   .menu-button {
@@ -198,12 +236,16 @@ content-area router-outlet {
   }
 
   .logo {
-    font-size: var(--font-size-sm);
+    font-size: 19px;
+  }
+
+  .brand__tagline {
+    font-size: 10px;
   }
 
   .logo-img {
-    height: 34px;
-    width: 34px;
+    height: 36px;
+    width: 36px;
   }
 }
 
@@ -364,6 +406,73 @@ content-area router-outlet {
   font-weight: 700;
   font-size: var(--font-size-sm);
   text-transform: uppercase;
+}
+
+/* ===== Navy header =====
+   The top bar shares the hero's navy, so header and hero read as one band;
+   everything on it switches to light text, with gold for the active page. */
+.app-toolbar {
+  background: var(--color-primary-900);
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(201, 162, 74, 0.45), 0 2px 10px rgba(7, 29, 64, 0.25);
+  --mat-text-button-state-layer-color: #fff;
+  --mat-text-button-ripple-color: rgba(255, 255, 255, 0.14);
+  --mat-icon-button-state-layer-color: #fff;
+  --mat-icon-button-ripple-color: rgba(255, 255, 255, 0.14);
+  --mat-outlined-button-state-layer-color: #fff;
+
+  .logo {
+    color: #fff;
+  }
+
+  .desktop-menu a.mat-mdc-button,
+  .desktop-menu button.mat-mdc-button {
+    color: rgba(255, 255, 255, 0.82);
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  .desktop-menu .active-link {
+    color: #fff;
+    box-shadow: inset 0 -2px 0 var(--color-heritage-500);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  .nav-menu-caret,
+  .user-avatar-caret {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .dashboard-link {
+    color: var(--color-heritage-500) !important;
+  }
+
+  .lang-toggle-button,
+  .mobile-actions__lang {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: transparent;
+  }
+
+  .theme-toggle-button,
+  .mobile-actions__theme,
+  .menu-button {
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .avatar-img {
+    border-color: var(--color-heritage-500);
+  }
+
+  .login-btn {
+    --mdc-filled-button-container-color: var(--color-heritage-500);
+    --mdc-filled-button-label-text-color: var(--color-primary-900);
+    --mat-filled-button-container-color: var(--color-heritage-500);
+    --mat-filled-button-label-text-color: var(--color-primary-900);
+    font-weight: 700;
+  }
 }
 
 /* ===== Installed app (PWA) ===== */

@@ -4,7 +4,7 @@
 
   <!-- ===== Published committees ===== -->
   <app-section-card icon="groups" [title]="'committeeAdmin.listTitle' | translate" [noPadding]="true">
-    <div class="state" *ngIf="listLoading"><mat-icon class="spin">autorenew</mat-icon></div>
+    <app-skeleton *ngIf="listLoading" variant="list" [count]="3" [label]="'pwa.loading' | translate"></app-skeleton>
     <p class="state state--text" *ngIf="!listLoading && committees.length === 0">{{ 'committeeAdmin.none' | translate }}</p>
 
     <ul class="terms" *ngIf="!listLoading && committees.length">
@@ -40,7 +40,7 @@
   <!-- ===== Editor ===== -->
   <app-section-card *ngIf="editingId !== null" icon="edit_note" [title]="'committeeAdmin.editTitle' | translate"
     [subtitle]="'committeeAdmin.editHint' | translate">
-    <div class="state" *ngIf="editLoading"><mat-icon class="spin">autorenew</mat-icon></div>
+    <app-skeleton *ngIf="editLoading" variant="list" [count]="4" [label]="'pwa.loading' | translate"></app-skeleton>
 
     <ng-container *ngIf="!editLoading">
       <div class="fields">

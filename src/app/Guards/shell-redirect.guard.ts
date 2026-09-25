@@ -25,14 +25,17 @@ export const shellRedirectGuard: CanActivateFn = (route: ActivatedRouteSnapshot)
   if (!auth.isLoggedIn()) return true;
 
   const router = inject(Router);
-  const page = route.routeConfig?.path ?? '';
+  // 'members/:id' → ['members', '42']: path params travel along with the query params.
+  const segments = (route.routeConfig?.path ?? '').split('/')
+    .map(s => s.startsWith(':') ? route.paramMap.get(s.slice(1)) ?? '' : s);
+  const page = segments[0];
   const extras = { queryParams: route.queryParams, fragment: route.fragment ?? undefined };
 
   if (auth.isStaff()) {
-    return STAFF_SHELL_PAGES.has(page) ? router.createUrlTree(['/dashboard', page], extras) : true;
+    return STAFF_SHELL_PAGES.has(page) && segments.length === 1 ? router.createUrlTree(['/dashboard', page], extras) : true;
   }
 
   return MEMBER_PORTAL_PAGES.has(page)
-    ? router.createUrlTree(['/portal', page], extras)
+    ? router.createUrlTree(['/portal', ...segments], extras)
     : router.createUrlTree(['/portal/home']);
 };

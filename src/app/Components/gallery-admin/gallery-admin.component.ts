@@ -16,10 +16,11 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 import { imageAt, imageSrcset } from '../../Utils/image-url';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-gallery-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './gallery-admin.component.html',
   styleUrl: './gallery-admin.component.scss'
 })

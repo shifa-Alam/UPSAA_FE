@@ -17,10 +17,11 @@ const emptyForm = (): TeacherSave => ({
   fullName: '', designation: '', subject: '', status: 'Current', serviceStartYear: null, serviceEndYear: null, message: ''
 });
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-teacher-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './teacher-admin.component.html',
   styleUrl: './teacher-admin.component.scss'
 })

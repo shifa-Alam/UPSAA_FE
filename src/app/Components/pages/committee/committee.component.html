@@ -32,10 +32,7 @@
     <button type="button" class="committee__past-link" (click)="selectTerm(null)">{{ 'committee.viewCurrent' | translate }}</button>
   </div>
 
-  <div class="committee__loading" *ngIf="loading">
-    <mat-icon class="committee__spinner">autorenew</mat-icon>
-    <span>{{ 'committee.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="people" [count]="6" [contained]="true" [label]="'committee.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && loadError">
     <div class="upsaa-container">

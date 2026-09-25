@@ -11,12 +11,12 @@
 
     <!-- ===== Filters ===== -->
     <div class="tools">
-      <label class="field field--search">
+      <label class="control control--search">
         <mat-icon>search</mat-icon>
         <input type="search" [(ngModel)]="search" (ngModelChange)="onSearchChange()"
           [placeholder]="'userRoles.searchPlaceholder' | translate" [attr.aria-label]="'userRoles.searchPlaceholder' | translate" />
       </label>
-      <select class="field" [(ngModel)]="roleFilter" (ngModelChange)="onRoleFilterChange()"
+      <select class="control" [(ngModel)]="roleFilter" (ngModelChange)="onRoleFilterChange()"
         [attr.aria-label]="'userRoles.filterRole' | translate">
         <option value="">{{ 'userRoles.allRoles' | translate }}</option>
         <option *ngFor="let r of roles" [value]="r">{{ roleKey(r) | translate }}</option>
@@ -30,7 +30,7 @@
       {{ formatNumber(totalItems) }} {{ 'userRoles.accounts' | translate }}
     </div>
 
-    <div class="state" *ngIf="loading"><mat-icon class="spin">autorenew</mat-icon></div>
+    <app-skeleton *ngIf="loading" variant="table" [count]="6" [label]="'pwa.loading' | translate"></app-skeleton>
     <p class="state state--text" *ngIf="!loading && loadFailed">{{ 'userRoles.loadFailed' | translate }}</p>
     <p class="state state--text" *ngIf="!loading && !loadFailed && users.length === 0">{{ 'userRoles.empty' | translate }}</p>
 
@@ -58,7 +58,7 @@
 
         <div class="row__change">
           <ng-container *ngIf="!u.isSelf; else selfLock">
-            <select class="field field--role" [ngModel]="selectedRole(u)" (ngModelChange)="pick(u, $event)"
+            <select class="control control--role" [ngModel]="selectedRole(u)" (ngModelChange)="pick(u, $event)"
               [disabled]="savingId === u.userId" [attr.aria-label]="'userRoles.changeFor' | translate">
               <option value="" disabled *ngIf="!u.role">{{ 'userRoles.noRole' | translate }}</option>
               <option *ngFor="let r of roles" [value]="r">{{ roleKey(r) | translate }}</option>

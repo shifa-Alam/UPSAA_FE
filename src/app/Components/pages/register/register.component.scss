@@ -479,3 +479,162 @@ mat-form-field {
     transition: none;
   }
 }
+
+/* =======================
+   Step progress + Back/Next
+======================= */
+.reg-steps {
+  position: relative;
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-2);
+  }
+}
+
+.reg-steps__btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  font: inherit;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-ink-600);
+  -webkit-tap-highlight-color: transparent;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.reg-steps__dot {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 15px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-ink-200);
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.reg-steps__label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.reg-steps__item.is-current {
+  .reg-steps__dot {
+    border-color: var(--color-primary-600);
+    color: var(--color-primary-600);
+    box-shadow: 0 0 0 4px var(--color-primary-50);
+  }
+  .reg-steps__label {
+    color: var(--color-ink-900);
+  }
+}
+
+.reg-steps__item.is-done .reg-steps__dot {
+  background: var(--color-primary-600);
+  border-color: var(--color-primary-600);
+  color: #fff;
+}
+
+.reg-steps__bar {
+  height: 4px;
+  margin-top: var(--space-3);
+  border-radius: 999px;
+  background: var(--color-ink-200);
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--color-primary-600), var(--color-heritage-500));
+    transition: width 300ms ease;
+  }
+}
+
+.reg-subhead {
+  margin: var(--space-6) 0 var(--space-3);
+  font-size: var(--font-size-md);
+  color: var(--color-ink-900);
+}
+
+.reg-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+
+  .submit-btn {
+    margin: 0 0 0 auto;
+  }
+}
+
+.reg-nav__back {
+  min-width: 140px;
+  justify-content: center;
+}
+
+// Each step arrives with a short slide, so moving forward feels like progress.
+.reg-section {
+  animation: reg-step-in 240ms ease both;
+}
+
+@keyframes reg-step-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 767px) {
+  .reg-steps__label {
+    font-size: 12px;
+  }
+
+  // Back (small) and Next (wide) side by side, reachable by thumb.
+  .reg-nav {
+    position: sticky;
+    bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 8px);
+    z-index: 5;
+    padding: var(--space-2);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    box-shadow: var(--shadow-md);
+  }
+
+  .reg-nav__back {
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+
+  .reg-nav .submit-btn {
+    flex: 1;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reg-section { animation: none; }
+  .reg-steps__bar span { transition: none; }
+}

@@ -11,10 +11,11 @@ import { EmptyStateComponent } from '../shared/empty-state/empty-state.component
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-positions',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './positions.component.html',
   styleUrl: './positions.component.scss'
 })

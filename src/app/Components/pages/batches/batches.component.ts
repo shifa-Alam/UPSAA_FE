@@ -23,10 +23,11 @@ interface Decade {
   batches: PublicBatch[];
 }
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-batches',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe],
   templateUrl: './batches.component.html',
   styleUrl: './batches.component.scss'
 })

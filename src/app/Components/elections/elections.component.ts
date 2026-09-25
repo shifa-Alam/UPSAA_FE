@@ -12,10 +12,11 @@ import { LanguageService } from '../../Services/language.service';
 
 type ElectionStatus = 'upcoming' | 'ongoing' | 'ended';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-elections',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './elections.component.html',
   styleUrl: './elections.component.scss'
 })

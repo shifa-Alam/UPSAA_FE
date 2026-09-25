@@ -7,12 +7,13 @@ import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
 export interface MemberEducationDto {
+  id?: number;
+  memberId?: number;
   degreeId: number;
   degreeName?: string;
   isCompleted: boolean;
   instituteName?: string;
   subject?: string;
-
 }
 export enum FeeType {
   Membership = 'Membership',
@@ -60,6 +61,8 @@ export interface PublicMemberFilter {
   pageNumber: number;
   pageSize: number;
   fullName?: string;
+  /** Matches designation or employer. */
+  profession?: string;
   batch?: number;
   currentCity?: string;
   bloodGroup?: string;
@@ -170,6 +173,25 @@ export interface BatchSummary {
 }
 
 
+/** GET /member/PublicProfile/{id} — see PublicMemberProfileDto on the API. */
+export interface PublicMemberProfile {
+  id: number;
+  fullName: string;
+  photo: string | null;
+  batch: number;
+  currentDesignation: string | null;
+  employer: string | null;
+  currentCity: string | null;
+  bloodGroup: string | null;
+  memberCode: string | null;
+  phone: string | null;
+  email: string | null;
+  dob: string | null;
+  /** 'signIn' = visitor, 'private' = the member hid them, null = shown. */
+  contactHiddenReason: 'signIn' | 'private' | null;
+  education: { degreeId: number; degreeName: string | null; instituteName: string | null; subject: string | null; isCompleted: boolean }[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -242,6 +264,11 @@ export class MemberService {
   /** The signed-in member's profile, fetched once and shared by the header, dashboard,
    *  profile, voting and nomination screens. Tied to the login token, so another login
    *  fetches afresh; a failed request isn't kept, and profile edits clear it. */
+  /** An alumnus's public profile page (anyone; contact details follow the privacy rule). */
+  getPublicProfile(id: number): Observable<PublicMemberProfile> {
+    return this.http.get<PublicMemberProfile>(`${this.apiUrl}/PublicProfile/${id}`);
+  }
+
   getProfile(): Observable<Member> {
     const token = this.auth.getToken();
     if (!this.profile$ || this.profileToken !== token) {
@@ -261,6 +288,28 @@ export class MemberService {
 
   private profile$?: Observable<Member>;
   private profileToken: string | null = null;
+
+  /** The signed-in member's "hide my phone, email and date of birth" switch. */
+  setMyPrivacy(isSensitiveHidden: boolean): Observable<{ isSensitiveHidden: boolean }> {
+    return this.http.put<{ isSensitiveHidden: boolean }>(`${this.apiUrl}/MyPrivacy`, { isSensitiveHidden })
+      .pipe(tap(() => this.clearProfileCache()));
+  }
+
+  // Education records — members manage their own; the API takes the member from the token.
+  addEducation(dto: MemberEducationDto): Observable<MemberEducationDto> {
+    return this.http.post<MemberEducationDto>(`${environment.baseUrl}/MemberEducation`, dto)
+      .pipe(tap(() => this.clearProfileCache()));
+  }
+
+  updateEducation(id: number, dto: MemberEducationDto): Observable<MemberEducationDto> {
+    return this.http.put<MemberEducationDto>(`${environment.baseUrl}/MemberEducation/${id}`, { ...dto, id })
+      .pipe(tap(() => this.clearProfileCache()));
+  }
+
+  deleteEducation(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.baseUrl}/MemberEducation/${id}`)
+      .pipe(tap(() => this.clearProfileCache()));
+  }
   getProfileImage(fileName: string) {
     return this.http.get(`${this.apiUrl}/GetProfileImageFile/${fileName}`);
   }

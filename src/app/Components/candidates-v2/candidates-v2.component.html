@@ -120,10 +120,7 @@
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading-wrapper" role="status">
-    <div class="spinner"></div>
-    <p>{{ 'candidates.loading' | translate }}</p>
-  </div>
+  <app-skeleton *ngIf="loading" variant="table" [count]="6" [label]="'candidates.loading' | translate"></app-skeleton>
 
   <div *ngIf="!loading" class="page-stack">
     <app-section-card icon="person_search" [title]="'candidates.cardTitle' | translate" [noPadding]="true">

@@ -59,10 +59,7 @@
   <!-- ===== Posted achievements ===== -->
   <app-section-card icon="emoji_events" [title]="'achievementAdmin.postedCardTitle' | translate" [noPadding]="true">
 
-    <div class="loading" *ngIf="loading" role="status">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'achievementAdmin.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'achievementAdmin.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && achievements.length === 0" icon="military_tech" [title]="'achievementAdmin.emptyTitle' | translate"
       [message]="'achievementAdmin.emptyMessage' | translate"></app-empty-state>

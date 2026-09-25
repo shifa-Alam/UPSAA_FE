@@ -17,10 +17,11 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-birthday-automation',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './birthday-automation.component.html',
   styleUrl: './birthday-automation.component.scss'
 })

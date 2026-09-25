@@ -1,13 +1,14 @@
 <div class="adm">
 
-  <app-admin-header [title]="'financeLedger.title' | translate" [subtitle]="'financeLedger.subtitle' | translate">
+  <app-admin-header [title]="(readOnly ? 'financeLedger.memberTitle' : 'financeLedger.title') | translate"
+    [subtitle]="(readOnly ? 'financeLedger.memberSubtitle' : 'financeLedger.subtitle') | translate">
     <button type="button" class="btn btn--outline" (click)="exportCsv()" [disabled]="exporting || totalItems === 0">
       <mat-icon>{{ exporting ? 'hourglass_top' : 'download' }}</mat-icon> {{ 'financeLedger.exportCsvButton' | translate }}
     </button>
     <button type="button" class="btn btn--outline" (click)="printReport()" [disabled]="printing || totalItems === 0">
       <mat-icon>{{ printing ? 'hourglass_top' : 'print' }}</mat-icon> {{ 'financeLedger.printReportButton' | translate }}
     </button>
-    <button type="button" class="btn btn--solid" (click)="openNewForm()" *ngIf="!showForm">
+    <button type="button" class="btn btn--solid" (click)="openNewForm()" *ngIf="!showForm && !readOnly">
       <mat-icon>add</mat-icon> {{ 'financeLedger.newEntryButton' | translate }}
     </button>
   </app-admin-header>
@@ -96,7 +97,7 @@
   </div>
 
   <!-- ===== Add / Edit form ===== -->
-  <app-section-card icon="add_circle" [title]="editingId ? ('financeLedger.editEntryTitle' | translate) : ('financeLedger.newEntryTitle' | translate)" *ngIf="showForm">
+  <app-section-card icon="add_circle" [title]="editingId ? ('financeLedger.editEntryTitle' | translate) : ('financeLedger.newEntryTitle' | translate)" *ngIf="showForm && !readOnly">
     <form (ngSubmit)="submitForm()">
       <div class="type-toggle" role="group" [attr.aria-label]="'financeLedger.colType' | translate">
         <button type="button" class="type-toggle__opt type-toggle__opt--income" [class.active]="form.type === 'Income'"
@@ -193,10 +194,7 @@
       </button>
     </div>
 
-    <div class="loading" *ngIf="loading" role="status">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'financeLedger.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="table" [count]="6" [label]="'financeLedger.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && entries.length === 0" icon="receipt_long" [title]="'financeLedger.emptyTitle' | translate"
       [message]="'financeLedger.emptyMessage' | translate">
@@ -211,7 +209,7 @@
             <th scope="col">{{ 'financeLedger.colCategory' | translate }}</th>
             <th scope="col">{{ 'financeLedger.colDescription' | translate }}</th>
             <th scope="col" class="num">{{ 'financeLedger.colAmount' | translate }}</th>
-            <th scope="col" class="ledger__actions-col"><span class="sr-only">{{ 'financeLedger.colActions' | translate }}</span></th>
+            <th scope="col" class="ledger__actions-col" *ngIf="!readOnly"><span class="sr-only">{{ 'financeLedger.colActions' | translate }}</span></th>
           </tr>
         </thead>
         <tbody>
@@ -228,7 +226,7 @@
               [class.text-expense]="entry.type === 'Expense'">
               {{ entry.type === 'Income' ? '+' : '-' }}৳{{ entry.amount | number }}
             </td>
-            <td class="ledger__actions rt-actions">
+            <td class="ledger__actions rt-actions" *ngIf="!readOnly">
               <button type="button" class="icon-btn" *ngIf="entry.attachmentUrl" [disabled]="downloadingId === entry.id"
                 (click)="downloadAttachment(entry)"
                 [attr.aria-label]="'financeLedger.downloadAriaLabel' | translate" [attr.title]="'financeLedger.downloadAriaLabel' | translate">

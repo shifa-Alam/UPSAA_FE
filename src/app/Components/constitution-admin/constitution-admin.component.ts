@@ -13,10 +13,11 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 const MAX_FILE_MB = 20;
 
 /** SuperAdmin/Admin: upload, replace or remove the constitution PDF members read at /portal/constitution. */
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-constitution-admin',
   standalone: true,
-  imports: [CommonModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './constitution-admin.component.html',
   styleUrl: './constitution-admin.component.scss'
 })

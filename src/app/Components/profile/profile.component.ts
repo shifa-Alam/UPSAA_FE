@@ -1,7 +1,25 @@
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { ConfirmService } from '../../Services/confirm.service';
+import { SnackbarService } from '../../Services/snackbar.service';
 import { CommonModule } from '@angular/common';
-import { Member, MemberService } from '../../Services/member.service';
+import { Member, MemberEducationDto, MemberService } from '../../Services/member.service';
+import { profileCompletion } from '../../Utils/profile-completeness';
+
+/** Seeded EducationDegrees rows (fixed ids) — same list the registration form uses. */
+export const DEGREES = [
+  { id: 1, key: 'ssc' }, { id: 2, key: 'hsc' }, { id: 3, key: 'diploma' }, { id: 4, key: 'bachelor' },
+  { id: 5, key: 'masters' }, { id: 6, key: 'pgd' }, { id: 7, key: 'phd' },
+];
+
+interface EducationForm {
+  id: number | null;
+  degreeId: number | null;
+  instituteName: string;
+  subject: string;
+  isCompleted: boolean;
+}
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { MatIcon } from "@angular/material/icon";
 import { MatDialog } from '@angular/material/dialog';
@@ -16,12 +34,14 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
+  imports: [SkeletonComponent, 
     RouterModule,// <-- Add here
     CommonModule,
+    FormsModule,
     ImageCropperModule,
     MatIcon,
     MatTabsModule,
@@ -33,7 +53,53 @@ import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 })
 export class ProfileComponent implements OnInit {
   private confirmService = inject(ConfirmService);
+  private snackbar = inject(SnackbarService);
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  readonly degrees = DEGREES;
+  /** Open while adding (id null) or editing (id set) an education record. */
+  educationForm: EducationForm | null = null;
+  savingEducation = false;
+  deletingEducationId: number | null = null;
+  savingPrivacy = false;
+
+  get completion(): number {
+    return this.member ? profileCompletion(this.member) : 0;
+  }
+
+  /** Highest degree first, for the timeline. */
+  get sortedEducation(): MemberEducationDto[] {
+    return [...(this.member?.educationRecords ?? [])].sort((a, b) => b.degreeId - a.degreeId);
+  }
+
+  private get locale(): string {
+    return this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+  }
+
+  formatDate(value: string | null | undefined): string {
+    if (!value) return '';
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? '' : new Intl.DateTimeFormat(this.locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+  }
+
+  formatPlain(value: number): string {
+    return new Intl.NumberFormat(this.locale, { useGrouping: false }).format(value);
+  }
+
+  togglePrivacy() {
+    if (!this.member || this.savingPrivacy) return;
+    const member = this.member;
+    const next = !member.isSensitiveHidden;
+    member.isSensitiveHidden = next; // flip now, roll back if the save fails
+    this.savingPrivacy = true;
+    this.memberService.setMyPrivacy(next).pipe(finalize(() => this.savingPrivacy = false)).subscribe({
+      next: () => this.snackbar.showSuccess(this.languageService.translate(next ? 'profile.privacyOnSaved' : 'profile.privacyOffSaved')),
+      error: () => {
+        member.isSensitiveHidden = !next;
+        this.snackbar.showError(this.languageService.translate('profile.privacySaveFailed'));
+      }
+    });
+  }
 
   profileImageUrl: string = '';
   imageFile: File | null = null;
@@ -94,8 +160,64 @@ export class ProfileComponent implements OnInit {
     }
   }
   addEducation() {
-    // Open dialog or navigate to education form
-    console.log("Add Education clicked!");
+    const used = new Set((this.member?.educationRecords ?? []).map((e: MemberEducationDto) => e.degreeId));
+    const firstFree = DEGREES.find(d => !used.has(d.id))?.id ?? null;
+    this.educationForm = { id: null, degreeId: firstFree, instituteName: '', subject: '', isCompleted: true };
+  }
+
+  /** Degrees the member doesn't have yet (plus the one being edited). */
+  get availableDegrees() {
+    const editing = this.educationForm?.id;
+    const used = new Set((this.member?.educationRecords ?? [])
+      .filter((e: MemberEducationDto) => e.id !== editing)
+      .map((e: MemberEducationDto) => e.degreeId));
+    return DEGREES.filter(d => !used.has(d.id));
+  }
+
+  cancelEducation() {
+    this.educationForm = null;
+  }
+
+  saveEducation() {
+    const form = this.educationForm;
+    if (!form || this.savingEducation) return;
+    const t = (k: string) => this.languageService.translate(k);
+    if (!form.degreeId) {
+      this.snackbar.showError(t('profile.degreeRequired'));
+      return;
+    }
+
+    const dto: MemberEducationDto = {
+      degreeId: form.degreeId,
+      instituteName: form.instituteName.trim() || undefined,
+      subject: form.subject.trim() || undefined,
+      isCompleted: form.isCompleted
+    };
+
+    this.savingEducation = true;
+    const request = form.id
+      ? this.memberService.updateEducation(form.id, dto)
+      : this.memberService.addEducation(dto);
+
+    request.pipe(finalize(() => this.savingEducation = false)).subscribe({
+      next: () => {
+        this.snackbar.showSuccess(t(form.id ? 'profile.educationUpdated' : 'profile.educationAdded'));
+        this.educationForm = null;
+        this.loadProfile();
+      },
+      error: err => this.snackbar.showError(this.educationError(err))
+    });
+  }
+
+  private educationError(err: any): string {
+    const msg: string | undefined = err?.error?.message;
+    if (msg?.includes('already exists')) return this.languageService.translate('profile.degreeDuplicate');
+    return this.languageService.translate('profile.educationSaveFailed');
+  }
+
+  degreeLabel(degreeId: number, fallback?: string): string {
+    const d = DEGREES.find(x => x.id === degreeId);
+    return d ? this.languageService.translate(`profile.degrees.${d.key}`) : (fallback ?? '');
   }
 
 
@@ -173,18 +295,31 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
-  editEducation(edu: any) {
-    // Open a dialog or navigate to edit form
-    console.log('Edit:', edu);
+  editEducation(edu: MemberEducationDto) {
+    this.educationForm = {
+      id: edu.id ?? null,
+      degreeId: edu.degreeId,
+      instituteName: edu.instituteName ?? '',
+      subject: edu.subject ?? '',
+      isCompleted: edu.isCompleted
+    };
   }
 
-  deleteEducation(edu: any) {
-    const message = `${this.languageService.translate('profile.deleteEducationConfirmPrefix')} ${edu.degreeName}?`;
+  deleteEducation(edu: MemberEducationDto) {
+    if (!edu.id) return;
+    const id = edu.id;
+    const message = `${this.languageService.translate('profile.deleteEducationConfirmPrefix')} ${this.degreeLabel(edu.degreeId, edu.degreeName)}?`;
     this.confirmService.ask({ message, danger: true }).subscribe(ok => {
       if (!ok) return;
-      // Call your service to delete the record
-      console.log('Delete:', edu);
-      // Example: this.member.educationRecords = this.member.educationRecords.filter(e => e.id !== edu.id);
+      this.deletingEducationId = id;
+      this.memberService.deleteEducation(id).pipe(finalize(() => this.deletingEducationId = null)).subscribe({
+        next: () => {
+          if (this.educationForm?.id === id) this.educationForm = null;
+          this.snackbar.showSuccess(this.languageService.translate('profile.educationDeleted'));
+          this.loadProfile();
+        },
+        error: () => this.snackbar.showError(this.languageService.translate('profile.educationDeleteFailed'))
+      });
     });
   }
   openCandidateForm() {

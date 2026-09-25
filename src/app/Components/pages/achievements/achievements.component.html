@@ -4,10 +4,7 @@
     [subtitle]="'achievements.hero.subtitle' | translate">
   </app-page-header>
 
-  <div class="achievements-loading" *ngIf="loading">
-    <mat-icon class="achievements-loading__icon">autorenew</mat-icon>
-    <span>{{ 'achievements.loading' | translate }}</span>
-  </div>
+  <app-skeleton *ngIf="loading" variant="cards" [count]="3" [contained]="true" [label]="'achievements.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && (loadError || achievements.length === 0)">
     <div class="upsaa-container">

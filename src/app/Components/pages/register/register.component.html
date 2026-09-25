@@ -4,17 +4,32 @@
     [subtitle]="'register.pageSubtitle' | translate"></app-page-header>
 
   <div class="upsaa-container register-page__body">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
+    <form #regForm [formGroup]="form" (ngSubmit)="onStepSubmit()" class="register-form" novalidate>
 
       <p class="register-form__note">
         <mat-icon>info</mat-icon>
         <span>{{ 'register.requiredNote' | translate }}</span>
       </p>
 
-      <!-- Personal Information -->
-      <section class="reg-section">
+      <!-- Step progress: tap a finished step to go back to it -->
+      <nav class="reg-steps" [attr.aria-label]="'register.steps.label' | translate">
+        <ol>
+          <li *ngFor="let s of steps; let i = index" class="reg-steps__item" [class.is-done]="i < step" [class.is-current]="i === step">
+            <button type="button" class="reg-steps__btn" (click)="goTo(i)" [disabled]="i > step" [attr.aria-current]="i === step ? 'step' : null">
+              <span class="reg-steps__dot">
+                <mat-icon *ngIf="i < step">check</mat-icon>
+                <ng-container *ngIf="i >= step">{{ formatStep(i + 1) }}</ng-container>
+              </span>
+              <span class="reg-steps__label">{{ s.label | translate }}</span>
+            </button>
+          </li>
+        </ol>
+        <div class="reg-steps__bar" aria-hidden="true"><span [style.width.%]="progress"></span></div>
+      </nav>
+
+      <section class="reg-section" *ngIf="step === 0">
         <header class="reg-section__head">
-          <span class="reg-section__num">{{ 'register.personal.stepNumber' | translate }}</span>
+          <span class="reg-section__num">{{ formatStep(0 + 1) }}</span>
           <div class="reg-section__heading">
             <h2 class="reg-section__title">{{ 'register.personal.sectionTitle' | translate }}</h2>
             <p class="reg-section__subtitle">{{ 'register.personal.sectionSubtitle' | translate }}</p>
@@ -28,36 +43,6 @@
               <input matInput formControlName="fullName" required />
               <mat-error *ngIf="form.controls['fullName'].invalid && form.controls['fullName'].touched">
                 {{ 'register.personal.fullNameRequired' | translate }}
-              </mat-error>
-            </mat-form-field>
-            <!-- Blood Group -->
-            <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.bloodGroup' | translate }}</mat-label>
-              <mat-select formControlName="bloodGroup" required>
-                <mat-option value="">{{ 'register.personal.selectPlaceholder' | translate }}</mat-option>
-                <mat-option *ngFor="let group of bloodGroups" [value]="group">
-                  {{ group }}
-                </mat-option>
-              </mat-select>
-              <mat-error *ngIf="form.controls['bloodGroup'].invalid && form.controls['bloodGroup'].touched">
-                {{ 'register.personal.bloodGroupRequired' | translate }}
-              </mat-error>
-            </mat-form-field>
-
-            <!-- Email -->
-            <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.email' | translate }}</mat-label>
-              <input matInput type="email" formControlName="email" required />
-              <mat-error *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
-                {{ 'register.personal.emailRequired' | translate }}
-              </mat-error>
-            </mat-form-field>
-            <!-- Phone -->
-            <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.phone' | translate }}</mat-label>
-              <input matInput formControlName="phone" placeholder="019xxxxxxxx" required />
-              <mat-error *ngIf="form.controls['phone'].invalid && form.controls['phone'].touched">
-                {{ 'register.personal.phoneRequired' | translate }}
               </mat-error>
             </mat-form-field>
 
@@ -92,22 +77,18 @@
               </mat-select>
             </mat-form-field>
 
-            <!-- Current Designation -->
+            <!-- Blood Group -->
             <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.currentDesignation' | translate }}</mat-label>
-              <input matInput formControlName="currentDesignation" />
-            </mat-form-field>
-
-            <!-- Company/Institute -->
-            <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.employer' | translate }}</mat-label>
-              <input matInput formControlName="employer" />
-            </mat-form-field>
-
-            <!-- Current City -->
-            <mat-form-field appearance="outline" class="flex-field">
-              <mat-label>{{ 'register.personal.currentCity' | translate }}</mat-label>
-              <input matInput formControlName="currentCity" />
+              <mat-label>{{ 'register.personal.bloodGroup' | translate }}</mat-label>
+              <mat-select formControlName="bloodGroup" required>
+                <mat-option value="">{{ 'register.personal.selectPlaceholder' | translate }}</mat-option>
+                <mat-option *ngFor="let group of bloodGroups" [value]="group">
+                  {{ group }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.controls['bloodGroup'].invalid && form.controls['bloodGroup'].touched">
+                {{ 'register.personal.bloodGroupRequired' | translate }}
+              </mat-error>
             </mat-form-field>
 
             <!-- Date of Birth -->
@@ -125,10 +106,58 @@
         </div>
       </section>
 
-      <!-- Education Records -->
-      <section class="reg-section">
+      <section class="reg-section" *ngIf="step === 1">
         <header class="reg-section__head">
-          <span class="reg-section__num">{{ 'register.education.stepNumber' | translate }}</span>
+          <span class="reg-section__num">{{ formatStep(1 + 1) }}</span>
+          <div class="reg-section__heading">
+            <h2 class="reg-section__title">{{ 'register.contact.sectionTitle' | translate }}</h2>
+            <p class="reg-section__subtitle">{{ 'register.contact.sectionSubtitle' | translate }}</p>
+          </div>
+        </header>
+        <div class="reg-section__body">
+          <div class="register-grid">
+            <!-- Email -->
+            <mat-form-field appearance="outline" class="flex-field">
+              <mat-label>{{ 'register.personal.email' | translate }}</mat-label>
+              <input matInput type="email" formControlName="email" required />
+              <mat-error *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
+                {{ 'register.personal.emailRequired' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Phone -->
+            <mat-form-field appearance="outline" class="flex-field">
+              <mat-label>{{ 'register.personal.phone' | translate }}</mat-label>
+              <input matInput formControlName="phone" placeholder="019xxxxxxxx" required />
+              <mat-error *ngIf="form.controls['phone'].invalid && form.controls['phone'].touched">
+                {{ 'register.personal.phoneRequired' | translate }}
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Current City -->
+            <mat-form-field appearance="outline" class="flex-field">
+              <mat-label>{{ 'register.personal.currentCity' | translate }}</mat-label>
+              <input matInput formControlName="currentCity" />
+            </mat-form-field>
+
+            <!-- Current Designation -->
+            <mat-form-field appearance="outline" class="flex-field">
+              <mat-label>{{ 'register.personal.currentDesignation' | translate }}</mat-label>
+              <input matInput formControlName="currentDesignation" />
+            </mat-form-field>
+
+            <!-- Company/Institute -->
+            <mat-form-field appearance="outline" class="flex-field">
+              <mat-label>{{ 'register.personal.employer' | translate }}</mat-label>
+              <input matInput formControlName="employer" />
+            </mat-form-field>
+          </div>
+        </div>
+      </section>
+
+      <section class="reg-section" *ngIf="step === 2">
+        <header class="reg-section__head">
+          <span class="reg-section__num">{{ formatStep(2 + 1) }}</span>
           <div class="reg-section__heading">
             <h2 class="reg-section__title">{{ 'register.education.sectionTitle' | translate }}</h2>
             <p class="reg-section__subtitle">{{ 'register.education.sectionSubtitle' | translate }}</p>
@@ -161,12 +190,12 @@
         </div>
       </section>
 
-      <!-- Member Fees -->
-      <section class="reg-section">
+      <section class="reg-section" *ngIf="step === 3">
         <header class="reg-section__head">
-          <span class="reg-section__num">{{ 'register.fees.stepNumber' | translate }}</span>
+          <span class="reg-section__num">{{ formatStep(3 + 1) }}</span>
           <div class="reg-section__heading">
-            <h2 class="reg-section__title">{{ 'register.fees.sectionTitle' | translate }}</h2>
+            <h2 class="reg-section__title">{{ 'register.confirm.sectionTitle' | translate }}</h2>
+            <p class="reg-section__subtitle">{{ 'register.confirm.sectionSubtitle' | translate }}</p>
           </div>
         </header>
         <div class="reg-section__body">
@@ -235,18 +264,8 @@
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- Verify & Submit -->
-      <section class="reg-section">
-        <header class="reg-section__head">
-          <span class="reg-section__num">{{ 'register.verify.stepNumber' | translate }}</span>
-          <div class="reg-section__heading">
-            <h2 class="reg-section__title">{{ 'register.verify.sectionTitle' | translate }}</h2>
-          </div>
-        </header>
-        <div class="reg-section__body">
+          <h3 class="reg-subhead">{{ 'register.verify.sectionTitle' | translate }}</h3>
           <!-- Captcha -->
           <div class="captcha-section">
             <div class="captcha-image-row">
@@ -266,15 +285,19 @@
               </mat-error>
             </mat-form-field>
           </div>
-
-          <!-- Submit Button -->
-          <button type="submit" class="pp-btn pp-btn--solid submit-btn" [disabled]="form.invalid || isSubmitting">
-            {{ 'register.verify.submit' | translate }}
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
         </div>
       </section>
 
+      <!-- Back / Next — the last step submits -->
+      <div class="reg-nav">
+        <button type="button" class="pp-btn pp-btn--outline reg-nav__back" *ngIf="step > 0" (click)="prev()">
+          <mat-icon>arrow_back</mat-icon> {{ 'register.steps.back' | translate }}
+        </button>
+        <button type="submit" class="pp-btn pp-btn--solid submit-btn reg-nav__next" [disabled]="isSubmitting">
+          {{ (isLastStep ? 'register.verify.submit' : 'register.steps.next') | translate }}
+          <mat-icon>{{ isLastStep ? 'check' : 'arrow_forward' }}</mat-icon>
+        </button>
+      </div>
     </form>
   </div>
 </div>

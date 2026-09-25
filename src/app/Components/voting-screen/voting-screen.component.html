@@ -1,7 +1,4 @@
-<div *ngIf="loading" class="loader-container">
-  <div class="spinner"></div>
-  <p>{{ 'votingScreen.loadingBallot' | translate }}</p>
-</div>
+<app-skeleton *ngIf="loading" class="page-skeleton" variant="list" [count]="4" [label]="'votingScreen.loadingBallot' | translate"></app-skeleton>
 
 <div class="voting-root" *ngIf="ballot">
   <header class="voting-header">

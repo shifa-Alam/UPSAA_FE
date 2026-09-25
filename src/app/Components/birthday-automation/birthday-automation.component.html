@@ -88,19 +88,13 @@
         </div>
       </form>
 
-      <div class="loading" role="status" *ngIf="settingsLoading">
-        <mat-icon>autorenew</mat-icon>
-        <span>{{ 'birthdayAutomation.loading' | translate }}</span>
-      </div>
+      <app-skeleton *ngIf="settingsLoading" variant="list" [count]="2" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
     </app-section-card>
 
     <!-- ===== Today's birthdays ===== -->
     <app-section-card icon="cake" [title]="'birthdayAutomation.todayCardTitle' | translate" [noPadding]="true">
 
-      <div class="loading" role="status" *ngIf="birthdaysLoading">
-        <mat-icon>autorenew</mat-icon>
-        <span>{{ 'birthdayAutomation.loading' | translate }}</span>
-      </div>
+      <app-skeleton *ngIf="birthdaysLoading" variant="people" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
 
       <app-empty-state *ngIf="!birthdaysLoading && birthdays.length === 0" icon="cake"
         [title]="'birthdayAutomation.noBirthdaysTitle' | translate" [message]="'birthdayAutomation.noBirthdaysMessage' | translate"></app-empty-state>
@@ -146,10 +140,7 @@
   <!-- ===== Post history ===== -->
   <app-section-card icon="history" [title]="'birthdayAutomation.logsCardTitle' | translate" [noPadding]="true">
 
-    <div class="loading" role="status" *ngIf="logsLoading">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'birthdayAutomation.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="logsLoading" variant="table" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!logsLoading && logs.length === 0" icon="history"
       [title]="'birthdayAutomation.noLogsTitle' | translate" [message]="'birthdayAutomation.noLogsMessage' | translate"></app-empty-state>

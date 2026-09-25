@@ -37,10 +37,7 @@
   <!-- ===== Posted notices ===== -->
   <app-section-card icon="notifications" [title]="'noticeAdmin.postedCardTitle' | translate" [noPadding]="true">
 
-    <div class="loading" role="status" *ngIf="loading">
-      <mat-icon>autorenew</mat-icon>
-      <span>{{ 'noticeAdmin.loading' | translate }}</span>
-    </div>
+    <app-skeleton *ngIf="loading" variant="list" [count]="4" [label]="'noticeAdmin.loading' | translate"></app-skeleton>
 
     <app-empty-state *ngIf="!loading && notices.length === 0" icon="campaign" [title]="'noticeAdmin.emptyTitle' | translate"
       [message]="'noticeAdmin.emptyMessage' | translate"></app-empty-state>

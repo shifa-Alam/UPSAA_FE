@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute } from '@angular/router';
 import { catchError, Observable, of } from 'rxjs';
 import { ConfirmService } from '../../Services/confirm.service';
 import {
@@ -35,10 +36,11 @@ function escapeHtml(value: string): string {
 }
 
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-finance-ledger',
   standalone: true,
-  imports: [
+  imports: [SkeletonComponent, 
     CommonModule, FormsModule, MatIconModule,
     AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe
   ],
@@ -47,6 +49,8 @@ function escapeHtml(value: string): string {
 })
 export class FinanceLedgerComponent implements OnInit {
   private confirmService = inject(ConfirmService);
+  /** Route data `readOnly: true` — the members' accounts view (/portal/accounts): no editing, no receipts. */
+  readonly readOnly = inject(ActivatedRoute).snapshot.data['readOnly'] === true;
   entries: LedgerEntry[] = [];
   incomeByCategory: CategoryTotal[] = [];
   expenseByCategory: CategoryTotal[] = [];
@@ -83,8 +87,12 @@ export class FinanceLedgerComponent implements OnInit {
   constructor(private financeService: FinanceService, private snackbar: SnackbarService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
-    this.loadCategories();
+    if (!this.readOnly) this.loadCategories();
     this.fetch();
+  }
+
+  private report(filter: LedgerFilter): Observable<LedgerSummaryResponse> {
+    return this.readOnly ? this.financeService.overview(filter) : this.financeService.filter(filter);
   }
 
   private emptyForm(): LedgerEntryInput {
@@ -255,7 +263,7 @@ ${res.monthlyTotals.length > 1 ? `<h2>${t('monthlyBreakdown')}</h2>
   }
 
   private fetchAll(): Observable<LedgerSummaryResponse | null> {
-    return this.financeService.filter({ ...this.currentFilter(), pageNumber: 1, pageSize: EXPORT_PAGE_SIZE }).pipe(
+    return this.report({ ...this.currentFilter(), pageNumber: 1, pageSize: EXPORT_PAGE_SIZE }).pipe(
       catchError(() => {
         this.snackbar.showError(this.languageService.translate('financeLedger.reportFailedError'));
         return of(null);
@@ -416,7 +424,7 @@ ${res.monthlyTotals.length > 1 ? `<h2>${t('monthlyBreakdown')}</h2>
 
   private fetch(): void {
     this.loading = true;
-    this.financeService.filter(this.currentFilter()).pipe(catchError(() => of(null))).subscribe(res => {
+    this.report(this.currentFilter()).pipe(catchError(() => of(null))).subscribe(res => {
       this.loading = false;
       if (!res) return;
 

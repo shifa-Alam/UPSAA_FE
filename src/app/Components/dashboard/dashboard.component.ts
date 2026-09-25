@@ -127,6 +127,7 @@ export class DashboardComponent {
         { labelKey: 'dashboard.itemNotices', route: '/portal/notices', icon: 'megaphone' },
         { labelKey: 'dashboard.itemGallery', route: '/portal/gallery', icon: 'image' },
         { labelKey: 'dashboard.itemCommittee', route: '/portal/committee', icon: 'users' },
+        { labelKey: 'dashboard.itemAccounts', route: '/portal/accounts', icon: 'dollar' },
         { labelKey: 'dashboard.itemAbout', route: '/portal/about', icon: 'book' },
         { labelKey: 'dashboard.itemContact', route: '/portal/contact', icon: 'megaphone' }
       ]

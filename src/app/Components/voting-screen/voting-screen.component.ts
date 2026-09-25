@@ -16,10 +16,11 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-voting-screen',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatProgressBarModule, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, MatProgressBarModule, TranslatePipe],
   templateUrl: './voting-screen.component.html',
   styleUrl: './voting-screen.component.scss'
 })

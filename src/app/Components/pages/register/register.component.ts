@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray, FormsModule, FormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +23,14 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { LanguageService } from '../../../Services/language.service';
 import { toDateOnly } from '../../../Utils/date-utils';
+
+/** The form in four short steps; each lists the controls it must validate before moving on. */
+const STEPS: { label: string; controls: string[] }[] = [
+  { label: 'register.steps.personal', controls: ['fullName', 'gender', 'batch', 'bloodGroup', 'dob'] },
+  { label: 'register.steps.contact', controls: ['email', 'phone', 'currentCity', 'currentDesignation', 'employer'] },
+  { label: 'register.steps.education', controls: ['educationRecords'] },
+  { label: 'register.steps.confirm', controls: ['memberFees', 'captchaAnswer'] },
+];
 
 @Component({
   selector: 'app-register',
@@ -53,6 +61,58 @@ import { toDateOnly } from '../../../Utils/date-utils';
 export class RegisterComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isSubmitting = false;
+
+  readonly steps = STEPS;
+  step = 0;
+  @ViewChild('regForm', { read: ElementRef }) private formEl?: ElementRef<HTMLElement>;
+
+  get isLastStep(): boolean {
+    return this.step === STEPS.length - 1;
+  }
+
+  /** Bar fill: the current step counts as half done. */
+  get progress(): number {
+    return Math.round(((this.step + 0.5) / STEPS.length) * 100);
+  }
+
+  formatStep(n: number): string {
+    return new Intl.NumberFormat(this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB').format(n);
+  }
+
+  /** Enter or the Next button: validate this step and move on; the last step submits. */
+  onStepSubmit(): void {
+    if (this.isLastStep) {
+      this.onSubmit();
+      return;
+    }
+    const invalid = STEPS[this.step].controls.map(n => this.form.get(n)).filter(c => c && c.invalid);
+    if (invalid.length) {
+      invalid.forEach(c => c!.markAllAsTouched());
+      this.focusFirstInvalid();
+      return;
+    }
+    this.goTo(this.step + 1);
+  }
+
+  prev(): void {
+    this.goTo(this.step - 1);
+  }
+
+  /** Only finished steps (or the current one) can be opened from the progress bar. */
+  goTo(i: number): void {
+    if (i < 0 || i >= STEPS.length || i > this.step + 1) return;
+    this.step = i;
+    // Start the new step at its top — the page scrolls inside the app shell, not the window.
+    if (this.isBrowser) setTimeout(() => this.formEl?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+
+  private focusFirstInvalid(): void {
+    if (!this.isBrowser) return;
+    setTimeout(() => {
+      const el = this.formEl?.nativeElement.querySelector<HTMLElement>('.ng-invalid.ng-touched input, input.ng-invalid.ng-touched, mat-select.ng-invalid');
+      el?.focus();
+    });
+  }
 
   captchaImage: string | null = null;
   captchaId: string | null = null;
@@ -234,6 +294,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      const bad = STEPS.findIndex(s => s.controls.some(n => this.form.get(n)?.invalid));
+      if (bad >= 0 && bad !== this.step) this.step = bad;
+      this.focusFirstInvalid();
       return;
     }
 

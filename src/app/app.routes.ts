@@ -24,6 +24,7 @@ const contact = () => import('./Components/pages/contact/contact.component').the
 const events = () => import('./Components/pages/events/events.component').then(m => m.EventsComponent);
 const notices = () => import('./Components/pages/notices/notices.component').then(m => m.NoticesComponent);
 const directory = () => import('./Components/pages/directory/directory.component').then(m => m.DirectoryComponent);
+const memberProfile = () => import('./Components/pages/member-profile/member-profile.component').then(m => m.MemberProfileComponent);
 const batches = () => import('./Components/pages/batches/batches.component').then(m => m.BatchesComponent);
 const achievements = () => import('./Components/pages/achievements/achievements.component').then(m => m.AchievementsComponent);
 const teachers = () => import('./Components/pages/teachers/teachers.component').then(m => m.TeachersComponent);
@@ -66,6 +67,7 @@ export const routes: Routes = [
       { path: 'profile', loadComponent: profile, title: 'pageTitles.profile' },
       // Copies of the public pages, so members have everything without leaving the portal.
       { path: 'members', loadComponent: directory, title: 'pageTitles.members' },
+      { path: 'members/:id', loadComponent: memberProfile, title: 'pageTitles.members' },
       { path: 'batches', loadComponent: batches, title: 'pageTitles.batches' },
       { path: 'events', loadComponent: events, title: 'pageTitles.events' },
       { path: 'notices', loadComponent: notices, title: 'pageTitles.notices' },
@@ -78,6 +80,11 @@ export const routes: Routes = [
       { path: 'jobs', loadComponent: jobs, title: 'pageTitles.jobs' },
       { path: 'blood-donors', loadComponent: bloodDonors, title: 'pageTitles.bloodDonors' },
       { path: 'constitution', loadComponent: constitution, title: 'pageTitles.constitution' },
+      {
+        // Same screen as the staff ledger, read-only and backed by the members' FinanceOverview API.
+        path: 'accounts', title: 'pageTitles.memberAccounts', data: { readOnly: true },
+        loadComponent: () => import('./Components/finance-ledger/finance-ledger.component').then(m => m.FinanceLedgerComponent)
+      },
       { path: '', redirectTo: 'home', pathMatch: 'full' }
     ]
   },
@@ -194,6 +201,7 @@ export const routes: Routes = [
   // Public — no login required. Calls the dedicated PublicDirectory API, which only ever
   // returns lean, payment-free fields. Back-office member management is /dashboard/members.
   { path: 'members', loadComponent: directory, title: 'pageTitles.members', canActivate: [shellRedirectGuard] },
+  { path: 'members/:id', loadComponent: memberProfile, title: 'pageTitles.members', canActivate: [shellRedirectGuard] },
   // Public — batch year + active alumni count, linking into /members?batch=YYYY.
   { path: 'batches', loadComponent: batches, title: 'pageTitles.batches', canActivate: [shellRedirectGuard] },
   { path: 'achievements', loadComponent: achievements, title: 'pageTitles.achievements', canActivate: [shellRedirectGuard] },

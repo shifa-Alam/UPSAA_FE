@@ -2,7 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from '@angular/router';
-import { catchError, of } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import { NoticeService, Notice } from '../../../Services/notice.service';
 import { GalleryService, GalleryImage } from '../../../Services/gallery.service';
 import { EventService, EventItem } from '../../../Services/event.service';
@@ -17,9 +17,12 @@ import { backgroundWidth, imageAt, imageSrcset } from '../../../Utils/image-url'
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 /** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
- *  image; while null the hero crossfades through the newest gallery photos, then
- *  falls back to a plain gradient. */
+ *  image; while null the hero crossfades through gallery photos — the ones an admin
+ *  filed under a hero category first, otherwise the newest — then falls back to a
+ *  plain gradient. */
 const HERO_IMAGE: string | null = null;
+/** Gallery categories that pick the hero photos (Gallery admin → category). */
+const HERO_CATEGORIES = ['Hero', 'প্রচ্ছদ'];
 const HERO_SLIDES = 5;
 const HERO_SLIDE_MS = 7000;
 
@@ -119,12 +122,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.alumni = (res?.members ?? []).filter(m => !!m.photo).slice(0, ALUMNI_COUNT);
     });
 
-    this.galleryService.getPage({ take: Math.max(MEMORIES_COUNT, HERO_SLIDES) }).pipe(catchError(() => of(noRows))).subscribe(({ items: photos }) => {
-      this.memories = photos.slice(0, MEMORIES_COUNT);
-      if (!HERO_IMAGE && photos.length) {
+    forkJoin({
+      newest: this.galleryService.getPage({ take: Math.max(MEMORIES_COUNT, HERO_SLIDES) }).pipe(catchError(() => of(noRows))),
+      picked: forkJoin(HERO_CATEGORIES.map(category =>
+        this.galleryService.getPage({ category, take: HERO_SLIDES }).pipe(catchError(() => of(noRows))))),
+    }).subscribe(({ newest, picked }) => {
+      this.memories = newest.items.filter(p => !HERO_CATEGORIES.includes(p.category ?? '')).slice(0, MEMORIES_COUNT);
+      const chosen = picked.flatMap(p => p.items);
+      const heroPhotos = (chosen.length ? chosen : newest.items).slice(0, HERO_SLIDES);
+      if (!HERO_IMAGE && heroPhotos.length) {
         // Screen-sized copies — a phone gets ~800px wide, not the full-resolution original.
         const width = backgroundWidth();
-        this.heroImages = photos.slice(0, HERO_SLIDES).map(p => imageAt(p.imageUrl, width));
+        this.heroImages = heroPhotos.map(p => imageAt(p.imageUrl, width));
         this.startHeroSlides();
       }
     });

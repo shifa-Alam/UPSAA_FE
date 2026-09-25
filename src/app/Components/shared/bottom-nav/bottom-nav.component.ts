@@ -15,8 +15,8 @@ interface Tab {
   exact?: boolean;
 }
 
-/** Full-screen flows where a tab bar would only get in the way. */
-const HIDDEN_ON = ['/login', '/register', '/forgot-password', '/reset-password', '/election', '/votecard', '/nomination'];
+/** Voting flows, where a tab bar could pull someone out mid-ballot. Sign-in and registration keep it, so visitors can always navigate away. */
+const HIDDEN_ON = ['/election', '/votecard', '/nomination'];
 
 /**
  * Phone-only tab bar (≤768px), like a native app: the four places people go most,

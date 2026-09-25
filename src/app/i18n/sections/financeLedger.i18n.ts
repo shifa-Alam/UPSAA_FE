@@ -5,6 +5,8 @@ export const financeLedgerI18n: I18nSection = {
     financeLedger: {
       title: 'আয়-ব্যয়ের হিসাব',
       subtitle: 'সংগঠনের আর্থিক লেনদেনের সম্পূর্ণ খতিয়ান।',
+      memberTitle: 'সংগঠনের হিসাব',
+      memberSubtitle: 'অ্যাসোসিয়েশনের আয়, ব্যয় ও বর্তমান স্থিতি — সদস্যদের জন্য স্বচ্ছ হিসাব।',
       statIncome: 'মোট আয়',
       statExpense: 'মোট ব্যয়',
       statBalance: 'বর্তমান স্থিতি',
@@ -82,6 +84,8 @@ export const financeLedgerI18n: I18nSection = {
     financeLedger: {
       title: 'Income & Expense Ledger',
       subtitle: 'A complete record of the organization’s financial transactions.',
+      memberTitle: 'Association Accounts',
+      memberSubtitle: "The association's income, expenses and current balance — open to every member.",
       statIncome: 'Total Income',
       statExpense: 'Total Expense',
       statBalance: 'Current Balance',

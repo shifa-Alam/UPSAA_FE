@@ -18,10 +18,11 @@ const emptyForm = (): EventSave => ({
   title: '', description: '', eventDate: '', endDate: null, venue: '', organizerName: '', registrationUrl: ''
 });
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-event-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './event-admin.component.html',
   styleUrl: './event-admin.component.scss'
 })

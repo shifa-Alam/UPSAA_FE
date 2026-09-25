@@ -65,6 +65,23 @@
           </li>
         </ul>
       </div>
+
+      <!-- ===== School on the map — click to load, so Google Maps isn't fetched on every page ===== -->
+      <div class="site-footer__col">
+        <h2 class="site-footer__heading">{{ 'footer.mapTitle' | translate }}</h2>
+        <div class="site-footer__map">
+          <iframe *ngIf="mapLoaded" [src]="mapUrl" [title]="'footer.mapTitle' | translate" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          <button *ngIf="!mapLoaded" type="button" class="site-footer__map-cover" (click)="mapLoaded = true">
+            <span class="site-footer__map-pin"><mat-icon>location_on</mat-icon></span>
+            <span class="site-footer__map-label">{{ 'footer.mapShow' | translate }}</span>
+            <span class="site-footer__map-sub">{{ 'footer.mapPlace' | translate }}</span>
+          </button>
+        </div>
+        <a class="site-footer__map-link" [href]="mapsLink" target="_blank" rel="noopener">
+          {{ 'footer.mapOpen' | translate }} <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
     </div>
 
     <!-- ===== Bottom bar ===== -->

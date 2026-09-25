@@ -20,10 +20,11 @@ const NEW_WITHIN_DAYS = 7;
  * A single notice opens via ?id= so the link survives shellRedirectGuard, which
  * forwards query params but not path params.
  */
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-notices',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './notices.component.html',
   styleUrl: './notices.component.scss'
 })

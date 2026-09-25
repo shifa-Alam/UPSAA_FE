@@ -1,0 +1,145 @@
+<div class="profile profile--public">
+
+  <a class="back-link" [routerLink]="directoryLink" (click)="$event.preventDefault(); back()" [attr.href]="directoryLink">
+    <mat-icon>arrow_back</mat-icon> {{ 'memberProfile.back' | translate }}
+  </a>
+
+  <!-- Loading: the card's shape, so the page doesn't jump when it arrives -->
+  <div class="hero hero--skeleton" *ngIf="loading" role="status" [attr.aria-label]="'memberProfile.loading' | translate">
+    <div class="hero__cover"></div>
+    <div class="hero__body">
+      <span class="avatar sk"></span>
+      <div class="hero__identity">
+        <span class="sk sk--line sk--w60"></span>
+        <span class="sk sk--line sk--w40"></span>
+      </div>
+    </div>
+  </div>
+
+  <app-empty-state *ngIf="!loading && notFound" icon="person_off" [title]="'memberProfile.notFoundTitle' | translate"
+    [message]="'memberProfile.notFoundMessage' | translate"></app-empty-state>
+
+  <ng-container *ngIf="!loading && member as m">
+
+    <!-- ===== Header: same membership-card look as My Profile ===== -->
+    <header class="hero">
+      <div class="hero__cover">
+        <span class="hero__eyebrow">{{ 'memberProfile.eyebrow' | translate }}</span>
+        <span class="hero__watermark" aria-hidden="true">UPSAA</span>
+      </div>
+
+      <div class="hero__body">
+        <div class="avatar avatar--static">
+          <img *ngIf="m.photo; else initialsAvatar" [src]="m.photo | sizedImage:400" [alt]="m.fullName" />
+          <ng-template #initialsAvatar>
+            <span class="avatar__initials">{{ initials(m.fullName) }}</span>
+          </ng-template>
+        </div>
+
+        <div class="hero__identity">
+          <h1 class="hero__name">
+            {{ m.fullName }}
+            <mat-icon class="hero__verified" [attr.aria-label]="'profile.statusActive' | translate"
+              [title]="'profile.statusActive' | translate">verified</mat-icon>
+          </h1>
+          <p class="hero__role">
+            {{ m.currentDesignation || ('profile.studentDefault' | translate) }}
+            <ng-container *ngIf="m.employer"><span class="dot" aria-hidden="true">·</span>{{ m.employer }}</ng-container>
+          </p>
+          <div class="hero__badges">
+            <span class="member-code" *ngIf="m.memberCode"><mat-icon>badge</mat-icon>{{ m.memberCode }}</span>
+          </div>
+        </div>
+      </div>
+
+      <dl class="hero__stats">
+        <div class="stat-tile">
+          <span class="stat-tile__icon"><mat-icon>school</mat-icon></span>
+          <dt>{{ 'profile.field.batch' | translate }}</dt>
+          <dd>{{ formatPlain(m.batch) }}</dd>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile__icon"><mat-icon>location_on</mat-icon></span>
+          <dt>{{ 'profile.field.city' | translate }}</dt>
+          <dd>{{ m.currentCity || '—' }}</dd>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile__icon stat-tile__icon--blood"><mat-icon>bloodtype</mat-icon></span>
+          <dt>{{ 'profile.field.bloodGroup' | translate }}</dt>
+          <dd>{{ m.bloodGroup || '—' }}</dd>
+        </div>
+        <div class="stat-tile">
+          <span class="stat-tile__icon"><mat-icon>work_outline</mat-icon></span>
+          <dt>{{ 'profile.field.work' | translate }}</dt>
+          <dd class="stat-tile__text">{{ m.employer || '—' }}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <!-- ===== Contact ===== -->
+    <section class="card">
+      <div class="card__head">
+        <h2 class="card__title">{{ 'memberProfile.contactTitle' | translate }}</h2>
+      </div>
+      <div class="card__body">
+        <ul class="contact-list" *ngIf="!m.contactHiddenReason">
+          <li class="contact-item">
+            <span class="contact-item__icon"><mat-icon>call</mat-icon></span>
+            <span class="contact-item__text">
+              <span class="contact-item__label">{{ 'profile.field.phone' | translate }}</span>
+              <a class="contact-item__value" *ngIf="m.phone; else noInfo" [href]="'tel:' + m.phone">{{ m.phone }}</a>
+            </span>
+          </li>
+          <li class="contact-item">
+            <span class="contact-item__icon"><mat-icon>mail</mat-icon></span>
+            <span class="contact-item__text">
+              <span class="contact-item__label">{{ 'profile.field.email' | translate }}</span>
+              <a class="contact-item__value" *ngIf="m.email; else noInfo" [href]="'mailto:' + m.email">{{ m.email }}</a>
+            </span>
+          </li>
+          <li class="contact-item">
+            <span class="contact-item__icon"><mat-icon>cake</mat-icon></span>
+            <span class="contact-item__text">
+              <span class="contact-item__label">{{ 'memberProfile.birthday' | translate }}</span>
+              <span class="contact-item__value">{{ birthday(m.dob) || ('profile.noInfo' | translate) }}</span>
+            </span>
+          </li>
+        </ul>
+        <ng-template #noInfo><span class="contact-item__value">{{ 'profile.noInfo' | translate }}</span></ng-template>
+
+        <!-- Hidden: visitors are asked to sign in; a member's own choice is respected. -->
+        <div class="contact-locked" *ngIf="m.contactHiddenReason as reason">
+          <mat-icon>{{ reason === 'signIn' ? 'lock' : 'visibility_off' }}</mat-icon>
+          <p>{{ (reason === 'signIn' ? 'memberProfile.signInToSee' : 'memberProfile.private') | translate }}</p>
+          <a *ngIf="reason === 'signIn'" routerLink="/login" class="btn btn--solid btn--sm">
+            <mat-icon>login</mat-icon> {{ 'memberProfile.signIn' | translate }}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Education ===== -->
+    <section class="card">
+      <div class="card__head">
+        <h2 class="card__title">{{ 'profile.educationInfoTitle' | translate }}</h2>
+      </div>
+      <ol class="timeline" *ngIf="m.education.length; else noEdu">
+        <li class="timeline__item" *ngFor="let edu of sortedEducation" [class.timeline__item--pending]="!edu.isCompleted">
+          <span class="timeline__dot" aria-hidden="true"><mat-icon>{{ edu.isCompleted ? 'school' : 'hourglass_top' }}</mat-icon></span>
+          <div class="timeline__content">
+            <div class="timeline__head">
+              <strong class="timeline__degree">{{ degreeLabel(edu.degreeId, edu.degreeName) }}</strong>
+              <span class="edu-pending" *ngIf="!edu.isCompleted">{{ 'profile.degreeInProgress' | translate }}</span>
+            </div>
+            <span class="timeline__institute" *ngIf="edu.instituteName">{{ edu.instituteName }}</span>
+            <span class="timeline__subject" *ngIf="edu.subject">{{ edu.subject }}</span>
+          </div>
+        </li>
+      </ol>
+      <ng-template #noEdu>
+        <p class="empty">{{ 'profile.noEducationRecords' | translate }}</p>
+      </ng-template>
+    </section>
+
+  </ng-container>
+</div>

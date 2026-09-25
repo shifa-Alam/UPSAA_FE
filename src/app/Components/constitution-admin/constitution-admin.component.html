@@ -17,9 +17,7 @@
 
   <!-- ===== Current document ===== -->
   <app-section-card icon="gavel" [title]="'constitutionAdmin.currentTitle' | translate">
-    <div class="state" *ngIf="loading">
-      <mat-icon class="spin">autorenew</mat-icon>
-    </div>
+    <app-skeleton *ngIf="loading" variant="list" [count]="1" [label]="'pwa.loading' | translate"></app-skeleton>
 
     <p class="state state--empty" *ngIf="!loading && !current">{{ 'constitutionAdmin.none' | translate }}</p>
 

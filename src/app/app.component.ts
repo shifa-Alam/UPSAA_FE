@@ -26,6 +26,7 @@ import { InstallBannerComponent } from './Components/shared/install-banner/insta
 import { PwaService } from './Services/pwa.service';
 import { PushService } from './Services/push.service';
 import { PushToggleComponent } from './Components/shared/push-toggle/push-toggle.component';
+import { installImageFadeIn } from './Utils/image-fade';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -124,6 +125,8 @@ export class AppComponent implements OnInit {
     public pwa: PwaService,
     private push: PushService,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
+    // Before any page renders, so the first photos get the blur-up too.
+    if (isPlatformBrowser(platformId)) installImageFadeIn(document);
     this.isMobile$ = this.breakpointObserver
       // Must match the CSS breakpoint that hides the dashboard sidebar, or tablets lose all navigation.
       .observe(['(max-width: 768px)'])

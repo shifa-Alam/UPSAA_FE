@@ -42,6 +42,7 @@ export const pwaI18n: I18nSection = {
         failed: 'নোটিফিকেশন চালু করা যায়নি। আবার চেষ্টা করুন।',
       },
       offline: 'আপনি অফলাইনে আছেন — সংরক্ষিত তথ্য দেখানো হচ্ছে।',
+      loading: 'লোড হচ্ছে…',
     },
   },
   en: {
@@ -84,6 +85,7 @@ export const pwaI18n: I18nSection = {
         failed: 'Couldn’t turn on notifications. Please try again.',
       },
       offline: 'You’re offline — showing saved information.',
+      loading: 'Loading…',
     },
   },
 };

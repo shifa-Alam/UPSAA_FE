@@ -1,0 +1,100 @@
+// Same "membership card" design as My Profile — reuse its styles, then adjust for a
+// read-only page that also appears on the public site (no shell padding there).
+@import '../../profile/profile.component';
+
+.profile--public {
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .profile--public {
+    padding: var(--space-4);
+  }
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: 40px;
+  font-weight: 600;
+  color: var(--color-primary-600);
+  text-decoration: none;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Not a button here — nothing to change on someone else's photo.
+.avatar--static {
+  cursor: default;
+}
+
+.stat-tile__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.contact-item__value {
+  color: var(--color-primary-600);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.contact-locked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg, 14px);
+  background: var(--color-surface-alt);
+  color: var(--color-ink-600);
+
+  p {
+    flex: 1 1 220px;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  mat-icon {
+    color: var(--color-primary-600);
+  }
+}
+
+// ---- Loading skeleton (card shape) ----
+.hero--skeleton .hero__cover {
+  min-height: 96px;
+}
+
+.sk {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--color-ink-200) 25%, var(--color-surface-alt) 37%, var(--color-ink-200) 63%);
+  background-size: 400% 100%;
+  animation: sk-shimmer 1.3s ease infinite;
+}
+
+.sk--line {
+  height: 16px;
+  margin: 8px 0;
+}
+
+.sk--w60 { width: 60%; height: 24px; }
+.sk--w40 { width: 40%; }
+
+@keyframes sk-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; }
+}

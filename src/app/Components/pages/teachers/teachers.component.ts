@@ -23,10 +23,11 @@ const GROUP_ORDER: { status: TeacherStatus; key: string }[] = [
   { status: 'Retired', key: 'retired' },
 ];
 
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-teachers',
   standalone: true,
-  imports: [CommonModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, MatIconModule, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './teachers.component.html',
   styleUrl: './teachers.component.scss'
 })

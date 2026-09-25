@@ -25,10 +25,11 @@ interface EditableSeat extends CommitteeSeat {
  * (resignations, co-opted members, order) and choose which committee is current.
  * The public page reads the published snapshot instead of counting votes.
  */
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-committee-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
   templateUrl: './committee-admin.component.html',
   styleUrl: './committee-admin.component.scss'
 })

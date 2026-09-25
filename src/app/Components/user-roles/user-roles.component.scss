@@ -2,6 +2,8 @@
 // who · current role pill · role picker (+ save/cancel once changed).
 // A grid row on wide screens, a stacked card on phones.
 
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 .user-roles {
   display: flex;
   flex-direction: column;
@@ -11,7 +13,7 @@
 }
 
 // ---------------------------- Controls ----------------------------
-.field {
+.control {
   height: 42px;
   padding: 0 var(--space-3);
   border: 1px solid var(--color-ink-200);
@@ -31,7 +33,7 @@
   &:disabled { opacity: 0.6; }
 }
 
-.field--search {
+.control--search {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -55,62 +57,7 @@
     font: inherit;
     outline: none;
   }
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  min-height: 42px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-pill);
-  border: 1px solid transparent;
-  font: 600 var(--font-size-sm) / 1 var(--font-base);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background var(--transition-base), border-color var(--transition-base);
-
-  mat-icon { font-size: 18px; width: 18px; height: 18px; }
-
-  &:disabled { opacity: 0.5; cursor: not-allowed; }
-  &:focus-visible { outline: 2px solid var(--color-primary-400); outline-offset: 2px; }
-}
-
-.btn--solid {
-  background: var(--color-primary-700);
-  color: #fff;
-
-  &:hover:not(:disabled) { background: var(--color-primary-800); }
-}
-
-.btn--outline {
-  background: transparent;
-  border-color: var(--color-ink-200);
-  color: var(--color-ink-700);
-
-  &:hover:not(:disabled) { border-color: var(--color-primary-300); }
-}
-
-.icon-btn {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid var(--color-ink-200);
-  background: var(--color-surface);
-  color: var(--color-ink-600);
-  cursor: pointer;
-
-  mat-icon { font-size: 20px; width: 20px; height: 20px; }
-
-  &:hover:not(:disabled) { color: var(--color-ink-900); border-color: var(--color-ink-400); }
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
-  &:focus-visible { outline: 2px solid var(--color-primary-400); outline-offset: 2px; }
-}
-
-// ---------------------------- Note / states ----------------------------
+}// ---------------------------- Note / states ----------------------------
 .note {
   display: flex;
   align-items: flex-start;
@@ -253,7 +200,7 @@
   flex-wrap: wrap;
 }
 
-.field--role {
+.control--role {
   min-width: 150px;
 }
 
@@ -265,26 +212,7 @@
   color: var(--color-ink-400);
 
   mat-icon { font-size: 16px; width: 16px; height: 16px; }
-}
-
-// ---------------------------- Role pills ----------------------------
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px var(--space-3);
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.pill--gold { background: var(--color-heritage-soft); color: #8a6a1f; }
-.pill--navy { background: var(--color-primary-50); color: var(--color-primary-700); }
-.pill--info { background: rgba(6, 182, 212, 0.12); color: #0e7490; }
-.pill--neutral { background: var(--color-ink-100); color: var(--color-ink-700); }
-.pill--danger { background: rgba(244, 67, 54, 0.1); color: #c62828; }
-
-:host-context([data-theme='dark']) {
+}:host-context([data-theme='dark']) {
   .pill--gold { color: var(--color-heritage-500); }
   .pill--navy { color: var(--color-primary-300); }
   .pill--info { color: var(--color-accent-300); }
@@ -327,7 +255,7 @@
     justify-content: flex-start;
   }
 
-  .field--role { flex: 1; }
+  .control--role { flex: 1; }
 }
 
 @media (max-width: 768px) {
@@ -339,7 +267,7 @@
   .tools {
     padding: var(--space-4);
 
-    .field, .btn { flex: 1 1 100%; }
+    .control, .btn { flex: 1 1 100%; }
   }
 
   .count { padding: var(--space-3) var(--space-4); }

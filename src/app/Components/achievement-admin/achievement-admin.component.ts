@@ -17,10 +17,11 @@ const emptyForm = (): AchievementSave => ({
   fullName: '', batch: null, profession: '', organization: '', title: '', description: ''
 });
 
+import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-achievement-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './achievement-admin.component.html',
   styleUrl: './achievement-admin.component.scss'
 })
