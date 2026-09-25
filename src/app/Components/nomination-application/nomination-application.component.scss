@@ -3,7 +3,7 @@
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
-  padding: 25px;
+  padding: var(--space-7);
   font-size: var(--font-size-2xl);
   font-weight: bold;
   font-family: var(--font-base);
@@ -22,25 +22,25 @@
   width: 320px;
   background: var(--color-primary-800);
   color: #fff;
-  padding: 25px;
+  padding: var(--space-7);
   box-sizing: border-box;
 }
 
 .member-info {
   background: var(--color-primary-700);
-  padding: 15px;
+  padding: var(--space-5);
   border-radius: var(--radius-md);
-  margin-bottom: 25px;
+  margin-bottom: var(--space-7);
   border-left: 5px solid var(--color-accent-400);
 }
 
 .bkash-info {
   background: var(--color-primary-50);
   color: var(--color-ink-900);
-  padding: 15px;
+  padding: var(--space-5);
   border-radius: var(--radius-md);
   border: 2px solid var(--color-primary-200);
-  margin: 15px 0;
+  margin: var(--space-5) 0;
   font-size: var(--font-size-sm);
 }
 
@@ -50,7 +50,7 @@
 }
 
 .bkash-info p {
-  margin: 8px 0;
+  margin: var(--space-2) 0;
   color: var(--color-ink-700);
 }
 
@@ -66,15 +66,15 @@
 
 .info-card {
   background: rgba(255, 255, 255, 0.1);
-  padding: 12px;
+  padding: var(--space-3);
   border-radius: var(--radius-sm);
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   font-size: var(--font-size-sm);
   line-height: 1.5;
 }
 
 .commissioner-sign {
-  margin-top: 20px;
+  margin-top: var(--space-6);
   font-weight: bold;
   color: var(--color-accent-300);
 }
@@ -84,7 +84,7 @@
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 30px;
+  padding: var(--space-8);
 }
 
 .form-container {
@@ -104,7 +104,7 @@
 }
 
 .form-group label {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   font-weight: 600;
   font-size: var(--font-size-sm);
   color: var(--color-ink-700);
@@ -113,7 +113,7 @@
 .form-group select,
 .form-group textarea,
 .form-group input {
-  padding: 12px;
+  padding: var(--space-3);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
@@ -136,7 +136,7 @@
 .submit-btn {
   background: var(--gradient-accent);
   color: #fff;
-  padding: 14px 20px;
+  padding: var(--space-4) var(--space-6);
   border: none;
   border-radius: var(--radius-pill);
   width: 100%;
@@ -183,7 +183,7 @@
 
 .greeting-card {
   background: var(--color-surface);
-  padding: 30px;
+  padding: var(--space-8);
   border-radius: var(--radius-lg);
   border: 8px solid var(--color-primary-700);
   text-align: center;
@@ -198,7 +198,7 @@
 .post-line {
   color: var(--color-primary-700);
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .update-line {
@@ -208,7 +208,7 @@
 
 .important-dates {
   background: var(--color-surface-alt);
-  padding: 12px;
+  padding: var(--space-3);
   border-radius: var(--radius-md);
   width: 100%;
   border: 1px solid var(--color-ink-200);
@@ -229,13 +229,13 @@
 
 .closing-note {
   font-size: var(--font-size-xs);
-  margin-top: 15px;
+  margin-top: var(--space-5);
   color: var(--color-ink-700);
 }
 
 .support-inputs {
   display: flex;
-  gap: 15px;
+  gap: var(--space-5);
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
@@ -257,7 +257,7 @@
 .support-field .error {
   color: var(--color-danger);
   font-size: var(--font-size-xs);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 /* Mobile: full width fields */
@@ -274,14 +274,14 @@
 /* Popup Buttons */
 .popup-buttons {
   display: flex;
-  gap: 15px;
+  gap: var(--space-5);
   justify-content: center;
-  margin-top: 20px;
+  margin-top: var(--space-6);
 }
 
 .btn-back,
 .btn-download {
-  padding: 12px 22px;
+  padding: var(--space-3) 22px;
   border-radius: var(--radius-pill);
   border: none;
   cursor: pointer;
@@ -311,7 +311,7 @@
 .error {
   color: var(--color-danger);
   font-size: var(--font-size-xs);
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 /* ----------------- Responsive ----------------- */
@@ -327,11 +327,11 @@
   }
 
   .main-content {
-    padding: 20px 15px;
+    padding: var(--space-6) var(--space-5);
   }
 
   .form-container {
-    padding: 25px;
+    padding: var(--space-7);
   }
 
   .form-group select,
@@ -343,7 +343,7 @@
 
   .submit-btn {
     font-size: var(--font-size-sm);
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   h2 {
@@ -356,7 +356,7 @@
 
   .member-info {
     font-size: var(--font-size-xs);
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .instruction-section h3 {

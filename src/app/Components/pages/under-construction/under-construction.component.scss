@@ -8,13 +8,13 @@
   color: white;
   font-family: 'SolaimanLipiBangla';
   text-align: center;
-  padding: 20px;
+  padding: var(--space-6);
 }
 
 .gear-icon {
   font-size: 80px;
   animation: spin 4s linear infinite;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-6);
   color: #00bcd4;
 }
 

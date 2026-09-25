@@ -7,7 +7,7 @@
 
 .notices-body {
   max-width: 860px;
-  padding-bottom: clamp(32px, 5vw, 56px);
+  padding-bottom: clamp(var(--space-8), 5vw, 56px);
 }
 
 .notices-loading {
@@ -302,7 +302,7 @@
 }
 
 .notice-detail {
-  padding: clamp(20px, 3vw, 32px);
+  padding: clamp(var(--space-6), 3vw, var(--space-8));
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
   background: var(--color-surface);

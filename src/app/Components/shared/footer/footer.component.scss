@@ -6,7 +6,7 @@
   background: var(--color-primary-900);
   color: rgba(255, 255, 255, 0.72);
   border-top: 1px solid rgba(201, 162, 74, 0.55);
-  padding-top: clamp(20px, 2.8vw, 28px);
+  padding-top: clamp(var(--space-6), 2.8vw, 28px);
 }
 
 // ---------------------------- Brand ----------------------------
@@ -34,7 +34,7 @@
   height: 40px;
   border-radius: 50%;
   background: #fff;
-  padding: 4px;
+  padding: var(--space-1);
   box-shadow: 0 0 0 2px var(--color-heritage-500), 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
@@ -305,7 +305,7 @@ button:focus-visible {
 .site-footer__map-link {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   margin-top: var(--space-2);
   min-height: 36px;
   font-size: var(--font-size-sm);

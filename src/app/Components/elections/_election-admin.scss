@@ -46,7 +46,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: clamp(12px, 2.2vw, 20px);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-6));
   max-width: 1280px;
   min-width: 0;
 }
@@ -209,7 +209,7 @@
   }
 
   td {
-    padding: 14px var(--space-5);
+    padding: var(--space-4) var(--space-5);
     color: var(--color-ink-700);
     border-bottom: 1px solid var(--color-ink-200);
     vertical-align: middle;

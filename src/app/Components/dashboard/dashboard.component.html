@@ -29,7 +29,11 @@
 
         <div class="menu-group">
 
-          <button type="button" class="menu-item parent" (click)="toggleMenu(item)" [class.open]="item.expanded"
+          <!-- Collapsed rail: opens a flyout with this group's pages (the inline list is hidden). -->
+          <button type="button" class="menu-item parent" (click)="onGroupClick(item, $event)"
+            [class.open]="item.expanded" [class.has-active]="isGroupActive(item)"
+            [class.flyout-open]="flyout?.item === item"
+            [attr.aria-haspopup]="collapsed ? 'menu' : null" [attr.aria-expanded]="collapsed ? flyout?.item === item : item.expanded"
             [title]="item.labelKey | translate">
 
             <app-nav-icon class="icon" [name]="item.icon"></app-nav-icon>
@@ -55,6 +59,18 @@
 
     </nav>
 
+    <!-- Flyout for the collapsed rail: fixed-positioned beside the clicked icon, since the
+         rail itself clips its overflow. Closes on pick, outside click, Escape or resize. -->
+    <div class="flyout" *ngIf="flyout as f" role="menu" [style.top.px]="f.top" [style.left.px]="f.left"
+      [attr.aria-label]="f.item.labelKey | translate">
+      <div class="flyout__title">{{ f.item.labelKey | translate }}</div>
+      <a class="flyout__item" *ngFor="let child of f.item.children" role="menuitem" tabindex="0"
+        (click)="navigate(child.route)" (keydown.enter)="navigate(child.route)" [class.active]="activeRoute === child.route">
+        <app-nav-icon class="icon" [name]="child.icon"></app-nav-icon>
+        <span>{{ child.labelKey | translate }}</span>
+      </a>
+    </div>
+
     <div class="sidebar-footer">
       <div class="sidebar-user">
         <div class="user-avatar">{{ userInitial }}</div>
@@ -63,7 +79,8 @@
           <span class="user-role">{{ roleLabelKey | translate }}</span>
         </div>
       </div>
-      <div class="footer-actions" *ngIf="!collapsed">
+      <!-- Stays available when collapsed (stacked), so language, theme and logout are one tap away. -->
+      <div class="footer-actions">
         <button type="button" class="footer-btn" (click)="lang.toggle()" [title]="'dashboard.toggleLanguage' | translate">
           {{ lang.lang() === 'bn' ? 'EN' : 'বাং' }}
         </button>

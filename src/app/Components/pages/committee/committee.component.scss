@@ -131,7 +131,7 @@
   grid-template-columns: minmax(240px, 340px) minmax(0, 480px);
   justify-content: center;
   align-items: center;
-  gap: clamp(20px, 3.5vw, 44px);
+  gap: clamp(var(--space-6), 3.5vw, 44px);
 }
 
 .lead__photo {

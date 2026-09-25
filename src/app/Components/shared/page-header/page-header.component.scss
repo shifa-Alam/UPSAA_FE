@@ -5,7 +5,7 @@
   overflow: hidden;
   isolation: isolate;
   background: var(--gradient-hero);
-  padding: clamp(22px, 3.2vw, 38px) 0 clamp(20px, 2.8vw, 34px);
+  padding: clamp(22px, 3.2vw, 38px) 0 clamp(var(--space-6), 2.8vw, 34px);
   color: #fff;
   text-align: center;
 }
@@ -21,7 +21,7 @@
 
 /* Compact band for tool-like pages (directory, forms) where content should start sooner. */
 .page-header--plain {
-  padding: clamp(16px, 2.2vw, 26px) 0 clamp(14px, 2vw, 24px);
+  padding: clamp(var(--space-5), 2.2vw, 26px) 0 clamp(var(--space-4), 2vw, var(--space-7));
 }
 
 .page-header__inner {

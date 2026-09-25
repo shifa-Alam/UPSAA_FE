@@ -7,14 +7,14 @@
 }
 
 .jobs-body {
-  padding-bottom: clamp(32px, 5vw, 56px);
+  padding-bottom: clamp(var(--space-8), 5vw, 56px);
 }
 
 .jobs-main {
   max-width: 880px;
   margin: 0 auto;
   min-height: 220px;
-  padding-top: clamp(20px, 3vw, 36px);
+  padding-top: clamp(var(--space-6), 3vw, 36px);
 }
 
 // ---------------------------- Toolbar ----------------------------
@@ -90,7 +90,7 @@
 // ---------------------------- Form ----------------------------
 .job-form {
   margin-bottom: var(--space-7);
-  padding: clamp(16px, 2.6vw, 28px);
+  padding: clamp(var(--space-5), 2.6vw, 28px);
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-xl);
@@ -397,7 +397,7 @@
     display: inline-flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: var(--space-1);
     font-size: var(--font-size-sm);
     color: var(--color-ink-600);
     overflow-wrap: anywhere;
@@ -452,7 +452,7 @@
 .job__apply-label {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   font-size: var(--font-size-xs);
   font-weight: 600;
   color: var(--color-ink-400);

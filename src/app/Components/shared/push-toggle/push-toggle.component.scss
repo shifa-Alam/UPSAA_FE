@@ -15,8 +15,8 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 14px;
-  border-radius: 999px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 
@@ -42,7 +42,7 @@
   position: relative;
   width: 36px;
   height: 20px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--color-ink-200);
   transition: background-color 150ms ease;
 
@@ -73,9 +73,9 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 16px;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
 
@@ -98,7 +98,7 @@
   place-items: center;
   width: 42px;
   height: 42px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--color-primary-50);
   color: var(--color-primary-600);
 }
@@ -111,8 +111,8 @@
   font-weight: 600;
   font-size: 13.5px;
   min-height: 40px;
-  padding: 0 16px;
-  border-radius: 999px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
   background: var(--color-primary-600);
   color: #fff;
   white-space: nowrap;

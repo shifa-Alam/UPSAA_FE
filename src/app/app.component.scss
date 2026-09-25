@@ -130,7 +130,7 @@ content-area router-outlet {
 .dashboard-link {
   display: inline-flex !important;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   color: var(--color-primary-600) !important;
 }
 
@@ -499,7 +499,7 @@ content-area router-outlet {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px var(--space-3);
   font-size: 13px;
   font-weight: 600;
   background: #334155;

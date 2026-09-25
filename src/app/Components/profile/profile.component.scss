@@ -195,7 +195,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 12px 3px 8px;
+  padding: 3px var(--space-3) 3px var(--space-2);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-heritage-500);
   background: var(--color-heritage-soft);
@@ -268,7 +268,7 @@
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   background: var(--color-primary-50);
   color: var(--color-primary-600);
 
@@ -642,7 +642,7 @@
 .edu-pending {
   display: inline-block;
   margin-left: var(--space-2);
-  padding: 1px 8px;
+  padding: 1px var(--space-2);
   border-radius: var(--radius-pill);
   background: var(--color-heritage-soft);
   color: #8a6a1f;

@@ -76,7 +76,7 @@
   // per character to Hind Siliguri, which ships real 400–700 weights (SolaimanLipi
   // has one weight, so every bold Bangla label was synthesized). SolaimanLipi stays
   // as the offline/slow-network fallback.
-  --font-base: 'Inter', 'Hind Siliguri', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
+  --font-base: 'Inter', 'Hind Siliguri', 'Inter Fallback', 'SolaimanLipiBangla', Roboto, 'Segoe UI', system-ui, sans-serif;
   // Display face for brand, hero and section headings (h1/h2). Playfair has no
   // Bengali glyphs, so Bangla characters fall through to Noto Serif Bengali — a
   // serif with real 500–800 weights to match Playfair's bold headings. Google Fonts

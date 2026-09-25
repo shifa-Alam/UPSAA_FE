@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MemberService, MemberCreateDto } from '../../../Services/member.service';
-import { MatNativeDateModule, MatOption } from '@angular/material/core';
+import { ErrorStateMatcher, MatNativeDateModule, MatOption } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { SnackbarService } from '../../../Services/snackbar.service';
@@ -23,6 +23,18 @@ import { ReplaySubject, Subject, takeUntil } from 'rxjs';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { LanguageService } from '../../../Services/language.service';
 import { toDateOnly } from '../../../Utils/date-utils';
+
+/**
+ * Show a field's error only once the person has been in that field (or pressed Next on
+ * its step, which marks the step's fields touched). Material's default also shows errors
+ * as soon as the form is *submitted* — and every Next press submits the form, so the
+ * next step's empty fields came up red before anyone had typed in them.
+ */
+class TouchedErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null): boolean {
+    return !!control && control.invalid && control.touched;
+  }
+}
 
 /** The form in four short steps; each lists the controls it must validate before moving on. */
 const STEPS: { label: string; controls: string[] }[] = [
@@ -57,6 +69,7 @@ const STEPS: { label: string; controls: string[] }[] = [
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
+  providers: [{ provide: ErrorStateMatcher, useClass: TouchedErrorStateMatcher }],
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   form!: FormGroup;

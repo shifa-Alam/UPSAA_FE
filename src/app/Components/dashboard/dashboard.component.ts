@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { NavIconComponent, NavIconName } from '../shared/nav-icon/nav-icon.component';
@@ -32,6 +32,8 @@ interface MenuGroup {
 export class DashboardComponent {
   collapsed = false;
   activeRoute = '';
+  /** Collapsed rail: the group whose pages are showing in the flyout, and where. */
+  flyout: { item: MenuGroup; top: number; left: number } | null = null;
 
   /** Which sidebar this instance renders — set per route via `data.shell`.
    *  'admin' = back office at /dashboard, 'member' = alumni portal at /portal. */
@@ -198,7 +200,44 @@ export class DashboardComponent {
     item.expanded = !item.expanded;
   }
 
+  /** Expanded: open/close the group inline. Collapsed: the inline list is hidden, so show
+   *  the group's pages in a flyout beside the icon instead. */
+  onGroupClick(item: MenuGroup, event: MouseEvent) {
+    if (!this.collapsed) {
+      this.toggleMenu(item);
+      return;
+    }
+    if (this.flyout?.item === item) {
+      this.flyout = null;
+      return;
+    }
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    // Keep the flyout on screen for groups near the bottom of the rail.
+    const estimatedHeight = 44 + item.children.length * 42;
+    const top = Math.max(8, Math.min(rect.top, window.innerHeight - estimatedHeight - 8));
+    this.flyout = { item, top, left: rect.right + 8 };
+  }
+
+  isGroupActive(item: MenuGroup): boolean {
+    return item.children.some(c => c.route === this.activeRoute);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.flyout) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('.flyout, .menu-item.parent')) return;
+    this.flyout = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  @HostListener('window:resize')
+  closeFlyout() {
+    this.flyout = null;
+  }
+
   navigate(route: string) {
+    this.flyout = null;
     if (this.activeRoute === route) return;
     this.activeRoute = route;
     this.router.navigateByUrl(route);
@@ -206,6 +245,7 @@ export class DashboardComponent {
 
   toggleCollapsed() {
     this.collapsed = !this.collapsed;
+    this.flyout = null;
     this.persistCollapsed();
   }
 

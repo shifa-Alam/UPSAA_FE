@@ -97,7 +97,7 @@
 .completion__cta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   min-height: 36px;
   padding: 0 var(--space-4);
   border-radius: var(--radius-pill);
@@ -238,8 +238,8 @@
 .welcome__birthday {
   display: inline-block;
   margin: var(--space-2) 0 0;
-  padding: 6px 14px;
-  border-radius: 999px;
+  padding: 6px var(--space-4);
+  border-radius: var(--radius-pill);
   background: rgba(201, 162, 74, 0.18);
   color: var(--color-heritage-500);
   font-weight: 700;

@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  padding: clamp(12px, 2.2vw, 20px);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-6));
   max-width: 1280px;
   min-width: 0;
 }
@@ -164,7 +164,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--space-1);
   padding: 6px var(--space-2);
   background: rgba(15, 23, 42, 0.64);
   color: #fff;
@@ -374,7 +374,7 @@
 .ev__body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
 }
 

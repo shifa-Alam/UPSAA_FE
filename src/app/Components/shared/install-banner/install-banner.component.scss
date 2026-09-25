@@ -7,10 +7,10 @@
   bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 12px);
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 10px 12px;
+  gap: 10px var(--space-3);
   align-items: center;
-  padding: 14px;
-  border-radius: 18px;
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
   background: var(--color-surface);
   color: var(--color-ink-900);
   border: 1px solid var(--color-ink-200);
@@ -30,7 +30,7 @@
 .install-card__icon {
   width: 44px;
   height: 44px;
-  border-radius: 11px;
+  border-radius: var(--radius-lg);
 }
 
 .install-card__body {
@@ -63,7 +63,7 @@
   grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .install-card__btn {
@@ -75,7 +75,7 @@
   font-size: 14px;
   min-height: 40px;
   padding: 0 18px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--color-primary-600);
   color: #fff;
   -webkit-tap-highlight-color: transparent;
