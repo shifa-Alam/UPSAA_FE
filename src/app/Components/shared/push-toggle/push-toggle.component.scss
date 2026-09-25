@@ -88,7 +88,7 @@
   p {
     margin: 2px 0 0;
     font-size: 13px;
-    line-height: 1.45;
+    line-height: var(--line-height-normal);
     color: var(--color-ink-600);
   }
 }

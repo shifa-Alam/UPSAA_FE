@@ -13,7 +13,7 @@
 .bottom-nav {
   position: fixed;
   inset: auto 0 0 0;
-  z-index: 1100; // above the sticky toolbar (1000), below dialogs/overlays
+  z-index: 990; // under dialogs, sheets and menus (Angular CDK overlays sit at 1000)
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
@@ -74,7 +74,7 @@
 .bottom-nav__label {
   font-size: 11.5px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

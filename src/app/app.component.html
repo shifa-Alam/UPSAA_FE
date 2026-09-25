@@ -221,7 +221,7 @@
       <!-- Top Toolbar — hidden on desktop dashboard views (the back office has its own
            sidebar shell); kept on mobile since the dashboard sidebar hides itself there
            and the hamburger menu is the only way to navigate the back office. -->
-      <mat-toolbar class="app-toolbar" *ngIf="!isDashboardRoute || (isMobile$ | async)">
+      <mat-toolbar class="app-toolbar" appSmartHeader *ngIf="!isDashboardRoute || (isMobile$ | async)">
         <div class="toolbar-content upsaa-container">
           <a routerLink="/" class="brand">
             <img src="logo.png" alt="Logo" class="logo-img" />

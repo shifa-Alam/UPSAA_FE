@@ -96,7 +96,7 @@
     margin: 0;
     font-size: var(--font-size-xl);
     font-weight: 700;
-    line-height: 1.25;
+    line-height: var(--line-height-tight);
     color: var(--color-ink-900);
   }
 }

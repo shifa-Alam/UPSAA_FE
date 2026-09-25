@@ -50,7 +50,7 @@
         <p class="gallery-count">{{ photoCount }}</p>
 
         <div class="mosaic" [class.mosaic--few]="photos.length < 5">
-          <button type="button" class="mosaic__tile" *ngFor="let photo of photos; let i = index" (click)="open(photo)"
+          <button type="button" class="mosaic__tile" *ngFor="let photo of photos; let i = index" (click)="open(photo, $event)"
             [attr.aria-label]="photo.title">
             <!-- Every 10th tile (1st, 11th…) is the 2x2 feature tile unless the grid is in "few" mode. -->
             <img [src]="imageAt(photo.imageUrl, 800)" [attr.srcset]="imageSrcset(photo.imageUrl) || null"
@@ -103,8 +103,11 @@
       </button>
     </ng-container>
 
-    <figure class="lightbox__figure" (click)="$event.stopPropagation()">
-      <img [src]="selected.imageUrl" [alt]="selected.title" />
+    <figure class="lightbox__figure" (click)="$event.stopPropagation()"
+      (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd()" (touchcancel)="onTouchEnd()">
+      <!-- Swipe left/right: next/previous · swipe down: close (see onTouch*) -->
+      <img [src]="selected.imageUrl" [alt]="selected.title" class="lightbox__img" [style.transform]="dragTransform"
+        [class.lightbox__img--dragging]="dragging" />
       <figcaption class="lightbox__caption">
         <span class="lightbox__category" *ngIf="selected.category">{{ selected.category }}</span>
         <strong class="lightbox__title">{{ selected.title }}</strong>

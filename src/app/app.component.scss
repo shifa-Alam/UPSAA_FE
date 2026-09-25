@@ -491,7 +491,7 @@ content-area router-outlet {
 
 .offline-strip {
   position: fixed;
-  z-index: 1120;
+  z-index: 985;
   left: 0;
   right: 0;
   top: calc(var(--header-height-mobile) + env(safe-area-inset-top));
@@ -514,4 +514,37 @@ content-area router-outlet {
 
 .push-toggle-mobile {
   margin: 0 0 var(--space-2);
+}
+
+/* ===== Header that reacts to scrolling (SmartHeaderDirective) ===== */
+.app-toolbar {
+  transition: transform var(--dur-base) var(--ease-standard), height var(--dur-base) var(--ease-standard),
+    background-color var(--dur-base) var(--ease-standard), box-shadow var(--dur-base) var(--ease-standard);
+  will-change: transform;
+}
+
+// Scrolled: frosted navy glass over the content, a touch shorter.
+.app-toolbar.is-scrolled {
+  background: rgba(7, 29, 64, 0.82);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  box-shadow: 0 1px 0 rgba(201, 162, 74, 0.35), 0 8px 24px rgba(2, 12, 32, 0.28);
+}
+
+@media (min-width: 769px) {
+  .app-toolbar.is-scrolled {
+    height: calc(var(--header-height) - 6px);
+  }
+}
+
+// Phones: slide away while reading down, back on the first scroll up.
+.app-toolbar.is-hidden {
+  transform: translateY(calc(-100% - 2px));
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toolbar {
+    transition: none;
+  }
 }

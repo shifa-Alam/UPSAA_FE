@@ -242,7 +242,7 @@
   color: #fff;
   font-family: var(--font-display);
   font-size: var(--font-size-md);
-  line-height: 1.3;
+  line-height: var(--line-height-normal);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -271,7 +271,7 @@
   justify-content: center;
   padding: var(--space-7) var(--space-8);
   background: rgba(5, 16, 36, 0.94);
-  animation: lightbox-fade 250ms ease both;
+  animation: lightbox-fade var(--dur-base) var(--ease-out) both;
 }
 
 @keyframes lightbox-fade {
@@ -454,4 +454,17 @@
   display: flex;
   justify-content: center;
   margin-top: var(--space-6);
+}
+
+// Touch gestures + the thumbnail → lightbox zoom (view transition "gallery-photo").
+.lightbox__img {
+  view-transition-name: gallery-photo;
+  touch-action: pinch-zoom;
+  transition: transform var(--dur-base) var(--ease-out);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lightbox__img--dragging {
+  transition: none;
 }

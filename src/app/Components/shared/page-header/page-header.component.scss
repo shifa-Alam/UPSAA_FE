@@ -49,7 +49,7 @@
   color: #fff;
   font-size: clamp(21px, 2.8vw, 40px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   max-width: 24ch;
   margin: 0 0 var(--space-2);
 }

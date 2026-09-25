@@ -96,7 +96,7 @@
   font-family: var(--font-display);
   font-size: clamp(20px, 2.4vw, 26px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: var(--line-height-tight);
   color: var(--color-ink-900);
 }
 
@@ -125,7 +125,7 @@
 .ask__title {
   margin: 0 0 var(--space-4);
   font-size: clamp(20px, 2.4vw, 27px);
-  line-height: 1.2;
+  line-height: var(--line-height-tight);
 }
 
 .ask__body {

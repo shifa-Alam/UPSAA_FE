@@ -540,7 +540,7 @@ mat-form-field {
   font-size: var(--font-size-sm);
   font-weight: 600;
   text-align: center;
-  line-height: 1.3;
+  line-height: var(--line-height-normal);
 }
 
 .reg-steps__item.is-current {
@@ -599,7 +599,7 @@ mat-form-field {
 
 // Each step arrives with a short slide, so moving forward feels like progress.
 .reg-section {
-  animation: reg-step-in 240ms ease both;
+  animation: reg-step-in var(--dur-base) var(--ease-out) both;
 }
 
 @keyframes reg-step-in {

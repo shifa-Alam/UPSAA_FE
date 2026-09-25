@@ -26,6 +26,7 @@ export class CountUpDirective implements OnChanges, OnDestroy {
   private shown = 0;
   private visible = false;
   private animatedTo: number | null = null;
+  private hasAnimated = false;
   private frame = 0;
   private observer?: IntersectionObserver;
   private readonly isBrowser: boolean;
@@ -94,10 +95,15 @@ export class CountUpDirective implements OnChanges, OnDestroy {
       return;
     }
 
-    const from = this.startValue();
+    // First time: count up from 0 (or near the year). Later changes — a new filter,
+    // a new total — roll from the number already on screen to the new one, faster.
+    const first = !this.hasAnimated;
+    const from = first ? this.startValue() : this.shown;
+    const duration = first ? DURATION_MS : DURATION_MS * 0.55;
+    this.hasAnimated = true;
     const t0 = performance.now();
     const tick = (now: number) => {
-      const p = Math.min((now - t0) / DURATION_MS, 1);
+      const p = Math.min((now - t0) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
       this.shown = Math.round(from + (target - from) * eased);
       this.render();

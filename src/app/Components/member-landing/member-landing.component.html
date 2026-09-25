@@ -14,22 +14,22 @@
         <div class="stats">
           <div class="stat">
             <span class="stat__icon"><mat-icon>groups</mat-icon></span>
-            <span class="stat__value">{{ totalItems | number:'1.0-0' }}</span>
+            <span class="stat__value" [appCountUp]="totalItems"></span>
             <span class="stat__label">{{ 'memberLanding.statMembers' | translate }}</span>
           </div>
           <div class="stat">
             <span class="stat__icon"><mat-icon>credit_card</mat-icon></span>
-            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalMembershipAmount | number:'1.0-0' }}</span>
+            <span class="stat__value"><span class="stat__cur">৳</span><span [appCountUp]="totalMembershipAmount"></span></span>
             <span class="stat__label">{{ 'memberLanding.statMembership' | translate }}</span>
           </div>
           <div class="stat">
             <span class="stat__icon"><mat-icon>favorite</mat-icon></span>
-            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalDonationAmount | number:'1.0-0' }}</span>
+            <span class="stat__value"><span class="stat__cur">৳</span><span [appCountUp]="totalDonationAmount"></span></span>
             <span class="stat__label">{{ 'memberLanding.statDonation' | translate }}</span>
           </div>
           <div class="stat stat--total">
             <span class="stat__icon"><mat-icon>payments</mat-icon></span>
-            <span class="stat__value"><span class="stat__cur">৳</span>{{ totalAmount | number:'1.0-0' }}</span>
+            <span class="stat__value"><span class="stat__cur">৳</span><span [appCountUp]="totalAmount"></span></span>
             <span class="stat__label">{{ 'memberLanding.statTotalAmount' | translate }}</span>
           </div>
         </div>

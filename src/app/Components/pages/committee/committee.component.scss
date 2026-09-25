@@ -190,7 +190,7 @@
 
 .lead__name {
   font-size: clamp(24px, 3.2vw, 36px);
-  line-height: 1.12;
+  line-height: var(--line-height-tight);
   margin: 0;
 }
 

@@ -11,7 +11,9 @@ import { LanguageService } from '../../../Services/language.service';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { SizedImagePipe } from '../../../Pipes/sized-image.pipe';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
+import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 import { DEGREES } from '../../profile/profile.component';
+import { SharedElementService } from '../../../Services/shared-element.service';
 
 /**
  * An alumnus's profile as other people see it — the same "membership card" design as
@@ -22,7 +24,7 @@ import { DEGREES } from '../../profile/profile.component';
 @Component({
   selector: 'app-member-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule, TranslatePipe, SizedImagePipe, EmptyStateComponent],
+  imports: [CommonModule, RouterLink, MatIconModule, TranslatePipe, SizedImagePipe, EmptyStateComponent, SkeletonComponent],
   templateUrl: './member-profile.component.html',
   styleUrl: './member-profile.component.scss'
 })
@@ -35,25 +37,48 @@ export class MemberProfileComponent implements OnInit {
   private title = inject(Title);
   private destroyRef = inject(DestroyRef);
   auth = inject(AuthService);
+  private shared = inject(SharedElementService);
 
   member: PublicMemberProfile | null = null;
   loading = true;
+  /** Header drawn from the directory card; contact/education still on their way. */
+  detailsLoading = false;
   notFound = false;
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
       map(p => Number(p.get('id'))),
       distinctUntilChanged(),
-      tap(() => { this.loading = true; this.notFound = false; }),
+      tap(id => {
+        this.notFound = false;
+        const preview = this.shared.preview?.id === id ? this.shared.preview : null;
+        if (preview) {
+          // Show the card's data right away (and let its photo morph into place).
+          this.member = {
+            id: preview.id, fullName: preview.fullName, batch: preview.batch, photo: preview.photo ?? null,
+            currentDesignation: preview.currentDesignation ?? null, employer: preview.employer ?? null,
+            currentCity: preview.currentCity ?? null, bloodGroup: preview.bloodGroup ?? null, memberCode: preview.memberCode ?? null,
+            phone: null, email: null, dob: null, contactHiddenReason: null, education: [],
+          };
+          this.loading = false;
+          this.detailsLoading = true;
+        } else {
+          this.loading = true;
+        }
+      }),
       switchMap(id => Number.isInteger(id) && id > 0
         ? this.memberService.getPublicProfile(id).pipe(catchError(() => of(null)))
         : of(null)),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(member => {
       this.loading = false;
+      this.detailsLoading = false;
       this.member = member;
       this.notFound = !member;
-      if (member) this.title.setTitle(`${member.fullName} — UPSAA`);
+      if (member) {
+        this.title.setTitle(`${member.fullName} — UPSAA`);
+        this.shared.memberId.set(member.id); // the card to fly back to
+      }
     });
   }
 

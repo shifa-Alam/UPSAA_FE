@@ -19,11 +19,12 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
 
+import { CountUpDirective } from '../shared/count-up/count-up.directive';
 @Component({
 
   selector: 'app-member-landing',
   standalone: true,
-  imports: [
+  imports: [CountUpDirective, 
     CommonModule,
     FormsModule,
     MemberFeeAmountPipe,

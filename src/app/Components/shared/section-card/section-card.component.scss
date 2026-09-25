@@ -32,7 +32,7 @@
 .section-card__title {
   font-size: var(--font-size-md);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
   margin: 0;
 }
 

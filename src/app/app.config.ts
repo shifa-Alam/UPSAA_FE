@@ -1,5 +1,6 @@
 import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
-import { TitleStrategy, provideRouter, withViewTransitions } from '@angular/router';
+import { TitleStrategy, provideRouter, withPreloading, withViewTransitions } from '@angular/router';
+import { IdlePreloadStrategy } from './Utils/idle-preload.strategy';
 import { provideServiceWorker } from '@angular/service-worker';
 
 import { routes } from './app.routes';
@@ -19,7 +20,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes,
       // Native-app feel: a soft cross-fade between pages (browsers without the
       // View Transitions API just navigate as before).
-      withViewTransitions({ skipInitialTransition: true })
+      withViewTransitions({ skipInitialTransition: true }),
+      // Fetch the other pages in the background once idle, so taps open instantly.
+      withPreloading(IdlePreloadStrategy)
     ),
     provideClientHydration(), 
     provideAnimationsAsync(),

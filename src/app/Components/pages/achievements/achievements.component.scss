@@ -155,7 +155,7 @@
   font-family: var(--font-display);
   font-size: clamp(20px, 2.4vw, 27px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: var(--line-height-tight);
   margin: 0;
 }
 
@@ -242,7 +242,7 @@
 .honoree__title {
   font-size: var(--font-size-lg);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: var(--line-height-normal);
   margin: 0 0 var(--space-1);
 }
 

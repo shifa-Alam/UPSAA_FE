@@ -22,6 +22,36 @@ import { missingProfileFields, profileCompletion } from '../../../Utils/profile-
 /** Alumni portal welcome — the member's first screen after login (/portal/home). */
 import { PushToggleComponent } from '../../shared/push-toggle/push-toggle.component';
 
+import confetti from 'canvas-confetti';
+
+/** Today's month-day in Bangladesh ("09-25"), whatever the phone's time zone. */
+function todayInDhaka(): string {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dhaka', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+  return `${parts.find(p => p.type === 'month')?.value}-${parts.find(p => p.type === 'day')?.value}`;
+}
+
+function isBirthdayToday(dob: string | null | undefined): boolean {
+  // DOB is a date-only value ("1995-09-25T00:00:00") — compare the text, not a Date,
+  // so no time-zone shift can move it a day.
+  return !!dob && dob.slice(5, 10) === todayInDhaka();
+}
+
+/** Confetti the first time the dashboard opens on the birthday (not on every visit). */
+function celebrateOncePerDay(memberId: number): void {
+  if (typeof window === 'undefined' || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  const key = `upsaa-bday-${memberId}-${new Date().getFullYear()}`;
+  try {
+    if (localStorage.getItem(key)) return;
+    localStorage.setItem(key, '1');
+  } catch { /* storage off — celebrate anyway */ }
+  const colors = ['#c9a24a', '#0a2a5e', '#6fa5f6', '#ffffff'];
+  setTimeout(() => {
+    confetti({ particleCount: 90, spread: 75, origin: { y: 0.3 }, colors });
+    setTimeout(() => confetti({ particleCount: 50, angle: 60, spread: 60, origin: { x: 0, y: 0.5 }, colors }), 250);
+    setTimeout(() => confetti({ particleCount: 50, angle: 120, spread: 60, origin: { x: 1, y: 0.5 }, colors }), 400);
+  }, 400);
+}
+
 @Component({
   selector: 'app-member-dashboard',
   standalone: true,
@@ -60,6 +90,8 @@ export class MemberDashboardComponent implements OnInit {
     this.memberService.getProfile().pipe(catchError(() => of(undefined))).subscribe(member => {
       this.loading = false;
       this.member = member;
+      this.isBirthday = isBirthdayToday(member?.dob);
+      if (this.isBirthday) celebrateOncePerDay(member!.id);
     });
 
     this.noticeService.getPage({ take: 4 }).pipe(catchError(() => of({ items: [], total: 0 }))).subscribe(page => {
@@ -99,6 +131,9 @@ export class MemberDashboardComponent implements OnInit {
   get totalFeeCount(): number {
     return this.member?.fees?.length ?? 0;
   }
+
+  /** It's the member's birthday (Bangladesh date) — greeting + a burst of confetti. */
+  isBirthday = false;
 
   get greetingKey(): string {
     const h = new Date().getHours();

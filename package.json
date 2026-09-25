@@ -10,7 +10,8 @@
     "build": "ng build --base-href=/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:ups-alumni-fe": "node dist/ups-alumni-fe/server/server.mjs"
+    "serve:ssr:ups-alumni-fe": "node dist/ups-alumni-fe/server/server.mjs",
+    "check:icons": "node scripts/check-icons.mjs"
   },
   "private": true,
   "dependencies": {

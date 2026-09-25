@@ -76,9 +76,9 @@
         <!-- Kept on screen (dimmed) while a new filter loads, so the grid doesn't flash empty. -->
         <div class="members" [class.members--busy]="loading" [attr.aria-busy]="loading">
           <!-- Relative link: /members/:id on the public site, /portal/members/:id in the portal. -->
-          <a class="member" *ngFor="let m of members" [routerLink]="[m.id]"
+          <a class="member" *ngFor="let m of members" [routerLink]="[m.id]" (click)="shared.open(m)"
             [attr.aria-label]="m.fullName + ' — ' + ('memberProfile.viewProfile' | translate)">
-            <div class="member__avatar">
+            <div class="member__avatar" [style.view-transition-name]="shared.memberId() === m.id ? 'member-photo' : null">
               <img *ngIf="m.photo; else memberInitials" [src]="m.photo | sizedImage:400" [alt]="m.fullName" loading="lazy" />
               <ng-template #memberInitials>
                 <span class="member__initials">{{ initials(m.fullName) }}</span>

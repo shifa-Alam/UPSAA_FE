@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -16,6 +16,7 @@ import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe
 const PAGE_SIZE = 24;
 
 import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
+import { SharedElementService } from '../../../Services/shared-element.service';
 @Component({
   selector: 'app-directory',
   standalone: true,
@@ -24,6 +25,8 @@ import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
   styleUrl: './directory.component.scss'
 })
 export class DirectoryComponent implements OnInit, OnDestroy {
+  /** The photo that flies into / back from the member's profile (view transition). */
+  readonly shared = inject(SharedElementService);
   members: PublicMember[] = [];
   loading = true;
   loadError = false;

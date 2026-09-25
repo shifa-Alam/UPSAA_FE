@@ -100,8 +100,20 @@
   --max-content-width: 1240px;
 
   // ---- Motion ----
-  --transition-fast: 160ms ease;
-  --transition-base: 220ms ease;
+  // ---- Motion ----
+  // One motion language for the whole app. Easing curves follow Material 3:
+  // standard for most state changes, emphasized-decelerate for things arriving
+  // (sheets, pages, cards), and a small overshoot "spring" for playful pops.
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-in: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-quick: 140ms;   // taps, hovers, colour changes
+  --dur-base: 240ms;    // panels, pills, small movements
+  --dur-slow: 420ms;    // sheets, page-level entrances
+  --transition-fast: var(--dur-quick) var(--ease-standard);
+  --transition-base: var(--dur-base) var(--ease-standard);
+  --transition-enter: var(--dur-slow) var(--ease-out);
 
   // ---- Theme (light is the default; see [data-theme="dark"] below) ----
   color-scheme: light;

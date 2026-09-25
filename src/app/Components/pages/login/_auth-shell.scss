@@ -65,7 +65,7 @@
   color: #fff;
   font-size: clamp(24px, 3vw, 34px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   margin: 0;
 }
 

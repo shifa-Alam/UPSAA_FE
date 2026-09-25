@@ -237,7 +237,7 @@
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
-  animation: directory-in 420ms ease both;
+  animation: directory-in var(--dur-slow) var(--ease-out) both;
 
   &:focus-visible {
     outline: 2px solid var(--color-primary-600);
@@ -294,7 +294,7 @@
   font-family: var(--font-display);
   font-size: var(--font-size-lg);
   font-weight: 600;
-  line-height: 1.3;
+  line-height: var(--line-height-normal);
   color: var(--color-ink-900);
   overflow-wrap: anywhere;
 }
@@ -313,7 +313,7 @@
   margin: var(--space-2) 0 0;
   max-width: 100%;
   font-size: var(--font-size-sm);
-  line-height: 1.45;
+  line-height: var(--line-height-normal);
   color: var(--color-ink-700);
   overflow-wrap: anywhere;
 }

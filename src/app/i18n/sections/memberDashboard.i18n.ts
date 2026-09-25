@@ -3,6 +3,7 @@ import { I18nSection } from '../i18n.types';
 export const memberDashboardI18n: I18nSection = {
   bn: {
     memberDashboard: {
+      birthdayWish: 'শুভ জন্মদিন! পুরো UPSAA পরিবারের পক্ষ থেকে অনেক শুভেচ্ছা ও ভালোবাসা।',
       lead: 'অ্যালামনাই পোর্টালে স্বাগতম। আপনার প্রোফাইল, সংগঠনের খবর ও আয়োজন — সবকিছু এক জায়গায়। বাম পাশের মেনু থেকে যেকোনো পাতায় যান।',
       pendingTitle: 'আপনার সদস্যপদ অনুমোদনের অপেক্ষায়',
       pendingBody: 'অ্যাডমিন অনুমোদন দিলেই সব সদস্য-সুবিধা চালু হয়ে যাবে। ততক্ষণ প্রোফাইলের তথ্য হালনাগাদ রাখুন।',
@@ -50,6 +51,7 @@ export const memberDashboardI18n: I18nSection = {
   },
   en: {
     memberDashboard: {
+      birthdayWish: 'Happy birthday! Warm wishes from the whole UPSAA family.',
       lead: 'Welcome to the alumni portal. Your profile, the association\'s news and gatherings — all in one place. Use the menu on the left to go anywhere.',
       pendingTitle: 'Your membership is awaiting approval',
       pendingBody: 'All member features switch on as soon as an admin approves you. Meanwhile, keep your profile up to date.',

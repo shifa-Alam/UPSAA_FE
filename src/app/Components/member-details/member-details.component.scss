@@ -46,7 +46,7 @@
 .dlg__title {
   margin: 2px 0 var(--space-1);
   font-size: var(--font-size-xl);
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
   color: var(--color-ink-900);
   overflow-wrap: anywhere;
 }

@@ -28,6 +28,10 @@ import { PushService } from './Services/push.service';
 import { PushToggleComponent } from './Components/shared/push-toggle/push-toggle.component';
 import { installImageFadeIn } from './Utils/image-fade';
 import { ScrollPositionService } from './Services/scroll-position.service';
+import { SheetGestureService } from './Services/sheet-gesture.service';
+import { PullToRefreshService } from './Services/pull-to-refresh.service';
+import { SmartHeaderDirective } from './Components/shared/smart-header/smart-header.directive';
+import { MatIconRegistry } from '@angular/material/icon';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -47,6 +51,7 @@ import { ScrollPositionService } from './Services/scroll-position.service';
     BottomNavComponent,
     InstallBannerComponent,
     PushToggleComponent,
+    SmartHeaderDirective,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -84,6 +89,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.pwa.init();
     this.scrollPositions.init(); // new page → top; Back → where you were
+    this.sheets.init();          // phone dialogs: pull down to close
+    this.pullToRefresh.init();   // installed app: pull down at the top to reload
     // Signed in (now or on a later login): tie this phone's notifications to the member.
     this.authService.user$.pipe(filter(u => !!u)).subscribe(() => this.push.linkToCurrentUser());
     this.isDashboardRoute = this.isShellUrl(this.router.url);
@@ -127,7 +134,12 @@ export class AppComponent implements OnInit {
     public pwa: PwaService,
     private push: PushService,
     private scrollPositions: ScrollPositionService,
+    private sheets: SheetGestureService,
+    private pullToRefresh: PullToRefreshService,
+    iconRegistry: MatIconRegistry,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
+    // Softer, rounded icons everywhere: every <mat-icon> uses the Symbols Rounded font.
+    iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
     // Before any page renders, so the first photos get the blur-up too.
     if (isPlatformBrowser(platformId)) installImageFadeIn(document);
     this.isMobile$ = this.breakpointObserver

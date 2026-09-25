@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, HostListener, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, HostListener, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -44,7 +44,7 @@ export class GalleryComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
-  constructor(private galleryService: GalleryService, private languageService: LanguageService) { }
+  constructor(private galleryService: GalleryService, private languageService: LanguageService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.galleryService.getCategories().pipe(catchError(() => of([]))).subscribe(cats => {
@@ -104,12 +104,74 @@ export class GalleryComponent implements OnInit {
     });
   }
 
-  open(photo: GalleryImage): void {
-    this.selected = photo;
+  /** Tapped thumbnail zooms into the lightbox (and back) with a view transition,
+   *  where supported; otherwise it simply opens. */
+  open(photo: GalleryImage, event?: Event): void {
+    const thumb = (event?.currentTarget as HTMLElement | undefined)?.querySelector('img');
+    this.morph(thumb ?? null, () => { this.selected = photo; }, 'to-lightbox');
   }
 
   close(): void {
-    this.selected = null;
+    const i = this.selectedIndex;
+    const thumb = i >= 0 ? document.querySelectorAll<HTMLImageElement>('.mosaic__tile img')[i] ?? null : null;
+    this.morph(thumb, () => { this.selected = null; }, 'to-thumb');
+  }
+
+  private morph(thumb: HTMLImageElement | null, update: () => void, dir: 'to-lightbox' | 'to-thumb'): void {
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (!doc.startViewTransition || !thumb || reduced) {
+      update();
+      return;
+    }
+    // Exactly one element may carry the name in each snapshot: the thumbnail on one side,
+    // the lightbox photo (named in CSS) on the other.
+    if (dir === 'to-lightbox') thumb.style.setProperty('view-transition-name', 'gallery-photo');
+    doc.startViewTransition(() => {
+      if (dir === 'to-lightbox') thumb.style.removeProperty('view-transition-name');
+      update();
+      this.cdr.detectChanges();
+      if (dir === 'to-thumb') thumb.style.setProperty('view-transition-name', 'gallery-photo');
+    });
+    if (dir === 'to-thumb') setTimeout(() => (thumb.style.removeProperty('view-transition-name')), 600);
+  }
+
+  // ---- Touch: swipe between photos, pull down to close ----
+  private touchStart: { x: number; y: number; t: number } | null = null;
+  dragging = false;
+  private dx = 0;
+  private dy = 0;
+
+  get dragTransform(): string | null {
+    if (!this.dragging) return null;
+    if (Math.abs(this.dx) >= Math.abs(this.dy)) return `translateX(${this.dx}px)`;
+    const dy = Math.max(0, this.dy);
+    return `translateY(${dy}px) scale(${1 - Math.min(dy / 1200, 0.15)})`;
+  }
+
+  onTouchStart(e: TouchEvent): void {
+    if (e.touches.length !== 1) { this.touchStart = null; return; } // two fingers = pinch zoom
+    const t = e.touches[0];
+    this.touchStart = { x: t.clientX, y: t.clientY, t: e.timeStamp };
+    this.dx = this.dy = 0;
+  }
+
+  onTouchMove(e: TouchEvent): void {
+    if (!this.touchStart || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    this.dx = t.clientX - this.touchStart.x;
+    this.dy = t.clientY - this.touchStart.y;
+    this.dragging = Math.abs(this.dx) > 8 || this.dy > 8;
+  }
+
+  onTouchEnd(): void {
+    if (!this.touchStart) return;
+    const { dx, dy } = this;
+    this.touchStart = null;
+    this.dragging = false;
+    this.dx = this.dy = 0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) this.step(dx < 0 ? 1 : -1);
+    else if (dy > 100 && dy > Math.abs(dx)) this.close();
   }
 
   get selectedIndex(): number {

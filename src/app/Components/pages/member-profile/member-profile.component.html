@@ -29,7 +29,7 @@
       </div>
 
       <div class="hero__body">
-        <div class="avatar avatar--static">
+        <div class="avatar avatar--static" style="view-transition-name: member-photo">
           <img *ngIf="m.photo; else initialsAvatar" [src]="m.photo | sizedImage:400" [alt]="m.fullName" />
           <ng-template #initialsAvatar>
             <span class="avatar__initials">{{ initials(m.fullName) }}</span>
@@ -76,6 +76,10 @@
       </dl>
     </header>
 
+    <!-- Header came from the directory card: the rest is still loading -->
+    <app-skeleton *ngIf="detailsLoading" variant="list" [count]="2" [label]="'memberProfile.loading' | translate"></app-skeleton>
+
+    <ng-container *ngIf="!detailsLoading">
     <!-- ===== Contact ===== -->
     <section class="card">
       <div class="card__head">
@@ -140,6 +144,7 @@
         <p class="empty">{{ 'profile.noEducationRecords' | translate }}</p>
       </ng-template>
     </section>
+    </ng-container>
 
   </ng-container>
 </div>

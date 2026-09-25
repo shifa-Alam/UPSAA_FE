@@ -35,14 +35,14 @@
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 700;
-  line-height: 1.15;
+  line-height: var(--line-height-tight);
   color: var(--color-ink-900);
   font-variant-numeric: tabular-nums;
 }
 
 .meta-value--date {
   font-size: var(--font-size-xl);
-  line-height: 1.4;
+  line-height: var(--line-height-normal);
 }
 
 .meta-turnout-head {
@@ -122,7 +122,7 @@
   font-family: var(--font-display);
   font-size: var(--font-size-xl);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: var(--line-height-tight);
   color: var(--color-ink-900);
   overflow-wrap: anywhere;
 }

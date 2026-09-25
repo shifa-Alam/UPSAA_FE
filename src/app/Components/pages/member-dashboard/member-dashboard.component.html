@@ -13,6 +13,7 @@
           {{ greetingKey | translate }}<ng-container *ngIf="firstName">, <span class="welcome__name">{{ firstName }}</span></ng-container>
         </h1>
         <p class="welcome__lead">{{ 'memberDashboard.lead' | translate }}</p>
+        <p class="welcome__birthday" *ngIf="isBirthday">🎂 {{ 'memberDashboard.birthdayWish' | translate }}</p>
       </div>
     </div>
     <span class="welcome__role" *ngIf="member">
