@@ -59,6 +59,11 @@ export class DirectoryComponent implements OnInit, OnDestroy {
     if (batchParam) {
       this.filters.batch = batchParam;
     }
+    // …and from the "page not found" search box: /members?name=Rahim.
+    const nameParam = this.route.snapshot.queryParamMap.get('name');
+    if (nameParam) {
+      this.filters.name = nameParam;
+    }
     const professionParam = this.route.snapshot.queryParamMap.get('profession');
     if (professionParam) {
       this.filters.profession = professionParam;

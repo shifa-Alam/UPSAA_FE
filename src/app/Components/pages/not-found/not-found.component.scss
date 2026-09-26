@@ -1,0 +1,185 @@
+.nf {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-12, 64px) var(--space-4);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(212, 160, 23, 0.1), transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(11, 94, 215, 0.08), transparent 45%),
+    var(--color-surface-alt);
+  box-sizing: border-box;
+}
+
+.nf__inner {
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+}
+
+.nf__code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font: 800 clamp(96px, 22vw, 160px) / 1 var(--font-base);
+  letter-spacing: -0.04em;
+  color: var(--color-primary-800);
+}
+
+.nf__crest {
+  width: clamp(84px, 18vw, 132px);
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px var(--color-surface), 0 0 0 8px var(--color-heritage-500), var(--shadow-lg);
+  animation: nf-float 5s ease-in-out infinite;
+}
+
+@keyframes nf-float {
+  50% {
+    transform: translateY(-8px) rotate(-4deg);
+  }
+}
+
+.nf__title {
+  margin: var(--space-6) 0 var(--space-2);
+  font-size: var(--font-size-2xl);
+  color: var(--color-ink-900);
+}
+
+.nf__message {
+  margin: 0 auto var(--space-6);
+  max-width: 440px;
+  color: var(--color-ink-600);
+  line-height: 1.6;
+}
+
+.nf__search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 auto var(--space-5);
+  padding: 6px 6px 6px var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:focus-within {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(11, 94, 215, 0.18);
+  }
+
+  mat-icon {
+    color: var(--color-ink-400);
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--color-ink-900);
+    font: 400 var(--font-size-base) / 1.4 var(--font-base);
+  }
+}
+
+.nf__search-btn {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-700);
+  color: #fff;
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-primary-800);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-heritage-500);
+    outline-offset: 2px;
+  }
+}
+
+.nf__home {
+  margin-bottom: var(--space-8);
+}
+
+.nf__links-title {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-600);
+}
+
+.nf__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.nf__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-1);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink-700);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+
+  mat-icon {
+    color: var(--color-primary-600);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary-300);
+    color: var(--color-link);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+  }
+}
+
+:host-context([data-theme='dark']) {
+  .nf__code {
+    color: var(--color-primary-300);
+  }
+
+  .nf__link mat-icon,
+  .nf__link:hover {
+    color: var(--color-primary-300);
+  }
+}
+
+@media (max-width: 560px) {
+  .nf__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .nf {
+    min-height: calc(100vh - var(--header-height-mobile));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf__crest {
+    animation: none;
+  }
+}

@@ -1,0 +1,33 @@
+<main class="nf">
+  <div class="nf__inner">
+    <div class="nf__code" aria-hidden="true">
+      <span>4</span>
+      <img class="nf__crest" src="logo.png" alt="" width="132" height="132" />
+      <span>4</span>
+    </div>
+
+    <h1 class="nf__title">{{ 'notFound.title' | translate }}</h1>
+    <p class="nf__message">{{ 'notFound.message' | translate }}</p>
+
+    <form class="nf__search" role="search" (ngSubmit)="search()">
+      <mat-icon>search</mat-icon>
+      <input type="search" name="q" [(ngModel)]="query" [placeholder]="'notFound.searchPlaceholder' | translate"
+        [attr.aria-label]="'notFound.searchPlaceholder' | translate" />
+      <button type="submit" class="nf__search-btn">{{ 'notFound.searchButton' | translate }}</button>
+    </form>
+
+    <a class="pp-btn pp-btn--solid nf__home" [routerLink]="homePath">
+      <mat-icon>home</mat-icon> {{ 'notFound.goHome' | translate }}
+    </a>
+
+    <nav class="nf__links" [attr.aria-label]="'notFound.linksLabel' | translate">
+      <span class="nf__links-title">{{ 'notFound.linksLabel' | translate }}</span>
+      <div class="nf__grid">
+        <a class="nf__link" *ngFor="let l of links" [routerLink]="l.path">
+          <mat-icon>{{ l.icon }}</mat-icon>
+          <span>{{ l.labelKey | translate }}</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</main>

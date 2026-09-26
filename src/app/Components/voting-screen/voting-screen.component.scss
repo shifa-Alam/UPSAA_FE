@@ -1,4 +1,7 @@
 /* ================= ROOT ================= */
+
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 .voting-root {
   min-height: 100vh;
   padding: var(--space-8);
@@ -63,7 +66,7 @@
 .select-info {
   font-size: var(--font-size-xs);
   background: var(--color-primary-50);
-  color: var(--color-primary-700);
+  color: var(--color-link);
   padding: var(--space-1) 10px;
   border-radius: var(--radius-pill);
 }
@@ -101,7 +104,7 @@
 }
 
 .candidate-card.selected .cand-name {
-  color: var(--color-primary-700);
+  color: var(--color-link);
 }
 
 .vote-seal {
@@ -205,40 +208,7 @@
   justify-content: space-between;
   align-items: center;
   margin-top: var(--space-3);
-}
-
-.btn-clear {
-  background: var(--color-surface);
-  color: var(--color-danger);
-  border: 1px solid var(--color-danger);
-  padding: 7px var(--space-5);
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-/* Hover Effect */
-.btn-clear:hover:not(:disabled) {
-  background: var(--color-danger);
-  color: #fff;
-}
-
-/* Active Click */
-.btn-clear:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-/* Disabled */
-.btn-clear:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.position-status {
+}.position-status {
   font-size: var(--font-size-sm);
   color: var(--color-ink-600);
   font-weight: 600;
@@ -272,32 +242,7 @@
   margin-bottom: var(--space-2);
   font-size: var(--font-size-sm);
   color: var(--color-ink-700);
-}
-
-/* ================= SUBMIT BUTTON ================= */
-.btn-submit {
-  width: 100%;
-  background: var(--gradient-accent);
-  color: white;
-  padding: var(--space-3);
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  border: none;
-  transition: all var(--transition-base);
-  font-family: var(--font-base);
-}
-
-.btn-submit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* ================= MODAL ================= */
+}/* ================= MODAL ================= */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -331,42 +276,7 @@
   gap: var(--space-5);
   justify-content: center;
   margin-top: var(--space-6);
-}
-
-.submit-btn {
-  background: var(--color-success);
-  color: white;
-  border: none;
-  padding: 10px var(--space-6);
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  font-family: var(--font-base);
-}
-
-.submit-btn:hover {
-  background: #218838;
-  transform: translateY(-2px);
-}
-
-.cancel-btn {
-  background: var(--color-ink-100);
-  color: var(--color-ink-700);
-  border: 1px solid var(--color-ink-200);
-  padding: 10px var(--space-6);
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition-base);
-  font-family: var(--font-base);
-}
-
-.cancel-btn:hover {
-  background: var(--color-ink-200);
-}
-
-button:disabled {
+}button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -507,4 +417,11 @@ button:disabled {
 app-skeleton.page-skeleton {
   padding: var(--space-6);
   max-width: 1200px;
+}
+
+// Buttons come from the shared admin kit; only their size here.
+.btn-submit {
+  width: 100%;
+  min-height: 48px;
+  font-size: var(--font-size-md);
 }

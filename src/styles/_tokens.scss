@@ -97,6 +97,12 @@
   --header-height: 50px;
   --header-height-mobile: 48px;
   --bottom-nav-height: 60px; // phone tab bar (plus env(safe-area-inset-bottom))
+
+  // ---- Text colours that must stay readable in both themes ----
+  // Brand blue/gold as *text*: the fills (primary-700, heritage-500) stay put for
+  // buttons, but text needs a darker gold on white and a lighter blue on dark.
+  --color-link: var(--color-primary-700);
+  --color-heritage-text: #8a6a22;
   --max-content-width: 1240px;
 
   // ---- Motion ----
@@ -141,6 +147,9 @@
 // =============================================================
 :root[data-theme='dark'] {
   color-scheme: dark;
+
+  --color-link: var(--color-primary-300);
+  --color-heritage-text: var(--color-heritage-500);
 
   --color-primary-50: #0d2647;
   --color-primary-100: #123563;

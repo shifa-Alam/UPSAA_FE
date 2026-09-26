@@ -45,6 +45,8 @@ export const pageTitlesI18n: I18nSection = {
       resetPassword: 'নতুন পাসওয়ার্ড',
       congratulations: 'নিবন্ধন সম্পন্ন',
       unauthorized: 'অনুমতি নেই',
+      notFound: 'পাতা পাওয়া যায়নি',
+      testimonialAdmin: 'অ্যালামনাইদের কথা',
     },
   },
   en: {
@@ -90,6 +92,8 @@ export const pageTitlesI18n: I18nSection = {
       resetPassword: 'Reset Password',
       congratulations: 'Registration Complete',
       unauthorized: 'Access Denied',
+      notFound: 'Page Not Found',
+      testimonialAdmin: 'Alumni Voices',
     },
   },
 };

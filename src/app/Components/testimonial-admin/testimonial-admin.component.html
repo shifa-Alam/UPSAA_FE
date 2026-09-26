@@ -1,0 +1,139 @@
+<div class="adm">
+
+  <app-admin-header [title]="'testimonialAdmin.title' | translate" [subtitle]="'testimonialAdmin.subtitle' | translate"></app-admin-header>
+
+  <!-- ===== Add form ===== -->
+  <app-section-card icon="format_quote" [title]="'testimonialAdmin.postCardTitle' | translate">
+    <form (ngSubmit)="submit()">
+      <div class="form-layout">
+        <div class="photo-pick" [class.photo-pick--filled]="previewUrl">
+          <input type="file" accept="image/*" (change)="onFileSelected($event, 'new')"
+            [attr.aria-label]="(previewUrl ? 'testimonialAdmin.replacePhoto' : 'testimonialAdmin.choosePhoto') | translate" />
+          <span class="photo-pick__empty" *ngIf="!previewUrl">
+            <mat-icon>add_a_photo</mat-icon>
+            <span>{{ 'testimonialAdmin.choosePhoto' | translate }}</span>
+          </span>
+          <ng-container *ngIf="previewUrl">
+            <img [src]="previewUrl" alt="" />
+            <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'testimonialAdmin.replacePhoto' | translate }}</span>
+          </ng-container>
+        </div>
+
+        <div class="form-grid">
+          <ng-container *ngTemplateOutlet="fields; context: { f: form, key: 'new' }"></ng-container>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--solid" [disabled]="posting">
+          <mat-icon>{{ posting ? 'hourglass_top' : 'add' }}</mat-icon>
+          {{ (posting ? 'testimonialAdmin.posting' : 'testimonialAdmin.postButton') | translate }}
+        </button>
+      </div>
+    </form>
+  </app-section-card>
+
+  <!-- ===== List ===== -->
+  <app-section-card icon="groups" [title]="'testimonialAdmin.listCardTitle' | translate" [noPadding]="true">
+
+    <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'testimonialAdmin.loading' | translate"></app-skeleton>
+
+    <app-empty-state *ngIf="!loading && items.length === 0" icon="format_quote" [title]="'testimonialAdmin.emptyTitle' | translate"
+      [message]="'testimonialAdmin.emptyMessage' | translate"></app-empty-state>
+
+    <ul class="records" *ngIf="!loading && items.length > 0">
+      <li class="record" *ngFor="let t of items" [class.record--editing]="editingId === t.id">
+
+        <!-- View mode -->
+        <ng-container *ngIf="editingId !== t.id">
+          <img *ngIf="t.photoUrl; else initials" [src]="t.photoUrl | sizedImage:400" [alt]="t.fullName" class="avatar" />
+          <ng-template #initials>
+            <div class="avatar avatar--initials" aria-hidden="true">{{ t.fullName.charAt(0) }}</div>
+          </ng-template>
+
+          <div class="record__body">
+            <span class="record__meta">
+              <span class="record__name">{{ t.fullName }}</span>
+              <span class="pill pill--gold" *ngIf="t.batch">{{ 'testimonialAdmin.batchPrefix' | translate }} {{ t.batch }}</span>
+              <span class="pill" [class.pill--success]="t.isPublished" [class.pill--neutral]="!t.isPublished">
+                {{ (t.isPublished ? 'testimonialAdmin.published' : 'testimonialAdmin.draft') | translate }}
+              </span>
+            </span>
+            <span class="record__meta" *ngIf="t.profession">{{ t.profession }}</span>
+            <p class="record__text quote">“{{ t.quote }}”</p>
+          </div>
+
+          <div class="record__actions">
+            <button type="button" class="icon-btn" (click)="startEdit(t)"
+              [attr.aria-label]="'testimonialAdmin.editAriaLabel' | translate" [attr.title]="'testimonialAdmin.editAriaLabel' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button type="button" class="icon-btn icon-btn--danger" [disabled]="deletingId === t.id" (click)="confirmDelete(t)"
+              [attr.aria-label]="'testimonialAdmin.deleteAriaLabel' | translate" [attr.title]="'testimonialAdmin.deleteAriaLabel' | translate">
+              <mat-icon>{{ deletingId === t.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+            </button>
+          </div>
+        </ng-container>
+
+        <!-- Edit mode -->
+        <div *ngIf="editingId === t.id">
+          <div class="form-layout">
+            <div class="photo-pick record__edit-photo" [class.photo-pick--filled]="editPreviewUrl || t.photoUrl">
+              <input type="file" accept="image/*" (change)="onFileSelected($event, 'edit')"
+                [attr.aria-label]="'testimonialAdmin.replacePhoto' | translate" />
+              <img [src]="editPreviewUrl || (t.photoUrl | sizedImage:400)" *ngIf="editPreviewUrl || t.photoUrl" [alt]="t.fullName" />
+              <span class="record__edit-initials" *ngIf="!(editPreviewUrl || t.photoUrl)" aria-hidden="true">{{ t.fullName.charAt(0) }}</span>
+              <span class="photo-pick__hint"><mat-icon>photo_camera</mat-icon>{{ 'testimonialAdmin.replacePhoto' | translate }}</span>
+            </div>
+
+            <div class="form-grid">
+              <ng-container *ngTemplateOutlet="fields; context: { f: editForm, key: 'edit' + t.id }"></ng-container>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn--outline" [disabled]="saving" (click)="cancelEdit()">
+              {{ 'testimonialAdmin.cancelButton' | translate }}
+            </button>
+            <button type="button" class="btn btn--solid" [disabled]="saving" (click)="submitEdit(t)">
+              <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
+              {{ 'testimonialAdmin.saveButton' | translate }}
+            </button>
+          </div>
+        </div>
+
+      </li>
+    </ul>
+  </app-section-card>
+
+</div>
+
+<!-- Shared by the add and edit forms. `key` keeps ids/names unique per form. -->
+<ng-template #fields let-f="f" let-key="key">
+  <div class="field">
+    <label class="field__label" [attr.for]="key + 'Name'">{{ 'testimonialAdmin.nameLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+    <input [id]="key + 'Name'" type="text" [placeholder]="'testimonialAdmin.namePlaceholder' | translate" [(ngModel)]="f.fullName" [name]="key + 'Name'" [ngModelOptions]="{ standalone: true }" />
+  </div>
+  <div class="field">
+    <label class="field__label" [attr.for]="key + 'Batch'">{{ 'testimonialAdmin.batchLabel' | translate }}</label>
+    <input [id]="key + 'Batch'" type="number" [placeholder]="'testimonialAdmin.batchPlaceholder' | translate" [(ngModel)]="f.batch" [ngModelOptions]="{ standalone: true }" />
+  </div>
+  <div class="field">
+    <label class="field__label" [attr.for]="key + 'Profession'">{{ 'testimonialAdmin.professionLabel' | translate }}</label>
+    <input [id]="key + 'Profession'" type="text" [placeholder]="'testimonialAdmin.professionPlaceholder' | translate" [(ngModel)]="f.profession" [ngModelOptions]="{ standalone: true }" />
+  </div>
+  <div class="field">
+    <label class="field__label" [attr.for]="key + 'Order'">{{ 'testimonialAdmin.orderLabel' | translate }}</label>
+    <input [id]="key + 'Order'" type="number" min="0" [(ngModel)]="f.sortOrder" [ngModelOptions]="{ standalone: true }" />
+    <span class="field__hint">{{ 'testimonialAdmin.orderHint' | translate }}</span>
+  </div>
+  <div class="field field--full">
+    <label class="field__label" [attr.for]="key + 'Quote'">{{ 'testimonialAdmin.quoteLabel' | translate }}<span class="field__req" aria-hidden="true">*</span></label>
+    <textarea [id]="key + 'Quote'" rows="4" [maxlength]="maxQuote" [placeholder]="'testimonialAdmin.quotePlaceholder' | translate" [(ngModel)]="f.quote" [ngModelOptions]="{ standalone: true }"></textarea>
+    <span class="field__hint">{{ f.quote.length }} / {{ maxQuote }}</span>
+  </div>
+  <label class="switch-field field--full">
+    <input type="checkbox" [(ngModel)]="f.isPublished" [ngModelOptions]="{ standalone: true }" />
+    <span>{{ 'testimonialAdmin.publishLabel' | translate }}</span>
+  </label>
+</ng-template>

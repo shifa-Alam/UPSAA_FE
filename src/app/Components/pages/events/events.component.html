@@ -28,7 +28,7 @@
         <app-empty-state *ngIf="!next" icon="event_upcoming" [title]="'events.noUpcoming.title' | translate"
           [message]="'events.noUpcoming.message' | translate"></app-empty-state>
 
-        <article class="feature" *ngIf="next">
+        <article class="feature" *ngIf="next" [attr.id]="'event-' + next.id" [class.is-target]="targetId === next.id">
           <div class="feature__media photo-tone">
             <img *ngIf="next.photoUrl; else featurePlaceholder" [src]="next.photoUrl | sizedImage:800" [attr.srcset]="next.photoUrl | sizedSrcset" sizes="(max-width: 900px) 100vw, 640px" [alt]="next.title" />
             <ng-template #featurePlaceholder>
@@ -57,6 +57,8 @@
 
             <p class="feature__desc" *ngIf="next.description">{{ next.description }}</p>
 
+            <app-countdown *ngIf="!isOngoing(next)" class="feature__countdown" [target]="next.eventDate"></app-countdown>
+
             <div class="feature__actions">
               <a *ngIf="next.registrationUrl" [href]="next.registrationUrl" target="_blank" rel="noopener"
                 class="pp-btn pp-btn--solid">
@@ -66,12 +68,13 @@
                 [queryParams]="{ event: next.id }">
                 <mat-icon>photo_library</mat-icon> {{ photosLabel(next) }}
               </a>
+              <app-share-menu kind="event" [itemId]="next.id" [title]="next.title" [calendar]="next"></app-share-menu>
             </div>
           </div>
         </article>
 
         <div class="upcoming" *ngIf="upcoming.length">
-          <article class="upcoming-card" *ngFor="let ev of upcoming">
+          <article class="upcoming-card" *ngFor="let ev of upcoming" [attr.id]="'event-' + ev.id" [class.is-target]="targetId === ev.id">
             <div class="upcoming-card__media photo-tone" *ngIf="ev.photoUrl">
               <img [src]="ev.photoUrl | sizedImage:800" [attr.srcset]="ev.photoUrl | sizedSrcset" sizes="(max-width: 768px) 100vw, 380px" [alt]="ev.title" loading="lazy" />
             </div>
@@ -94,6 +97,9 @@
               <a *ngIf="ev.galleryPhotoCount" class="pp-link" [routerLink]="['../gallery']" [queryParams]="{ event: ev.id }">
                 <mat-icon>photo_library</mat-icon>{{ photosLabel(ev) }}
               </a>
+              <div class="card-share">
+                <app-share-menu kind="event" look="link" [itemId]="ev.id" [title]="ev.title" [calendar]="ev"></app-share-menu>
+              </div>
             </div>
           </article>
         </div>
@@ -113,7 +119,7 @@
           <div class="archive__year" *ngFor="let group of pastByYear">
             <h3 class="archive__label">{{ formatYear(group.year) }}</h3>
             <div class="archive__grid">
-              <article class="past-card" *ngFor="let ev of group.events">
+              <article class="past-card" *ngFor="let ev of group.events" [attr.id]="'event-' + ev.id" [class.is-target]="targetId === ev.id">
                 <div class="past-card__media photo-tone">
                   <img *ngIf="ev.photoUrl; else pastPlaceholder" [src]="ev.photoUrl | sizedImage:400" [attr.srcset]="ev.photoUrl | sizedSrcset" sizes="(max-width: 768px) 50vw, 300px" [alt]="ev.title" loading="lazy" />
                   <ng-template #pastPlaceholder><div class="past-card__placeholder"><mat-icon>event</mat-icon></div></ng-template>

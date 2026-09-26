@@ -419,3 +419,32 @@
   justify-content: center;
   margin-top: var(--space-6);
 }
+
+// ---- Share / calendar / countdown ----
+.feature__countdown {
+  margin-top: var(--space-4);
+}
+
+.card-share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+// A card opened from a shared link (?id=) glows gold for a moment.
+.is-target {
+  scroll-margin-top: 96px;
+  animation: target-glow 2.4s ease-out 0.3s 1;
+}
+
+@keyframes target-glow {
+  0%, 40% { box-shadow: 0 0 0 3px var(--color-heritage-500), var(--shadow-lg); }
+  100% { box-shadow: var(--shadow-sm); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-target { animation: none; outline: 3px solid var(--color-heritage-500); }
+}

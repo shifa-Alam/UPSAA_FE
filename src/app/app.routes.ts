@@ -164,6 +164,10 @@ export const routes: Routes = [
         loadComponent: () => import('./Components/achievement-admin/achievement-admin.component').then(m => m.AchievementAdminComponent)
       },
       {
+        path: 'testimonials', title: 'pageTitles.testimonialAdmin',
+        loadComponent: () => import('./Components/testimonial-admin/testimonial-admin.component').then(m => m.TestimonialAdminComponent)
+      },
+      {
         path: 'teachers', title: 'pageTitles.teacherAdmin',
         loadComponent: () => import('./Components/teacher-admin/teacher-admin.component').then(m => m.TeacherAdminComponent)
       },
@@ -230,5 +234,8 @@ export const routes: Routes = [
     loadComponent: () => import('./Components/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
   },
 
-  { path: '**', redirectTo: '' }
+  {
+    path: '**', title: 'pageTitles.notFound',
+    loadComponent: () => import('./Components/pages/not-found/not-found.component').then(m => m.NotFoundComponent)
+  }
 ];

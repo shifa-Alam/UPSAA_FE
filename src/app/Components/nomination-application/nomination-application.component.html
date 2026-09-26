@@ -103,7 +103,7 @@
 
                 </div>
 
-                <button class="submit-btn" type="submit" [disabled]="nominationForm.invalid">
+                <button class="btn btn--solid submit-btn" type="submit" [disabled]="nominationForm.invalid">
                     {{ 'nomination.submitButton' | translate }}
                 </button>
 
@@ -146,7 +146,7 @@
 
     </div>
     <div class="popup-buttons">
-        <button class="btn-back" (click)="closePopup()">{{ 'nomination.backButton' | translate }}</button>
-        <button class="btn-download" (click)="downloadJPG()">{{ 'nomination.shareButton' | translate }}</button>
+        <button class="btn btn--outline btn-back" (click)="closePopup()">{{ 'nomination.backButton' | translate }}</button>
+        <button class="btn btn--solid btn-download" (click)="downloadJPG()">{{ 'nomination.shareButton' | translate }}</button>
     </div>
 </div>

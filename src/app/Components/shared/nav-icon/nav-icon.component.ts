@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 export type NavIconName =
   | 'layers' | 'calendar' | 'tag' | 'user-check' | 'clock' | 'users'
   | 'folder' | 'image' | 'megaphone' | 'dollar' | 'gift' | 'award' | 'graduation-cap'
-  | 'briefcase' | 'droplet' | 'book'
+  | 'briefcase' | 'droplet' | 'book' | 'quote'
   | 'collapse' | 'sun' | 'moon' | 'logout' | 'dashboard';
 
 @Component({

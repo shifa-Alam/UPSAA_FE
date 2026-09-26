@@ -101,6 +101,9 @@
     </button>
   </section>
 
+  <!-- ===== Digital member card (approved members) ===== -->
+  <app-member-card *ngIf="member.statusId === 'Approve'" [memberCode]="member.memberCode"></app-member-card>
+
   <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
 
   <!-- ===== Photo cropper ===== -->

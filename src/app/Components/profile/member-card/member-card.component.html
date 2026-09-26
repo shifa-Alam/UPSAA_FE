@@ -1,0 +1,25 @@
+<section class="mcard">
+  <div class="mcard__row">
+    <span class="mcard__icon" aria-hidden="true"><mat-icon>badge</mat-icon></span>
+    <div class="mcard__text">
+      <strong>{{ 'memberCard.title' | translate }}</strong>
+      <span>{{ 'memberCard.subtitle' | translate }}</span>
+    </div>
+    <div class="mcard__actions">
+      <button type="button" class="mcard__btn mcard__btn--ghost" (click)="toggle()" [disabled]="loading" [attr.aria-expanded]="shown">
+        <mat-icon>{{ shown ? 'visibility_off' : 'visibility' }}</mat-icon>
+        {{ (shown ? 'memberCard.hide' : 'memberCard.show') | translate }}
+      </button>
+      <button type="button" class="mcard__btn mcard__btn--gold" (click)="download()" [disabled]="loading">
+        <mat-icon>{{ loading ? 'hourglass_top' : 'download' }}</mat-icon>
+        {{ 'memberCard.download' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <p class="mcard__loading" role="status" *ngIf="loading">{{ 'memberCard.loading' | translate }}</p>
+
+  <div class="mcard__preview" *ngIf="shown && url">
+    <img [src]="url" [alt]="'memberCard.alt' | translate" width="1012" height="638" />
+  </div>
+</section>

@@ -29,6 +29,10 @@
         </div>
         <h2 class="notice-detail__title">{{ n.title }}</h2>
         <div class="notice-detail__content">{{ n.content }}</div>
+        <!-- Alumni-only notices stay inside the portal — no public share link. -->
+        <div class="notice-detail__share" *ngIf="!n.alumniOnly">
+          <app-share-menu kind="notice" [itemId]="n.id" [title]="n.title"></app-share-menu>
+        </div>
       </article>
 
       <ng-template #notFound>

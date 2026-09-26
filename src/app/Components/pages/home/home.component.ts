@@ -15,6 +15,7 @@ import { CountUpDirective } from '../../shared/count-up/count-up.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { backgroundWidth, imageAt, imageSrcset } from '../../../Utils/image-url';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
+import { AlumniVoicesComponent } from './alumni-voices/alumni-voices.component';
 
 /** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
  *  image; while null the hero crossfades through gallery photos — the ones an admin
@@ -44,7 +45,7 @@ interface HomeStat {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatIconModule, RouterLink, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [CommonModule, MatIconModule, RouterLink, AlumniVoicesComponent, EmptyStateComponent, RevealDirective, CountUpDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

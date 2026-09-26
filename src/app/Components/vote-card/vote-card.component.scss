@@ -1,4 +1,7 @@
 /* Container */
+
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 #success-view {
     display: flex;
     flex-direction: column;
@@ -22,7 +25,6 @@
     max-width: 420px;
     width: 100%;
 }
-
 
 /* Emoji */
 .emoji {
@@ -87,35 +89,8 @@
     max-width: 450px;
 }
 
+// Look comes from the shared kit (.btn); the two actions share the row equally.
 .action-btn {
     flex: 1;
-    padding: var(--space-3) var(--space-6);
-    border-radius: var(--radius-pill);
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    transition: all var(--transition-base), transform var(--transition-base);
-    font-family: var(--font-base);
-}
-
-.cancel-btn {
-    background: var(--color-ink-100);
-    color: var(--color-ink-700);
-    border: 1px solid var(--color-ink-200);
-}
-
-.cancel-btn:hover {
-    background: var(--color-ink-200);
-    transform: translateY(-2px);
-}
-
-.success-btn {
-    background: var(--gradient-accent);
-    color: #fff;
-}
-
-.success-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    min-height: 46px;
 }

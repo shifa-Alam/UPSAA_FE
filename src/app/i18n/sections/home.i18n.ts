@@ -50,6 +50,14 @@ export const homeI18n: I18nSection = {
         batch: 'ব্যাচ',
         explore: 'অ্যালামনাই তালিকা দেখুন',
       },
+      voices: {
+        eyebrow: 'তাঁদের কথায়',
+        title: 'অ্যালামনাইদের কথা',
+        batch: 'ব্যাচ',
+        previous: 'আগেরটি',
+        next: 'পরেরটি',
+        goTo: 'দেখুন উক্তি',
+      },
       achievements: {
         eyebrow: 'সাফল্যের গল্প',
         title: 'অ্যালামনাই অর্জন',
@@ -116,6 +124,14 @@ export const homeI18n: I18nSection = {
         title: 'Our Alumni, Our Pride',
         batch: 'Batch',
         explore: 'Explore Alumni',
+      },
+      voices: {
+        eyebrow: 'In Their Words',
+        title: 'Alumni Voices',
+        batch: 'Batch',
+        previous: 'Previous',
+        next: 'Next',
+        goTo: 'Show quote',
       },
       achievements: {
         eyebrow: 'Success Stories',

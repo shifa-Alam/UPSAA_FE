@@ -1,4 +1,7 @@
 /* Header */
+
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
+
 .election-header {
   background: var(--gradient-hero);
   color: #fff;
@@ -45,7 +48,7 @@
 }
 
 .bkash-info__title {
-  color: var(--color-primary-700);
+  color: var(--color-link);
   font-size: var(--font-size-md);
 }
 
@@ -130,42 +133,7 @@
   background: var(--color-surface);
   box-shadow: 0 0 0 3px rgba(11, 94, 215, 0.12);
   outline: none;
-}
-
-/* Submit Button */
-.submit-btn {
-  background: var(--gradient-accent);
-  color: #fff;
-  padding: var(--space-4) var(--space-6);
-  border: none;
-  border-radius: var(--radius-pill);
-  width: 100%;
-  font-weight: 700;
-  font-size: var(--font-size-md);
-  cursor: pointer;
-  transition: all var(--transition-base), transform var(--transition-base);
-  letter-spacing: 0.3px;
-  box-shadow: var(--shadow-sm);
-  font-family: var(--font-base);
-}
-
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.submit-btn:active {
-  transform: translateY(-1px) scale(0.99);
-  box-shadow: var(--shadow-sm);
-}
-
-.submit-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Overlay & Popup */
+}/* Overlay & Popup */
 .overlay {
   position: fixed;
   inset: 0;
@@ -196,7 +164,7 @@
 }
 
 .post-line {
-  color: var(--color-primary-700);
+  color: var(--color-link);
   font-weight: bold;
   margin-bottom: var(--space-2);
 }
@@ -217,7 +185,7 @@
 
 .important-dates__title {
   font-size: var(--font-size-sm);
-  color: var(--color-primary-700);
+  color: var(--color-link);
 }
 
 .important-dates__list {
@@ -277,34 +245,7 @@
   gap: var(--space-5);
   justify-content: center;
   margin-top: var(--space-6);
-}
-
-.btn-back,
-.btn-download {
-  padding: var(--space-3) 22px;
-  border-radius: var(--radius-pill);
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all var(--transition-base);
-}
-
-.btn-back {
-  background: var(--color-ink-400);
-  color: #fff;
-}
-
-.btn-download {
-  background: var(--gradient-accent);
-  color: #fff;
-}
-
-.btn-download:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.required {
+}.required {
   color: var(--color-danger);
 }
 
@@ -362,4 +303,11 @@
   .instruction-section h3 {
     font-size: var(--font-size-md);
   }
+}
+
+// Buttons come from the shared admin kit; only their size here.
+.submit-btn {
+  width: 100%;
+  min-height: 48px;
+  font-size: var(--font-size-md);
 }

@@ -72,7 +72,7 @@
 .chip--active,
 .chip--active:hover {
   background: var(--color-primary-700);
-  border-color: var(--color-primary-700);
+  border-color: var(--color-link);
   color: #fff;
 }
 
@@ -369,7 +369,7 @@
 
     &:hover:not(:disabled) {
       background: var(--color-primary-700);
-      border-color: var(--color-primary-700);
+      border-color: var(--color-link);
       color: #fff;
     }
 

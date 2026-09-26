@@ -1,0 +1,39 @@
+<div class="share" [class.share--link]="look === 'link'">
+  <!-- Share -->
+  <button *ngIf="canNativeShare; else shareMenuTrigger" type="button" [class]="look === 'button' ? 'pp-btn pp-btn--outline' : 'share__link'"
+    (click)="nativeShare()">
+    <mat-icon>share</mat-icon> {{ 'share.share' | translate }}
+  </button>
+  <ng-template #shareMenuTrigger>
+    <button type="button" [class]="look === 'button' ? 'pp-btn pp-btn--outline' : 'share__link'" [matMenuTriggerFor]="shareMenu">
+      <mat-icon>share</mat-icon> {{ 'share.share' | translate }}
+    </button>
+  </ng-template>
+
+  <mat-menu #shareMenu="matMenu">
+    <button mat-menu-item type="button" (click)="facebook()">
+      <span class="share__brand share__brand--fb" aria-hidden="true">f</span>{{ 'share.facebook' | translate }}
+    </button>
+    <button mat-menu-item type="button" (click)="whatsapp()">
+      <mat-icon>chat</mat-icon>{{ 'share.whatsapp' | translate }}
+    </button>
+    <button mat-menu-item type="button" (click)="copyLink()">
+      <mat-icon>link</mat-icon>{{ 'share.copyLink' | translate }}
+    </button>
+  </mat-menu>
+
+  <!-- Add to calendar (events only) -->
+  <ng-container *ngIf="calendar">
+    <button type="button" [class]="look === 'button' ? 'pp-btn pp-btn--outline' : 'share__link'" [matMenuTriggerFor]="calMenu">
+      <mat-icon>calendar_add_on</mat-icon> {{ 'share.addToCalendar' | translate }}
+    </button>
+    <mat-menu #calMenu="matMenu">
+      <button mat-menu-item type="button" (click)="googleCalendar()">
+        <mat-icon>event</mat-icon>{{ 'share.googleCalendar' | translate }}
+      </button>
+      <button mat-menu-item type="button" (click)="ics()">
+        <mat-icon>download</mat-icon>{{ 'share.icsFile' | translate }}
+      </button>
+    </mat-menu>
+  </ng-container>
+</div>

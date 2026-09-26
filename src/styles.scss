@@ -601,3 +601,18 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* =========================================================
+   Keyboard focus: every interactive element shows where focus is.
+   :where() keeps this at zero specificity, so a component's own
+   focus style (box-shadow ring, underline…) still wins.
+   ========================================================= */
+:where(a, button, [role='button'], [tabindex]:not([tabindex='-1']), summary, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+// On the navy header, sidebar and footer the blue ring would vanish — use gold there.
+:where(.app-toolbar, .sidebar, .site-footer, .bottom-nav, .hero, .flyout) :where(a, button, [tabindex]):focus-visible {
+  outline-color: var(--color-heritage-500);
+}

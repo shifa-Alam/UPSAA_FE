@@ -205,7 +205,7 @@
   margin-top: var(--space-1);
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary-700);
+  color: var(--color-link);
   transition: gap var(--transition-fast);
 
   mat-icon {
@@ -271,7 +271,7 @@
 
   a {
     font-weight: 600;
-    color: var(--color-primary-700);
+    color: var(--color-link);
   }
 }
 
@@ -283,7 +283,7 @@
   margin: var(--space-5) 0 var(--space-4);
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--color-primary-700);
+  color: var(--color-link);
   text-decoration: none;
 
   mat-icon {
@@ -393,4 +393,13 @@
   .notice-card:hover {
     transform: none;
   }
+}
+
+.notice-detail__share {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-ink-200);
 }

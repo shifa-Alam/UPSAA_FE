@@ -11,6 +11,7 @@ import { LanguageService } from '../../../Services/language.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
+import { ShareMenuComponent } from '../../shared/share-menu/share-menu.component';
 
 const PAGE_SIZE = 10;
 const NEW_WITHIN_DAYS = 7;
@@ -24,7 +25,7 @@ import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-notices',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
+  imports: [SkeletonComponent, ShareMenuComponent, CommonModule, FormsModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './notices.component.html',
   styleUrl: './notices.component.scss'
 })

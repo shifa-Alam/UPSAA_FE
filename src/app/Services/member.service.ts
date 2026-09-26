@@ -269,6 +269,11 @@ export class MemberService {
     return this.http.get<PublicMemberProfile>(`${this.apiUrl}/PublicProfile/${id}`);
   }
 
+  /** The signed-in member's digital member card (PNG) — approved members only. */
+  getMyCard(): Observable<Blob> {
+    return this.http.get(`${environment.baseUrl}/MemberCard/mine`, { responseType: 'blob' });
+  }
+
   getProfile(): Observable<Member> {
     const token = this.auth.getToken();
     if (!this.profile$ || this.profileToken !== token) {

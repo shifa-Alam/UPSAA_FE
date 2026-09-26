@@ -72,6 +72,7 @@ export class DashboardComponent {
         { labelKey: 'dashboard.itemNotices', route: '/dashboard/notices', icon: 'megaphone' },
         { labelKey: 'dashboard.itemBirthdayAutomation', route: '/dashboard/birthday-automation', icon: 'gift' },
         { labelKey: 'dashboard.itemAchievements', route: '/dashboard/achievements', icon: 'award' },
+        { labelKey: 'dashboard.itemTestimonials', route: '/dashboard/testimonials', icon: 'quote' },
         { labelKey: 'dashboard.itemTeachers', route: '/dashboard/teachers', icon: 'graduation-cap' },
         { labelKey: 'dashboard.itemEvents', route: '/dashboard/events', icon: 'calendar' }
       ]

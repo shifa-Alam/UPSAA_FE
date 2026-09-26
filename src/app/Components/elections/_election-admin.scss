@@ -69,7 +69,7 @@
 
 :host-context([data-theme='dark']) .btn--outline {
   color: var(--color-primary-300);
-  border-color: var(--color-primary-700);
+  border-color: var(--color-link);
 }:host-context([data-theme='dark']) .icon-btn:not(.icon-btn--danger):hover {
   color: var(--color-primary-300);
 }
@@ -311,7 +311,7 @@
 
   &.active {
     background: var(--color-primary-700);
-    border-color: var(--color-primary-700);
+    border-color: var(--color-link);
     color: #fff;
   }
 }

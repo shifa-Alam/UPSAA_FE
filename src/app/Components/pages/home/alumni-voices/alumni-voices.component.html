@@ -1,0 +1,41 @@
+<section class="pp-section voices" *ngIf="items.length" [attr.aria-label]="'home.voices.title' | translate">
+  <div class="upsaa-container" appReveal>
+    <header class="pp-section__head">
+      <span class="pp-section__eyebrow">{{ 'home.voices.eyebrow' | translate }}</span>
+      <h2 class="pp-section__title">{{ 'home.voices.title' | translate }}</h2>
+      <span class="pp-section__rule"></span>
+    </header>
+
+    <div class="voices__frame" (mouseenter)="pause(true)" (mouseleave)="pause(false)"
+      (focusin)="pause(true)" (focusout)="pause(false)">
+      <div class="voices__track" #track (scroll)="onScroll()" tabindex="0" role="region"
+        [attr.aria-label]="'home.voices.title' | translate">
+        <figure class="voice" *ngFor="let t of items; let i = index">
+          <mat-icon class="voice__mark" aria-hidden="true">format_quote</mat-icon>
+          <blockquote class="voice__quote">{{ t.quote }}</blockquote>
+          <figcaption class="voice__who">
+            <img *ngIf="t.photoUrl; else voiceInitials" class="voice__avatar" [src]="t.photoUrl | sizedImage:400" [alt]="t.fullName" loading="lazy" />
+            <ng-template #voiceInitials><span class="voice__avatar voice__avatar--initials" aria-hidden="true">{{ initials(t.fullName) }}</span></ng-template>
+            <span class="voice__id">
+              <span class="voice__name">{{ t.fullName }}</span>
+              <span class="voice__meta" *ngIf="meta(t)">{{ meta(t) }}</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="voices__nav" *ngIf="items.length > 1">
+        <button type="button" class="voices__arrow" (click)="go(active - 1)" [attr.aria-label]="'home.voices.previous' | translate">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="voices__dots">
+          <button type="button" *ngFor="let t of items; let i = index" class="voices__dot" [class.is-active]="i === active"
+            (click)="go(i)" [attr.aria-label]="('home.voices.goTo' | translate) + ' ' + (i + 1)" [attr.aria-current]="i === active ? 'true' : null"></button>
+        </div>
+        <button type="button" class="voices__arrow" (click)="go(active + 1)" [attr.aria-label]="'home.voices.next' | translate">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

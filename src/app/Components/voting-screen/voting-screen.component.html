@@ -72,7 +72,7 @@
         </div>
 
         <div class="position-footer">
-          <button type="button" class="btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">{{ 'votingScreen.clearButton' | translate }}</button>
+          <button type="button" class="btn btn--danger-outline btn--sm btn-clear" (click)="clearPosition(pos)" [disabled]="hasVoted">{{ 'votingScreen.clearButton' | translate }}</button>
           <div class="position-status"> {{ selectedCount(pos.id) === 0
             ? ('votingScreen.noneSelected' | translate)
             : toBanglaNumber(selectedCount(pos.id)) + ' ' + ('votingScreen.selectedCountSuffix' | translate) }}</div>
@@ -93,7 +93,7 @@
       </ul>
 
       <div class="submit-area">
-        <button class="btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">{{ 'votingScreen.submitVoteButton' | translate }}</button>
+        <button class="btn btn--solid btn-submit" (click)="confirmSubmit()" [disabled]="hasVoted || submitting || !hasSelections()">{{ 'votingScreen.submitVoteButton' | translate }}</button>
 
         <div *ngIf="submitting">{{ 'votingScreen.submitting' | translate }}</div>
       </div>
@@ -117,8 +117,8 @@
       </ul> -->
 
       <div class="modal-actions">
-        <button class="submit-btn" (click)="submitVote()" [disabled]="submitting">{{ 'votingScreen.confirmYes' | translate }}</button>
-        <button class="cancel-btn" (click)="showConfirm=false" [disabled]="submitting">{{ 'votingScreen.backButton' | translate }}</button>
+        <button class="btn btn--success submit-btn" (click)="submitVote()" [disabled]="submitting">{{ 'votingScreen.confirmYes' | translate }}</button>
+        <button class="btn btn--outline cancel-btn" (click)="showConfirm=false" [disabled]="submitting">{{ 'votingScreen.backButton' | translate }}</button>
       </div>
     </div>
   </div>

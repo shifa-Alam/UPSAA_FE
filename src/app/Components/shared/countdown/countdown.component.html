@@ -1,0 +1,9 @@
+<div class="countdown" *ngIf="!done" role="timer" [attr.aria-label]="'countdown.label' | translate">
+  <span class="countdown__title">{{ 'countdown.startsIn' | translate }}</span>
+  <div class="countdown__parts">
+    <div class="countdown__part" *ngFor="let p of parts">
+      <span class="countdown__value">{{ p.value }}</span>
+      <span class="countdown__label">{{ p.labelKey | translate }}</span>
+    </div>
+  </div>
+</div>

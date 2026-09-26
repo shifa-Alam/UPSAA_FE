@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
 import { EventService, EventItem } from '../../../Services/event.service';
 import { LanguageService } from '../../../Services/language.service';
@@ -10,6 +11,8 @@ import { EmptyStateComponent } from '../../shared/empty-state/empty-state.compon
 import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
+import { ShareMenuComponent } from '../../shared/share-menu/share-menu.component';
+import { CountdownComponent } from '../../shared/countdown/countdown.component';
 
 /** Past events per request — the archive grows, so older ones come with "show more". */
 const PAST_PAGE_SIZE = 12;
@@ -25,7 +28,7 @@ import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [SkeletonComponent, ShareMenuComponent, CountdownComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
 })
@@ -42,9 +45,21 @@ export class EventsComponent implements OnInit {
   loading = true;
   loadError = false;
 
+  /** ?id= from a shared link — that event's card is scrolled to and highlighted. */
+  targetId: number | null = null;
+
+  private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
+
   constructor(private eventService: EventService, private languageService: LanguageService) { }
 
   ngOnInit(): void {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
+      const id = Number(params.get('id'));
+      this.targetId = Number.isInteger(id) && id > 0 ? id : null;
+      if (!this.loading) this.scrollToTarget();
+    });
+
     // The server splits upcoming/past (Bangladesh time) and sorts them.
     forkJoin({
       upcoming: this.eventService.getPage({ when: 'upcoming', take: UPCOMING_MAX }),
@@ -62,7 +77,18 @@ export class EventsComponent implements OnInit {
       this.next = res.upcoming.items[0] ?? null;
       this.upcoming = res.upcoming.items.slice(1);
       this.setPast(res.past.items, res.past.total);
+      this.scrollToTarget();
     });
+  }
+
+  /** Bring the shared event into view once its card is rendered. */
+  private scrollToTarget(): void {
+    if (this.targetId === null || typeof document === 'undefined') return;
+    const id = this.targetId;
+    setTimeout(() => {
+      const el = document.getElementById(`event-${id}`);
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
   }
 
   showMorePast(): void {

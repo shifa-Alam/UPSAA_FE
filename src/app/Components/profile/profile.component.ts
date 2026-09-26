@@ -35,10 +35,11 @@ import { LanguageService } from '../../Services/language.service';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { MemberCardComponent } from './member-card/member-card.component';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [SkeletonComponent, 
+  imports: [SkeletonComponent, MemberCardComponent, 
     RouterModule,// <-- Add here
     CommonModule,
     FormsModule,
