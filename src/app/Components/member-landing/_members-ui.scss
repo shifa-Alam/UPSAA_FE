@@ -1,184 +1,20 @@
 // Shared building blocks for the Members screens (member landing, member details /
-// edit / change-password dialogs, and the member profile). Same language as the
-// back-office welcome screen: quiet bordered cards, navy primary, a small
-// heritage-gold accent for "needs attention", refined tables and pills.
+// edit / change-password dialogs, and the member profile).
+// Buttons, icon buttons, pills and fields come from the admin kit so these screens
+// match every other back-office screen; this file adds only what's Members-specific.
 // Pulled in with `@use` so each component gets its own encapsulated copy.
 
-// ---------------------------- Buttons ----------------------------
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  min-height: 36px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  font: 600 var(--font-size-sm) / 1.2 var(--font-base);
-  white-space: nowrap;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background var(--transition-fast), border-color var(--transition-fast),
-    color var(--transition-fast), box-shadow var(--transition-fast);
+@import '../../../styles/admin-kit'; // shared buttons, icon buttons, pills, fields (styles/_admin-kit.scss)
 
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--color-primary-200);
-  }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
-}
-
-.btn--solid {
-  background: var(--color-primary-700);
-  border-color: var(--color-primary-700);
-  color: #fff;
-
-  &:hover:not(:disabled) {
-    background: var(--color-primary-800);
-    border-color: var(--color-primary-800);
-  }
-}
-
-.btn--outline {
-  background: var(--color-surface);
-  border-color: var(--color-ink-200);
-  color: var(--color-ink-700);
-
-  &:hover:not(:disabled) {
-    border-color: var(--color-primary-300);
-    color: var(--color-primary-700);
-    background: var(--color-primary-50);
-  }
-}
-
-.btn--ghost {
-  background: transparent;
-  color: var(--color-ink-600);
-
-  &:hover:not(:disabled) {
-    background: var(--color-ink-100);
-    color: var(--color-ink-900);
-  }
-}
-
-:host-context([data-theme='dark']) {
-  .btn--solid {
-    background: var(--color-primary-500);
-    border-color: var(--color-primary-500);
-
-    &:hover:not(:disabled) {
-      background: var(--color-primary-600);
-      border-color: var(--color-primary-600);
-    }
-  }
-
-  .btn--outline:hover:not(:disabled) {
-    color: var(--color-primary-300);
-  }
-
-  .btn:focus-visible {
-    box-shadow: 0 0 0 3px var(--color-primary-600);
-  }
-}
-
-// Round icon-only row action
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--color-ink-600);
-  cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-
-  &:hover {
-    background: var(--color-primary-50);
-    color: var(--color-primary-600);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--color-primary-200);
-  }
-}
-
-.icon-btn--danger:hover {
-  background: rgba(244, 67, 54, 0.1);
-  color: var(--color-danger);
-}
-
-:host-context([data-theme='dark']) .icon-btn:hover:not(.icon-btn--danger) {
-  color: var(--color-primary-300);
-}
-
-// ---------------------------- Pills ----------------------------
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  line-height: var(--line-height-normal);
-  white-space: nowrap;
-  background: var(--color-ink-100);
-  color: var(--color-ink-700);
-
-  &::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0.85;
-  }
-}
-
-.pill--success {
-  background: rgba(76, 175, 80, 0.14);
-  color: #2e7d32;
-}
-
+// Members' own pill names, kept as aliases of the kit's tints.
 .pill--attention {
-  background: var(--color-heritage-soft);
-  color: #8a6a1f;
-}
-
-.pill--danger {
-  background: rgba(244, 67, 54, 0.12);
-  color: #c62828;
+  background: var(--pill-heritage-bg);
+  color: var(--pill-heritage-fg);
 }
 
 .pill--muted {
-  background: var(--color-ink-100);
-  color: var(--color-ink-600);
-}
-
-:host-context([data-theme='dark']) {
-  .pill--success { color: #81c784; }
-  .pill--attention { color: var(--color-heritage-500); }
-  .pill--danger { color: #ef9a9a; }
+  background: var(--pill-neutral-bg);
+  color: var(--pill-neutral-fg);
 }
 
 // ---------------------------- Tables ----------------------------

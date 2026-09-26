@@ -12,4 +12,9 @@ export function installImageFadeIn(doc: Document): void {
   };
   doc.addEventListener('load', mark, true);
   doc.addEventListener('error', mark, true); // show the alt text / broken state rather than a blank box
+
+  // Server-rendered (or cached) photos may have finished before this listener existed.
+  doc.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach(img => {
+    if (img.complete) img.classList.add('is-loaded');
+  });
 }
