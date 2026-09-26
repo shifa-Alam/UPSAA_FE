@@ -26,6 +26,7 @@ const notices = () => import('./Components/pages/notices/notices.component').the
 const directory = () => import('./Components/pages/directory/directory.component').then(m => m.DirectoryComponent);
 const memberProfile = () => import('./Components/pages/member-profile/member-profile.component').then(m => m.MemberProfileComponent);
 const batches = () => import('./Components/pages/batches/batches.component').then(m => m.BatchesComponent);
+const batchPage = () => import('./Components/pages/batch-page/batch-page.component').then(m => m.BatchPageComponent);
 const achievements = () => import('./Components/pages/achievements/achievements.component').then(m => m.AchievementsComponent);
 const teachers = () => import('./Components/pages/teachers/teachers.component').then(m => m.TeachersComponent);
 const committee = () => import('./Components/pages/committee/committee.component').then(m => m.CommitteeComponent);
@@ -69,6 +70,7 @@ export const routes: Routes = [
       { path: 'members', loadComponent: directory, title: 'pageTitles.members' },
       { path: 'members/:id', loadComponent: memberProfile, title: 'pageTitles.members' },
       { path: 'batches', loadComponent: batches, title: 'pageTitles.batches' },
+      { path: 'batches/:year', loadComponent: batchPage, title: 'pageTitles.batches' },
       { path: 'events', loadComponent: events, title: 'pageTitles.events' },
       { path: 'notices', loadComponent: notices, title: 'pageTitles.notices' },
       { path: 'gallery', loadComponent: gallery, title: 'pageTitles.gallery' },
@@ -208,6 +210,7 @@ export const routes: Routes = [
   { path: 'members/:id', loadComponent: memberProfile, title: 'pageTitles.members', canActivate: [shellRedirectGuard] },
   // Public — batch year + active alumni count, linking into /members?batch=YYYY.
   { path: 'batches', loadComponent: batches, title: 'pageTitles.batches', canActivate: [shellRedirectGuard] },
+  { path: 'batches/:year', loadComponent: batchPage, title: 'pageTitles.batches', canActivate: [shellRedirectGuard] },
   { path: 'achievements', loadComponent: achievements, title: 'pageTitles.achievements', canActivate: [shellRedirectGuard] },
   { path: 'teachers', loadComponent: teachers, title: 'pageTitles.teachers', canActivate: [shellRedirectGuard] },
   { path: 'committee', loadComponent: committee, title: 'pageTitles.committee', canActivate: [shellRedirectGuard] },

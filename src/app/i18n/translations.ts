@@ -1,5 +1,6 @@
 import { Dict, Lang } from './i18n.types';
 import { navI18n } from './sections/nav.i18n';
+import { searchI18n } from './sections/search.i18n';
 import { footerI18n } from './sections/footer.i18n';
 import { homeI18n } from './sections/home.i18n';
 import { aboutI18n } from './sections/about.i18n';
@@ -99,6 +100,7 @@ const sections = [
   confirmDialogI18n,
   birthdayAutomationI18n,
   batchesI18n,
+  searchI18n,
   achievementAdminI18n,
   achievementsI18n,
   teacherAdminI18n,

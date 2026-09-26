@@ -25,6 +25,17 @@
   box-shadow: var(--shadow-lg);
 }
 
+// Inside the portal/dashboard the page header is the short, compact one — floating the
+// bar up over it would cover the subtitle, so there it sits below the header instead.
+:host-context(.shell-content) .tools {
+  margin-top: var(--space-5);
+}
+
+// On the batch page the bar sits in its own section, with nothing to float over.
+.directory-page--embedded .tools {
+  margin-top: 0;
+}
+
 .tools__field {
   position: relative;
   display: flex;

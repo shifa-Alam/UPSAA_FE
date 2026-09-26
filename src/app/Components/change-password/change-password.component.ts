@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogRef, MatDialogActions, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
+import { Component, Inject, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogActions, MatDialogContent, MatDialogModule, MatDialogTitle } from '@angular/material/dialog';
 import { AuthService } from '../../Services/auth.service';
 import { MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/form-field";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -38,8 +38,14 @@ export class ChangePasswordComponent {
     private router: Router,
     private authService: AuthService,
     public dialogRef: MatDialogRef<ChangePasswordComponent>,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    /** forced: first sign-in with a temporary password — no way out but a new password. */
+    @Optional() @Inject(MAT_DIALOG_DATA) public data: { forced?: boolean } | null
   ) { }
+
+  get forced(): boolean {
+    return !!this.data?.forced;
+  }
 
   changePassword() {
     this.passwordError = '';

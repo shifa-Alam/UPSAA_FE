@@ -9,7 +9,11 @@ interface LoginResponse {
   email: string;
   userName: string;
   role: string;
+  /** Signed in with an SMS'd / admin-set password — must pick a new one first. */
+  mustChangePassword?: boolean;
 }
+
+const MUST_CHANGE_KEY = 'mustChangePassword';
 
 interface JwtPayload {
   id: string;
@@ -40,6 +44,8 @@ export class AuthService {
       map(res => {
         if (typeof window !== 'undefined') {
           localStorage.setItem(this.tokenKey, res.token);
+          if (res.mustChangePassword) localStorage.setItem(MUST_CHANGE_KEY, '1');
+          else localStorage.removeItem(MUST_CHANGE_KEY);
         }
         const decoded = this.decodeToken(res.token);
         this.userSubject.next(decoded);
@@ -51,8 +57,18 @@ export class AuthService {
   logout() {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(this.tokenKey);
+      localStorage.removeItem(MUST_CHANGE_KEY);
     }
     this.userSubject.next(null);
+  }
+
+  /** The server said this account is still on a temporary password (see login()). */
+  mustChangePassword(): boolean {
+    try {
+      return typeof window !== 'undefined' && this.isLoggedIn() && localStorage.getItem(MUST_CHANGE_KEY) === '1';
+    } catch {
+      return false;
+    }
   }
 
   getToken(): string | null {

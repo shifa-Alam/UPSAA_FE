@@ -1,0 +1,58 @@
+<div class="batch-page">
+
+  <app-page-header variant="hero" [eyebrow]="'batches.page.eyebrow' | translate" [title]="title" [subtitle]="subtitle">
+    <a class="batch-page__back" [routerLink]="batchesLink">
+      <mat-icon>arrow_back</mat-icon> {{ 'batches.page.allBatches' | translate }}
+    </a>
+  </app-page-header>
+
+  <section class="pp-section" *ngIf="!loading && notFound">
+    <div class="upsaa-container">
+      <app-empty-state icon="school" [title]="'batches.page.notFoundTitle' | translate"
+        [message]="'batches.page.notFoundMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <ng-container *ngIf="!loading && !notFound && detail">
+
+    <!-- ===== Representatives — only when the batch has some ===== -->
+    <section class="pp-section" *ngIf="detail.representatives.length">
+      <div class="upsaa-container" appReveal>
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'batches.page.repsEyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'batches.page.repsTitle' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+
+        <div class="pp-people">
+          <a class="pp-person" *ngFor="let r of detail.representatives" [routerLink]="[profileBase, r.id]">
+            <div class="pp-person__photo">
+              <img *ngIf="r.photo; else repInitials" [src]="r.photo | sizedImage:400" [attr.srcset]="r.photo | sizedSrcset"
+                sizes="170px" [alt]="r.fullName" loading="lazy" />
+              <ng-template #repInitials><span class="pp-person__initials">{{ initials(r.fullName) }}</span></ng-template>
+            </div>
+            <span class="pp-person__name">{{ r.fullName }}</span>
+            <span class="pp-person__label">{{ 'batches.page.repsLabel' | translate }}</span>
+            <span class="pp-person__meta" *ngIf="r.currentDesignation">{{ r.currentDesignation }}</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Alumni of this batch — the directory, locked to the year ===== -->
+    <section class="pp-section batch-page__alumni">
+      <div class="upsaa-container">
+        <header class="pp-section__head">
+          <span class="pp-section__eyebrow">{{ 'batches.page.alumniEyebrow' | translate }}</span>
+          <h2 class="pp-section__title">{{ 'batches.page.alumniTitle' | translate }}</h2>
+          <span class="pp-section__rule"></span>
+        </header>
+      </div>
+      <!-- Keyed on the year so moving between batch pages starts a fresh list. -->
+      <ng-container *ngFor="let y of [year]">
+        <app-directory [batch]="y" [embedded]="true"></app-directory>
+      </ng-container>
+    </section>
+
+  </ng-container>
+</div>

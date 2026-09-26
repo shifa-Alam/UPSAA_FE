@@ -60,6 +60,7 @@
             <app-countdown *ngIf="!isOngoing(next)" class="feature__countdown" [target]="next.eventDate"></app-countdown>
 
             <div class="feature__actions">
+              <app-rsvp-button [event]="next"></app-rsvp-button>
               <a *ngIf="next.registrationUrl" [href]="next.registrationUrl" target="_blank" rel="noopener"
                 class="pp-btn pp-btn--solid">
                 {{ 'events.registerButton' | translate }} <mat-icon>open_in_new</mat-icon>
@@ -97,6 +98,7 @@
               <a *ngIf="ev.galleryPhotoCount" class="pp-link" [routerLink]="['../gallery']" [queryParams]="{ event: ev.id }">
                 <mat-icon>photo_library</mat-icon>{{ photosLabel(ev) }}
               </a>
+              <app-rsvp-button [event]="ev"></app-rsvp-button>
               <div class="card-share">
                 <app-share-menu kind="event" look="link" [itemId]="ev.id" [title]="ev.title" [calendar]="ev"></app-share-menu>
               </div>

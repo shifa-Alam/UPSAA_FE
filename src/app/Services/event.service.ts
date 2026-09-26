@@ -19,6 +19,10 @@ export interface EventItem {
   createdByName: string | null;
   /** Gallery photos linked to this event. */
   galleryPhotoCount: number;
+  /** Members who said "I'm going". */
+  goingCount?: number;
+  /** The signed-in member is going. */
+  iAmGoing?: boolean;
 }
 
 export interface EventSave {
@@ -45,9 +49,14 @@ export class EventService {
   }
 
   /** A page of the list plus the total count — for previews and "load more" lists. */
-  getPage(query: { skip?: number; take?: number; when?: 'upcoming' | 'past' }): Observable<ListPage<EventItem>> {
+  getPage(query: { skip?: number; take?: number; when?: 'upcoming' | 'past'; search?: string }): Observable<ListPage<EventItem>> {
     return this.http.get<EventItem[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
       .pipe(map(res => toListPage(res)));
+  }
+
+  /** Signed-in alumni: "I'm going" on/off. */
+  toggleRsvp(id: number): Observable<{ going: boolean; goingCount: number }> {
+    return this.http.post<{ going: boolean; goingCount: number }>(`${this.apiUrl}/${id}/Rsvp`, {});
   }
 
   /** SuperAdmin/Admin only. */

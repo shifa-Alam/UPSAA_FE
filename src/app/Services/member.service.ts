@@ -81,6 +81,13 @@ export interface PublicBatch {
   alumniCount: number;
 }
 
+/** One batch's page: its alumni count and representatives. */
+export interface PublicBatchDetail {
+  batch: number;
+  alumniCount: number;
+  representatives: PublicMember[];
+}
+
 export interface BloodDonor {
   id: number;
   fullName: string;
@@ -222,6 +229,10 @@ export class MemberService {
   /** Public — no login required. Batch year + active alumni count only. */
   getPublicBatchSummary(): Observable<PublicBatch[]> {
     return this.http.get<PublicBatch[]>(`${this.apiUrl}/PublicBatchSummary`);
+  }
+  /** Public — one batch's page. */
+  getPublicBatch(batch: number): Observable<PublicBatchDetail> {
+    return this.http.get<PublicBatchDetail>(`${this.apiUrl}/PublicBatch/${batch}`);
   }
   /** Alumni-only — requires login (any role). Phone comes back masked ("***") if the donor hid their contact info. */
   getBloodDonors(bloodGroup?: string, city?: string): Observable<BloodDonor[]> {

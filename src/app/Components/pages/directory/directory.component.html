@@ -1,6 +1,6 @@
-<div class="directory-page">
+<div class="directory-page" [class.directory-page--embedded]="embedded">
 
-  <app-page-header variant="plain" [eyebrow]="'directory.hero.eyebrow' | translate" [title]="'directory.hero.title' | translate"
+  <app-page-header *ngIf="!embedded" variant="plain" [eyebrow]="'directory.hero.eyebrow' | translate" [title]="'directory.hero.title' | translate"
     [subtitle]="'directory.hero.subtitle' | translate">
   </app-page-header>
 
@@ -22,7 +22,7 @@
           [(ngModel)]="filters.profession" (ngModelChange)="onFilterChange()" />
       </label>
 
-      <label class="tools__field">
+      <label class="tools__field" *ngIf="!batch">
         <mat-icon>school</mat-icon>
         <input type="text" name="batch" inputmode="numeric" [placeholder]="'directory.filters.batchPlaceholder' | translate"
           [attr.aria-label]="'directory.filters.batchPlaceholder' | translate"
@@ -75,8 +75,7 @@
 
         <!-- Kept on screen (dimmed) while a new filter loads, so the grid doesn't flash empty. -->
         <div class="members" [class.members--busy]="loading" [attr.aria-busy]="loading">
-          <!-- Relative link: /members/:id on the public site, /portal/members/:id in the portal. -->
-          <a class="member" *ngFor="let m of members" [routerLink]="[m.id]" (click)="shared.open(m)"
+          <a class="member" *ngFor="let m of members" [routerLink]="[profileBase, m.id]" (click)="shared.open(m)"
             [attr.aria-label]="m.fullName + ' — ' + ('memberProfile.viewProfile' | translate)">
             <div class="member__avatar" [style.view-transition-name]="shared.memberId() === m.id ? 'member-photo' : null">
               <img *ngIf="m.photo; else memberInitials" [src]="m.photo | sizedImage:400" [alt]="m.fullName" loading="lazy" />
@@ -113,7 +112,7 @@
   </div>
 
   <!-- ===== Closing invitation ===== -->
-  <section class="pp-join">
+  <section class="pp-join" *ngIf="!embedded">
     <div class="upsaa-container pp-join__inner" appReveal>
       <h2 class="pp-join__title">{{ 'directory.cta.title' | translate }}</h2>
       <p class="pp-join__body">{{ 'directory.cta.body' | translate }}</p>

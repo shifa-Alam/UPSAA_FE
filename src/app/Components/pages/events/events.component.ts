@@ -18,6 +18,8 @@ import { CountdownComponent } from '../../shared/countdown/countdown.component';
 const PAST_PAGE_SIZE = 12;
 /** Upcoming events are few; this is just the server's page cap. */
 const UPCOMING_MAX = 100;
+/** The <script type="application/ld+json"> this page adds to <head>. */
+const LD_ID = 'events-structured-data';
 
 interface PastYear {
   year: number;
@@ -25,10 +27,11 @@ interface PastYear {
 }
 
 import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
+import { RsvpButtonComponent } from '../../shared/rsvp-button/rsvp-button.component';
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [SkeletonComponent, ShareMenuComponent, CountdownComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [RsvpButtonComponent, SkeletonComponent, ShareMenuComponent, CountdownComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './events.component.html',
   styleUrl: './events.component.scss'
 })
@@ -78,7 +81,43 @@ export class EventsComponent implements OnInit {
       this.upcoming = res.upcoming.items.slice(1);
       this.setPast(res.past.items, res.past.total);
       this.scrollToTarget();
+      this.publishStructuredData();
     });
+
+    this.destroyRef.onDestroy(() => document.getElementById(LD_ID)?.remove());
+  }
+
+  /** schema.org Event data for the upcoming events, so search results can show date and place.
+   *  Event times are Bangladesh wall-clock, hence the fixed +06:00. */
+  private publishStructuredData(): void {
+    if (typeof document === 'undefined') return;
+    document.getElementById(LD_ID)?.remove();
+    const events = [this.next, ...this.upcoming].filter((e): e is EventItem => !!e);
+    if (!events.length) return;
+
+    const site = location.origin;
+    const iso = (d: string) => d.replace(/(\.\d+)?(Z|[+-]\d\d:\d\d)?$/, '') + '+06:00';
+    const data = events.map(e => ({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: e.title,
+      startDate: iso(e.eventDate),
+      ...(e.endDate ? { endDate: iso(e.endDate) } : {}),
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+      ...(e.description ? { description: e.description.slice(0, 300) } : {}),
+      image: e.photoUrl || `${site}/og-image.png`,
+      url: `${site}/events?id=${e.id}`,
+      ...(e.venue ? { location: { '@type': 'Place', name: e.venue, address: e.venue } } : {}),
+      organizer: { '@type': 'Organization', name: 'Uttaran Public School Alumni Association (UPSAA)', url: site },
+    }));
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = LD_ID;
+    // textContent can't break out of the script element.
+    script.textContent = JSON.stringify(data);
+    document.head.appendChild(script);
   }
 
   /** Bring the shared event into view once its card is rendered. */

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+# Signed-in areas: nothing useful for search engines.
+Disallow: /portal/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /forgot-password
+Disallow: /reset-password
+
+Sitemap: https://upsaa-fe.vercel.app/sitemap.xml

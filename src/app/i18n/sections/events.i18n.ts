@@ -3,6 +3,14 @@ import { I18nSection } from '../i18n.types';
 export const eventsI18n: I18nSection = {
   bn: {
     events: {
+      rsvp: {
+        join: 'আমি যাচ্ছি',
+        going: 'যাচ্ছি ✓',
+        signInToJoin: 'লগইন করে সাড়া দিন',
+        countSuffix: 'জন যাচ্ছেন',
+        saved: 'দারুণ! আগের দিন আপনাকে মনে করিয়ে দেওয়া হবে।',
+        failed: 'সাড়া দেওয়া যায়নি। আবার চেষ্টা করুন।',
+      },
       hero: {
         eyebrow: 'ইভেন্ট',
         title: 'মিলনমেলা ও আয়োজন',
@@ -38,6 +46,14 @@ export const eventsI18n: I18nSection = {
   },
   en: {
     events: {
+      rsvp: {
+        join: "I'm going",
+        going: 'Going ✓',
+        signInToJoin: 'Sign in to RSVP',
+        countSuffix: 'going',
+        saved: "Great! We'll remind you the day before.",
+        failed: "Couldn't save your RSVP. Please try again.",
+      },
       hero: {
         eyebrow: 'Events',
         title: 'Gatherings & Events',

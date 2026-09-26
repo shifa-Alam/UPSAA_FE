@@ -1,4 +1,4 @@
-import { ApplicationConfig, isDevMode, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, isDevMode, provideZoneChangeDetection } from '@angular/core';
 import { TitleStrategy, provideRouter, withPreloading, withViewTransitions } from '@angular/router';
 import { IdlePreloadStrategy } from './Utils/idle-preload.strategy';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -10,6 +10,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { authInterceptor } from './Services/auth.interceptor';
+import { ReportingErrorHandler, errorReportInterceptor } from './Services/error-reporter.service';
 import { AppTitleStrategy } from './Utils/app-title.strategy';
 
 
@@ -28,9 +29,11 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor]) // <-- Add interceptor here
+      withInterceptors([authInterceptor, errorReportInterceptor]) // <-- Add interceptor here
     ),
     provideNativeDateAdapter(),
+    // Errors on people's phones reach the server's error log (see ErrorReporterService).
+    { provide: ErrorHandler, useClass: ReportingErrorHandler },
     // Per-page, translated browser-tab titles (route `title` = pageTitles.* key).
     { provide: TitleStrategy, useClass: AppTitleStrategy },
     // Material's default 80vw cap leaves phone dialogs cramped.

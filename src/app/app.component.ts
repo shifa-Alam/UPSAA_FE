@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { FooterComponent } from "./Components/shared/footer/footer.component";
 import { MatButtonModule } from '@angular/material/button';
@@ -32,6 +32,8 @@ import { SheetGestureService } from './Services/sheet-gesture.service';
 import { PullToRefreshService } from './Services/pull-to-refresh.service';
 import { SmartHeaderDirective } from './Components/shared/smart-header/smart-header.directive';
 import { MatIconRegistry } from '@angular/material/icon';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ChangePasswordComponent } from './Components/change-password/change-password.component';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -100,6 +102,7 @@ export class AppComponent implements OnInit {
       .subscribe(e => {
         this.isDashboardRoute = this.isShellUrl(e.urlAfterRedirects);
         this.updateSectionActive(e.urlAfterRedirects);
+        this.requirePasswordChange();
       });
 
     if (this.authService.isLoggedIn()) {
@@ -113,6 +116,49 @@ export class AppComponent implements OnInit {
           this.userInitial = '?';
         }
       });
+    }
+  }
+
+  private passwordDialog?: MatDialogRef<ChangePasswordComponent>;
+
+  /** Still on a temporary (SMS'd or admin-set) password: the first thing is choosing a new one.
+   *  The dialog can't be dismissed; saving logs out, and the new password signs back in. */
+  private requirePasswordChange(): void {
+    if (this.passwordDialog || !this.authService.mustChangePassword()) return;
+    this.passwordDialog = this.dialog.open(ChangePasswordComponent, {
+      width: '440px',
+      disableClose: true,
+      data: { forced: true },
+    });
+    this.passwordDialog.afterClosed().subscribe(() => (this.passwordDialog = undefined));
+  }
+
+  private searchDialog?: MatDialogRef<unknown>;
+
+  /** Site-wide search — header button, Ctrl/⌘+K, or "/" outside a text field. */
+  async openSearch(): Promise<void> {
+    if (this.searchDialog || this.passwordDialog) return;
+    const { SiteSearchComponent } = await import('./Components/shared/site-search/site-search.component');
+    this.searchDialog = this.dialog.open(SiteSearchComponent, {
+      width: '620px',
+      maxWidth: '94vw',
+      position: { top: '10vh' },
+      autoFocus: false,
+      restoreFocus: true,
+    });
+    this.searchDialog.afterClosed().subscribe(() => (this.searchDialog = undefined));
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onSearchShortcut(e: KeyboardEvent): void {
+    const target = e.target as HTMLElement | null;
+    const typing = !!target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+    if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      this.openSearch();
+    } else if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      this.openSearch();
     }
   }
 
@@ -137,6 +183,7 @@ export class AppComponent implements OnInit {
     private sheets: SheetGestureService,
     private pullToRefresh: PullToRefreshService,
     iconRegistry: MatIconRegistry,
+    private dialog: MatDialog,
     private router: Router, private breakpointObserver: BreakpointObserver, @Inject(PLATFORM_ID) private platformId: any) {
     // Softer, rounded icons everywhere: every <mat-icon> uses the Symbols Rounded font.
     iconRegistry.setDefaultFontSetClass('material-symbols-rounded');

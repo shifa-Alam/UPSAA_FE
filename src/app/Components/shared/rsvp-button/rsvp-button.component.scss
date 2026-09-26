@@ -1,0 +1,82 @@
+:host {
+  display: inline-block;
+}
+
+.rsvp {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.rsvp__btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-primary-600);
+  background: transparent;
+  color: var(--color-link);
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--dur-quick) var(--ease-spring);
+
+  mat-icon {
+    font-size: 19px;
+    width: 19px;
+    height: 19px;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-50);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.96);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  // Going: filled, with a little pop when it switches on.
+  &.is-going {
+    background: var(--color-success);
+    border-color: var(--color-success);
+    color: #fff;
+
+    mat-icon {
+      animation: rsvp-pop var(--dur-slow) var(--ease-spring);
+    }
+  }
+}
+
+.rsvp__count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@keyframes rsvp-pop {
+  0% { transform: scale(0.4); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rsvp__btn.is-going mat-icon { animation: none; }
+}

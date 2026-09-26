@@ -1,0 +1,85 @@
+<div class="search" role="search">
+  <div class="search__bar">
+    <mat-icon class="search__icon">search</mat-icon>
+    <input #box type="search" class="search__input" [(ngModel)]="query" (ngModelChange)="onInput()"
+      (keydown.enter)="openFirst()" [placeholder]="'search.placeholder' | translate"
+      [attr.aria-label]="'search.placeholder' | translate" autocomplete="off" enterkeyhint="search" />
+    <span class="search__spinner" *ngIf="loading" aria-hidden="true"></span>
+    <button type="button" class="search__close" (click)="close()" [attr.aria-label]="'search.close' | translate">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="search__body" aria-live="polite">
+
+    <!-- Nothing typed yet: shortcuts -->
+    <div *ngIf="!results && !loading" class="search__quick">
+      <p class="search__hint">{{ 'search.hint' | translate }}</p>
+      <div class="search__chips">
+        <a class="search__chip" *ngFor="let l of quickLinks" [routerLink]="base + l.path" (click)="close()">
+          <mat-icon>{{ l.icon }}</mat-icon>{{ l.key | translate }}
+        </a>
+      </div>
+    </div>
+
+    <p *ngIf="results && !hasAny && !loading" class="search__empty">
+      <mat-icon>search_off</mat-icon>{{ 'search.noResults' | translate }}
+    </p>
+
+    <ng-container *ngIf="results && hasAny">
+
+      <a *ngIf="results.batch !== null" class="hit hit--batch" [routerLink]="[base + '/batches', results.batch]" (click)="close()">
+        <span class="hit__badge"><mat-icon>school</mat-icon></span>
+        <span class="hit__text">
+          <span class="hit__title">{{ 'search.batchPrefix' | translate }} {{ num(results.batch, true) }}</span>
+          <span class="hit__meta">{{ 'search.batchMeta' | translate }}</span>
+        </span>
+        <mat-icon class="hit__go">arrow_forward</mat-icon>
+      </a>
+
+      <section class="group" *ngIf="results.members.length">
+        <h3 class="group__title">{{ 'search.members' | translate }}</h3>
+        <a class="hit" *ngFor="let m of results.members" [routerLink]="[base + '/members', m.id]" (click)="close()">
+          <span class="hit__avatar">
+            <img *ngIf="m.photo; else ini" [src]="m.photo | sizedImage:200" alt="" loading="lazy" />
+            <ng-template #ini>{{ initials(m.fullName) }}</ng-template>
+          </span>
+          <span class="hit__text">
+            <span class="hit__title">{{ m.fullName }}</span>
+            <span class="hit__meta">
+              <ng-container *ngIf="m.batch">{{ 'search.batchPrefix' | translate }} {{ num(m.batch, true) }}</ng-container>
+              <ng-container *ngIf="m.currentDesignation"> · {{ m.currentDesignation }}</ng-container>
+            </span>
+          </span>
+        </a>
+        <a *ngIf="results.memberTotal > results.members.length" class="group__more"
+          [routerLink]="base + '/members'" [queryParams]="{ name: query.trim() }" (click)="close()">
+          {{ 'search.allMembers' | translate }} ({{ num(results.memberTotal) }}) <mat-icon>arrow_forward</mat-icon>
+        </a>
+      </section>
+
+      <section class="group" *ngIf="results.events.length">
+        <h3 class="group__title">{{ 'search.events' | translate }}</h3>
+        <a class="hit" *ngFor="let e of results.events" [routerLink]="base + '/events'" [queryParams]="{ id: e.id }" (click)="close()">
+          <span class="hit__badge"><mat-icon>event</mat-icon></span>
+          <span class="hit__text">
+            <span class="hit__title">{{ e.title }}</span>
+            <span class="hit__meta">{{ date(e.eventDate) }}<ng-container *ngIf="e.venue"> · {{ e.venue }}</ng-container></span>
+          </span>
+        </a>
+      </section>
+
+      <section class="group" *ngIf="results.notices.length">
+        <h3 class="group__title">{{ 'search.notices' | translate }}</h3>
+        <a class="hit" *ngFor="let n of results.notices" [routerLink]="base + '/notices'" [queryParams]="{ id: n.id }" (click)="close()">
+          <span class="hit__badge"><mat-icon>campaign</mat-icon></span>
+          <span class="hit__text">
+            <span class="hit__title">{{ n.title }}</span>
+            <span class="hit__meta">{{ date(n.publishedDate) }}</span>
+          </span>
+        </a>
+      </section>
+
+    </ng-container>
+  </div>
+</div>

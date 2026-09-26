@@ -64,7 +64,7 @@ export class BatchesComponent implements OnInit {
   }
 
   viewAlumni(batch: number): void {
-    this.router.navigate(['/members'], { queryParams: { batch } });
+    this.router.navigate([this.router.url.startsWith('/portal') ? '/portal/batches' : '/batches', batch]);
   }
 
   private buildDecades(): void {

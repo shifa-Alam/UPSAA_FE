@@ -161,7 +161,8 @@ content-area router-outlet {
   padding: 0 var(--space-5);
 }
 
-.theme-toggle-button {
+.theme-toggle-button,
+.search-button {
   color: var(--color-ink-600);
   margin: 0 var(--space-1);
 }
@@ -203,7 +204,8 @@ content-area router-outlet {
   }
 }
 
-.mobile-actions__theme {
+.mobile-actions__theme,
+.mobile-actions__search {
   color: var(--color-ink-600);
 }
 
@@ -457,7 +459,9 @@ content-area router-outlet {
   }
 
   .theme-toggle-button,
+  .search-button,
   .mobile-actions__theme,
+  .mobile-actions__search,
   .menu-button {
     color: rgba(255, 255, 255, 0.88);
   }

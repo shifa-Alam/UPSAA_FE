@@ -1,0 +1,35 @@
+// A batch's own page — hero with the year, representatives, then the locked directory.
+
+.batch-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+.batch-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+  min-height: 40px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.9;
+  text-decoration: none;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+}
+
+// The directory brings its own container and bottom padding.
+.batch-page__alumni {
+  padding-bottom: 0;
+}

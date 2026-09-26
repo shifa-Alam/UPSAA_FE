@@ -233,6 +233,10 @@
 
           <!-- Phone/tablet header actions: language, theme, then the menu -->
           <div class="mobile-actions">
+            <button mat-icon-button class="mobile-actions__search" (click)="openSearch()"
+              [attr.aria-label]="'search.open' | translate">
+              <mat-icon>search</mat-icon>
+            </button>
             <button type="button" class="mobile-actions__lang" (click)="languageService.toggle()"
               [attr.aria-label]="languageService.lang() === 'bn' ? ('nav.switchToEnglish' | translate) : ('nav.switchToBangla' | translate)">
               {{ languageService.lang() === 'bn' ? 'EN' : 'বাং' }}
@@ -304,6 +308,12 @@
             <a mat-button routerLink="/nomination" routerLinkActive="active-link"
               class="election-highlight">মনোনয়ন</a>
             -->
+
+            <!-- Site search (also Ctrl+K or "/") -->
+            <button mat-icon-button class="search-button" (click)="openSearch()"
+              [attr.aria-label]="'search.open' | translate">
+              <mat-icon>search</mat-icon>
+            </button>
 
             <!-- Language toggle -->
             <button mat-stroked-button class="lang-toggle-button" (click)="languageService.toggle()"

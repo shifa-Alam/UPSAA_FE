@@ -1,0 +1,13 @@
+<div class="rsvp">
+  <button *ngIf="auth.isLoggedIn(); else guest" type="button" class="rsvp__btn" [class.is-going]="event.iAmGoing"
+    [attr.aria-pressed]="!!event.iAmGoing" [disabled]="busy" (click)="toggle()">
+    <mat-icon>{{ event.iAmGoing ? 'check_circle' : 'how_to_reg' }}</mat-icon>
+    {{ (event.iAmGoing ? 'events.rsvp.going' : 'events.rsvp.join') | translate }}
+  </button>
+  <ng-template #guest>
+    <a class="rsvp__btn" routerLink="/login"><mat-icon>how_to_reg</mat-icon>{{ 'events.rsvp.signInToJoin' | translate }}</a>
+  </ng-template>
+  <span class="rsvp__count" *ngIf="count > 0">
+    <mat-icon>groups</mat-icon>{{ formatCount(count) }} {{ 'events.rsvp.countSuffix' | translate }}
+  </span>
+</div>

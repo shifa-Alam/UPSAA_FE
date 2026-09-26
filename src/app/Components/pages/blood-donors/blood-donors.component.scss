@@ -492,3 +492,9 @@
 :host-context(.shell-content) .tools {
   margin-top: var(--space-5);
 }
+
+// Inside the portal the compact page header is short — sit the filter bar below it
+// instead of floating it over the subtitle (the public page keeps the overlap).
+:host-context(.shell-content) .tools {
+  margin-top: var(--space-5);
+}

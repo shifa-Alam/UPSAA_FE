@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, of } from 'rxjs';
 import { catchError, debounceTime, switchMap } from 'rxjs/operators';
 import { MemberService, PublicMember, PublicMemberFilter } from '../../../Services/member.service';
@@ -27,6 +27,15 @@ import { SharedElementService } from '../../../Services/shared-element.service';
 export class DirectoryComponent implements OnInit, OnDestroy {
   /** The photo that flies into / back from the member's profile (view transition). */
   readonly shared = inject(SharedElementService);
+  private router = inject(Router);
+
+  /** Locks the list to one batch (the batch page) and hides the batch field. */
+  @Input() batch?: number;
+  /** Shown inside another page: no page header and no closing invitation. */
+  @Input() embedded = false;
+
+  /** Profile links: /portal/members/:id inside the portal, /members/:id on the public site. */
+  readonly profileBase = this.router.url.startsWith('/portal') ? '/portal/members' : '/members';
   members: PublicMember[] = [];
   loading = true;
   loadError = false;
@@ -55,7 +64,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Deep link from the Batch Directory page, e.g. /members?batch=2008.
-    const batchParam = this.route.snapshot.queryParamMap.get('batch');
+    const batchParam = this.batch ? String(this.batch) : this.route.snapshot.queryParamMap.get('batch');
     if (batchParam) {
       this.filters.batch = batchParam;
     }
@@ -119,7 +128,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
   }
 
   resetFilters(): void {
-    this.filters = { name: '', profession: '', bloodGroup: '', city: '', batch: '' };
+    this.filters = { name: '', profession: '', bloodGroup: '', city: '', batch: this.batch ? String(this.batch) : '' };
     this.onFilterChange();
   }
 
@@ -129,7 +138,7 @@ export class DirectoryComponent implements OnInit, OnDestroy {
 
   get hasFilters(): boolean {
     const f = this.filters;
-    return !!(f.name.trim() || f.profession.trim() || f.bloodGroup || f.city.trim() || f.batch.trim());
+    return !!(f.name.trim() || f.profession.trim() || f.bloodGroup || f.city.trim() || (!this.batch && f.batch.trim()));
   }
 
   /** Locale digits (Bangla numerals in bn); `plain` drops grouping for years. */

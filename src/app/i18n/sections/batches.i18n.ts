@@ -3,6 +3,19 @@ import { I18nSection } from '../i18n.types';
 export const batchesI18n: I18nSection = {
   bn: {
     batches: {
+      page: {
+        eyebrow: 'ব্যাচ পেজ',
+        titlePrefix: 'ব্যাচ',
+        countSuffix: 'জন নিবন্ধিত অ্যালামনাই',
+        repsEyebrow: 'যোগাযোগ',
+        repsTitle: 'ব্যাচ প্রতিনিধি',
+        repsLabel: 'প্রতিনিধি',
+        alumniEyebrow: 'সহপাঠীরা',
+        alumniTitle: 'এই ব্যাচের সদস্য',
+        allBatches: 'সকল ব্যাচ',
+        notFoundTitle: 'ব্যাচটি পাওয়া যায়নি',
+        notFoundMessage: 'এই সালের কোনো ব্যাচ নেই। সকল ব্যাচের তালিকা থেকে আবার দেখুন।',
+      },
       hero: {
         eyebrow: 'ব্যাচসমূহ',
         title: 'ব্যাচ ডিরেক্টরি',
@@ -41,6 +54,19 @@ export const batchesI18n: I18nSection = {
   },
   en: {
     batches: {
+      page: {
+        eyebrow: 'Batch Page',
+        titlePrefix: 'Batch',
+        countSuffix: 'registered alumni',
+        repsEyebrow: 'Get in Touch',
+        repsTitle: 'Batch Representatives',
+        repsLabel: 'Representative',
+        alumniEyebrow: 'Classmates',
+        alumniTitle: 'Alumni of This Batch',
+        allBatches: 'All Batches',
+        notFoundTitle: 'Batch not found',
+        notFoundMessage: 'There is no batch for this year. Please pick one from the batch list.',
+      },
       hero: {
         eyebrow: 'Batches',
         title: 'Batch Directory',

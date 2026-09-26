@@ -5,6 +5,7 @@
   "buildCommand": "npx ng build --configuration production",
   "outputDirectory": "dist/browser",
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "https://sbfqa.lucidtech.website/api/Sitemap" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
