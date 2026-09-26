@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
@@ -25,15 +25,20 @@ import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
   templateUrl: './birthday-automation.component.html',
   styleUrl: './birthday-automation.component.scss'
 })
-export class BirthdayAutomationComponent implements OnInit {
+export class BirthdayAutomationComponent implements OnInit, OnDestroy {
   settings: FacebookSettings | null = null;
   settingsLoading = true;
   saving = false;
 
   enabled = false;
+  emailEnabled = false;
   pageId = '';
   pageAccessToken = '';
   postTime = '09:00';
+
+  /** Card preview overlay. */
+  preview: { member: BirthdayMember; url: string | null } | null = null;
+  sendingEmailId: number | null = null;
 
   birthdays: BirthdayMember[] = [];
   birthdaysLoading = true;
@@ -66,7 +71,8 @@ export class BirthdayAutomationComponent implements OnInit {
       enabled: this.enabled,
       pageId: this.pageId.trim() || null,
       pageAccessToken: this.pageAccessToken.trim() || null,
-      postTime: this.postTime
+      postTime: this.postTime,
+      emailEnabled: this.emailEnabled
     }).pipe(
       catchError(() => {
         this.snackbar.showError(this.languageService.translate('birthdayAutomation.saveFailedError'));
@@ -94,10 +100,54 @@ export class BirthdayAutomationComponent implements OnInit {
       if (!result) return;
 
       this.snackbar.showSuccess(
-        this.languageService.translate('birthdayAutomation.runSuccess').replace('{count}', String(result.processed))
+        this.languageService.translate('birthdayAutomation.runSuccess')
+          .replace('{count}', String(result.processed))
+          .replace('{emailed}', String(result.emailed ?? 0))
       );
       this.loadBirthdays();
       this.loadLogs();
+    });
+  }
+
+  openPreview(member: BirthdayMember): void {
+    this.closePreview();
+    this.preview = { member, url: null };
+    this.birthdayPostService.getCard(member.memberId).pipe(catchError(() => of(null))).subscribe(blob => {
+      if (!this.preview || this.preview.member !== member) return;
+      if (!blob) {
+        this.snackbar.showError(this.languageService.translate('birthdayAutomation.cardFailedError'));
+        this.closePreview();
+        return;
+      }
+      this.preview.url = URL.createObjectURL(blob);
+    });
+  }
+
+  @HostListener('document:keydown.escape')
+  closePreview(): void {
+    if (this.preview?.url) URL.revokeObjectURL(this.preview.url);
+    this.preview = null;
+  }
+
+  ngOnDestroy(): void {
+    this.closePreview();
+  }
+
+  sendEmail(member: BirthdayMember): void {
+    if (this.sendingEmailId) return;
+    this.sendingEmailId = member.memberId;
+    this.birthdayPostService.sendEmail(member.memberId).subscribe({
+      next: res => {
+        this.sendingEmailId = null;
+        this.snackbar.showSuccess(this.languageService.translate(
+          res.result === 'AlreadySent' ? 'birthdayAutomation.emailAlreadySent' : 'birthdayAutomation.emailSent'));
+        this.loadBirthdays();
+      },
+      error: err => {
+        this.sendingEmailId = null;
+        this.snackbar.showError(err?.error?.message || this.languageService.translate('birthdayAutomation.emailFailedError'));
+        this.loadBirthdays();
+      }
     });
   }
 
@@ -119,6 +169,7 @@ export class BirthdayAutomationComponent implements OnInit {
 
       this.settings = settings;
       this.enabled = settings.enabled;
+      this.emailEnabled = settings.emailEnabled;
       this.pageId = settings.pageId ?? '';
       this.postTime = settings.postTime;
     });

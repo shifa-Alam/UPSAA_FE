@@ -56,6 +56,14 @@
     <app-section-card icon="settings" [title]="'birthdayAutomation.settingsCardTitle' | translate">
       <form class="settings-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
         <label class="switch-field">
+          <input type="checkbox" [(ngModel)]="emailEnabled" name="emailEnabled" />
+          <span>{{ 'birthdayAutomation.emailEnabledLabel' | translate }}</span>
+        </label>
+        <span class="field-hint field-hint--warn" *ngIf="settings && !settings.emailConfigured">
+          {{ 'birthdayAutomation.emailNotConfigured' | translate }}
+        </span>
+
+        <label class="switch-field">
           <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
           <span>{{ 'birthdayAutomation.enabledLabel' | translate }}</span>
         </label>
@@ -106,6 +114,8 @@
               <th>{{ 'birthdayAutomation.colName' | translate }}</th>
               <th class="num">{{ 'birthdayAutomation.colBatch' | translate }}</th>
               <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
+              <th>{{ 'birthdayAutomation.colEmail' | translate }}</th>
+              <th class="actions-col"><span class="sr-only">{{ 'birthdayAutomation.colActions' | translate }}</span></th>
             </tr>
           </thead>
           <tbody>
@@ -127,6 +137,31 @@
                   {{ member.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate)
                      : member.status === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
                      : ('birthdayAutomation.statusPending' | translate) }}
+                </span>
+              </td>
+              <td [attr.data-label]="'birthdayAutomation.colEmail' | translate">
+                <span class="status-pill" [attr.title]="member.emailError" [ngClass]="{
+                  'status-pill--success': member.emailStatus === 'Success',
+                  'status-pill--failed': member.emailStatus === 'Failed' || !member.hasEmail,
+                  'status-pill--pending': !member.emailStatus && member.hasEmail
+                }">
+                  {{ !member.hasEmail ? ('birthdayAutomation.emailNone' | translate)
+                     : member.emailStatus === 'Success' ? ('birthdayAutomation.emailStatusSent' | translate)
+                     : member.emailStatus === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
+                     : ('birthdayAutomation.statusPending' | translate) }}
+                </span>
+              </td>
+              <td class="rt-actions">
+                <span class="row-actions">
+                  <button type="button" class="icon-btn" (click)="openPreview(member)"
+                    [attr.aria-label]="'birthdayAutomation.previewCard' | translate" [title]="'birthdayAutomation.previewCard' | translate">
+                    <mat-icon>image</mat-icon>
+                  </button>
+                  <button type="button" class="icon-btn" (click)="sendEmail(member)"
+                    *ngIf="member.hasEmail && member.emailStatus !== 'Success'" [disabled]="sendingEmailId === member.memberId"
+                    [attr.aria-label]="'birthdayAutomation.sendEmailNow' | translate" [title]="'birthdayAutomation.sendEmailNow' | translate">
+                    <mat-icon>{{ sendingEmailId === member.memberId ? 'hourglass_top' : 'forward_to_inbox' }}</mat-icon>
+                  </button>
                 </span>
               </td>
             </tr>
@@ -174,5 +209,25 @@
       </table>
     </div>
   </app-section-card>
+
+  <!-- ===== Card preview ===== -->
+  <div class="card-preview" *ngIf="preview" role="dialog" aria-modal="true" [attr.aria-label]="'birthdayAutomation.previewCard' | translate"
+    (click)="closePreview()">
+    <div class="card-preview__box" (click)="$event.stopPropagation()">
+      <div class="card-preview__head">
+        <strong>{{ preview.member.fullName }}</strong>
+        <button type="button" class="icon-btn" (click)="closePreview()" [attr.aria-label]="'birthdayAutomation.close' | translate">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <div class="card-preview__image">
+        <img *ngIf="preview.url; else cardLoading" [src]="preview.url" [alt]="preview.member.fullName" />
+        <ng-template #cardLoading><div class="card-preview__loading"><mat-icon>autorenew</mat-icon></div></ng-template>
+      </div>
+      <a *ngIf="preview.url" class="btn btn--outline" [href]="preview.url" [download]="'UPSAA-birthday-' + preview.member.memberId + '.png'">
+        <mat-icon>download</mat-icon> {{ 'birthdayAutomation.downloadCard' | translate }}
+      </a>
+    </div>
+  </div>
 
 </div>
