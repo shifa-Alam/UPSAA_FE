@@ -12,6 +12,11 @@ export interface FacebookSettings {
   emailEnabled: boolean;
   /** False when the server's SMTP settings are incomplete — emails can't go out. */
   emailConfigured: boolean;
+  /** Wording in effect (saved, or the default). Placeholders: {name} {batch} {position} {card}. */
+  emailSubject: string;
+  emailBody: string;
+  defaultEmailSubject: string;
+  defaultEmailBody: string;
 }
 
 export interface FacebookSettingsUpdate {
@@ -20,6 +25,9 @@ export interface FacebookSettingsUpdate {
   pageAccessToken?: string | null;
   postTime: string;
   emailEnabled: boolean;
+  /** Blank or identical to the default = use the built-in wording. */
+  emailSubject: string;
+  emailBody: string;
 }
 
 export interface BirthdayMember {

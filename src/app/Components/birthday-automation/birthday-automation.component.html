@@ -56,14 +56,6 @@
     <app-section-card icon="settings" [title]="'birthdayAutomation.settingsCardTitle' | translate">
       <form class="settings-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
         <label class="switch-field">
-          <input type="checkbox" [(ngModel)]="emailEnabled" name="emailEnabled" />
-          <span>{{ 'birthdayAutomation.emailEnabledLabel' | translate }}</span>
-        </label>
-        <span class="field-hint field-hint--warn" *ngIf="settings && !settings.emailConfigured">
-          {{ 'birthdayAutomation.emailNotConfigured' | translate }}
-        </span>
-
-        <label class="switch-field">
           <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
           <span>{{ 'birthdayAutomation.enabledLabel' | translate }}</span>
         </label>
@@ -171,6 +163,69 @@
     </app-section-card>
 
   </div>
+
+  <!-- ===== Birthday email: on/off, subject and body ===== -->
+  <app-section-card icon="mail" [title]="'birthdayAutomation.emailCardTitle' | translate">
+    <form class="email-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
+      <div class="email-form__editor">
+        <label class="switch-field">
+          <input type="checkbox" [(ngModel)]="emailEnabled" name="emailEnabled" />
+          <span>{{ 'birthdayAutomation.emailEnabledLabel' | translate }}</span>
+        </label>
+        <span class="field-hint field-hint--warn" *ngIf="settings && !settings.emailConfigured">
+          {{ 'birthdayAutomation.emailNotConfigured' | translate }}
+        </span>
+
+        <div class="form-field">
+          <label for="emailSubject">{{ 'birthdayAutomation.emailSubjectLabel' | translate }}</label>
+          <input #subjectInput type="text" id="emailSubject" name="emailSubject" [(ngModel)]="emailSubject" [maxlength]="maxSubjectLength"
+            [placeholder]="settings?.defaultEmailSubject || ''" />
+          <div class="chips" role="group" [attr.aria-label]="'birthdayAutomation.insertPlaceholder' | translate">
+            <button type="button" class="chip" *ngFor="let p of placeholders.slice(0, 3)" (click)="insertPlaceholder(p.token, subjectInput, 'subject')"
+              [title]="p.labelKey | translate">{{ p.token }}</button>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="emailBody">{{ 'birthdayAutomation.emailBodyLabel' | translate }}</label>
+          <textarea #bodyInput id="emailBody" name="emailBody" rows="13" [(ngModel)]="emailBody" [maxlength]="maxBodyLength"></textarea>
+          <div class="chips" role="group" [attr.aria-label]="'birthdayAutomation.insertPlaceholder' | translate">
+            <button type="button" class="chip" *ngFor="let p of placeholders" (click)="insertPlaceholder(p.token, bodyInput, 'body')"
+              [title]="p.labelKey | translate">{{ p.token }}</button>
+          </div>
+          <span class="field-hint">{{ 'birthdayAutomation.emailBodyHint' | translate }}</span>
+        </div>
+
+        <div class="form-actions settings-form__actions">
+          <button type="button" class="btn btn--outline" (click)="resetEmailWording()" [disabled]="emailWordingIsDefault">
+            <mat-icon>restart_alt</mat-icon> {{ 'birthdayAutomation.resetWording' | translate }}
+          </button>
+          <button type="submit" class="btn btn--solid" [disabled]="saving">
+            <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+            {{ saving ? ('birthdayAutomation.saving' | translate) : ('birthdayAutomation.saveButton' | translate) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Live preview with a sample member -->
+      <aside class="email-preview" [attr.aria-label]="'birthdayAutomation.emailPreview' | translate">
+        <span class="email-preview__label">{{ 'birthdayAutomation.emailPreview' | translate }}</span>
+        <div class="email-preview__subject">
+          <span>{{ 'birthdayAutomation.emailSubjectLabel' | translate }}:</span> {{ previewSubject }}
+        </div>
+        <div class="email-preview__body">
+          <ng-container *ngFor="let block of previewBlocks">
+            <div class="email-preview__card" *ngIf="block.card">
+              <mat-icon>image</mat-icon> {{ 'birthdayAutomation.phCard' | translate }}
+            </div>
+            <p *ngIf="!block.card">{{ block.text }}</p>
+          </ng-container>
+        </div>
+      </aside>
+    </form>
+
+    <app-skeleton *ngIf="settingsLoading" variant="list" [count]="3" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
+  </app-section-card>
 
   <!-- ===== Post history ===== -->
   <app-section-card icon="history" [title]="'birthdayAutomation.logsCardTitle' | translate" [noPadding]="true">

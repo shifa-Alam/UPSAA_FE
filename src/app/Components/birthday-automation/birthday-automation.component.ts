@@ -36,6 +36,18 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
   pageAccessToken = '';
   postTime = '09:00';
 
+  // Birthday email wording (keep limits in sync with BirthdayEmailTemplate on the server).
+  emailSubject = '';
+  emailBody = '';
+  readonly maxSubjectLength = 300;
+  readonly maxBodyLength = 5000;
+  readonly placeholders = [
+    { token: '{name}', labelKey: 'birthdayAutomation.phName' },
+    { token: '{batch}', labelKey: 'birthdayAutomation.phBatch' },
+    { token: '{position}', labelKey: 'birthdayAutomation.phPosition' },
+    { token: '{card}', labelKey: 'birthdayAutomation.phCard' },
+  ];
+
   /** Card preview overlay. */
   preview: { member: BirthdayMember; url: string | null } | null = null;
   sendingEmailId: number | null = null;
@@ -65,6 +77,10 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       this.snackbar.showError(this.languageService.translate('birthdayAutomation.pageIdRequiredError'));
       return;
     }
+    if (this.emailSubject.length > this.maxSubjectLength || this.emailBody.length > this.maxBodyLength) {
+      this.snackbar.showError(this.languageService.translate('birthdayAutomation.emailTooLongError'));
+      return;
+    }
 
     this.saving = true;
     this.birthdayPostService.updateSettings({
@@ -72,20 +88,82 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       pageId: this.pageId.trim() || null,
       pageAccessToken: this.pageAccessToken.trim() || null,
       postTime: this.postTime,
-      emailEnabled: this.emailEnabled
+      emailEnabled: this.emailEnabled,
+      emailSubject: this.emailSubject,
+      emailBody: this.emailBody
     }).pipe(
-      catchError(() => {
-        this.snackbar.showError(this.languageService.translate('birthdayAutomation.saveFailedError'));
+      catchError(err => {
+        this.snackbar.showError(err?.error?.message || this.languageService.translate('birthdayAutomation.saveFailedError'));
         return of(null);
       })
     ).subscribe(result => {
       this.saving = false;
       if (!result) return;
 
-      this.settings = result;
+      this.applySettings(result);
       this.pageAccessToken = '';
       this.snackbar.showSuccess(this.languageService.translate('birthdayAutomation.saveSuccess'));
     });
+  }
+
+  /** Insert a placeholder at the cursor of the subject input or body textarea. */
+  insertPlaceholder(token: string, field: HTMLInputElement | HTMLTextAreaElement, target: 'subject' | 'body'): void {
+    const value = target === 'subject' ? this.emailSubject : this.emailBody;
+    const start = field.selectionStart ?? value.length;
+    const end = field.selectionEnd ?? value.length;
+    const next = value.slice(0, start) + token + value.slice(end);
+    if (target === 'subject') this.emailSubject = next; else this.emailBody = next;
+    setTimeout(() => {
+      field.focus();
+      field.setSelectionRange(start + token.length, start + token.length);
+    });
+  }
+
+  resetEmailWording(): void {
+    if (!this.settings) return;
+    this.emailSubject = this.settings.defaultEmailSubject;
+    this.emailBody = this.settings.defaultEmailBody;
+  }
+
+  get emailWordingIsDefault(): boolean {
+    return !!this.settings
+      && this.emailSubject.trim() === this.settings.defaultEmailSubject
+      && this.emailBody.replace(/\r\n/g, '\n').trim() === this.settings.defaultEmailBody;
+  }
+
+  /** Sample member for the live preview — today's first birthday, or a stand-in. */
+  private get previewValues(): { name: string; batch: string; position: string } {
+    const m = this.birthdays[0];
+    return {
+      name: m?.fullName ?? this.languageService.translate('birthdayAutomation.sampleName'),
+      batch: String(m?.batch ?? 2012),
+      position: this.languageService.translate('birthdayAutomation.samplePosition')
+    };
+  }
+
+  private fill(text: string): string {
+    const v = this.previewValues;
+    return text.replace(/\{name\}/g, v.name).replace(/\{batch\}/g, v.batch).replace(/\{position\}/g, v.position);
+  }
+
+  get previewSubject(): string {
+    const subject = this.emailSubject.trim() || this.settings?.defaultEmailSubject || '';
+    return this.fill(subject).replace(/\{card\}/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  /** Body split into paragraphs; `card` marks where the photo card goes (end if not placed). */
+  get previewBlocks(): { card: boolean; text: string }[] {
+    let body = (this.emailBody.trim() || this.settings?.defaultEmailBody || '').replace(/\r\n/g, '\n');
+    if (!body.includes('{card}')) body += '\n\n{card}';
+    const blocks: { card: boolean; text: string }[] = [];
+    for (const paragraph of body.split(/\n\s*\n/)) {
+      const parts = paragraph.trim().split('{card}');
+      parts.forEach((part, i) => {
+        if (part.trim()) blocks.push({ card: false, text: this.fill(part.trim()) });
+        if (i < parts.length - 1) blocks.push({ card: true, text: '' });
+      });
+    }
+    return blocks;
   }
 
   runNow(): void {
@@ -167,12 +245,18 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       this.settingsLoading = false;
       if (!settings) return;
 
-      this.settings = settings;
-      this.enabled = settings.enabled;
-      this.emailEnabled = settings.emailEnabled;
-      this.pageId = settings.pageId ?? '';
-      this.postTime = settings.postTime;
+      this.applySettings(settings);
     });
+  }
+
+  private applySettings(settings: FacebookSettings): void {
+    this.settings = settings;
+    this.enabled = settings.enabled;
+    this.emailEnabled = settings.emailEnabled;
+    this.pageId = settings.pageId ?? '';
+    this.postTime = settings.postTime;
+    this.emailSubject = settings.emailSubject ?? settings.defaultEmailSubject ?? '';
+    this.emailBody = settings.emailBody ?? settings.defaultEmailBody ?? '';
   }
 
   private loadBirthdays(): void {
