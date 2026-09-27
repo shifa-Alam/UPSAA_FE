@@ -1,0 +1,184 @@
+<div class="checkin">
+
+  <a class="checkin__back" routerLink="/dashboard/events">
+    <mat-icon>arrow_back</mat-icon> {{ 'checkIn.back' | translate }}
+  </a>
+
+  <app-admin-header [title]="summary?.event?.title || ('checkIn.title' | translate)"
+    [subtitle]="summary ? date(summary.event.eventDate) + (summary.event.venue ? ' · ' + summary.event.venue : '') : ('checkIn.subtitle' | translate)">
+  </app-admin-header>
+
+  <app-skeleton *ngIf="loading && !summary" variant="list" [count]="3" [label]="'checkIn.loading' | translate"></app-skeleton>
+
+  <app-empty-state *ngIf="!loading && loadError" icon="event_busy" [title]="'checkIn.loadErrorTitle' | translate"
+    [message]="'checkIn.loadErrorMessage' | translate"></app-empty-state>
+
+  <ng-container *ngIf="summary">
+
+    <!-- ===== Tally ===== -->
+    <dl class="tally">
+      <div class="tally__item tally__item--main">
+        <dt>{{ 'checkIn.statArrived' | translate }}</dt>
+        <dd>{{ num(summary.checkedInCount) }}</dd>
+      </div>
+      <div class="tally__item">
+        <dt>{{ 'checkIn.statGoing' | translate }}</dt>
+        <dd>{{ num(summary.goingCount) }}</dd>
+      </div>
+      <div class="tally__item">
+        <dt>{{ 'checkIn.statWalkIns' | translate }}</dt>
+        <dd>{{ num(summary.walkInCount) }}</dd>
+      </div>
+    </dl>
+
+    <p class="closed" *ngIf="!summary.isOpen" role="status">
+      <mat-icon>lock_clock</mat-icon>{{ 'checkIn.closed' | translate }}
+    </p>
+
+    <div class="checkin__grid">
+
+      <!-- ===== Scanner + manual entry ===== -->
+      <app-section-card icon="qr_code_scanner" [title]="'checkIn.scanTitle' | translate" class="checkin__scan">
+
+        <div class="scanner" [class.scanner--on]="cameraOn">
+          <video #video *ngIf="cameraOn" class="scanner__video" playsinline muted aria-hidden="true"></video>
+          <div class="scanner__frame" *ngIf="cameraOn" aria-hidden="true"><span></span></div>
+
+          <div class="scanner__idle" *ngIf="!cameraOn">
+            <mat-icon>qr_code_scanner</mat-icon>
+            <p>{{ 'checkIn.scanHint' | translate }}</p>
+            <button type="button" class="btn btn--solid" [disabled]="cameraStarting || !summary.isOpen" (click)="startCamera()">
+              <mat-icon>{{ cameraStarting ? 'hourglass_top' : 'photo_camera' }}</mat-icon>
+              {{ 'checkIn.startCamera' | translate }}
+            </button>
+            <p class="scanner__error" *ngIf="cameraError" role="alert">{{ cameraError }}</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn--outline btn--sm scanner__stop" *ngIf="cameraOn" (click)="stopCamera()">
+          <mat-icon>videocam_off</mat-icon> {{ 'checkIn.stopCamera' | translate }}
+        </button>
+
+        <!-- Last result -->
+        <div class="result" *ngIf="outcome" [ngClass]="'result--' + outcome.kind" role="status" aria-live="assertive">
+          <ng-container *ngIf="outcome.result as r">
+            <span class="result__avatar">
+              <img *ngIf="r.member.photo; else resIni" [src]="r.member.photo | sizedImage:200" alt="" />
+              <ng-template #resIni>{{ initials(r.member.fullName) }}</ng-template>
+            </span>
+            <span class="result__text">
+              <span class="result__status">
+                <mat-icon>{{ outcome.kind === 'ok' ? 'check_circle' : 'info' }}</mat-icon>
+                {{ (outcome.kind === 'ok' ? 'checkIn.welcome' : 'checkIn.already') | translate }}
+                <ng-container *ngIf="outcome.kind === 'already'"> · {{ time(r.checkedInAt) }}</ng-container>
+              </span>
+              <span class="result__name">{{ r.member.fullName }}</span>
+              <span class="result__meta">
+                {{ 'checkIn.batch' | translate }} {{ num(r.member.batch, true) }}
+                <ng-container *ngIf="r.member.memberCode"> · {{ r.member.memberCode }}</ng-container>
+                <ng-container *ngIf="r.member.bloodGroup"> · {{ r.member.bloodGroup }}</ng-container>
+              </span>
+              <span class="pill" [ngClass]="r.rsvp ? 'pill--success' : 'pill--neutral'">
+                {{ (r.rsvp ? 'checkIn.rsvpYes' : 'checkIn.walkIn') | translate }}
+              </span>
+            </span>
+          </ng-container>
+          <ng-container *ngIf="outcome.kind === 'error'">
+            <mat-icon class="result__icon">error</mat-icon>
+            <span class="result__text"><span class="result__name result__name--error">{{ outcome.message }}</span></span>
+          </ng-container>
+        </div>
+
+        <!-- By hand -->
+        <form class="manual" (ngSubmit)="submitManual()">
+          <label class="field manual__field">
+            <span>{{ 'checkIn.codeLabel' | translate }}</span>
+            <input type="text" name="code" [(ngModel)]="manualCode" autocomplete="off" autocapitalize="characters"
+              [placeholder]="'checkIn.codePlaceholder' | translate" [disabled]="!summary.isOpen" />
+          </label>
+          <button type="submit" class="btn btn--solid" [disabled]="busy || !manualCode.trim() || !summary.isOpen">
+            <mat-icon>how_to_reg</mat-icon> {{ 'checkIn.checkInButton' | translate }}
+          </button>
+        </form>
+
+        <div class="byname">
+          <label class="field">
+            <span>{{ 'checkIn.nameLabel' | translate }}</span>
+            <input type="search" name="name" [(ngModel)]="nameQuery" (ngModelChange)="onNameInput()" autocomplete="off"
+              [placeholder]="'checkIn.namePlaceholder' | translate" [disabled]="!summary.isOpen" />
+          </label>
+          <ul class="people people--compact" *ngIf="nameResults.length">
+            <li class="person" *ngFor="let m of nameResults">
+              <span class="person__avatar">
+                <img *ngIf="m.photo; else nIni" [src]="m.photo | sizedImage:200" alt="" loading="lazy" />
+                <ng-template #nIni>{{ initials(m.fullName) }}</ng-template>
+              </span>
+              <span class="person__text">
+                <span class="person__name">{{ m.fullName }}</span>
+                <span class="person__meta">{{ 'checkIn.batch' | translate }} {{ num(m.batch, true) }}</span>
+              </span>
+              <button type="button" class="btn btn--outline btn--sm" [disabled]="busy" (click)="checkInMember(m)">
+                {{ 'checkIn.checkInButton' | translate }}
+              </button>
+            </li>
+          </ul>
+        </div>
+      </app-section-card>
+
+      <!-- ===== Lists ===== -->
+      <app-section-card icon="groups" [title]="'checkIn.listTitle' | translate" [noPadding]="true" class="checkin__lists">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" class="tabs__tab" [class.is-active]="tab === 'arrived'" [attr.aria-selected]="tab === 'arrived'"
+            (click)="tab = 'arrived'">
+            {{ 'checkIn.tabArrived' | translate }} <span class="tabs__count">{{ num(summary.attendees.length) }}</span>
+          </button>
+          <button type="button" role="tab" class="tabs__tab" [class.is-active]="tab === 'notYet'" [attr.aria-selected]="tab === 'notYet'"
+            (click)="tab = 'notYet'">
+            {{ 'checkIn.tabNotYet' | translate }} <span class="tabs__count">{{ num(summary.notYet.length) }}</span>
+          </button>
+        </div>
+
+        <ng-container *ngIf="tab === 'arrived'">
+          <app-empty-state *ngIf="summary.attendees.length === 0" icon="qr_code_scanner" [title]="'checkIn.noneYetTitle' | translate"
+            [message]="'checkIn.noneYetMessage' | translate"></app-empty-state>
+          <ul class="people" *ngIf="summary.attendees.length">
+            <li class="person" *ngFor="let a of summary.attendees; trackBy: trackMember">
+              <span class="person__avatar">
+                <img *ngIf="a.photo; else aIni" [src]="a.photo | sizedImage:200" alt="" loading="lazy" />
+                <ng-template #aIni>{{ initials(a.fullName) }}</ng-template>
+              </span>
+              <span class="person__text">
+                <span class="person__name">{{ a.fullName }}</span>
+                <span class="person__meta">
+                  {{ 'checkIn.batch' | translate }} {{ num(a.batch, true) }} · {{ time(a.checkedInAt) }}
+                  <span class="pill pill--neutral person__tag" *ngIf="!a.rsvp">{{ 'checkIn.walkIn' | translate }}</span>
+                </span>
+              </span>
+              <button type="button" class="icon-btn icon-btn--danger" [disabled]="undoingId === a.memberId" (click)="undo(a)"
+                [attr.aria-label]="('checkIn.undo' | translate) + ': ' + a.fullName" [attr.title]="'checkIn.undo' | translate">
+                <mat-icon>{{ undoingId === a.memberId ? 'hourglass_top' : 'undo' }}</mat-icon>
+              </button>
+            </li>
+          </ul>
+        </ng-container>
+
+        <ng-container *ngIf="tab === 'notYet'">
+          <app-empty-state *ngIf="summary.notYet.length === 0" icon="task_alt" [title]="'checkIn.allHereTitle' | translate"
+            [message]="'checkIn.allHereMessage' | translate"></app-empty-state>
+          <ul class="people" *ngIf="summary.notYet.length">
+            <li class="person" *ngFor="let p of summary.notYet; trackBy: trackMember">
+              <span class="person__avatar">
+                <img *ngIf="p.photo; else pIni" [src]="p.photo | sizedImage:200" alt="" loading="lazy" />
+                <ng-template #pIni>{{ initials(p.fullName) }}</ng-template>
+              </span>
+              <span class="person__text">
+                <span class="person__name">{{ p.fullName }}</span>
+                <span class="person__meta">{{ 'checkIn.batch' | translate }} {{ num(p.batch, true) }}
+                  <ng-container *ngIf="p.memberCode"> · {{ p.memberCode }}</ng-container></span>
+              </span>
+            </li>
+          </ul>
+        </ng-container>
+      </app-section-card>
+    </div>
+  </ng-container>
+</div>

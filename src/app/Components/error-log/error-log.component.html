@@ -1,0 +1,90 @@
+<div class="errlog">
+
+  <app-admin-header [title]="'errorLog.title' | translate" [subtitle]="'errorLog.subtitle' | translate"></app-admin-header>
+
+  <!-- ===== Health ===== -->
+  <div class="health" [class.health--down]="healthDown" role="status">
+    <span class="health__dot" aria-hidden="true"></span>
+    <div class="health__text">
+      <b>{{ (checkingHealth ? 'errorLog.checking' : healthDown ? 'errorLog.down' : 'errorLog.up') | translate }}</b>
+      <span *ngIf="health">
+        API ✓ · {{ 'errorLog.database' | translate }} {{ health.database === 'ok' ? '✓' : '✗' }} · {{ when(health.time) }}
+      </span>
+      <span *ngIf="!health && !checkingHealth">{{ 'errorLog.noAnswer' | translate }}</span>
+    </div>
+    <button type="button" class="btn btn--outline btn--sm" [disabled]="checkingHealth" (click)="checkHealth()">
+      <mat-icon>refresh</mat-icon> {{ 'errorLog.recheck' | translate }}
+    </button>
+  </div>
+  <p class="monitor-hint">
+    <mat-icon>notifications_active</mat-icon>
+    <span>{{ 'errorLog.monitorHint' | translate }} <code>{{ healthUrl }}</code></span>
+  </p>
+
+  <!-- ===== Errors ===== -->
+  <app-section-card icon="bug_report" [title]="'errorLog.listTitle' | translate" [noPadding]="true">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" class="tabs__tab" [class.is-active]="tab === 'server'" [attr.aria-selected]="tab === 'server'"
+        (click)="switchTab('server')">
+        <mat-icon>dns</mat-icon> {{ 'errorLog.tabServer' | translate }}
+      </button>
+      <button type="button" role="tab" class="tabs__tab" [class.is-active]="tab === 'browser'" [attr.aria-selected]="tab === 'browser'"
+        (click)="switchTab('browser')">
+        <mat-icon>devices</mat-icon> {{ 'errorLog.tabBrowser' | translate }}
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <label class="field toolbar__search">
+        <span class="sr-only">{{ 'errorLog.filter' | translate }}</span>
+        <input type="search" name="filter" [(ngModel)]="filter" (ngModelChange)="regroup()" [placeholder]="'errorLog.filter' | translate" />
+      </label>
+      <span class="toolbar__stat" *ngIf="!loading">
+        {{ num(entries.length) }} {{ 'errorLog.entries' | translate }} · {{ num(last24h) }} {{ 'errorLog.last24h' | translate }}
+      </span>
+      <button type="button" class="icon-btn" [disabled]="loading" (click)="load()" [attr.aria-label]="'errorLog.reload' | translate"
+        [attr.title]="'errorLog.reload' | translate">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+
+    <app-skeleton *ngIf="loading" variant="list" [count]="4" [label]="'errorLog.loading' | translate"></app-skeleton>
+
+    <app-empty-state *ngIf="!loading && loadError" icon="lock" [title]="'errorLog.loadErrorTitle' | translate"
+      [message]="'errorLog.loadErrorMessage' | translate"></app-empty-state>
+
+    <app-empty-state *ngIf="!loading && !loadError && groups.length === 0" icon="verified"
+      [title]="(filter ? 'errorLog.noMatchTitle' : 'errorLog.emptyTitle') | translate"
+      [message]="(filter ? 'errorLog.noMatchMessage' : 'errorLog.emptyMessage') | translate"></app-empty-state>
+
+    <ul class="groups" *ngIf="!loading && groups.length">
+      <li *ngFor="let g of groups">
+        <details class="group">
+          <summary class="group__head">
+            <span class="group__count" [class.group__count--many]="g.count >= 10">{{ num(g.count) }}×</span>
+            <span class="group__text">
+              <span class="group__title">{{ g.title }}</span>
+              <span class="group__meta">
+                <ng-container *ngIf="g.where">{{ g.where }} · </ng-container>
+                {{ 'errorLog.lastSeen' | translate }} {{ when(g.lastAt) }}
+                <ng-container *ngIf="g.count > 1"> · {{ 'errorLog.firstSeen' | translate }} {{ when(g.firstAt) }}</ng-container>
+              </span>
+            </span>
+            <mat-icon class="group__chevron">expand_more</mat-icon>
+          </summary>
+          <div class="group__body">
+            <div class="sample" *ngFor="let s of g.samples">
+              <p class="sample__meta">
+                {{ when(s.at) }}
+                <ng-container *ngIf="s.url && tab === 'browser'"> · {{ s.url }}</ng-container>
+                <ng-container *ngIf="s.user"> · user {{ s.user }}</ng-container>
+              </p>
+              <p class="sample__agent" *ngIf="s.agent">{{ s.agent }}</p>
+              <pre class="sample__stack" *ngIf="s.stack">{{ s.stack }}</pre>
+            </div>
+          </div>
+        </details>
+      </li>
+    </ul>
+  </app-section-card>
+</div>

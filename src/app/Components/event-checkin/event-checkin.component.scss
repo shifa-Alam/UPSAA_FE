@@ -1,0 +1,393 @@
+// Event gate check-in: tally, scanner with the last result, and the arrived / not-yet lists.
+// Built phone-first — volunteers use it standing at the gate.
+
+@import '../../../styles/admin-kit';
+
+.checkin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-6));
+  max-width: 1280px;
+}
+
+.checkin__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  min-height: 40px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-link);
+  text-decoration: none;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  &:hover { text-decoration: underline; }
+}
+
+.checkin__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// ---------------------------- Tally ----------------------------
+.tally {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.tally__item {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-100);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+
+  dt {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-ink-600);
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-ink-900);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tally__item--main {
+  border-color: var(--pill-success-fg);
+  background: var(--pill-success-bg);
+
+  dd { color: var(--pill-success-fg); }
+}
+
+.closed {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--pill-warning-bg);
+  color: var(--pill-warning-fg);
+  font-weight: 600;
+}
+
+// ---------------------------- Scanner ----------------------------
+.scanner {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  border: 1px dashed var(--color-ink-200);
+}
+
+.scanner--on {
+  background: #000;
+  border-style: solid;
+  border-color: #000;
+}
+
+.scanner__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// A square guide in the middle, with a sweeping line so it's clearly "live".
+.scanner__frame {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+
+  span {
+    position: relative;
+    width: min(62%, 260px);
+    aspect-ratio: 1;
+    border-radius: 18px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.35);
+    outline: 3px solid rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: var(--color-heritage-500);
+      box-shadow: 0 0 12px var(--color-heritage-500);
+      animation: scan-sweep 2.2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes scan-sweep {
+  0%, 100% { top: 10%; }
+  50% { top: 88%; }
+}
+
+.scanner__idle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-ink-600);
+
+  > mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--color-link);
+  }
+
+  p { margin: 0; max-width: 34ch; }
+}
+
+.scanner__error {
+  color: var(--adm-expense);
+  font-weight: 600;
+}
+
+.scanner__stop {
+  margin-top: var(--space-3);
+}
+
+// ---------------------------- Result ----------------------------
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid;
+  animation: result-in var(--dur-base, 200ms) var(--ease-out, ease-out);
+}
+
+.result--ok { border-color: var(--pill-success-fg); background: var(--pill-success-bg); }
+.result--already { border-color: var(--pill-warning-fg); background: var(--pill-warning-bg); }
+.result--error { border-color: var(--pill-danger-fg); background: var(--pill-danger-bg); }
+
+@keyframes result-in {
+  from { transform: scale(0.97); opacity: 0.4; }
+  to { transform: none; opacity: 1; }
+}
+
+.result__avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--gradient-hero);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 26px;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.result__icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: var(--pill-danger-fg);
+}
+
+.result__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.result__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  .result--ok & { color: var(--pill-success-fg); }
+  .result--already & { color: var(--pill-warning-fg); }
+}
+
+.result__name {
+  font-size: var(--font-size-lg, 20px);
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
+
+.result__name--error {
+  font-size: var(--font-size-md);
+  color: var(--pill-danger-fg);
+}
+
+.result__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  margin-bottom: 4px;
+}
+
+// ---------------------------- Manual entry ----------------------------
+.manual {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.manual__field {
+  flex: 1;
+  min-width: 0;
+}
+
+.byname {
+  margin-top: var(--space-4);
+}
+
+// ---------------------------- Lists ----------------------------
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-ink-100);
+}
+
+.tabs__tab {
+  flex: 1;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--color-ink-600);
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  cursor: pointer;
+
+  &.is-active {
+    color: var(--color-link);
+    border-bottom-color: var(--color-primary-600);
+  }
+}
+
+.tabs__count {
+  min-width: 24px;
+  padding: 3px 7px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink-100);
+  color: var(--color-ink-700);
+  font-size: var(--font-size-xs);
+}
+
+.people {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  max-height: 560px;
+  overflow-y: auto;
+}
+
+.people--compact {
+  margin-top: var(--space-2);
+  padding: 0;
+  max-height: none;
+  border: 1px solid var(--color-ink-100);
+  border-radius: var(--radius-md);
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+
+  & + & { border-top: 1px solid var(--color-ink-100); }
+}
+
+.person__avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--gradient-hero);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.person__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.person__name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.person__tag {
+  padding: 1px 8px;
+  font-size: 11px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanner__frame span::after { animation: none; top: 50%; }
+  .result { animation: none; }
+}

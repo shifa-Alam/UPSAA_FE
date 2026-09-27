@@ -74,6 +74,8 @@ export async function mockApi(page: Page): Promise<{ url: string; body: any }[]>
     }
     if (/^Captcha\/generate$/i.test(path)) return json(route, { captchaId: 'test', image: '' });
     if (/^Committee\/Current$/i.test(path)) return route.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
+    // No committee published: the app falls back to the election result, which is empty too.
+    if (/^Vote\/PublicCommittee$/i.test(path)) return json(route, { positions: [] });
     if (/GetImageFile|GetProfileImageFile/i.test(path)) return route.fulfill({ status: 404 });
     // Everything else (events, gallery, achievements, testimonials, …): an empty list.
     return list(route, []);

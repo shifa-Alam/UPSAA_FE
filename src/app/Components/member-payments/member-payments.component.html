@@ -1,0 +1,139 @@
+<div class="payments">
+
+  <app-admin-header [title]="'payments.title' | translate" [subtitle]="'payments.subtitle' | translate"></app-admin-header>
+
+  <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'payments.loading' | translate"></app-skeleton>
+
+  <app-empty-state *ngIf="!loading && loadError" icon="wifi_off" [title]="'payments.loadErrorTitle' | translate"
+    [message]="'payments.loadErrorMessage' | translate"></app-empty-state>
+
+  <ng-container *ngIf="!loading && !loadError && settings">
+
+    <app-empty-state *ngIf="wallets.length === 0" icon="account_balance_wallet" [title]="'payments.notSetUpTitle' | translate"
+      [message]="'payments.notSetUpMessage' | translate"></app-empty-state>
+
+    <ng-container *ngIf="wallets.length > 0">
+
+      <div class="due" *ngIf="settings.membershipDue" role="status">
+        <mat-icon>priority_high</mat-icon>
+        <span>{{ 'payments.membershipDue' | translate }} <b>{{ money(settings.membershipFee) }}</b></span>
+      </div>
+
+      <div class="payments__grid">
+
+        <!-- ===== How to pay ===== -->
+        <app-section-card icon="account_balance_wallet" [title]="'payments.howTitle' | translate">
+          <ol class="steps">
+            <li>
+              <span class="steps__n">{{ num(1) }}</span>
+              <div>
+                <b>{{ 'payments.step1' | translate }}</b>
+                <div class="wallets">
+                  <div class="wallet" *ngFor="let w of wallets" [ngClass]="'wallet--' + w.method" [class.is-selected]="form.method === w.method">
+                    <button type="button" class="wallet__pick" (click)="form.method = w.method" [attr.aria-pressed]="form.method === w.method">
+                      <span class="wallet__name">{{ w.name }}</span>
+                      <span class="wallet__number">{{ w.number }}</span>
+                    </button>
+                    <button type="button" class="wallet__copy" (click)="copy(w)" [attr.aria-label]="('payments.copy' | translate) + ' ' + w.number">
+                      <mat-icon>{{ copied === w.method ? 'check' : 'content_copy' }}</mat-icon>
+                      <span class="wallet__copy-text">{{ (copied === w.method ? 'payments.copied' : 'payments.copy') | translate }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <span class="steps__n">{{ num(2) }}</span>
+              <div><b>{{ 'payments.step2' | translate }}</b><p>{{ 'payments.step2Hint' | translate }}</p></div>
+            </li>
+            <li>
+              <span class="steps__n">{{ num(3) }}</span>
+              <div><b>{{ 'payments.step3' | translate }}</b><p>{{ 'payments.step3Hint' | translate }}</p></div>
+            </li>
+          </ol>
+          <p class="instructions" *ngIf="settings.instructions">
+            <mat-icon>info</mat-icon><span>{{ settings.instructions }}</span>
+          </p>
+        </app-section-card>
+
+        <!-- ===== Form ===== -->
+        <app-section-card icon="receipt_long" [title]="'payments.formTitle' | translate">
+          <form class="pay-form" (ngSubmit)="submit()">
+
+            <fieldset class="purposes">
+              <legend class="field__label">{{ 'payments.purposeLabel' | translate }}</legend>
+              <label class="purpose" *ngFor="let p of purposes" [class.is-selected]="form.purpose === p">
+                <input type="radio" name="purpose" [value]="p" [ngModel]="form.purpose" (ngModelChange)="pickPurpose($event)" />
+                {{ purposeKey(p) | translate }}
+              </label>
+            </fieldset>
+
+            <div class="pay-form__row">
+              <label class="field">
+                <span>{{ 'payments.amountLabel' | translate }}</span>
+                <input type="number" name="amount" inputmode="decimal" min="10" step="1" [(ngModel)]="form.amount"
+                  [readonly]="amountFixed" [placeholder]="'payments.amountPlaceholder' | translate" required />
+              </label>
+              <label class="field">
+                <span>{{ 'payments.methodLabel' | translate }}</span>
+                <select name="method" [(ngModel)]="form.method">
+                  <option *ngFor="let w of wallets" [ngValue]="w.method">{{ w.name }}</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="field">
+              <span>{{ 'payments.senderLabel' | translate }}</span>
+              <input type="tel" name="sender" inputmode="tel" autocomplete="tel" [(ngModel)]="form.senderNumber"
+                placeholder="01XXXXXXXXX" required />
+            </label>
+
+            <label class="field">
+              <span>{{ 'payments.trxLabel' | translate }}</span>
+              <input type="text" name="trx" autocomplete="off" autocapitalize="characters" spellcheck="false" class="mono"
+                [(ngModel)]="form.transactionId" [placeholder]="'payments.trxPlaceholder' | translate" required />
+              <small class="field__hint">{{ 'payments.trxHint' | translate }}</small>
+            </label>
+
+            <label class="field">
+              <span>{{ 'payments.noteLabel' | translate }}</span>
+              <input type="text" name="note" maxlength="300" [(ngModel)]="form.note" [placeholder]="'payments.notePlaceholder' | translate" />
+            </label>
+
+            <button type="submit" class="btn btn--solid pay-form__submit" [disabled]="submitting">
+              <mat-icon>{{ submitting ? 'hourglass_top' : 'send' }}</mat-icon>
+              {{ (submitting ? 'payments.submitting' : 'payments.submit') | translate }}
+              <ng-container *ngIf="form.amount && !submitting"> · {{ money(form.amount) }}</ng-container>
+            </button>
+            <p class="pay-form__after">{{ 'payments.afterSubmit' | translate }}</p>
+          </form>
+        </app-section-card>
+      </div>
+    </ng-container>
+
+    <!-- ===== History ===== -->
+    <app-section-card icon="history" [title]="'payments.historyTitle' | translate" [noPadding]="true" *ngIf="history.length || wallets.length">
+      <app-empty-state *ngIf="history.length === 0" icon="receipt_long" [title]="'payments.noHistoryTitle' | translate"
+        [message]="'payments.noHistoryMessage' | translate"></app-empty-state>
+
+      <ul class="history" *ngIf="history.length">
+        <li class="h-item" *ngFor="let p of history">
+          <div class="h-item__main">
+            <span class="h-item__amount">{{ money(p.amount) }}</span>
+            <span class="h-item__what">{{ purposeKey(p.purpose) | translate }} · {{ methodNames[p.method] }}</span>
+            <span class="h-item__meta"><span class="mono">{{ p.transactionId }}</span> · {{ date(p.submittedAt) }}</span>
+            <span class="h-item__reason" *ngIf="p.status === Status.Rejected && p.reviewNote">
+              <mat-icon>error_outline</mat-icon>{{ p.reviewNote }}
+            </span>
+          </div>
+          <div class="h-item__side">
+            <span class="pill" [ngClass]="statusPill(p.status)">{{ statusKey(p.status) | translate }}</span>
+            <button type="button" class="btn btn--outline btn--sm" *ngIf="p.status === Status.Approved" (click)="receipt(p)">
+              <mat-icon>print</mat-icon> {{ 'payments.receiptButton' | translate }}
+            </button>
+          </div>
+        </li>
+      </ul>
+    </app-section-card>
+  </ng-container>
+</div>

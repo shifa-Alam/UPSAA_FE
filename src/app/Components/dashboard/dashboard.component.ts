@@ -82,7 +82,8 @@ export class DashboardComponent {
       icon: 'dollar',
       expanded: false,
       children: [
-        { labelKey: 'dashboard.itemFinance', route: '/dashboard/finance', icon: 'dollar' }
+        { labelKey: 'dashboard.itemFinance', route: '/dashboard/finance', icon: 'dollar' },
+        { labelKey: 'dashboard.itemPaymentAdmin', route: '/dashboard/payments', icon: 'card' }
       ]
     },
     {
@@ -96,6 +97,14 @@ export class DashboardComponent {
         { labelKey: 'dashboard.itemBloodDonors', route: '/dashboard/blood-donors', icon: 'droplet' },
         { labelKey: 'dashboard.itemConstitutionLink', route: '/dashboard/constitution', icon: 'book' }
       ]
+    },
+    {
+      labelKey: 'dashboard.menuSystem',
+      icon: 'activity',
+      expanded: false,
+      children: [
+        { labelKey: 'dashboard.itemErrorLog', route: '/dashboard/error-log', icon: 'activity', roles: ['SuperAdmin'] }
+      ]
     }
   ];
 
@@ -107,7 +116,8 @@ export class DashboardComponent {
       icon: 'users',
       expanded: false,
       children: [
-        { labelKey: 'dashboard.itemMyProfile', route: '/portal/profile', icon: 'user-check' }
+        { labelKey: 'dashboard.itemMyProfile', route: '/portal/profile', icon: 'user-check' },
+        { labelKey: 'dashboard.itemPayments', route: '/portal/payments', icon: 'card' }
       ]
     },
     {

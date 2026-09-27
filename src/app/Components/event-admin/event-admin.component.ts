@@ -19,10 +19,11 @@ const emptyForm = (): EventSave => ({
 });
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-event-admin',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
+  imports: [RouterLink, SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
   templateUrl: './event-admin.component.html',
   styleUrl: './event-admin.component.scss'
 })

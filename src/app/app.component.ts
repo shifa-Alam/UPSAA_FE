@@ -107,7 +107,12 @@ export class AppComponent implements OnInit {
         this.requirePasswordChange();
       });
 
-    if (this.authService.isLoggedIn()) {
+    // Staff accounts without a member record (e.g. the SuperAdmin) have no profile to
+    // fetch — asking would only earn a 401. They get the email's initial instead.
+    if (this.authService.isLoggedIn() && !this.authService.hasMemberRecord()) {
+      this.profileImageUrl = null;
+      this.userInitial = this.authService.getInitial();
+    } else if (this.authService.isLoggedIn()) {
       this.memberService.getProfile().subscribe({
         next: res => {
           this.profileImageUrl = res.photo || null;

@@ -107,6 +107,19 @@ export class AuthService {
 
     return [];
   }
+  /** Accounts linked to a member record carry MemberId in the token; staff accounts
+   *  created directly (e.g. the SuperAdmin) don't, and have no member profile. */
+  hasMemberRecord(): boolean {
+    const id = this.getCurrentUser()?.MemberId;
+    return id !== undefined && id !== null && String(id) !== '';
+  }
+
+  /** First letter of the signed-in account's email, for an avatar without a photo. */
+  getInitial(): string {
+    const email = this.getCurrentUser()?.email;
+    return email ? email[0].toUpperCase() : '?';
+  }
+
   getBatch() {
     const user = this.getCurrentUser();
     if (user && user.Batch != null) {

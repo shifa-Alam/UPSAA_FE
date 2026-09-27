@@ -83,6 +83,10 @@ export const routes: Routes = [
       { path: 'blood-donors', loadComponent: bloodDonors, title: 'pageTitles.bloodDonors' },
       { path: 'constitution', loadComponent: constitution, title: 'pageTitles.constitution' },
       {
+        path: 'payments', title: 'pageTitles.payments',
+        loadComponent: () => import('./Components/member-payments/member-payments.component').then(m => m.MemberPaymentsComponent)
+      },
+      {
         // Same screen as the staff ledger, read-only and backed by the members' FinanceOverview API.
         path: 'accounts', title: 'pageTitles.memberAccounts', data: { readOnly: true },
         loadComponent: () => import('./Components/finance-ledger/finance-ledger.component').then(m => m.FinanceLedgerComponent)
@@ -176,6 +180,20 @@ export const routes: Routes = [
       {
         path: 'events', title: 'pageTitles.eventAdmin',
         loadComponent: () => import('./Components/event-admin/event-admin.component').then(m => m.EventAdminComponent)
+      },
+      {
+        // Phone-first gate screen: scan members' card QR codes.
+        path: 'events/:id/check-in', title: 'pageTitles.checkIn',
+        loadComponent: () => import('./Components/event-checkin/event-checkin.component').then(m => m.EventCheckinComponent)
+      },
+      {
+        path: 'payments', title: 'pageTitles.paymentAdmin',
+        loadComponent: () => import('./Components/payment-admin/payment-admin.component').then(m => m.PaymentAdminComponent)
+      },
+      {
+        path: 'error-log', title: 'pageTitles.errorLog',
+        loadComponent: () => import('./Components/error-log/error-log.component').then(m => m.ErrorLogComponent),
+        canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } // SuperAdmin only, also enforced by the API
       },
       {
         path: 'finance', title: 'pageTitles.finance',

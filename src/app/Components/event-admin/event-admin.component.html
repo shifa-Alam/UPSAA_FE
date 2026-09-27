@@ -108,6 +108,10 @@
               {{ ('eventAdmin.status' + (eventStatus(ev) | titlecase)) | translate }}
             </span>
             <div class="ev__actions">
+              <a class="icon-btn" [routerLink]="['/dashboard/events', ev.id, 'check-in']"
+                [attr.aria-label]="('eventAdmin.checkInAriaLabel' | translate) + ': ' + ev.title" [attr.title]="'eventAdmin.checkInAriaLabel' | translate">
+                <mat-icon>qr_code_scanner</mat-icon>
+              </a>
               <button type="button" class="icon-btn" (click)="startEdit(ev)"
                 [attr.aria-label]="'eventAdmin.editAriaLabel' | translate" [attr.title]="'eventAdmin.editAriaLabel' | translate">
                 <mat-icon>edit</mat-icon>

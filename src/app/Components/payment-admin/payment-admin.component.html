@@ -1,0 +1,144 @@
+<div class="pay-admin">
+
+  <app-admin-header [title]="'paymentAdmin.title' | translate" [subtitle]="'paymentAdmin.subtitle' | translate"></app-admin-header>
+
+  <!-- ===== Receiving numbers & fees ===== -->
+  <details class="settings" [open]="settingsOpen" (toggle)="settingsOpen = $any($event.target).open">
+    <summary class="settings__summary">
+      <mat-icon>settings</mat-icon>
+      <span>{{ 'paymentAdmin.settingsTitle' | translate }}</span>
+      <span class="settings__numbers">
+        <ng-container *ngIf="settings.bkashNumber">bKash {{ settings.bkashNumber }}</ng-container>
+        <ng-container *ngIf="settings.nagadNumber"> · Nagad {{ settings.nagadNumber }}</ng-container>
+        <ng-container *ngIf="settings.rocketNumber"> · Rocket {{ settings.rocketNumber }}</ng-container>
+        <ng-container *ngIf="!settings.bkashNumber && !settings.nagadNumber && !settings.rocketNumber">{{ 'paymentAdmin.noNumbers' | translate }}</ng-container>
+      </span>
+      <mat-icon class="settings__chevron">expand_more</mat-icon>
+    </summary>
+    <form class="settings__form" (ngSubmit)="saveSettings()">
+      <label class="field">
+        <span>bKash</span>
+        <input type="tel" name="bkash" inputmode="tel" [(ngModel)]="settings.bkashNumber" placeholder="01XXXXXXXXX" />
+      </label>
+      <label class="field">
+        <span>Nagad</span>
+        <input type="tel" name="nagad" inputmode="tel" [(ngModel)]="settings.nagadNumber" placeholder="01XXXXXXXXX" />
+      </label>
+      <label class="field">
+        <span>Rocket</span>
+        <input type="tel" name="rocket" inputmode="tel" [(ngModel)]="settings.rocketNumber" placeholder="01XXXXXXXXXX" />
+      </label>
+      <label class="field">
+        <span>{{ 'paymentAdmin.membershipFee' | translate }}</span>
+        <input type="number" name="membershipFee" min="0" [(ngModel)]="settings.membershipFee" />
+      </label>
+      <label class="field">
+        <span>{{ 'paymentAdmin.annualFee' | translate }}</span>
+        <input type="number" name="annualFee" min="0" [(ngModel)]="settings.annualFee" />
+        <small class="field__hint">{{ 'paymentAdmin.annualFeeHint' | translate }}</small>
+      </label>
+      <label class="field settings__full">
+        <span>{{ 'paymentAdmin.instructions' | translate }}</span>
+        <textarea name="instructions" rows="2" maxlength="1000" [(ngModel)]="settings.instructions"
+          [placeholder]="'paymentAdmin.instructionsPlaceholder' | translate"></textarea>
+      </label>
+      <p class="settings__hint settings__full">{{ 'paymentAdmin.settingsHint' | translate }}</p>
+      <div class="settings__full">
+        <button type="submit" class="btn btn--solid" [disabled]="savingSettings">
+          <mat-icon>{{ savingSettings ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'paymentAdmin.saveSettings' | translate }}
+        </button>
+      </div>
+    </form>
+  </details>
+
+  <!-- ===== Queue ===== -->
+  <app-section-card icon="receipt_long" [title]="'paymentAdmin.listTitle' | translate" [noPadding]="true">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" class="tabs__tab" *ngFor="let s of tabs" [class.is-active]="tab === s"
+        [attr.aria-selected]="tab === s" (click)="switchTab(s)">
+        {{ tabKey(s) | translate }}
+        <span class="tabs__count" [class.tabs__count--hot]="s === Status.Pending && counts[s] > 0">{{ num(counts[s]) }}</span>
+      </button>
+    </div>
+
+    <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'payments.loading' | translate"></app-skeleton>
+
+    <app-empty-state *ngIf="!loading && loadError" icon="wifi_off" [title]="'payments.loadErrorTitle' | translate"
+      [message]="'payments.loadErrorMessage' | translate"></app-empty-state>
+
+    <app-empty-state *ngIf="!loading && !loadError && items.length === 0" icon="task_alt"
+      [title]="(tab === Status.Pending ? 'paymentAdmin.emptyPendingTitle' : 'paymentAdmin.emptyTitle') | translate"
+      [message]="(tab === Status.Pending ? 'paymentAdmin.emptyPendingMessage' : 'paymentAdmin.emptyMessage') | translate"></app-empty-state>
+
+    <ul class="queue" *ngIf="!loading && !loadError && items.length">
+      <li class="pay" *ngFor="let p of items">
+        <div class="pay__head">
+          <div class="pay__who">
+            <span class="pay__name">{{ p.memberName }}</span>
+            <span class="pay__meta">
+              <ng-container *ngIf="p.memberCode">{{ p.memberCode }} · </ng-container>{{ 'checkIn.batch' | translate }} {{ num(p.batch, true) }}
+              <ng-container *ngIf="p.memberPhone"> · {{ p.memberPhone }}</ng-container>
+            </span>
+          </div>
+          <span class="pay__amount">{{ money(p.amount) }}</span>
+        </div>
+
+        <dl class="pay__facts">
+          <div><dt>{{ 'payments.purposeLabel' | translate }}</dt><dd>{{ purposeKey(p.purpose) | translate }}</dd></div>
+          <div><dt>{{ 'payments.methodLabel' | translate }}</dt><dd><span class="brand" [ngClass]="'brand--' + p.method">{{ methodNames[p.method] }}</span></dd></div>
+          <div><dt>{{ 'paymentAdmin.from' | translate }}</dt><dd class="mono">{{ p.senderNumber }}</dd></div>
+          <div>
+            <dt>{{ 'payments.trxLabel' | translate }}</dt>
+            <dd class="trx">
+              <span class="mono">{{ p.transactionId }}</span>
+              <button type="button" class="icon-btn trx__copy" (click)="copyTrx(p)" [attr.aria-label]="'payments.copy' | translate">
+                <mat-icon>{{ copiedId === p.id ? 'check' : 'content_copy' }}</mat-icon>
+              </button>
+            </dd>
+          </div>
+          <div><dt>{{ 'paymentAdmin.submitted' | translate }}</dt><dd>{{ date(p.submittedAt) }}</dd></div>
+          <div *ngIf="p.status !== Status.Pending && p.reviewedAt">
+            <dt>{{ 'paymentAdmin.reviewed' | translate }}</dt>
+            <dd>{{ date(p.reviewedAt) }}<ng-container *ngIf="p.reviewedByName"> · {{ p.reviewedByName }}</ng-container></dd>
+          </div>
+          <div *ngIf="p.status === Status.Approved"><dt>{{ 'payments.receipt.title' | translate }}</dt><dd class="mono">{{ p.receiptNo }}</dd></div>
+        </dl>
+
+        <p class="pay__note" *ngIf="p.note"><mat-icon>chat_bubble_outline</mat-icon>{{ p.note }}</p>
+        <p class="pay__note pay__note--reason" *ngIf="p.status === Status.Rejected && p.reviewNote">
+          <mat-icon>error_outline</mat-icon>{{ p.reviewNote }}
+        </p>
+
+        <div class="pay__actions" *ngIf="p.status === Status.Pending && rejectingId !== p.id">
+          <button type="button" class="btn btn--success" [disabled]="busyId === p.id" (click)="approve(p)">
+            <mat-icon>{{ busyId === p.id ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'paymentAdmin.approve' | translate }}
+          </button>
+          <button type="button" class="btn btn--danger-outline" [disabled]="busyId === p.id" (click)="startReject(p)">
+            <mat-icon>close</mat-icon> {{ 'paymentAdmin.reject' | translate }}
+          </button>
+        </div>
+
+        <div class="pay__actions" *ngIf="p.status !== Status.Pending && p.canUndo">
+          <button type="button" class="btn btn--outline btn--sm" [disabled]="busyId === p.id" (click)="undo(p)">
+            <mat-icon>{{ busyId === p.id ? 'hourglass_top' : 'undo' }}</mat-icon> {{ 'paymentAdmin.undo' | translate }}
+          </button>
+        </div>
+
+        <div class="reject" *ngIf="rejectingId === p.id">
+          <label class="field">
+            <span>{{ 'paymentAdmin.reasonLabel' | translate }}</span>
+            <textarea rows="2" maxlength="300" [(ngModel)]="rejectReason" [placeholder]="'paymentAdmin.reasonPlaceholder' | translate"></textarea>
+          </label>
+          <div class="pay__actions">
+            <button type="button" class="btn btn--danger" [disabled]="busyId === p.id" (click)="confirmReject(p)">
+              <mat-icon>{{ busyId === p.id ? 'hourglass_top' : 'close' }}</mat-icon> {{ 'paymentAdmin.confirmReject' | translate }}
+            </button>
+            <button type="button" class="btn btn--outline" [disabled]="busyId === p.id" (click)="rejectingId = null">
+              {{ 'paymentAdmin.cancel' | translate }}
+            </button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </app-section-card>
+</div>

@@ -1,0 +1,217 @@
+// Error log: API health strip, then server / browser errors grouped by message.
+
+@import '../../../styles/admin-kit';
+
+.errlog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-6));
+  max-width: 1180px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+// ---------------------------- Health ----------------------------
+.health {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--pill-success-fg);
+  border-radius: var(--radius-lg);
+  background: var(--pill-success-bg);
+}
+
+.health__dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--pill-success-fg);
+  box-shadow: 0 0 0 4px var(--pill-success-bg);
+}
+
+.health--down {
+  border-color: var(--pill-danger-fg);
+  background: var(--pill-danger-bg);
+
+  .health__dot { background: var(--pill-danger-fg); }
+}
+
+.health__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--font-size-sm);
+
+  b { font-size: var(--font-size-md); }
+}
+
+.monitor-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+
+  mat-icon { flex-shrink: 0; font-size: 18px; width: 18px; height: 18px; color: var(--color-link); }
+  code { overflow-wrap: anywhere; font-size: 12px; }
+}
+
+// ---------------------------- Tabs & toolbar ----------------------------
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-ink-100);
+}
+
+.tabs__tab {
+  flex: 1;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--color-ink-600);
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  cursor: pointer;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+  &.is-active {
+    color: var(--color-link);
+    border-bottom-color: var(--color-primary-600);
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-ink-100);
+}
+
+.toolbar__search {
+  flex: 1;
+  min-width: 200px;
+}
+
+.toolbar__stat {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+// ---------------------------- Groups ----------------------------
+.groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li + li { border-top: 1px solid var(--color-ink-100); }
+}
+
+.group[open] .group__chevron { transform: rotate(180deg); }
+
+.group__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  list-style: none;
+
+  &::-webkit-details-marker { display: none; }
+  &:hover { background: var(--color-surface-sunken); }
+}
+
+.group__count {
+  flex-shrink: 0;
+  min-width: 44px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--pill-warning-bg);
+  color: var(--pill-warning-fg);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.group__count--many {
+  background: var(--pill-danger-bg);
+  color: var(--pill-danger-fg);
+}
+
+.group__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.group__title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.group__meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  overflow-wrap: anywhere;
+}
+
+.group__chevron {
+  flex-shrink: 0;
+  color: var(--color-ink-600);
+  transition: transform var(--transition-fast);
+}
+
+.group__body {
+  padding: 0 var(--space-4) var(--space-4) calc(var(--space-4) + 44px + var(--space-3));
+
+  @media (max-width: 600px) {
+    padding-left: var(--space-4);
+  }
+}
+
+.sample + .sample {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-ink-100);
+}
+
+.sample__meta,
+.sample__agent {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+  overflow-wrap: anywhere;
+}
+
+.sample__stack {
+  margin: var(--space-2) 0 0;
+  padding: var(--space-3);
+  max-height: 260px;
+  overflow: auto;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

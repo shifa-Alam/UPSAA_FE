@@ -1,6 +1,9 @@
 import { Dict, Lang } from './i18n.types';
 import { navI18n } from './sections/nav.i18n';
 import { searchI18n } from './sections/search.i18n';
+import { checkInI18n } from './sections/checkIn.i18n';
+import { paymentsI18n } from './sections/payments.i18n';
+import { errorLogI18n } from './sections/errorLog.i18n';
 import { footerI18n } from './sections/footer.i18n';
 import { homeI18n } from './sections/home.i18n';
 import { aboutI18n } from './sections/about.i18n';
@@ -101,6 +104,9 @@ const sections = [
   birthdayAutomationI18n,
   batchesI18n,
   searchI18n,
+  checkInI18n,
+  paymentsI18n,
+  errorLogI18n,
   achievementAdminI18n,
   achievementsI18n,
   teacherAdminI18n,
