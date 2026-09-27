@@ -13,6 +13,9 @@ export const homeI18n: I18nSection = {
         scrollHint: 'নিচে দেখুন',
         searchPlaceholder: 'নাম বা ব্যাচ লিখে সহপাঠী খুঁজুন',
         searchButton: 'খুঁজুন',
+        suggestionsLabel: 'সাজেশন',
+        batchSuggestion: 'ব্যাচের পেজ দেখুন:',
+        searchAll: '“{q}” — সব ফলাফল দেখুন',
       },
       stats: {
         alumni: 'নিবন্ধিত অ্যালামনাই',
@@ -25,7 +28,6 @@ export const homeI18n: I18nSection = {
         title: 'প্রজন্ম থেকে প্রজন্মে এক বন্ধন',
         body: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশন (UPSAA) আমাদের প্রিয় বিদ্যালয়ের প্রাক্তন শিক্ষার্থীদের একটি ঐক্যবদ্ধ প্ল্যাটফর্ম — যারা একই শ্রেণিকক্ষ, একই স্মৃতি, একই বন্ধুত্ব ভাগ করে নিয়েছে। আত্মিক বন্ধনের পাশাপাশি পেশাগত সহায়তা ও সামাজিক দায়বদ্ধতার মাধ্যমে আমরা দেশের উন্নয়নে অবদান রাখি।',
         learnMore: 'আরও জানুন',
-        since: 'প্রথম ব্যাচ',
         reunion: 'পুনর্মিলনী ও সাংস্কৃতিক আয়োজন',
         guidance: 'জুনিয়রদের ক্যারিয়ার গাইডেন্স',
         social: 'রক্তদান ও সমাজসেবা',
@@ -86,11 +88,9 @@ export const homeI18n: I18nSection = {
       ticker: {
         label: 'সর্বশেষ নোটিশ',
       },
-      batches: {
-        label: 'আপনার ব্যাচ খুঁজুন',
-        batch: 'ব্যাচ',
-        people: 'জন',
-        all: 'সব ব্যাচ',
+      updates: {
+        eyebrow: 'সাম্প্রতিক',
+        title: 'অনুষ্ঠান ও নোটিশ',
       },
     },
   },
@@ -106,6 +106,9 @@ export const homeI18n: I18nSection = {
         scrollHint: 'Scroll down',
         searchPlaceholder: 'Find a classmate by name or batch',
         searchButton: 'Search',
+        suggestionsLabel: 'Suggestions',
+        batchSuggestion: 'Open the batch page:',
+        searchAll: 'See all results for “{q}”',
       },
       stats: {
         alumni: 'Registered Alumni',
@@ -118,7 +121,6 @@ export const homeI18n: I18nSection = {
         title: 'A Bond Across Generations',
         body: 'The Uttaran Public School Alumni Association (UPSAA) brings together generations of students who shared the same school, the same memories and the same friendships. Alongside those personal bonds, we contribute to the nation through professional support and social responsibility.',
         learnMore: 'Learn More',
-        since: 'First batch',
         reunion: 'Reunions & cultural events',
         guidance: 'Career guidance for juniors',
         social: 'Blood drives & community service',
@@ -179,11 +181,9 @@ export const homeI18n: I18nSection = {
       ticker: {
         label: 'Latest notices',
       },
-      batches: {
-        label: 'Find your batch',
-        batch: 'Batch',
-        people: 'alumni',
-        all: 'All batches',
+      updates: {
+        eyebrow: 'What’s happening',
+        title: 'Events & Notices',
       },
     },
   },

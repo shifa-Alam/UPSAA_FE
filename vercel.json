@@ -2,11 +2,13 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "npm ci",
-  "buildCommand": "npx ng build --configuration production",
+  "buildCommand": "npx ng build --configuration production && node scripts/make-csr-shell.mjs",
   "outputDirectory": "dist/browser",
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://sbfqa.lucidtech.website/api/Sitemap" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/share/:kind/:id", "destination": "https://sbfqa.lucidtech.website/api/Share/:kind/:id" },
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.csr.html" }
   ],
   "headers": [
     {

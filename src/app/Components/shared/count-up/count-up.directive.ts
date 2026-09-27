@@ -74,7 +74,8 @@ export class CountUpDirective implements OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
-    cancelAnimationFrame(this.frame);
+    // No animation frames on the server (prerender) — nothing to cancel there.
+    if (this.isBrowser) cancelAnimationFrame(this.frame);
   }
 
   /** Where the count begins: 0, or ~30 below a year so "2003" doesn't race up from 0. */

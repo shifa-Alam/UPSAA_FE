@@ -1,12 +1,12 @@
 <div class="home">
 
   <!-- ===== Latest notices ticker (pauses on hover/focus; static when motion is reduced) ===== -->
-  <div class="ticker" *ngIf="notices.length" [attr.aria-label]="'home.ticker.label' | translate" role="region">
+  <div class="ticker" *ngIf="recentNotices.length" [attr.aria-label]="'home.ticker.label' | translate" role="region">
     <a class="ticker__label" routerLink="/notices"><mat-icon>campaign</mat-icon>{{ 'home.ticker.label' | translate }}</a>
     <div class="ticker__viewport">
-      <div class="ticker__track" [style.animation-duration.s]="notices.length * 9">
+      <div class="ticker__track" [style.animation-duration.s]="recentNotices.length * 9 + 12">
         <ng-container *ngFor="let copy of [0, 1]">
-          <a class="ticker__item" *ngFor="let n of notices" routerLink="/notices" [queryParams]="{ id: n.id }"
+          <a class="ticker__item" *ngFor="let n of recentNotices" routerLink="/notices" [queryParams]="{ id: n.id }"
             [attr.aria-hidden]="copy === 1 ? 'true' : null" [attr.tabindex]="copy === 1 ? -1 : null">
             <span class="ticker__dot" aria-hidden="true"></span>{{ n.title }}
           </a>
@@ -18,8 +18,9 @@
   <!-- ===== Hero ===== -->
   <section class="hero">
     <div class="hero__bg" *ngIf="!heroImages.length"></div>
-    <div class="hero__bg hero__bg--photo" *ngFor="let img of heroImages; let i = index"
-      [class.hero__bg--active]="i === heroIndex" [style.background-image]="heroBackground(i)" aria-hidden="true"></div>
+    <img class="hero__bg hero__bg--photo" *ngFor="let img of heroImages; let i = index" alt="" aria-hidden="true"
+      [class.hero__bg--active]="i === heroIndex" [attr.src]="heroSrc(i)" decoding="async"
+      [attr.fetchpriority]="i === 0 ? 'high' : 'low'" />
     <div class="hero__overlay"></div>
 
     <div class="hero__content upsaa-container">
@@ -27,37 +28,55 @@
       <!-- The association's name is the page's main heading; the welcome line sits under it. -->
       <h1 class="hero__title">{{ 'home.hero.eyebrow' | translate }}</h1>
       <p class="hero__welcome">{{ 'home.hero.title' | translate }}</p>
-      <p class="hero__tagline">{{ 'home.hero.tagline' | translate }}</p>
 
       <!-- Find a classmate: a name opens the directory, a year opens that batch's page. -->
-      <form class="hero-search" role="search" (ngSubmit)="searchAlumni()">
+      <form class="hero-search" role="search" (ngSubmit)="searchAlumni()" cdkOverlayOrigin #searchOrigin="cdkOverlayOrigin">
         <mat-icon class="hero-search__icon" aria-hidden="true">search</mat-icon>
         <input type="search" name="q" class="hero-search__input" [(ngModel)]="heroQuery" autocomplete="off"
+          role="combobox" aria-autocomplete="list" aria-controls="hero-suggestions"
+          [attr.aria-expanded]="suggestOpen" [attr.aria-activedescendant]="activeSuggestion >= 0 ? 'hero-suggestion-' + activeSuggestion : null"
+          (ngModelChange)="onQueryInput()" (keydown)="onQueryKeydown($event)" (blur)="closeSuggestionsSoon()"
+          (focus)="suggestOpen = suggestions.length > 0 && !!heroQuery.trim()"
           [placeholder]="'home.hero.searchPlaceholder' | translate" [attr.aria-label]="'home.hero.searchPlaceholder' | translate" />
         <button type="submit" class="hero-search__btn">{{ 'home.hero.searchButton' | translate }}</button>
+
       </form>
 
-      <div class="hero__actions">
-        <a routerLink="/register" class="pp-btn pp-btn--light">
-          {{ 'home.hero.joinCta' | translate }} <mat-icon>arrow_forward</mat-icon>
-        </a>
-        <button type="button" class="pp-btn pp-btn--ghost-light" (click)="scrollTo(aboutSection)">
-          {{ 'home.hero.exploreCta' | translate }}
-        </button>
-      </div>
-    </div>
+      <!-- Suggestions render in the CDK overlay layer, above the hero's clipping and the stat cards. -->
+      <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="searchOrigin" [cdkConnectedOverlayOpen]="suggestOpen"
+        [cdkConnectedOverlayWidth]="searchOrigin.elementRef.nativeElement.offsetWidth" [cdkConnectedOverlayPositions]="suggestPositions"
+        (overlayOutsideClick)="suggestOpen = false" (detach)="suggestOpen = false">
+          <ul class="suggest" id="hero-suggestions" role="listbox"
+            [attr.aria-label]="'home.hero.suggestionsLabel' | translate">
+            <li *ngFor="let s of suggestions; let i = index" role="option" [id]="'hero-suggestion-' + i"
+              class="suggest__item" [class.is-active]="i === activeSuggestion" [class.suggest__item--all]="s.kind === 'all'"
+              [attr.aria-selected]="i === activeSuggestion" (mousedown)="$event.preventDefault()" (click)="pick(s)">
+              <img *ngIf="s.kind === 'member' && s.photo" class="suggest__avatar" [src]="s.photo | sizedImage:400" alt="" />
+              <span *ngIf="s.kind === 'member' && !s.photo" class="suggest__avatar suggest__avatar--initial" aria-hidden="true">{{ initials(s.label) }}</span>
+              <span *ngIf="s.kind !== 'member'" class="suggest__icon" aria-hidden="true"><mat-icon>{{ s.kind === 'batch' ? 'school' : 'search' }}</mat-icon></span>
+              <span class="suggest__text">
+                <span class="suggest__label">{{ s.label }}</span>
+                <span class="suggest__meta" *ngIf="s.meta">{{ s.meta }}</span>
+              </span>
+            </li>
+          </ul>
+      </ng-template>
 
-    <button type="button" class="hero__scroll" (click)="scrollTo(aboutSection)"
-      [attr.aria-label]="'home.hero.scrollHint' | translate">
-      <mat-icon>expand_more</mat-icon>
-    </button>
+      <a routerLink="/register" class="hero__join">
+        {{ 'home.hero.joinCta' | translate }} <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
   </section>
 
-  <!-- ===== Stats band — live counts from the public batch summary + achievements ===== -->
-  <!-- [hidden] rather than *ngIf keeps the section count stable so the
-       alternating section backgrounds below never pair up. -->
-  <section class="stats" [hidden]="!stats.length">
-    <div class="upsaa-container stats__grid">
+  <!-- ===== Stats — live counts; placeholder cards keep the space while they load ===== -->
+  <section class="stats" *ngIf="statsLoading || stats.length">
+    <div class="upsaa-container stats__grid" [attr.aria-busy]="statsLoading">
+      <ng-container *ngIf="statsLoading">
+        <div class="stat stat--placeholder" *ngFor="let n of [1, 2, 3, 4]" aria-hidden="true">
+          <span class="stat__icon"></span>
+          <span class="stat__text"><span class="ph ph--value"></span><span class="ph ph--label"></span></span>
+        </div>
+      </ng-container>
       <div class="stat" *ngFor="let s of stats">
         <span class="stat__icon" aria-hidden="true"><mat-icon>{{ s.icon }}</mat-icon></span>
         <span class="stat__text">
@@ -68,31 +87,12 @@
     </div>
   </section>
 
-  <!-- ===== Find your batch — every batch as a chip, opening its batch page ===== -->
-  <section class="batch-strip" *ngIf="batches.length">
-    <div class="upsaa-container batch-strip__inner">
-      <span class="batch-strip__label"><mat-icon>school</mat-icon>{{ 'home.batches.label' | translate }}</span>
-      <div class="batch-strip__track">
-        <a class="batch-chip" *ngFor="let b of batches" [routerLink]="['/batches', b.batch]"
-          [attr.aria-label]="('home.batches.batch' | translate) + ' ' + b.batch">
-          <span class="batch-chip__year">{{ formatNumber(b.batch, true) }}</span>
-          <span class="batch-chip__count">{{ formatNumber(b.alumniCount) }} {{ 'home.batches.people' | translate }}</span>
-        </a>
-      </div>
-      <a class="batch-strip__all" routerLink="/batches">{{ 'home.batches.all' | translate }} <mat-icon>arrow_forward</mat-icon></a>
-    </div>
-  </section>
-
   <!-- ===== About ===== -->
-  <section class="pp-section band band--tint" #aboutSection>
+  <section class="pp-section band band--tint">
     <div class="upsaa-container about" [class.about--photo]="aboutPhoto" appReveal>
       <figure class="about__media" *ngIf="aboutPhoto">
         <img [src]="imageAt(aboutPhoto, 800)" [attr.srcset]="imageSrcset(aboutPhoto) || null"
           sizes="(max-width: 900px) 100vw, 460px" alt="" loading="lazy" decoding="async" />
-        <figcaption class="about__since" *ngIf="firstBatch">
-          <span class="about__since-label">{{ 'home.about.since' | translate }}</span>
-          <span class="about__since-year">{{ formatNumber(firstBatch, true) }}</span>
-        </figcaption>
       </figure>
 
       <div class="about__text">
@@ -113,96 +113,95 @@
     </div>
   </section>
 
-  <!-- ===== Upcoming events ===== -->
+  <!-- ===== What's happening: the next event (left) and the latest notices (right) ===== -->
   <section class="pp-section band band--white">
     <div class="upsaa-container" appReveal>
       <header class="pp-section__head">
-        <span class="pp-section__eyebrow">{{ 'home.events.eyebrow' | translate }}</span>
-        <h2 class="pp-section__title">{{ 'home.events.title' | translate }}</h2>
+        <span class="pp-section__eyebrow">{{ 'home.updates.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.updates.title' | translate }}</h2>
         <span class="pp-section__rule"></span>
       </header>
 
-      <app-empty-state *ngIf="!eventsLoading && events.length === 0" icon="event"
-        [title]="'home.events.emptyTitle' | translate" [message]="'home.events.emptyMessage' | translate"></app-empty-state>
-
-      <!-- The next event, featured with a live countdown -->
-      <article class="next-event" *ngIf="events[0] as next">
-        <a class="next-event__media" [routerLink]="['/events']" [queryParams]="{ id: next.id }" tabindex="-1" aria-hidden="true">
-          <img *ngIf="next.photoUrl; else nextEventArt" [src]="next.photoUrl | sizedImage:800" [attr.srcset]="next.photoUrl | sizedSrcset"
-            sizes="(max-width: 768px) 100vw, 520px" alt="" loading="lazy" />
-          <ng-template #nextEventArt><span class="next-event__art"><mat-icon>celebration</mat-icon></span></ng-template>
-          <span class="next-event__date">
-            <span class="next-event__day">{{ eventDay(next) }}</span>
-            <span class="next-event__month">{{ eventMonth(next) }}</span>
-          </span>
-        </a>
-        <div class="next-event__body">
-          <span class="next-event__label">{{ 'home.events.nextUp' | translate }}</span>
-          <h3 class="next-event__title">
-            <a [routerLink]="['/events']" [queryParams]="{ id: next.id }">{{ next.title }}</a>
-          </h3>
-          <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(next) }}</span>
-          <span class="event-card__meta" *ngIf="next.venue"><mat-icon>place</mat-icon>{{ next.venue }}</span>
-          <app-countdown class="next-event__countdown" [target]="next.eventDate"></app-countdown>
-          <div class="next-event__actions">
-            <a class="pp-btn pp-btn--solid" [routerLink]="['/events']" [queryParams]="{ id: next.id }">
-              {{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon>
-            </a>
-            <a *ngIf="next.registrationUrl" class="pp-btn pp-btn--outline" [href]="next.registrationUrl" target="_blank" rel="noopener">
-              {{ 'home.events.register' | translate }} <mat-icon>open_in_new</mat-icon>
-            </a>
+      <div class="updates">
+        <!-- Events -->
+        <div class="updates__col">
+          <div class="updates__head">
+            <h3 class="updates__title"><mat-icon>event</mat-icon>{{ 'home.events.title' | translate }}</h3>
+            <a routerLink="/events" class="updates__all">{{ 'home.events.viewAll' | translate }} <mat-icon>arrow_forward</mat-icon></a>
           </div>
+
+          <app-empty-state *ngIf="!eventsLoading && events.length === 0" icon="event"
+            [title]="'home.events.emptyTitle' | translate" [message]="'home.events.emptyMessage' | translate"></app-empty-state>
+
+          <!-- The next event, featured with a live countdown -->
+          <article class="next-event" *ngIf="events[0] as next">
+            <a class="next-event__media" [routerLink]="['/events']" [queryParams]="{ id: next.id }" tabindex="-1" aria-hidden="true">
+              <img *ngIf="next.photoUrl; else nextEventArt" [src]="next.photoUrl | sizedImage:800" [attr.srcset]="next.photoUrl | sizedSrcset"
+                sizes="(max-width: 900px) 100vw, 560px" alt="" loading="lazy" />
+              <ng-template #nextEventArt><span class="next-event__art"><mat-icon>celebration</mat-icon></span></ng-template>
+              <span class="next-event__date">
+                <span class="next-event__day">{{ eventDay(next) }}</span>
+                <span class="next-event__month">{{ eventMonth(next) }}</span>
+              </span>
+            </a>
+            <div class="next-event__body">
+              <span class="next-event__label">{{ 'home.events.nextUp' | translate }}</span>
+              <h4 class="next-event__title">
+                <a [routerLink]="['/events']" [queryParams]="{ id: next.id }">{{ next.title }}</a>
+              </h4>
+              <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(next) }}</span>
+              <span class="event-card__meta" *ngIf="next.venue"><mat-icon>place</mat-icon>{{ next.venue }}</span>
+              <app-countdown class="next-event__countdown" [target]="next.eventDate"></app-countdown>
+              <div class="next-event__actions">
+                <a class="pp-btn pp-btn--solid" [routerLink]="['/events']" [queryParams]="{ id: next.id }">
+                  {{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon>
+                </a>
+                <a *ngIf="next.registrationUrl" class="pp-btn pp-btn--outline" [href]="next.registrationUrl" target="_blank" rel="noopener">
+                  {{ 'home.events.register' | translate }} <mat-icon>open_in_new</mat-icon>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <ul class="more-events" *ngIf="events.length > 1">
+            <li *ngFor="let ev of events.slice(1)">
+              <a class="more-event" [routerLink]="['/events']" [queryParams]="{ id: ev.id }">
+                <span class="pp-date">
+                  <span class="pp-date__day">{{ eventDay(ev) }}</span>
+                  <span class="pp-date__month">{{ eventMonth(ev) }}</span>
+                </span>
+                <span class="more-event__text">
+                  <span class="more-event__title">{{ ev.title }}</span>
+                  <span class="more-event__meta">{{ eventTime(ev) }}<ng-container *ngIf="ev.venue"> · {{ ev.venue }}</ng-container></span>
+                </span>
+              </a>
+            </li>
+          </ul>
         </div>
-      </article>
 
-      <div class="events stagger" *ngIf="events.length > 1">
-        <article class="event-card" *ngFor="let ev of events.slice(1)">
-          <div class="pp-date">
-            <span class="pp-date__day">{{ eventDay(ev) }}</span>
-            <span class="pp-date__month">{{ eventMonth(ev) }}</span>
+        <!-- Notices -->
+        <div class="updates__col">
+          <div class="updates__head">
+            <h3 class="updates__title"><mat-icon>campaign</mat-icon>{{ 'home.notices.title' | translate }}</h3>
+            <a routerLink="/notices" class="updates__all">{{ 'home.notices.viewAll' | translate }} <mat-icon>arrow_forward</mat-icon></a>
           </div>
-          <div class="event-card__body">
-            <h3 class="event-card__title">{{ ev.title }}</h3>
-            <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(ev) }}</span>
-            <span class="event-card__meta" *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</span>
-            <a [routerLink]="['/events']" [queryParams]="{ id: ev.id }" class="pp-link">{{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon></a>
-          </div>
-        </article>
-      </div>
 
-      <div class="pp-section__cta">
-        <a routerLink="/events" class="pp-btn pp-btn--outline">{{ 'home.events.viewAll' | translate }}</a>
-      </div>
-    </div>
-  </section>
+          <app-empty-state *ngIf="!noticesLoading && notices.length === 0" icon="campaign"
+            [title]="'home.notices.emptyTitle' | translate" [message]="'home.notices.emptyMessage' | translate"></app-empty-state>
 
-  <!-- ===== News & notices ===== -->
-  <section class="pp-section band band--tint">
-    <div class="upsaa-container pp-narrow" appReveal>
-      <header class="pp-section__head">
-        <span class="pp-section__eyebrow">{{ 'home.notices.eyebrow' | translate }}</span>
-        <h2 class="pp-section__title">{{ 'home.notices.title' | translate }}</h2>
-        <span class="pp-section__rule"></span>
-      </header>
-
-      <app-empty-state *ngIf="!noticesLoading && notices.length === 0" icon="campaign"
-        [title]="'home.notices.emptyTitle' | translate" [message]="'home.notices.emptyMessage' | translate"></app-empty-state>
-
-      <ul class="news stagger" *ngIf="notices.length">
-        <li class="news__item" *ngFor="let notice of notices">
-          <time class="news__date">{{ noticeDate(notice) }}</time>
-          <div class="news__body">
-            <h3 class="news__title">
-              <a class="news__link" routerLink="/notices" [queryParams]="{ id: notice.id }">{{ notice.title }}</a>
-              <span class="news__badge" *ngIf="notice.alumniOnly">{{ 'home.notices.alumniOnlyBadge' | translate }}</span>
-            </h3>
-            <p class="news__text">{{ notice.content }}</p>
-          </div>
-        </li>
-      </ul>
-
-      <div class="pp-section__cta" *ngIf="notices.length">
-        <a routerLink="/notices" class="pp-btn pp-btn--outline">{{ 'home.notices.viewAll' | translate }}</a>
+          <ul class="news" *ngIf="notices.length">
+            <li class="news__item" *ngFor="let notice of notices">
+              <time class="news__date">{{ noticeDate(notice) }}</time>
+              <div class="news__body">
+                <h4 class="news__title">
+                  <a class="news__link" routerLink="/notices" [queryParams]="{ id: notice.id }">{{ notice.title }}</a>
+                  <span class="news__badge" *ngIf="notice.alumniOnly">{{ 'home.notices.alumniOnlyBadge' | translate }}</span>
+                </h4>
+                <p class="news__text">{{ notice.content }}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>

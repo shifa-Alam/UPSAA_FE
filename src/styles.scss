@@ -217,8 +217,8 @@ h1, h2 {
 /* Scroll-reveal (see shared/reveal/reveal.directive.ts) */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 600ms var(--ease-out), transform 700ms var(--ease-out);
+  transform: translateY(12px);
+  transition: opacity 420ms var(--ease-out), transform 480ms var(--ease-out);
 }
 
 .reveal--visible {
@@ -229,8 +229,8 @@ h1, h2 {
 /* Stagger: inside a revealed block, a `.stagger` list's items rise one after another. */
 .reveal .stagger > * {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 550ms var(--ease-out), transform 650ms var(--ease-out);
+  transform: translateY(10px);
+  transition: opacity 380ms var(--ease-out), transform 440ms var(--ease-out);
 }
 
 .reveal--visible .stagger > * {
@@ -238,12 +238,11 @@ h1, h2 {
   transform: none;
 }
 
-.reveal--visible .stagger > :nth-child(2) { transition-delay: 90ms; }
-.reveal--visible .stagger > :nth-child(3) { transition-delay: 180ms; }
-.reveal--visible .stagger > :nth-child(4) { transition-delay: 270ms; }
-.reveal--visible .stagger > :nth-child(5) { transition-delay: 360ms; }
-.reveal--visible .stagger > :nth-child(6) { transition-delay: 450ms; }
-.reveal--visible .stagger > :nth-child(n + 7) { transition-delay: 520ms; }
+.reveal--visible .stagger > :nth-child(2) { transition-delay: 50ms; }
+.reveal--visible .stagger > :nth-child(3) { transition-delay: 100ms; }
+.reveal--visible .stagger > :nth-child(4) { transition-delay: 150ms; }
+.reveal--visible .stagger > :nth-child(5) { transition-delay: 200ms; }
+.reveal--visible .stagger > :nth-child(n + 6) { transition-delay: 240ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal,

@@ -1,14 +1,19 @@
 import { environment } from '../../environments/environment';
 
 /**
- * Links for sharing an event or notice. They point at the API's /share pages, which
- * carry the item's own Open Graph preview (title, text, photo) for Facebook/WhatsApp
- * and forward people to the real page (see ShareController on the API).
+ * Links for sharing an event or notice: /share/{kind}/{id} on the website itself.
+ * Vercel proxies that path to the API's share page (vercel.json), which carries the
+ * item's own Open Graph preview (title, text, photo) for Facebook/WhatsApp and
+ * forwards people to the real page (see ShareController on the API). So shared links
+ * show the site's address, never the API's.
  */
 export type ShareKind = 'event' | 'notice';
 
 export function sharePageUrl(kind: ShareKind, id: number): string {
-  return `${environment.baseUrl}/share/${kind}/${id}`;
+  // `ng serve` on localhost has no such proxy — link straight to the API while developing.
+  const local = typeof window === 'undefined' || /^(localhost|127\.0\.0\.1|\[::1\])$/.test(window.location.hostname);
+  if (local) return `${environment.baseUrl}/share/${kind}/${id}`;
+  return `${window.location.origin}/share/${kind}/${id}`;
 }
 
 /** The public page itself — used for "copy link" and calendar entries. */

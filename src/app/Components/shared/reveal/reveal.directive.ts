@@ -21,12 +21,14 @@ export class RevealDirective implements OnInit, OnDestroy {
 
     const host = this.el.nativeElement;
     host.classList.add('reveal');
+    // Fires just *before* the block scrolls in (20% below the viewport), so a fast
+    // scroll never lands on invisible content.
     this.observer = new IntersectionObserver(entries => {
       if (entries.some(e => e.isIntersecting)) {
         host.classList.add('reveal--visible');
         this.observer?.disconnect();
       }
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '0px 0px 20% 0px', threshold: 0 });
     this.observer.observe(host);
   }
 
