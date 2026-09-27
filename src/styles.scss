@@ -226,8 +226,28 @@ h1, h2 {
   transform: none;
 }
 
+/* Stagger: inside a revealed block, a `.stagger` list's items rise one after another. */
+.reveal .stagger > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 550ms var(--ease-out), transform 650ms var(--ease-out);
+}
+
+.reveal--visible .stagger > * {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal--visible .stagger > :nth-child(2) { transition-delay: 90ms; }
+.reveal--visible .stagger > :nth-child(3) { transition-delay: 180ms; }
+.reveal--visible .stagger > :nth-child(4) { transition-delay: 270ms; }
+.reveal--visible .stagger > :nth-child(5) { transition-delay: 360ms; }
+.reveal--visible .stagger > :nth-child(6) { transition-delay: 450ms; }
+.reveal--visible .stagger > :nth-child(n + 7) { transition-delay: 520ms; }
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  .reveal .stagger > * {
     opacity: 1;
     transform: none;
     transition: none;

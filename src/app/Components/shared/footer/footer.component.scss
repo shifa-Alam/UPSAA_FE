@@ -3,10 +3,23 @@
 
 .site-footer {
   position: relative;
-  background: var(--color-primary-900);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(242, 201, 76, 0.08), transparent 35%),
+    radial-gradient(circle at 95% 100%, rgba(111, 165, 246, 0.1), transparent 40%),
+    var(--color-primary-900);
   color: rgba(255, 255, 255, 0.72);
-  border-top: 1px solid rgba(201, 162, 74, 0.55);
-  padding-top: clamp(var(--space-6), 2.8vw, 28px);
+  padding-top: clamp(var(--space-7), 3.2vw, 36px);
+
+  // Gold band across the top, brightest in the middle.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #c9a24a 15%, #f2c94c 50%, #c9a24a 85%, transparent);
+  }
 }
 
 // ---------------------------- Brand ----------------------------
@@ -30,8 +43,8 @@
 
 .site-footer__logo {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: #fff;
   padding: var(--space-1);

@@ -4,30 +4,14 @@
     [subtitle]="'register.pageSubtitle' | translate"></app-page-header>
 
   <div class="upsaa-container register-page__body">
-    <form #regForm [formGroup]="form" (ngSubmit)="onStepSubmit()" class="register-form" novalidate>
+    <form #regForm [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form" novalidate>
 
       <p class="register-form__note">
         <mat-icon>info</mat-icon>
         <span>{{ 'register.requiredNote' | translate }}</span>
       </p>
 
-      <!-- Step progress: tap a finished step to go back to it -->
-      <nav class="reg-steps" [attr.aria-label]="'register.steps.label' | translate">
-        <ol>
-          <li *ngFor="let s of steps; let i = index" class="reg-steps__item" [class.is-done]="i < step" [class.is-current]="i === step">
-            <button type="button" class="reg-steps__btn" (click)="goTo(i)" [disabled]="i > step" [attr.aria-current]="i === step ? 'step' : null">
-              <span class="reg-steps__dot">
-                <mat-icon *ngIf="i < step">check</mat-icon>
-                <ng-container *ngIf="i >= step">{{ formatStep(i + 1) }}</ng-container>
-              </span>
-              <span class="reg-steps__label">{{ s.label | translate }}</span>
-            </button>
-          </li>
-        </ol>
-        <div class="reg-steps__bar" aria-hidden="true"><span [style.width.%]="progress"></span></div>
-      </nav>
-
-      <section class="reg-section" *ngIf="step === 0">
+      <section class="reg-section">
         <header class="reg-section__head">
           <span class="reg-section__num">{{ formatStep(0 + 1) }}</span>
           <div class="reg-section__heading">
@@ -106,7 +90,7 @@
         </div>
       </section>
 
-      <section class="reg-section" *ngIf="step === 1">
+      <section class="reg-section">
         <header class="reg-section__head">
           <span class="reg-section__num">{{ formatStep(1 + 1) }}</span>
           <div class="reg-section__heading">
@@ -155,7 +139,7 @@
         </div>
       </section>
 
-      <section class="reg-section" *ngIf="step === 2">
+      <section class="reg-section">
         <header class="reg-section__head">
           <span class="reg-section__num">{{ formatStep(2 + 1) }}</span>
           <div class="reg-section__heading">
@@ -190,7 +174,7 @@
         </div>
       </section>
 
-      <section class="reg-section" *ngIf="step === 3">
+      <section class="reg-section">
         <header class="reg-section__head">
           <span class="reg-section__num">{{ formatStep(3 + 1) }}</span>
           <div class="reg-section__heading">
@@ -288,14 +272,10 @@
         </div>
       </section>
 
-      <!-- Back / Next — the last step submits -->
       <div class="reg-nav">
-        <button type="button" class="pp-btn pp-btn--outline reg-nav__back" *ngIf="step > 0" (click)="prev()">
-          <mat-icon>arrow_back</mat-icon> {{ 'register.steps.back' | translate }}
-        </button>
         <button type="submit" class="pp-btn pp-btn--solid submit-btn reg-nav__next" [disabled]="isSubmitting">
-          {{ (isLastStep ? 'register.verify.submit' : 'register.steps.next') | translate }}
-          <mat-icon>{{ isLastStep ? 'check' : 'arrow_forward' }}</mat-icon>
+          {{ 'register.verify.submit' | translate }}
+          <mat-icon>check</mat-icon>
         </button>
       </div>
     </form>

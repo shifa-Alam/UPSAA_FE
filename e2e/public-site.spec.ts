@@ -80,25 +80,17 @@ test.describe('public site', () => {
     await expect(page.locator('script#events-structured-data')).toHaveCount(0);
   });
 
-  test('registration: empty step 1 is blocked; step 2 arrives without errors', async ({ page }) => {
+  test('registration: one page; no errors until submit, then empty required fields show', async ({ page }) => {
     await page.goto('/register');
-    await expect(page.locator('.reg-steps__item.is-current')).toContainText('১');
+    // Every section is on the page at once — no steps.
+    await expect(page.locator('.reg-section')).toHaveCount(4);
+    await expect(page.locator('input[formcontrolname="email"]')).toBeVisible();
+    await expect(page.locator('input[formcontrolname="captchaAnswer"]')).toBeVisible();
+    // Nothing is red before anyone has typed.
+    await expect(page.locator('.reg-section .mat-form-field-invalid')).toHaveCount(0);
 
     await page.locator('.reg-nav__next').click();
     await expect(page.locator('.reg-section .mat-form-field-invalid').first()).toBeVisible();
-    await expect(page.locator('.reg-steps__item.is-current')).toContainText('১'); // still on step 1
-
-    await page.locator('input[formcontrolname="fullName"]').fill('Test Alumnus');
-    for (const [name, option] of [['gender', 1], ['batch', 3], ['bloodGroup', 2]] as const) {
-      await page.locator(`mat-select[formcontrolname="${name}"]`).click();
-      await page.locator('mat-option').nth(option).click();
-      await expect(page.locator('mat-option')).toHaveCount(0); // panel closed
-    }
-    await page.locator('.reg-nav__next').click();
-
-    await expect(page.locator('input[formcontrolname="email"]')).toBeVisible(); // step 2
-    // The bug that was reported: step 2 fields came up red before anyone touched them.
-    await expect(page.locator('.reg-section .mat-form-field-invalid')).toHaveCount(0);
   });
 
   test('notices list and a shared single-notice link', async ({ page }) => {

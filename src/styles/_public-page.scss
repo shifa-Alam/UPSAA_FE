@@ -177,8 +177,9 @@
 }
 
 // ---------------------------- Sections ----------------------------
+// One vertical rhythm for every section.
 .pp-section {
-  padding: clamp(22px, 3.4vw, 40px) 0;
+  padding: clamp(28px, 3.8vw, 48px) 0;
 }
 
 // Alternate backgrounds by position so sections hidden for lack of data
@@ -192,31 +193,58 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
 }
 
+// Small gold label with a hairline on each side: ── আমাদের পরিচিতি ──
 .pp-section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: var(--font-size-xs);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-heritage-500);
+  color: var(--color-heritage-text, var(--color-heritage-500));
   margin-bottom: var(--space-2);
+
+  &::before,
+  &::after {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
 }
 
 .pp-section__title {
-  font-size: clamp(19px, 2.4vw, 32px);
-  font-weight: 700;
+  font-size: clamp(22px, 2.8vw, 36px);
+  font-weight: 800;
   line-height: 1.2;
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
+// Gold rule with a small diamond at its centre.
 .pp-section__rule {
+  position: relative;
   display: block;
-  width: 48px;
+  width: 72px;
   height: 2px;
   margin: var(--space-3) auto 0;
   background: linear-gradient(90deg, transparent, var(--color-heritage-500), transparent);
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: var(--color-heritage-500);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
 }
 
 .pp-section__subtitle {

@@ -1,5 +1,20 @@
 <div class="home">
 
+  <!-- ===== Latest notices ticker (pauses on hover/focus; static when motion is reduced) ===== -->
+  <div class="ticker" *ngIf="notices.length" [attr.aria-label]="'home.ticker.label' | translate" role="region">
+    <a class="ticker__label" routerLink="/notices"><mat-icon>campaign</mat-icon>{{ 'home.ticker.label' | translate }}</a>
+    <div class="ticker__viewport">
+      <div class="ticker__track" [style.animation-duration.s]="notices.length * 9">
+        <ng-container *ngFor="let copy of [0, 1]">
+          <a class="ticker__item" *ngFor="let n of notices" routerLink="/notices" [queryParams]="{ id: n.id }"
+            [attr.aria-hidden]="copy === 1 ? 'true' : null" [attr.tabindex]="copy === 1 ? -1 : null">
+            <span class="ticker__dot" aria-hidden="true"></span>{{ n.title }}
+          </a>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== Hero ===== -->
   <section class="hero">
     <div class="hero__bg" *ngIf="!heroImages.length"></div>
@@ -13,7 +28,14 @@
       <h1 class="hero__title">{{ 'home.hero.eyebrow' | translate }}</h1>
       <p class="hero__welcome">{{ 'home.hero.title' | translate }}</p>
       <p class="hero__tagline">{{ 'home.hero.tagline' | translate }}</p>
-      <p class="hero__pillars">{{ 'home.hero.pillars' | translate }}</p>
+
+      <!-- Find a classmate: a name opens the directory, a year opens that batch's page. -->
+      <form class="hero-search" role="search" (ngSubmit)="searchAlumni()">
+        <mat-icon class="hero-search__icon" aria-hidden="true">search</mat-icon>
+        <input type="search" name="q" class="hero-search__input" [(ngModel)]="heroQuery" autocomplete="off"
+          [placeholder]="'home.hero.searchPlaceholder' | translate" [attr.aria-label]="'home.hero.searchPlaceholder' | translate" />
+        <button type="submit" class="hero-search__btn">{{ 'home.hero.searchButton' | translate }}</button>
+      </form>
 
       <div class="hero__actions">
         <a routerLink="/register" class="pp-btn pp-btn--light">
@@ -37,33 +59,62 @@
   <section class="stats" [hidden]="!stats.length">
     <div class="upsaa-container stats__grid">
       <div class="stat" *ngFor="let s of stats">
-        <span class="stat__value" [appCountUp]="s.value" [countPlain]="!!s.plain" [countSuffix]="s.suffix || ''"></span>
-        <span class="stat__label">{{ s.labelKey | translate }}</span>
+        <span class="stat__icon" aria-hidden="true"><mat-icon>{{ s.icon }}</mat-icon></span>
+        <span class="stat__text">
+          <span class="stat__value" [appCountUp]="s.value" [countPlain]="!!s.plain" [countSuffix]="s.suffix || ''"></span>
+          <span class="stat__label">{{ s.labelKey | translate }}</span>
+        </span>
       </div>
     </div>
   </section>
 
+  <!-- ===== Find your batch — every batch as a chip, opening its batch page ===== -->
+  <section class="batch-strip" *ngIf="batches.length">
+    <div class="upsaa-container batch-strip__inner">
+      <span class="batch-strip__label"><mat-icon>school</mat-icon>{{ 'home.batches.label' | translate }}</span>
+      <div class="batch-strip__track">
+        <a class="batch-chip" *ngFor="let b of batches" [routerLink]="['/batches', b.batch]"
+          [attr.aria-label]="('home.batches.batch' | translate) + ' ' + b.batch">
+          <span class="batch-chip__year">{{ formatNumber(b.batch, true) }}</span>
+          <span class="batch-chip__count">{{ formatNumber(b.alumniCount) }} {{ 'home.batches.people' | translate }}</span>
+        </a>
+      </div>
+      <a class="batch-strip__all" routerLink="/batches">{{ 'home.batches.all' | translate }} <mat-icon>arrow_forward</mat-icon></a>
+    </div>
+  </section>
+
   <!-- ===== About ===== -->
-  <section class="pp-section" #aboutSection>
-    <div class="upsaa-container about" appReveal>
-      <span class="pp-section__eyebrow">{{ 'home.about.eyebrow' | translate }}</span>
-      <h2 class="pp-section__title">{{ 'home.about.title' | translate }}</h2>
-      <span class="pp-section__rule"></span>
-      <p class="about__body">{{ 'home.about.body' | translate }}</p>
+  <section class="pp-section band band--tint" #aboutSection>
+    <div class="upsaa-container about" [class.about--photo]="aboutPhoto" appReveal>
+      <figure class="about__media" *ngIf="aboutPhoto">
+        <img [src]="imageAt(aboutPhoto, 800)" [attr.srcset]="imageSrcset(aboutPhoto) || null"
+          sizes="(max-width: 900px) 100vw, 460px" alt="" loading="lazy" decoding="async" />
+        <figcaption class="about__since" *ngIf="firstBatch">
+          <span class="about__since-label">{{ 'home.about.since' | translate }}</span>
+          <span class="about__since-year">{{ formatNumber(firstBatch, true) }}</span>
+        </figcaption>
+      </figure>
 
-      <ul class="about__pillars">
-        <li><mat-icon>celebration</mat-icon>{{ 'home.about.reunion' | translate }}</li>
-        <li><mat-icon>school</mat-icon>{{ 'home.about.guidance' | translate }}</li>
-        <li><mat-icon>bloodtype</mat-icon>{{ 'home.about.social' | translate }}</li>
-        <li><mat-icon>volunteer_activism</mat-icon>{{ 'home.about.support' | translate }}</li>
-      </ul>
+      <div class="about__text">
+        <span class="pp-section__eyebrow">{{ 'home.about.eyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'home.about.title' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+        <p class="about__body">{{ 'home.about.body' | translate }}</p>
 
-      <a routerLink="/about" class="pp-btn pp-btn--outline">{{ 'home.about.learnMore' | translate }}</a>
+        <ul class="about__cards stagger">
+          <li class="about__card"><span class="about__card-icon"><mat-icon>celebration</mat-icon></span>{{ 'home.about.reunion' | translate }}</li>
+          <li class="about__card"><span class="about__card-icon"><mat-icon>school</mat-icon></span>{{ 'home.about.guidance' | translate }}</li>
+          <li class="about__card"><span class="about__card-icon"><mat-icon>bloodtype</mat-icon></span>{{ 'home.about.social' | translate }}</li>
+          <li class="about__card"><span class="about__card-icon"><mat-icon>volunteer_activism</mat-icon></span>{{ 'home.about.support' | translate }}</li>
+        </ul>
+
+        <a routerLink="/about" class="pp-btn pp-btn--outline">{{ 'home.about.learnMore' | translate }}</a>
+      </div>
     </div>
   </section>
 
   <!-- ===== Upcoming events ===== -->
-  <section class="pp-section">
+  <section class="pp-section band band--white">
     <div class="upsaa-container" appReveal>
       <header class="pp-section__head">
         <span class="pp-section__eyebrow">{{ 'home.events.eyebrow' | translate }}</span>
@@ -74,8 +125,38 @@
       <app-empty-state *ngIf="!eventsLoading && events.length === 0" icon="event"
         [title]="'home.events.emptyTitle' | translate" [message]="'home.events.emptyMessage' | translate"></app-empty-state>
 
-      <div class="events" *ngIf="events.length">
-        <article class="event-card" *ngFor="let ev of events">
+      <!-- The next event, featured with a live countdown -->
+      <article class="next-event" *ngIf="events[0] as next">
+        <a class="next-event__media" [routerLink]="['/events']" [queryParams]="{ id: next.id }" tabindex="-1" aria-hidden="true">
+          <img *ngIf="next.photoUrl; else nextEventArt" [src]="next.photoUrl | sizedImage:800" [attr.srcset]="next.photoUrl | sizedSrcset"
+            sizes="(max-width: 768px) 100vw, 520px" alt="" loading="lazy" />
+          <ng-template #nextEventArt><span class="next-event__art"><mat-icon>celebration</mat-icon></span></ng-template>
+          <span class="next-event__date">
+            <span class="next-event__day">{{ eventDay(next) }}</span>
+            <span class="next-event__month">{{ eventMonth(next) }}</span>
+          </span>
+        </a>
+        <div class="next-event__body">
+          <span class="next-event__label">{{ 'home.events.nextUp' | translate }}</span>
+          <h3 class="next-event__title">
+            <a [routerLink]="['/events']" [queryParams]="{ id: next.id }">{{ next.title }}</a>
+          </h3>
+          <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(next) }}</span>
+          <span class="event-card__meta" *ngIf="next.venue"><mat-icon>place</mat-icon>{{ next.venue }}</span>
+          <app-countdown class="next-event__countdown" [target]="next.eventDate"></app-countdown>
+          <div class="next-event__actions">
+            <a class="pp-btn pp-btn--solid" [routerLink]="['/events']" [queryParams]="{ id: next.id }">
+              {{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+            <a *ngIf="next.registrationUrl" class="pp-btn pp-btn--outline" [href]="next.registrationUrl" target="_blank" rel="noopener">
+              {{ 'home.events.register' | translate }} <mat-icon>open_in_new</mat-icon>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <div class="events stagger" *ngIf="events.length > 1">
+        <article class="event-card" *ngFor="let ev of events.slice(1)">
           <div class="pp-date">
             <span class="pp-date__day">{{ eventDay(ev) }}</span>
             <span class="pp-date__month">{{ eventMonth(ev) }}</span>
@@ -84,7 +165,7 @@
             <h3 class="event-card__title">{{ ev.title }}</h3>
             <span class="event-card__meta"><mat-icon>schedule</mat-icon>{{ eventTime(ev) }}</span>
             <span class="event-card__meta" *ngIf="ev.venue"><mat-icon>place</mat-icon>{{ ev.venue }}</span>
-            <a routerLink="/events" class="pp-link">{{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon></a>
+            <a [routerLink]="['/events']" [queryParams]="{ id: ev.id }" class="pp-link">{{ 'home.events.details' | translate }} <mat-icon>arrow_forward</mat-icon></a>
           </div>
         </article>
       </div>
@@ -96,7 +177,7 @@
   </section>
 
   <!-- ===== News & notices ===== -->
-  <section class="pp-section">
+  <section class="pp-section band band--tint">
     <div class="upsaa-container pp-narrow" appReveal>
       <header class="pp-section__head">
         <span class="pp-section__eyebrow">{{ 'home.notices.eyebrow' | translate }}</span>
@@ -107,7 +188,7 @@
       <app-empty-state *ngIf="!noticesLoading && notices.length === 0" icon="campaign"
         [title]="'home.notices.emptyTitle' | translate" [message]="'home.notices.emptyMessage' | translate"></app-empty-state>
 
-      <ul class="news" *ngIf="notices.length">
+      <ul class="news stagger" *ngIf="notices.length">
         <li class="news__item" *ngFor="let notice of notices">
           <time class="news__date">{{ noticeDate(notice) }}</time>
           <div class="news__body">
@@ -126,16 +207,34 @@
     </div>
   </section>
 
-  <!-- ===== Our alumni, our pride — public directory, photo profiles only ===== -->
-  <section class="pp-section" *ngIf="alumni.length">
+  <!-- ===== Our people — the current committee's leaders (alumni with photos as a fallback) ===== -->
+  <section class="pp-section band band--navy" *ngIf="leaders.length || alumni.length">
     <div class="upsaa-container" appReveal>
       <header class="pp-section__head">
         <span class="pp-section__eyebrow">{{ 'home.alumni.eyebrow' | translate }}</span>
         <h2 class="pp-section__title">{{ 'home.alumni.title' | translate }}</h2>
         <span class="pp-section__rule"></span>
+        <p class="pp-section__subtitle" *ngIf="leaders.length">
+          {{ 'home.alumni.committeeSubtitle' | translate }}<ng-container *ngIf="committeeTerm"> · {{ committeeTerm }}</ng-container>
+        </p>
       </header>
 
-      <div class="pp-people">
+      <div class="leaders stagger" *ngIf="leaders.length">
+        <a class="leader" *ngFor="let l of leaders" routerLink="/committee">
+          <div class="leader__photo photo-tone">
+            <img *ngIf="l.photo; else leaderInitials" [src]="l.photo | sizedImage:800" [attr.srcset]="l.photo | sizedSrcset"
+              sizes="(max-width: 768px) 80vw, 320px" [alt]="l.name" loading="lazy" />
+            <ng-template #leaderInitials><span class="leader__initials" aria-hidden="true">{{ initials(l.name) }}</span></ng-template>
+          </div>
+          <div class="leader__body">
+            <span class="leader__position">{{ l.position }}</span>
+            <h3 class="leader__name">{{ l.name }}</h3>
+            <span class="leader__batch" *ngIf="l.batch">{{ 'home.alumni.batch' | translate }} {{ formatNumber(l.batch, true) }}</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="pp-people" *ngIf="!leaders.length">
         <a class="pp-person" *ngFor="let m of alumni" routerLink="/members" [queryParams]="{ batch: m.batch }">
           <div class="pp-person__photo">
             <img [src]="m.photo | sizedImage:400" [attr.srcset]="m.photo | sizedSrcset" sizes="(max-width: 768px) 50vw, 240px" [alt]="m.fullName" loading="lazy" />
@@ -147,7 +246,8 @@
       </div>
 
       <div class="pp-section__cta">
-        <a routerLink="/members" class="pp-btn pp-btn--outline">{{ 'home.alumni.explore' | translate }}</a>
+        <a *ngIf="leaders.length" routerLink="/committee" class="pp-btn pp-btn--outline">{{ 'home.alumni.viewCommittee' | translate }}</a>
+        <a routerLink="/members" class="pp-btn" [class.pp-btn--outline]="!leaders.length" [class.pp-btn--quiet]="leaders.length">{{ 'home.alumni.explore' | translate }}</a>
       </div>
     </div>
   </section>
@@ -162,21 +262,29 @@
         <p class="pp-section__subtitle">{{ 'home.achievements.subtitle' | translate }}</p>
       </header>
 
-      <div class="feats">
+      <div class="feats stagger">
         <article class="feat" *ngFor="let a of achievements">
-          <div class="feat__photo photo-tone">
-            <img *ngIf="a.photoUrl; else featInitials" [src]="a.photoUrl | sizedImage:800" [attr.srcset]="a.photoUrl | sizedSrcset" sizes="(max-width: 768px) 100vw, 380px" [alt]="a.fullName" loading="lazy" />
-            <ng-template #featInitials><span class="feat__initials">{{ initials(a.fullName) }}</span></ng-template>
+          <div class="feat__photo">
+            <img *ngIf="a.photoUrl; else featInitials" [src]="a.photoUrl | sizedImage:800" [attr.srcset]="a.photoUrl | sizedSrcset"
+              sizes="(max-width: 768px) 100vw, 340px" [alt]="a.fullName" loading="lazy" />
+            <ng-template #featInitials><span class="feat__initials" aria-hidden="true">{{ initials(a.fullName) }}</span></ng-template>
+
+            <!-- Who: batch + name, over the photo -->
+            <div class="feat__who">
+              <span class="feat__batch" *ngIf="a.batch">{{ 'home.alumni.batch' | translate }} {{ formatNumber(a.batch, true) }}</span>
+              <span class="feat__name">{{ a.fullName }}</span>
+            </div>
           </div>
+
+          <!-- What: the achievement -->
           <div class="feat__body">
-            <mat-icon class="feat__icon">military_tech</mat-icon>
-            <h3 class="feat__title">{{ a.title }}</h3>
-            <span class="feat__name">{{ a.fullName }}</span>
-            <span class="feat__meta">
-              <ng-container *ngIf="a.batch">{{ 'home.alumni.batch' | translate }} {{ formatNumber(a.batch, true) }}</ng-container>
-              <ng-container *ngIf="a.batch && a.organization"> · </ng-container>
-              {{ a.organization }}
-            </span>
+            <span class="feat__icon" aria-hidden="true"><mat-icon>military_tech</mat-icon></span>
+            <div class="feat__text">
+              <h3 class="feat__title">{{ a.title }}</h3>
+              <span class="feat__meta" *ngIf="a.profession || a.organization">
+                {{ a.profession }}<ng-container *ngIf="a.profession && a.organization"> · </ng-container>{{ a.organization }}
+              </span>
+            </div>
           </div>
         </article>
       </div>
@@ -190,7 +298,7 @@
   <!-- ===== Alumni voices — quotes slider (hidden until a quote is published) ===== -->
   <app-alumni-voices></app-alumni-voices>
 
-  <!-- ===== School memories — gallery mosaic ===== -->
+  <!-- ===== Moments from our journey — latest gallery photos (events, programmes, school) ===== -->
   <section class="pp-section" *ngIf="memories.length">
     <div class="upsaa-container" appReveal>
       <header class="pp-section__head">
@@ -199,12 +307,16 @@
         <span class="pp-section__rule"></span>
       </header>
 
-      <div class="mosaic" [class.mosaic--few]="memories.length < 6">
-        <a routerLink="/gallery" class="mosaic__tile photo-tone" *ngFor="let photo of memories; let first = first">
+      <div class="mosaic stagger" [class.mosaic--few]="memories.length < 6">
+        <a routerLink="/gallery" [queryParams]="photo.category ? { category: photo.category } : {}"
+          class="mosaic__tile photo-tone" *ngFor="let photo of memories; let first = first">
           <img [src]="imageAt(photo.imageUrl, 800)" [attr.srcset]="imageSrcset(photo.imageUrl) || null"
             [attr.sizes]="first && memories.length >= 6 ? '(max-width: 768px) 100vw, 760px' : '(max-width: 768px) 50vw, 380px'"
             [alt]="photo.title" loading="lazy" decoding="async" />
-          <span class="mosaic__caption">{{ photo.category || photo.title }}</span>
+          <span class="mosaic__caption">
+            <span class="mosaic__category" *ngIf="photo.category">{{ photo.category }}</span>
+            <span class="mosaic__title" *ngIf="photo.title">{{ photo.title }}</span>
+          </span>
         </a>
       </div>
 
@@ -217,6 +329,15 @@
   <!-- ===== Join CTA ===== -->
   <section class="pp-join">
     <div class="upsaa-container pp-join__inner" appReveal>
+      <div class="join-faces" *ngIf="joinFaces.length">
+        <span class="join-faces__stack" aria-hidden="true">
+          <img *ngFor="let m of joinFaces" [src]="m.photo! | sizedImage:400" alt="" loading="lazy" />
+          <span class="join-faces__more" *ngIf="alumniTotal > joinFaces.length">+</span>
+        </span>
+        <span class="join-faces__text" *ngIf="alumniTotal">
+          {{ 'home.join.joinedPrefix' | translate }} <strong>{{ formatNumber(alumniTotal) }}+</strong> {{ 'home.join.joinedSuffix' | translate }}
+        </span>
+      </div>
       <h2 class="pp-join__title">{{ 'home.join.title' | translate }}</h2>
       <p class="pp-join__body">{{ 'home.join.body' | translate }}</p>
       <a routerLink="/register" class="pp-btn pp-btn--light">

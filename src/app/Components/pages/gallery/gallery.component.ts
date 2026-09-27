@@ -53,7 +53,8 @@ export class GalleryComponent implements OnInit {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const id = Number(params.get('event'));
       this.eventId = Number.isInteger(id) && id > 0 ? id : null;
-      this.activeCategory = '';
+      // ?category= — from a homepage "memories" tile.
+      this.activeCategory = params.get('category') ?? '';
       this.fetch();
     });
   }

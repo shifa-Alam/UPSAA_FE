@@ -25,24 +25,14 @@ import { LanguageService } from '../../../Services/language.service';
 import { toDateOnly } from '../../../Utils/date-utils';
 
 /**
- * Show a field's error only once the person has been in that field (or pressed Next on
- * its step, which marks the step's fields touched). Material's default also shows errors
- * as soon as the form is *submitted* — and every Next press submits the form, so the
- * next step's empty fields came up red before anyone had typed in them.
+ * Show a field's error only once the person has been in that field, or after a submit
+ * attempt (which marks every field touched) — not while they're still filling it in.
  */
 class TouchedErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null): boolean {
     return !!control && control.invalid && control.touched;
   }
 }
-
-/** The form in four short steps; each lists the controls it must validate before moving on. */
-const STEPS: { label: string; controls: string[] }[] = [
-  { label: 'register.steps.personal', controls: ['fullName', 'gender', 'batch', 'bloodGroup', 'dob'] },
-  { label: 'register.steps.contact', controls: ['email', 'phone', 'currentCity', 'currentDesignation', 'employer'] },
-  { label: 'register.steps.education', controls: ['educationRecords'] },
-  { label: 'register.steps.confirm', controls: ['memberFees', 'captchaAnswer'] },
-];
 
 @Component({
   selector: 'app-register',
@@ -75,48 +65,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isSubmitting = false;
 
-  readonly steps = STEPS;
-  step = 0;
   @ViewChild('regForm', { read: ElementRef }) private formEl?: ElementRef<HTMLElement>;
-
-  get isLastStep(): boolean {
-    return this.step === STEPS.length - 1;
-  }
-
-  /** Bar fill: the current step counts as half done. */
-  get progress(): number {
-    return Math.round(((this.step + 0.5) / STEPS.length) * 100);
-  }
 
   formatStep(n: number): string {
     return new Intl.NumberFormat(this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB').format(n);
-  }
-
-  /** Enter or the Next button: validate this step and move on; the last step submits. */
-  onStepSubmit(): void {
-    if (this.isLastStep) {
-      this.onSubmit();
-      return;
-    }
-    const invalid = STEPS[this.step].controls.map(n => this.form.get(n)).filter(c => c && c.invalid);
-    if (invalid.length) {
-      invalid.forEach(c => c!.markAllAsTouched());
-      this.focusFirstInvalid();
-      return;
-    }
-    this.goTo(this.step + 1);
-  }
-
-  prev(): void {
-    this.goTo(this.step - 1);
-  }
-
-  /** Only finished steps (or the current one) can be opened from the progress bar. */
-  goTo(i: number): void {
-    if (i < 0 || i >= STEPS.length || i > this.step + 1) return;
-    this.step = i;
-    // Start the new step at its top — the page scrolls inside the app shell, not the window.
-    if (this.isBrowser) setTimeout(() => this.formEl?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   }
 
   private focusFirstInvalid(): void {
@@ -307,8 +259,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      const bad = STEPS.findIndex(s => s.controls.some(n => this.form.get(n)?.invalid));
-      if (bad >= 0 && bad !== this.step) this.step = bad;
       this.focusFirstInvalid();
       return;
     }

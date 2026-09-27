@@ -22,6 +22,7 @@ import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { SizedImagePipe } from './Pipes/sized-image.pipe';
 import { BottomNavComponent } from './Components/shared/bottom-nav/bottom-nav.component';
+import { BackToTopComponent } from './Components/shared/back-to-top/back-to-top.component';
 import { InstallBannerComponent } from './Components/shared/install-banner/install-banner.component';
 import { PwaService } from './Services/pwa.service';
 import { PushService } from './Services/push.service';
@@ -38,6 +39,7 @@ import { ChangePasswordComponent } from './Components/change-password/change-pas
   selector: 'app-root',
   standalone: true,
   imports: [
+    BackToTopComponent,
     RouterOutlet,
     CommonModule,
     MatToolbarModule,
