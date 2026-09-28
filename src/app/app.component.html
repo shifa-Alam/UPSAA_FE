@@ -382,6 +382,8 @@
         <mat-icon>cloud_off</mat-icon> {{ 'pwa.offline' | translate }}
       </div>
       <app-bottom-nav (more)="sidenav.open()"></app-bottom-nav>
+      <!-- Call-us button for members and visitors (staff have the back office). -->
+      <app-help-button *ngIf="!authService.isStaff()"></app-help-button>
       <app-install-banner></app-install-banner>
 
     </div>

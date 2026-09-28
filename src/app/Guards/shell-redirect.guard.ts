@@ -4,7 +4,7 @@ import { AuthService } from '../Services/auth.service';
 
 /** Public pages that also exist inside the member portal, at /portal/<page>. */
 const MEMBER_PORTAL_PAGES = new Set([
-  'about', 'contact', 'committee', 'events', 'notices', 'gallery', 'members', 'batches', 'campaigns',
+  'about', 'contact', 'committee', 'events', 'notices', 'gallery', 'members', 'batches', 'campaigns', 'help',
   'achievements', 'teachers', 'jobs', 'blood-donors', 'constitution', 'profile',
 ]);
 

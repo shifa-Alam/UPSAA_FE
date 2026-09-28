@@ -51,6 +51,9 @@
               <div><b>{{ 'payments.step3' | translate }}</b><p>{{ 'payments.step3Hint' | translate }}</p></div>
             </li>
           </ol>
+          <a class="guide-link" routerLink="/portal/help/pay">
+            <mat-icon>help</mat-icon> {{ 'payments.seeGuide' | translate }}
+          </a>
           <p class="instructions" *ngIf="settings.instructions">
             <mat-icon>info</mat-icon><span>{{ settings.instructions }}</span>
           </p>

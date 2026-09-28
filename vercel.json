@@ -7,6 +7,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://sbfqa.lucidtech.website/api/Sitemap" },
     { "source": "/share/:kind/:id", "destination": "https://sbfqa.lucidtech.website/api/Share/:kind/:id" },
+    { "source": "/share-image/event/:file", "destination": "https://sbfqa.lucidtech.website/api/Event/GetImageFile/:file" },
     { "source": "/", "destination": "/index.html" },
     { "source": "/(.*)", "destination": "/index.csr.html" }
   ],

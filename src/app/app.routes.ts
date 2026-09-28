@@ -28,6 +28,7 @@ const memberProfile = () => import('./Components/pages/member-profile/member-pro
 const batches = () => import('./Components/pages/batches/batches.component').then(m => m.BatchesComponent);
 const batchPage = () => import('./Components/pages/batch-page/batch-page.component').then(m => m.BatchPageComponent);
 const campaigns = () => import('./Components/pages/campaigns/campaigns.component').then(m => m.CampaignsComponent);
+const payGuide = () => import('./Components/pages/pay-guide/pay-guide.component').then(m => m.PayGuideComponent);
 const campaignDetail = () => import('./Components/pages/campaigns/campaign-detail.component').then(m => m.CampaignDetailComponent);
 const achievements = () => import('./Components/pages/achievements/achievements.component').then(m => m.AchievementsComponent);
 const teachers = () => import('./Components/pages/teachers/teachers.component').then(m => m.TeachersComponent);
@@ -75,6 +76,7 @@ export const routes: Routes = [
       { path: 'batches/:year', loadComponent: batchPage, title: 'pageTitles.batches' },
       { path: 'campaigns', loadComponent: campaigns, title: 'pageTitles.campaigns' },
       { path: 'campaigns/:id', loadComponent: campaignDetail, title: 'pageTitles.campaigns' },
+      { path: 'help/pay', loadComponent: payGuide, title: 'pageTitles.payGuide' },
       { path: 'events', loadComponent: events, title: 'pageTitles.events' },
       { path: 'notices', loadComponent: notices, title: 'pageTitles.notices' },
       { path: 'gallery', loadComponent: gallery, title: 'pageTitles.gallery' },
@@ -244,6 +246,8 @@ export const routes: Routes = [
   // Public — fundraising campaigns and their progress; members donate from /portal/payments.
   { path: 'campaigns', loadComponent: campaigns, title: 'pageTitles.campaigns', canActivate: [shellRedirectGuard] },
   { path: 'campaigns/:id', loadComponent: campaignDetail, title: 'pageTitles.campaigns', canActivate: [shellRedirectGuard] },
+  // Public — step-by-step "how to send money", linked from the help button.
+  { path: 'help/pay', loadComponent: payGuide, title: 'pageTitles.payGuide', canActivate: [shellRedirectGuard] },
   { path: 'achievements', loadComponent: achievements, title: 'pageTitles.achievements', canActivate: [shellRedirectGuard] },
   { path: 'teachers', loadComponent: teachers, title: 'pageTitles.teachers', canActivate: [shellRedirectGuard] },
   { path: 'committee', loadComponent: committee, title: 'pageTitles.committee', canActivate: [shellRedirectGuard] },

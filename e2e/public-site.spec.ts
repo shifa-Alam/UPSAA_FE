@@ -80,6 +80,24 @@ test.describe('public site', () => {
     await expect(page.locator('script#events-structured-data')).toHaveCount(0);
   });
 
+  test('help button: call the association, or follow the payment guide', async ({ page }) => {
+    await page.route(/\/api\/Payment\/Settings$/, r => r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ bkashNumber: '01811123456', nagadNumber: '01911987654', rocketNumber: null, instructions: null, membershipFee: 100, annualFee: 0, membershipDue: false }) }));
+    await page.goto('/');
+    await page.locator('app-help-button button').click();
+    const call = page.locator('app-help-sheet a.help__call');
+    await expect(call).toHaveAttribute('href', 'tel:+8801866293776');
+    await expect(call).toContainText('০১৮৬৬-২৯৩৭৭৬');
+
+    await page.locator('app-help-sheet a', { hasText: 'বিকাশে কীভাবে টাকা পাঠাবেন' }).click();
+    await expect(page).toHaveURL(/\/help\/pay$/);
+    await expect(page.locator('.to__number')).toHaveText('01811123456');
+    await expect(page.locator('.step')).toHaveCount(7);
+    await expect(page.locator('.step').first()).toContainText('Send Money');
+    // Screenshots not added yet are left out, never shown as broken images.
+    await expect(page.locator('img.step__shot')).toHaveCount(0);
+  });
+
   test('registration: one page; no errors until submit, then empty required fields show', async ({ page }) => {
     await page.goto('/register');
     // Every section is on the page at once — no steps.

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { forkJoin, of } from 'rxjs';
@@ -32,7 +32,7 @@ interface Wallet {
 @Component({
   selector: 'app-member-payments',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
+  imports: [CommonModule, FormsModule, RouterLink, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
     SkeletonComponent, TranslatePipe],
   templateUrl: './member-payments.component.html',
   styleUrl: './member-payments.component.scss'

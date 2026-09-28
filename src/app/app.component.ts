@@ -27,6 +27,7 @@ import { InstallBannerComponent } from './Components/shared/install-banner/insta
 import { PwaService } from './Services/pwa.service';
 import { PushService } from './Services/push.service';
 import { PushToggleComponent } from './Components/shared/push-toggle/push-toggle.component';
+import { HelpButtonComponent } from './Components/shared/help-button/help-button.component';
 import { installImageFadeIn } from './Utils/image-fade';
 import { ScrollPositionService } from './Services/scroll-position.service';
 import { SheetGestureService } from './Services/sheet-gesture.service';
@@ -38,7 +39,7 @@ import { ChangePasswordComponent } from './Components/change-password/change-pas
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
+  imports: [HelpButtonComponent, 
     BackToTopComponent,
     RouterOutlet,
     CommonModule,

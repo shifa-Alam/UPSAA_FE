@@ -1,0 +1,47 @@
+<div class="guide-page">
+
+  <app-page-header variant="plain" [eyebrow]="'payGuide.eyebrow' | translate" [title]="'payGuide.title' | translate"
+    [subtitle]="'payGuide.subtitle' | translate">
+  </app-page-header>
+
+  <div class="upsaa-container guide">
+
+    <!-- ===== The number to send to ===== -->
+    <div class="to" *ngIf="number; else noNumber">
+      <span class="to__label">bKash {{ 'payGuide.sendTo' | translate }}</span>
+      <span class="to__number">{{ number }}</span>
+      <button type="button" class="to__copy" (click)="copyNumber()">
+        <mat-icon>{{ copied ? 'check' : 'content_copy' }}</mat-icon> {{ (copied ? 'payments.copied' : 'payments.copy') | translate }}
+      </button>
+    </div>
+    <ng-template #noNumber>
+      <p class="to to--missing" *ngIf="settings">{{ 'payGuide.noNumber' | translate }}</p>
+    </ng-template>
+
+    <!-- ===== Steps, each with its screenshot ===== -->
+    <ol class="steps">
+      <li class="step" *ngFor="let s of steps; let i = index" [class.step--no-image]="missing.has(s.image)">
+        <div class="step__text">
+          <span class="step__n">{{ num(i + 1) }}</span>
+          <div>
+            <h2 class="step__title">{{ s.titleKey | translate }}</h2>
+            <p class="step__body">{{ s.textKey | translate }}</p>
+          </div>
+        </div>
+        <img *ngIf="!missing.has(s.image)" class="step__shot" [src]="'images/pay-guide/' + s.image"
+          [alt]="s.titleKey | translate" loading="lazy" decoding="async" (error)="missing.add(s.image)" />
+      </li>
+    </ol>
+
+    <!-- ===== Finish ===== -->
+    <div class="finish">
+      <a class="pp-btn pp-btn--solid finish__btn" [routerLink]="submitLink">
+        <mat-icon>send</mat-icon> {{ 'payGuide.goSubmit' | translate }}
+      </a>
+      <a class="finish__call" [href]="tel">
+        <mat-icon>call</mat-icon>
+        <span>{{ 'payGuide.stuck' | translate }} <b>{{ helpPhone }}</b></span>
+      </a>
+    </div>
+  </div>
+</div>
