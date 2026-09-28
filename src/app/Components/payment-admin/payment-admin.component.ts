@@ -13,6 +13,8 @@ import { SectionCardComponent } from '../shared/section-card/section-card.compon
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { PaymentRecordComponent } from './payment-record.component';
+import { printReceipt } from '../member-payments/payment-receipt';
 
 /**
  * Treasurer's queue: members' bKash / Nagad / Rocket payments waiting to be matched with
@@ -23,7 +25,7 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 @Component({
   selector: 'app-payment-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
+  imports: [CommonModule, FormsModule, MatIconModule, PaymentRecordComponent, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
     SkeletonComponent, TranslatePipe],
   templateUrl: './payment-admin.component.html',
   styleUrl: './payment-admin.component.scss'
@@ -130,6 +132,15 @@ export class PaymentAdminComponent implements OnInit {
         error: err => { this.busyId = null; this.snackbar.showError(err?.error?.message ?? this.lang.translate('paymentAdmin.failed')); this.load(); }
       });
     });
+  }
+
+  /** A payment the treasurer just entered is already approved: refresh the counts and lists. */
+  onRecorded(): void {
+    this.load();
+  }
+
+  receipt(p: Payment): void {
+    printReceipt(p, this.lang);
   }
 
   async copyTrx(p: Payment): Promise<void> {

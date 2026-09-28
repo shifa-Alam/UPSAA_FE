@@ -5,6 +5,7 @@ export const memberLandingI18n: I18nSection = {
     memberLanding: {
       pageTitle: 'সদস্য ব্যবস্থাপনা',
       pageSubtitle: 'সকল সদস্য দেখুন, অনুসন্ধান করুন এবং সক্রিয়করণ অনুরোধ পরিচালনা করুন।',
+      registerForSomeone: 'কারো হয়ে নিবন্ধন করুন',
       overviewTab: 'সারসংক্ষেপ',
       batchSummaryTab: 'ব্যাচ সারাংশ',
       createUsersButton: 'সকল সক্রিয় সদস্যের জন্য ইউজার তৈরি করুন।',
@@ -62,6 +63,7 @@ export const memberLandingI18n: I18nSection = {
     memberLanding: {
       pageTitle: 'Member Management',
       pageSubtitle: 'View and search all members, and manage activation requests.',
+      registerForSomeone: 'Register someone',
       overviewTab: 'Overview',
       batchSummaryTab: 'Batch Summary',
       createUsersButton: 'Create user accounts for all active members.',

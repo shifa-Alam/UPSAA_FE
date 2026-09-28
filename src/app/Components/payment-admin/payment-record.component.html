@@ -1,0 +1,108 @@
+<div class="rec">
+
+  <!-- ===== 1. Who ===== -->
+  <div class="rec__who" *ngIf="!member; else chosen">
+    <label class="field">
+      <span>{{ 'paymentRecord.findLabel' | translate }}</span>
+      <input type="search" name="q" [(ngModel)]="query" (ngModelChange)="onQuery()" autocomplete="off"
+        [placeholder]="'paymentRecord.findPlaceholder' | translate" />
+    </label>
+    <p class="rec__hint" *ngIf="searching">{{ 'paymentRecord.searching' | translate }}</p>
+    <p class="rec__hint" *ngIf="!searching && query.trim().length >= 2 && results.length === 0">{{ 'paymentRecord.noMatch' | translate }}</p>
+    <ul class="found" *ngIf="results.length">
+      <li *ngFor="let m of results">
+        <button type="button" class="found__item" (click)="pick(m)">
+          <span class="found__name">{{ m.fullName }}</span>
+          <span class="found__meta">
+            <ng-container *ngIf="m.memberCode">{{ m.memberCode }} · </ng-container>{{ 'checkIn.batch' | translate }} {{ num(m.batch, true) }} · {{ m.phone }}
+          </span>
+          <span class="pill pill--warning found__due" *ngIf="m.membershipDue">{{ 'paymentRecord.feeDue' | translate }}</span>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #chosen>
+    <div class="rec__chosen">
+      <div>
+        <span class="found__name">{{ member!.fullName }}</span>
+        <span class="found__meta">
+          <ng-container *ngIf="member!.memberCode">{{ member!.memberCode }} · </ng-container>{{ 'checkIn.batch' | translate }} {{ num(member!.batch, true) }} · {{ member!.phone }}
+        </span>
+      </div>
+      <button type="button" class="btn btn--outline btn--sm" (click)="clearMember()">{{ 'paymentRecord.change' | translate }}</button>
+    </div>
+
+    <!-- ===== 2. What & how ===== -->
+    <form class="rec__form" (ngSubmit)="save()">
+      <fieldset class="choices">
+        <legend class="field__label">{{ 'payments.purposeLabel' | translate }}</legend>
+        <label class="choice" *ngFor="let p of purposes" [class.is-on]="form.purpose === p">
+          <input type="radio" name="purpose" [value]="p" [ngModel]="form.purpose" (ngModelChange)="setPurpose($event)" />
+          {{ purposeKey(p) | translate }}
+        </label>
+      </fieldset>
+
+      <fieldset class="choices">
+        <legend class="field__label">{{ 'paymentRecord.howPaid' | translate }}</legend>
+        <label class="choice" *ngFor="let m of methods" [class.is-on]="form.method === m.value">
+          <input type="radio" name="method" [value]="m.value" [(ngModel)]="form.method" />
+          {{ m.value === Method.Cash ? (m.key | translate) : m.key }}
+        </label>
+      </fieldset>
+
+      <div class="rec__row">
+        <label class="field">
+          <span>{{ 'payments.amountLabel' | translate }}</span>
+          <input type="number" name="amount" min="1" step="1" inputmode="decimal" [(ngModel)]="form.amount" required />
+        </label>
+        <label class="field" *ngIf="form.purpose === Purpose.Donation && campaigns.length">
+          <span>{{ 'payments.campaignLabel' | translate }}</span>
+          <select name="campaign" [(ngModel)]="form.campaignId">
+            <option [ngValue]="null">{{ 'payments.campaignGeneral' | translate }}</option>
+            <option *ngFor="let c of campaigns" [ngValue]="c.id">{{ c.title }}</option>
+          </select>
+        </label>
+      </div>
+
+      <ng-container *ngIf="!isCash">
+        <p class="rec__check"><mat-icon>fact_check</mat-icon>{{ 'paymentRecord.checkApp' | translate }}</p>
+        <div class="rec__row">
+          <label class="field">
+            <span>{{ 'payments.trxLabel' | translate }}</span>
+            <input type="text" name="trx" class="mono" autocomplete="off" autocapitalize="characters" spellcheck="false"
+              [(ngModel)]="form.transactionId" [placeholder]="'payments.trxPlaceholder' | translate" />
+          </label>
+          <label class="field">
+            <span>{{ 'paymentRecord.senderOptional' | translate }}</span>
+            <input type="tel" name="sender" inputmode="tel" [(ngModel)]="form.senderNumber" placeholder="01XXXXXXXXX" />
+          </label>
+        </div>
+      </ng-container>
+
+      <label class="consent" *ngIf="form.campaignId">
+        <input type="checkbox" name="showDonorName" [(ngModel)]="form.showDonorName" />
+        <span>{{ 'paymentRecord.showDonorName' | translate }}</span>
+      </label>
+
+      <label class="field">
+        <span>{{ 'payments.noteLabel' | translate }}</span>
+        <input type="text" name="note" maxlength="300" [(ngModel)]="form.note" [placeholder]="'paymentRecord.notePlaceholder' | translate" />
+      </label>
+
+      <button type="submit" class="btn btn--solid rec__save" [disabled]="saving">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
+        {{ 'paymentRecord.save' | translate }}<ng-container *ngIf="form.amount"> · {{ money(form.amount) }}</ng-container>
+      </button>
+    </form>
+  </ng-template>
+
+  <!-- ===== Done: paper receipt ===== -->
+  <div class="rec__done" *ngIf="last" role="status">
+    <mat-icon>check_circle</mat-icon>
+    <span>{{ last.memberName }} — {{ money(last.amount) }} · {{ last.receiptNo }}</span>
+    <button type="button" class="btn btn--outline btn--sm" (click)="printLast()">
+      <mat-icon>print</mat-icon> {{ 'paymentRecord.printReceipt' | translate }}
+    </button>
+  </div>
+</div>

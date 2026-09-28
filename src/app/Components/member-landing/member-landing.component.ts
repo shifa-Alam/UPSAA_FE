@@ -20,11 +20,12 @@ import { LanguageService } from '../../Services/language.service';
 
 
 import { CountUpDirective } from '../shared/count-up/count-up.directive';
+import { RouterLink } from '@angular/router';
 @Component({
 
   selector: 'app-member-landing',
   standalone: true,
-  imports: [CountUpDirective, 
+  imports: [RouterLink, CountUpDirective, 
     CommonModule,
     FormsModule,
     MemberFeeAmountPipe,

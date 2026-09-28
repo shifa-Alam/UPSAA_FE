@@ -5,7 +5,8 @@ import { environment } from '../../environments/environment';
 
 /** The API sends enums by name (JsonStringEnumConverter in Program.cs), so these are string enums. */
 export enum PaymentPurpose { Membership = 'Membership', Annual = 'Annual', Donation = 'Donation' }
-export enum PaymentMethod { Bkash = 'Bkash', Nagad = 'Nagad', Rocket = 'Rocket' }
+/** Cash is only ever entered by the treasurer ("record a payment"). */
+export enum PaymentMethod { Bkash = 'Bkash', Nagad = 'Nagad', Rocket = 'Rocket', Cash = 'Cash' }
 export enum PaymentStatus { Pending = 'Pending', Approved = 'Approved', Rejected = 'Rejected' }
 
 export interface PaymentSettings {
@@ -58,6 +59,28 @@ export interface PaymentSubmit {
   showDonorName?: boolean;
 }
 
+/** Staff entering a payment for a member (cash, or a TrxID told on the phone). */
+export interface PaymentRecord {
+  memberId: number;
+  purpose: PaymentPurpose;
+  amount: number;
+  method: PaymentMethod;
+  senderNumber?: string;
+  transactionId?: string;
+  campaignId?: number | null;
+  showDonorName?: boolean;
+  note?: string;
+}
+
+export interface MemberLookup {
+  id: number;
+  fullName: string;
+  memberCode: string | null;
+  batch: number;
+  phone: string;
+  membershipDue: boolean;
+}
+
 export interface PaymentList {
   items: Payment[];
   pending: number;
@@ -69,6 +92,7 @@ export const METHOD_NAMES: Record<PaymentMethod, string> = {
   [PaymentMethod.Bkash]: 'bKash',
   [PaymentMethod.Nagad]: 'Nagad',
   [PaymentMethod.Rocket]: 'Rocket',
+  [PaymentMethod.Cash]: 'Cash',
 };
 
 /** Dues and donations by mobile banking "Send Money" + transaction ID, verified by the treasurer. */
@@ -100,6 +124,16 @@ export class PaymentService {
 
   reject(id: number, note: string): Observable<Payment> {
     return this.http.post<Payment>(`${this.url}/${id}/Reject`, { note });
+  }
+
+  /** Staff: a payment made in cash or told on the phone — booked straight away. */
+  record(data: PaymentRecord): Observable<Payment> {
+    return this.http.post<Payment>(`${this.url}/Record`, data);
+  }
+
+  /** Staff: find a member by name, member code or phone. */
+  lookup(q: string): Observable<MemberLookup[]> {
+    return this.http.get<MemberLookup[]>(`${this.url}/MemberLookup`, { params: { q } });
   }
 
   /** Back to pending: an approval's ledger entry is removed and its fee becomes unpaid again. */

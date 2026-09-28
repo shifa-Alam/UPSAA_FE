@@ -1,4 +1,4 @@
-import { METHOD_NAMES, Payment, PaymentPurpose } from '../../Services/payment.service';
+import { METHOD_NAMES, Payment, PaymentMethod, PaymentPurpose } from '../../Services/payment.service';
 import { LanguageService } from '../../Services/language.service';
 
 const esc = (s: string | number | null | undefined) =>
@@ -21,8 +21,8 @@ export function printReceipt(p: Payment, lang: LanguageService): void {
     [t('member'), `${p.memberName}${p.memberCode ? ` (${p.memberCode})` : ''}`],
     [t('batch'), new Intl.NumberFormat(locale, { useGrouping: false }).format(p.batch)],
     [t('purpose'), purpose],
-    [t('method'), `${METHOD_NAMES[p.method]} · ${p.senderNumber}`],
-    [t('trx'), p.transactionId],
+    [t('method'), p.method === PaymentMethod.Cash ? t('cash') : `${METHOD_NAMES[p.method]}${p.senderNumber ? ' · ' + p.senderNumber : ''}`],
+    ...(p.method === PaymentMethod.Cash ? [] : [[t('trx'), p.transactionId] as [string, string]]),
     [t('date'), when],
   ];
 

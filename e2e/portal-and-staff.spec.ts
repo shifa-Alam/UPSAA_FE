@@ -86,6 +86,37 @@ test.describe('portal and back office', () => {
     expect(approved).toBe(true);
   });
 
+  test('treasurer records cash for a member found by phone', async ({ page }) => {
+    await signInAs(page, 'Admin');
+    let recorded: any = null;
+    await page.route(/\/api\/Payment\/Settings$/, r => r.fulfill(json({
+      bkashNumber: '01811123456', nagadNumber: null, rocketNumber: null, instructions: null, membershipFee: 100, annualFee: 0,
+    })));
+    await page.route(/\/api\/Payment\?status=Pending$/, r => r.fulfill(json({ items: [], pending: 0, approved: recorded ? 1 : 0, rejected: 0 })));
+    await page.route(/\/api\/Payment\/MemberLookup\?q=/, r => r.fulfill(json([
+      { id: 205, fullName: 'আব্দুল করিম', memberCode: 'UPSAA9801', batch: 1998, phone: '01955123456', membershipDue: true },
+    ])));
+    await page.route(/\/api\/Payment\/Record$/, r => {
+      recorded = r.request().postDataJSON();
+      return r.fulfill(json({ ...PAYMENT, id: 40, receiptNo: 'UPSAA-000040', memberId: 205, memberName: 'আব্দুল করিম', method: 'Cash',
+        transactionId: 'CASH260928123456', senderNumber: '', status: 'Approved', reviewedAt: new Date().toISOString(), canUndo: true }));
+    });
+
+    await page.goto('/dashboard/payments');
+    await page.locator('app-payment-record input[name="q"]').fill('01955');
+    await page.locator('.found__item', { hasText: 'আব্দুল করিম' }).click();
+    // Fee is due, so membership is picked with its amount; cash is the default.
+    await expect(page.locator('app-payment-record input[name="amount"]')).toHaveValue('100');
+    await expect(page.locator('app-payment-record .choice.is-on', { hasText: 'নগদ' })).toBeVisible();
+    await expect(page.locator('app-payment-record input[name="trx"]')).toHaveCount(0);
+
+    await page.locator('app-payment-record .rec__save').click();
+    await expect(page.locator('.rec__done')).toContainText('UPSAA-000040');
+    await expect(page.locator('.rec__done button', { hasText: 'রসিদ প্রিন্ট' })).toBeVisible();
+    expect(recorded).toMatchObject({ memberId: 205, purpose: 'Membership', amount: 100, method: 'Cash' });
+    expect(recorded.transactionId).toBeUndefined();
+  });
+
   test('treasurer undoes a mistaken approval', async ({ page }) => {
     await signInAs(page, 'Admin');
     let undone = false;

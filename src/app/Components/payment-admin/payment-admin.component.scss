@@ -207,6 +207,7 @@
 .brand--Bkash { color: #c0105c; border-color: #e2136e; }
 .brand--Nagad { color: #b9510f; border-color: #ec6d1f; }
 .brand--Rocket { color: #7a2b82; border-color: #8c3494; }
+.brand--Cash { color: var(--adm-income); border-color: var(--adm-income); }
 
 :host-context([data-theme='dark']) {
   .brand--Bkash { color: #f56aa8; }

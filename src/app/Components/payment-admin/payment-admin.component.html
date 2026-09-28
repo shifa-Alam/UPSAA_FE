@@ -51,6 +51,11 @@
     </form>
   </details>
 
+  <!-- ===== Record for a member (cash, or a TrxID told on the phone) ===== -->
+  <app-section-card icon="point_of_sale" [title]="'paymentRecord.title' | translate" [subtitle]="'paymentRecord.subtitle' | translate">
+    <app-payment-record [settings]="settings" (recorded)="onRecorded()"></app-payment-record>
+  </app-section-card>
+
   <!-- ===== Queue ===== -->
   <app-section-card icon="receipt_long" [title]="'paymentAdmin.listTitle' | translate" [noPadding]="true">
     <div class="tabs" role="tablist">
@@ -87,7 +92,7 @@
           <div><dt>{{ 'payments.purposeLabel' | translate }}</dt><dd>{{ purposeKey(p.purpose) | translate }}</dd></div>
           <div *ngIf="p.campaignTitle"><dt>{{ 'payments.campaignLabel' | translate }}</dt><dd>{{ p.campaignTitle }}</dd></div>
           <div><dt>{{ 'payments.methodLabel' | translate }}</dt><dd><span class="brand" [ngClass]="'brand--' + p.method">{{ methodNames[p.method] }}</span></dd></div>
-          <div><dt>{{ 'paymentAdmin.from' | translate }}</dt><dd class="mono">{{ p.senderNumber }}</dd></div>
+          <div *ngIf="p.senderNumber"><dt>{{ 'paymentAdmin.from' | translate }}</dt><dd class="mono">{{ p.senderNumber }}</dd></div>
           <div>
             <dt>{{ 'payments.trxLabel' | translate }}</dt>
             <dd class="trx">
@@ -119,8 +124,11 @@
           </button>
         </div>
 
-        <div class="pay__actions" *ngIf="p.status !== Status.Pending && p.canUndo">
-          <button type="button" class="btn btn--outline btn--sm" [disabled]="busyId === p.id" (click)="undo(p)">
+        <div class="pay__actions" *ngIf="p.status === Status.Approved || (p.status !== Status.Pending && p.canUndo)">
+          <button type="button" class="btn btn--outline btn--sm" *ngIf="p.status === Status.Approved" (click)="receipt(p)">
+            <mat-icon>print</mat-icon> {{ 'payments.receiptButton' | translate }}
+          </button>
+          <button type="button" class="btn btn--outline btn--sm" *ngIf="p.canUndo" [disabled]="busyId === p.id" (click)="undo(p)">
             <mat-icon>{{ busyId === p.id ? 'hourglass_top' : 'undo' }}</mat-icon> {{ 'paymentAdmin.undo' | translate }}
           </button>
         </div>

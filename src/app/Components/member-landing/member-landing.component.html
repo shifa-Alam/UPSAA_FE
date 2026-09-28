@@ -1,5 +1,9 @@
 <div class="members">
   <app-admin-header [title]="'memberLanding.pageTitle' | translate" [subtitle]="'memberLanding.pageSubtitle' | translate">
+    <!-- For people who can't fill the form themselves: a volunteer does it with them (e.g. on the phone). -->
+    <a class="btn btn--outline header-btn" routerLink="/register">
+      <mat-icon>person_add_alt</mat-icon> {{ 'memberLanding.registerForSomeone' | translate }}
+    </a>
     <button type="button" class="btn btn--solid header-btn" *ngIf="isSuperAdmin()" (click)="makeUserOfAllCtiveMember()">
       <mat-icon>person_add</mat-icon> {{ 'memberLanding.createUsersButton' | translate }}
     </button>
