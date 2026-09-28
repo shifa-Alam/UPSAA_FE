@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
+import { inject } from '@angular/core';
 import { shellRedirectGuard } from './Guards/shell-redirect.guard';
 import { AuthGuard } from './Guards/auth.guard';
 import { RoleGuard } from './Guards/role.guard';
@@ -276,6 +277,14 @@ export const routes: Routes = [
   {
     path: 'unauthorized', title: 'pageTitles.unauthorized',
     loadComponent: () => import('./Components/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
+  },
+
+  // Share links (/share/event/5) are served by the API's preview page via a Vercel rewrite.
+  // If the app sees one anyway (an older service worker answered it), go to the item.
+  {
+    path: 'share/:kind/:id', children: [],
+    canActivate: [(route: ActivatedRouteSnapshot) => inject(Router).createUrlTree(
+      [route.paramMap.get('kind') === 'notice' ? '/notices' : '/events'], { queryParams: { id: route.paramMap.get('id') } })]
   },
 
   {
