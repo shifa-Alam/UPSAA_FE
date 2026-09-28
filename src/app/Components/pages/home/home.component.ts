@@ -1,11 +1,11 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Component, DestroyRef, Inject, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { ApplicationRef, Component, DestroyRef, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
-import { Subject, catchError, debounceTime, distinctUntilChanged, first, forkJoin, map, of, switchMap } from 'rxjs';
+import { Subject, catchError, debounceTime, distinctUntilChanged, filter, first, forkJoin, map, of, race, switchMap, timer } from 'rxjs';
 import { NoticeService, Notice } from '../../../Services/notice.service';
 import { GalleryService, GalleryImage } from '../../../Services/gallery.service';
 import { EventService, EventItem } from '../../../Services/event.service';
@@ -135,6 +135,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly appRef = inject(ApplicationRef);
+  private readonly zone = inject(NgZone);
   /** True when this page was served as the prerendered homepage (build-time HTML + data). */
   private readonly prerendered: boolean;
 
@@ -176,11 +177,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Swap the build-time data for live data once hydration is done (or after 3 s at most).
+   *  The request skips the transfer cache, so it always reaches the API. */
   private refreshWhenStable(): void {
-    this.appRef.isStable.pipe(first(stable => stable), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.homeService.get().pipe(catchError(() => of(null))).subscribe(fresh => {
-        if (fresh) this.apply(fresh);
-      });
+    race(this.appRef.isStable.pipe(filter(stable => stable)), timer(3000)).pipe(
+      first(),
+      switchMap(() => this.homeService.get(true).pipe(catchError(() => of(null)))),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(fresh => {
+      if (fresh) this.apply(fresh);
     });
   }
 
@@ -372,10 +377,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     clearInterval(this.heroTimer);
     const reduced = this.isBrowser && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (!this.isBrowser || reduced || this.heroImages.length < 2) return;
-    this.heroTimer = setInterval(() => {
-      if (document.hidden) return; // don't burn data or battery in a background tab
-      this.heroIndex = (this.heroIndex + 1) % this.heroImages.length;
-    }, HERO_SLIDE_MS);
+    // Outside Angular's zone: an endless zone timer would keep the app from ever becoming
+    // "stable", which hydration clean-up and the data refresh wait for.
+    this.zone.runOutsideAngular(() => {
+      this.heroTimer = setInterval(() => {
+        if (document.hidden) return; // don't burn data or battery in a background tab
+        this.zone.run(() => this.heroIndex = (this.heroIndex + 1) % this.heroImages.length);
+      }, HERO_SLIDE_MS);
+    });
   }
 
   /** About-section photo: the one chosen in the gallery, else a recent memory. */

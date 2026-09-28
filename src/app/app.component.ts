@@ -23,6 +23,8 @@ import { filter, map } from 'rxjs/operators';
 import { SizedImagePipe } from './Pipes/sized-image.pipe';
 import { BottomNavComponent } from './Components/shared/bottom-nav/bottom-nav.component';
 import { BackToTopComponent } from './Components/shared/back-to-top/back-to-top.component';
+import { NavIconComponent } from './Components/shared/nav-icon/nav-icon.component';
+import { MenuGroup, menuFor } from './Components/dashboard/shell-menus';
 import { InstallBannerComponent } from './Components/shared/install-banner/install-banner.component';
 import { PwaService } from './Services/pwa.service';
 import { PushService } from './Services/push.service';
@@ -39,8 +41,9 @@ import { ChangePasswordComponent } from './Components/change-password/change-pas
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HelpButtonComponent, 
+  imports: [HelpButtonComponent,
     BackToTopComponent,
+    NavIconComponent,
     RouterOutlet,
     CommonModule,
     MatToolbarModule,
@@ -62,6 +65,17 @@ import { ChangePasswordComponent } from './Components/change-password/change-pas
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+  /** Phone drawer menu for the signed-in user — same source as the desktop sidebar. */
+  get mobileShellMenu(): MenuGroup[] {
+    if (!this.authService.isLoggedIn()) return [];
+    const shell = this.authService.isStaff() ? 'admin' : 'member';
+    const role = this.authService.getCurrentUser()?.role ?? '';
+    const key = `${shell}:${role}`;
+    if (this.shellMenuCache?.key !== key) this.shellMenuCache = { key, menu: menuFor(shell, role) };
+    return this.shellMenuCache.menu;
+  }
+  private shellMenuCache: { key: string; menu: MenuGroup[] } | null = null;
+
   profileImageUrl: string | null = null;
   userInitial: string = '';
   isLoading = false;

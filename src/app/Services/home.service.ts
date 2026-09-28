@@ -30,7 +30,8 @@ export interface HomeData {
 export class HomeService {
   constructor(private http: HttpClient) { }
 
-  get(): Observable<HomeData> {
-    return this.http.get<HomeData>(`${environment.baseUrl}/Home`);
+  /** @param fresh skip the prerender transfer cache and always ask the API. */
+  get(fresh = false): Observable<HomeData> {
+    return this.http.get<HomeData>(`${environment.baseUrl}/Home`, fresh ? { transferCache: false } : {});
   }
 }

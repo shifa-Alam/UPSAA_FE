@@ -309,6 +309,21 @@ content-area router-outlet {
   color: var(--color-primary-600);
 }
 
+// Menu icons shared with the desktop sidebar (SVG nav icons), sized like the mat-icons.
+.mobile-nav-links a .mobile-nav-icon {
+  width: 20px;
+  height: 20px;
+  // mat-button puts custom children inside its label, so the link's flex gap doesn't
+  // reach them — space the icon like a mat-icon instead.
+  margin-right: 12px;
+  vertical-align: middle;
+  color: var(--color-ink-400);
+}
+
+.mobile-nav-links a.active-link .mobile-nav-icon {
+  color: var(--color-primary-600);
+}
+
 .mobile-nav-links a:hover {
   background: var(--color-surface-alt);
 }

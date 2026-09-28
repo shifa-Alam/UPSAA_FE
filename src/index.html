@@ -89,16 +89,6 @@
         document.head.appendChild(link);
       } catch (e) { /* storage disabled */ }
     })();
-
-    // Vercel Web Analytics (page views) — on the deployed site only, never on localhost.
-    (function () {
-      if (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)) return;
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-      var s = document.createElement('script');
-      s.defer = true;
-      s.src = '/_vercel/insights/script.js';
-      document.head.appendChild(s);
-    })();
   </script>
 
 </head>
