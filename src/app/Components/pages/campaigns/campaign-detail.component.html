@@ -1,0 +1,60 @@
+<div class="campaign-page">
+
+  <app-page-header variant="hero" [eyebrow]="'campaigns.hero.eyebrow' | translate"
+    [title]="detail?.campaign?.title || ('campaigns.hero.title' | translate)" [subtitle]="detail ? dateRange() : ''">
+    <a class="campaign-page__back" [routerLink]="listLink">
+      <mat-icon>arrow_back</mat-icon> {{ 'campaigns.allCampaigns' | translate }}
+    </a>
+  </app-page-header>
+
+  <app-skeleton *ngIf="loading" variant="list" [count]="3" [contained]="true" [label]="'campaigns.loading' | translate"></app-skeleton>
+
+  <section class="pp-section" *ngIf="!loading && notFound">
+    <div class="upsaa-container">
+      <app-empty-state icon="volunteer_activism" [title]="'campaigns.notFoundTitle' | translate"
+        [message]="'campaigns.notFoundMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <section class="pp-section" *ngIf="!loading && detail as d">
+    <div class="upsaa-container layout">
+
+      <div class="layout__main">
+        <p class="story" *ngIf="d.campaign.description">{{ d.campaign.description }}</p>
+
+        <h2 class="donors__title">{{ 'campaigns.donorsTitle' | translate }}</h2>
+        <p class="donors__empty" *ngIf="d.donors.length === 0 && d.anonymousDonorCount === 0">{{ 'campaigns.noDonorsYet' | translate }}</p>
+        <ul class="donors" *ngIf="d.donors.length">
+          <li class="donor" *ngFor="let p of d.donors">
+            <span class="donor__avatar" aria-hidden="true">{{ initials(p.name) }}</span>
+            <span class="donor__name">{{ p.name }}</span>
+            <span class="donor__batch">{{ 'checkIn.batch' | translate }} {{ num(p.batch, true) }}</span>
+          </li>
+        </ul>
+        <p class="donors__anon" *ngIf="d.anonymousDonorCount > 0">
+          + {{ num(d.anonymousDonorCount) }} {{ 'campaigns.anonymousDonors' | translate }}
+        </p>
+      </div>
+
+      <aside class="layout__side">
+        <div class="give">
+          <app-campaign-progress [campaign]="d.campaign" size="lg"></app-campaign-progress>
+          <p class="give__offline" *ngIf="d.campaign.offlineAmount > 0">
+            {{ 'campaigns.includesOffline' | translate }}
+          </p>
+
+          <ng-container *ngIf="d.campaign.isOpen">
+            <a *ngIf="canDonate" class="pp-btn pp-btn--solid give__btn" routerLink="/portal/payments" [queryParams]="{ campaign: d.campaign.id }">
+              <mat-icon>volunteer_activism</mat-icon> {{ 'campaigns.donate' | translate }}
+            </a>
+            <a *ngIf="!auth.isLoggedIn()" class="pp-btn pp-btn--solid give__btn" routerLink="/login">
+              <mat-icon>login</mat-icon> {{ 'campaigns.signInToDonate' | translate }}
+            </a>
+            <p class="give__how">{{ 'campaigns.howToGive' | translate }}</p>
+          </ng-container>
+          <p class="give__closed" *ngIf="!d.campaign.isOpen">{{ 'campaigns.closedNote' | translate }}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</div>

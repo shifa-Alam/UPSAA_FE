@@ -95,6 +95,20 @@
               <small class="field__hint">{{ 'payments.trxHint' | translate }}</small>
             </label>
 
+            <ng-container *ngIf="form.purpose === Purpose.Donation && campaigns.length">
+              <label class="field">
+                <span>{{ 'payments.campaignLabel' | translate }}</span>
+                <select name="campaign" [(ngModel)]="form.campaignId">
+                  <option [ngValue]="null">{{ 'payments.campaignGeneral' | translate }}</option>
+                  <option *ngFor="let c of campaigns" [ngValue]="c.id">{{ c.title }}</option>
+                </select>
+              </label>
+              <label class="consent" *ngIf="form.campaignId">
+                <input type="checkbox" name="showDonorName" [(ngModel)]="form.showDonorName" />
+                <span>{{ 'payments.showDonorName' | translate }}</span>
+              </label>
+            </ng-container>
+
             <label class="field">
               <span>{{ 'payments.noteLabel' | translate }}</span>
               <input type="text" name="note" maxlength="300" [(ngModel)]="form.note" [placeholder]="'payments.notePlaceholder' | translate" />
@@ -120,7 +134,7 @@
         <li class="h-item" *ngFor="let p of history">
           <div class="h-item__main">
             <span class="h-item__amount">{{ money(p.amount) }}</span>
-            <span class="h-item__what">{{ purposeKey(p.purpose) | translate }} · {{ methodNames[p.method] }}</span>
+            <span class="h-item__what">{{ purposeKey(p.purpose) | translate }}<ng-container *ngIf="p.campaignTitle"> · {{ p.campaignTitle }}</ng-container> · {{ methodNames[p.method] }}</span>
             <span class="h-item__meta"><span class="mono">{{ p.transactionId }}</span> · {{ date(p.submittedAt) }}</span>
             <span class="h-item__reason" *ngIf="p.status === Status.Rejected && p.reviewNote">
               <mat-icon>error_outline</mat-icon>{{ p.reviewNote }}

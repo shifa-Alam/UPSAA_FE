@@ -83,7 +83,9 @@ export class DashboardComponent {
       expanded: false,
       children: [
         { labelKey: 'dashboard.itemFinance', route: '/dashboard/finance', icon: 'dollar' },
-        { labelKey: 'dashboard.itemPaymentAdmin', route: '/dashboard/payments', icon: 'card' }
+        { labelKey: 'dashboard.itemPaymentAdmin', route: '/dashboard/payments', icon: 'card' },
+        { labelKey: 'dashboard.itemCampaignAdmin', route: '/dashboard/campaigns', icon: 'heart' },
+        { labelKey: 'dashboard.itemReports', route: '/dashboard/reports', icon: 'bar-chart' }
       ]
     },
     {
@@ -141,6 +143,7 @@ export class DashboardComponent {
         { labelKey: 'dashboard.itemGallery', route: '/portal/gallery', icon: 'image' },
         { labelKey: 'dashboard.itemCommittee', route: '/portal/committee', icon: 'users' },
         { labelKey: 'dashboard.itemAccounts', route: '/portal/accounts', icon: 'dollar' },
+        { labelKey: 'dashboard.itemCampaigns', route: '/portal/campaigns', icon: 'heart' },
         { labelKey: 'dashboard.itemAbout', route: '/portal/about', icon: 'book' },
         { labelKey: 'dashboard.itemContact', route: '/portal/contact', icon: 'megaphone' }
       ]
@@ -199,7 +202,6 @@ export class DashboardComponent {
     switch (this.currentUser?.role) {
       case 'SuperAdmin': return 'dashboard.roleSuperAdmin';
       case 'Admin': return 'dashboard.roleAdmin';
-      case 'Representative': return 'dashboard.roleRepresentative';
       default: return 'dashboard.roleMember';
     }
   }

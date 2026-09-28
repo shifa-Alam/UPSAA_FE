@@ -1,0 +1,51 @@
+<div class="campaigns-page">
+
+  <app-page-header variant="hero" [eyebrow]="'campaigns.hero.eyebrow' | translate" [title]="'campaigns.hero.title' | translate"
+    [subtitle]="'campaigns.hero.subtitle' | translate">
+  </app-page-header>
+
+  <app-skeleton *ngIf="loading" variant="cards" [count]="3" [contained]="true" [label]="'campaigns.loading' | translate"></app-skeleton>
+
+  <section class="pp-section" *ngIf="!loading && (loadError || (open.length === 0 && closed.length === 0))">
+    <div class="upsaa-container">
+      <app-empty-state *ngIf="loadError" icon="volunteer_activism" [title]="'campaigns.errorTitle' | translate"
+        [message]="'campaigns.errorMessage' | translate"></app-empty-state>
+      <app-empty-state *ngIf="!loadError" icon="volunteer_activism" [title]="'campaigns.emptyTitle' | translate"
+        [message]="'campaigns.emptyMessage' | translate"></app-empty-state>
+    </div>
+  </section>
+
+  <section class="pp-section" *ngIf="!loading && open.length">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'campaigns.openEyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'campaigns.openTitle' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+      <div class="cards">
+        <a class="card" *ngFor="let c of open" [routerLink]="[base, c.id]">
+          <h3 class="card__title">{{ c.title }}</h3>
+          <p class="card__text" *ngIf="c.description">{{ c.description }}</p>
+          <app-campaign-progress [campaign]="c"></app-campaign-progress>
+          <span class="card__cta">{{ 'campaigns.viewAndDonate' | translate }} <mat-icon>arrow_forward</mat-icon></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pp-section" *ngIf="!loading && closed.length">
+    <div class="upsaa-container" appReveal>
+      <header class="pp-section__head">
+        <span class="pp-section__eyebrow">{{ 'campaigns.closedEyebrow' | translate }}</span>
+        <h2 class="pp-section__title">{{ 'campaigns.closedTitle' | translate }}</h2>
+        <span class="pp-section__rule"></span>
+      </header>
+      <div class="cards">
+        <a class="card card--closed" *ngFor="let c of closed" [routerLink]="[base, c.id]">
+          <h3 class="card__title">{{ c.title }}</h3>
+          <app-campaign-progress [campaign]="c"></app-campaign-progress>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>

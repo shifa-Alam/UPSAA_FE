@@ -1,0 +1,88 @@
+<div class="camp-admin">
+
+  <app-admin-header [title]="'campaignAdmin.title' | translate" [subtitle]="'campaignAdmin.subtitle' | translate"></app-admin-header>
+
+  <!-- ===== Create / edit ===== -->
+  <app-section-card icon="volunteer_activism" [title]="(editingId ? 'campaignAdmin.editTitle' : 'campaignAdmin.newTitle') | translate">
+    <form class="camp-form" (ngSubmit)="save()">
+      <label class="field camp-form__full">
+        <span>{{ 'campaignAdmin.nameLabel' | translate }}</span>
+        <input type="text" name="title" maxlength="200" [(ngModel)]="form.title" [placeholder]="'campaignAdmin.namePlaceholder' | translate" required />
+      </label>
+      <label class="field camp-form__full">
+        <span>{{ 'campaignAdmin.descriptionLabel' | translate }}</span>
+        <textarea name="description" rows="4" maxlength="4000" [(ngModel)]="form.description"
+          [placeholder]="'campaignAdmin.descriptionPlaceholder' | translate"></textarea>
+      </label>
+      <label class="field">
+        <span>{{ 'campaignAdmin.goalLabel' | translate }}</span>
+        <input type="number" name="goal" min="100" step="100" [(ngModel)]="form.goalAmount" required />
+      </label>
+      <label class="field">
+        <span>{{ 'campaignAdmin.offlineLabel' | translate }}</span>
+        <input type="number" name="offline" min="0" step="1" [(ngModel)]="form.offlineAmount" />
+        <small class="field__hint">{{ 'campaignAdmin.offlineHint' | translate }}</small>
+      </label>
+      <label class="field">
+        <span>{{ 'campaignAdmin.startLabel' | translate }}</span>
+        <input type="date" name="start" [(ngModel)]="form.startDate" required />
+      </label>
+      <label class="field">
+        <span>{{ 'campaignAdmin.endLabel' | translate }}</span>
+        <input type="date" name="end" [(ngModel)]="form.endDate" />
+        <small class="field__hint">{{ 'campaignAdmin.endHint' | translate }}</small>
+      </label>
+      <label class="consent camp-form__full">
+        <input type="checkbox" name="published" [(ngModel)]="form.isPublished" />
+        <span>{{ 'campaignAdmin.publishLabel' | translate }}</span>
+      </label>
+      <div class="camp-form__full camp-form__actions">
+        <button type="submit" class="btn btn--solid" [disabled]="saving">
+          <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon>
+          {{ (editingId ? 'campaignAdmin.save' : 'campaignAdmin.create') | translate }}
+        </button>
+        <button type="button" class="btn btn--outline" *ngIf="editingId" [disabled]="saving" (click)="cancelEdit()">
+          {{ 'campaignAdmin.cancel' | translate }}
+        </button>
+      </div>
+    </form>
+  </app-section-card>
+
+  <!-- ===== List ===== -->
+  <app-section-card icon="list" [title]="'campaignAdmin.listTitle' | translate" [noPadding]="true">
+    <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'campaigns.loading' | translate"></app-skeleton>
+    <app-empty-state *ngIf="!loading && loadError" icon="wifi_off" [title]="'campaigns.errorTitle' | translate"
+      [message]="'campaigns.errorMessage' | translate"></app-empty-state>
+    <app-empty-state *ngIf="!loading && !loadError && campaigns.length === 0" icon="volunteer_activism"
+      [title]="'campaignAdmin.emptyTitle' | translate" [message]="'campaignAdmin.emptyMessage' | translate"></app-empty-state>
+
+    <ul class="camps" *ngIf="!loading && campaigns.length">
+      <li class="camp" *ngFor="let c of campaigns" [class.camp--editing]="editingId === c.id">
+        <div class="camp__head">
+          <h3 class="camp__title">{{ c.title }}</h3>
+          <span class="pill" [ngClass]="statusPill(c)">{{ ('campaignAdmin.status_' + status(c)) | translate }}</span>
+        </div>
+        <app-campaign-progress [campaign]="c"></app-campaign-progress>
+        <p class="camp__split">
+          {{ 'campaignAdmin.online' | translate }} ৳{{ num(c.onlineAmount) }}
+          · {{ 'campaignAdmin.offline' | translate }} ৳{{ num(c.offlineAmount) }}
+          <a *ngIf="c.pendingCount" class="camp__pending" routerLink="/dashboard/payments">
+            · {{ num(c.pendingCount) }} {{ 'campaignAdmin.pending' | translate }}
+          </a>
+        </p>
+        <div class="camp__actions">
+          <a class="btn btn--outline btn--sm" [routerLink]="['/campaigns', c.id]" target="_blank" rel="noopener">
+            <mat-icon>open_in_new</mat-icon> {{ 'campaignAdmin.view' | translate }}
+          </a>
+          <button type="button" class="btn btn--outline btn--sm" (click)="edit(c)">
+            <mat-icon>edit</mat-icon> {{ 'campaignAdmin.edit' | translate }}
+          </button>
+          <button type="button" class="icon-btn icon-btn--danger" [disabled]="deletingId === c.id" (click)="remove(c)"
+            [attr.aria-label]="('campaignAdmin.delete' | translate) + ': ' + c.title" [attr.title]="'campaignAdmin.delete' | translate">
+            <mat-icon>{{ deletingId === c.id ? 'hourglass_top' : 'delete' }}</mat-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </app-section-card>
+</div>

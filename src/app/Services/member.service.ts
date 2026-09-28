@@ -81,11 +81,10 @@ export interface PublicBatch {
   alumniCount: number;
 }
 
-/** One batch's page: its alumni count and representatives. */
+/** One batch's page: its alumni count. */
 export interface PublicBatchDetail {
   batch: number;
   alumniCount: number;
-  representatives: PublicMember[];
 }
 
 export interface BloodDonor {
@@ -249,9 +248,6 @@ export class MemberService {
   getBatchSummary(): Observable<BatchSummary[]> {
     return this.http.get<BatchSummary[]>(`${this.apiUrl}/BatchSummary`);
   }
-  requestActivation(memberId: number): Observable<any> {
-    return this.http.post(`${this.apiUrl}/RequestActivation/${memberId}`, {});
-  }
 
 
   approveRequest(memberId: number): Observable<any> {
@@ -267,7 +263,7 @@ export class MemberService {
   }
 
 
-  createUserFromMember(memberId: number, role: string = 'Representative'): Observable<any> {
+  createUserFromMember(memberId: number, role: string = 'Member'): Observable<any> {
     return this.http.post(`${this.authApiUrl}/CreateUserFromMember/${memberId}?role=${role}`, {});
   }
   // At the bottom of MemberService class

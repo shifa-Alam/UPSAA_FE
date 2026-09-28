@@ -51,6 +51,9 @@
         <mat-icon>school</mat-icon><span>{{ 'nav.teachers' | translate }}</span>
       </a>
 
+      <a mat-button (click)="sidenav.close()" routerLink="/campaigns" routerLinkActive="active-link">
+        <mat-icon>volunteer_activism</mat-icon><span>{{ 'nav.campaigns' | translate }}</span>
+      </a>
       <a mat-button (click)="sidenav.close()" routerLink="/gallery" routerLinkActive="active-link">
         <mat-icon>photo_library</mat-icon><span>{{ 'nav.gallery' | translate }}</span>
       </a>
@@ -106,6 +109,9 @@
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="/portal/accounts" routerLinkActive="active-link">
         <mat-icon>account_balance_wallet</mat-icon><span>{{ 'dashboard.itemAccounts' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/portal/campaigns" routerLinkActive="active-link">
+        <mat-icon>volunteer_activism</mat-icon><span>{{ 'dashboard.itemCampaigns' | translate }}</span>
       </a>
       <a mat-button (click)="sidenav.close()" routerLink="/portal/about" routerLinkActive="active-link">
         <mat-icon>info</mat-icon><span>{{ 'dashboard.itemAbout' | translate }}</span>
@@ -279,6 +285,9 @@
               </a>
               <a mat-menu-item routerLink="/teachers">
                 <mat-icon>school</mat-icon><span>{{ 'nav.teachers' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/campaigns">
+                <mat-icon>volunteer_activism</mat-icon><span>{{ 'nav.campaigns' | translate }}</span>
               </a>
             </mat-menu>
 

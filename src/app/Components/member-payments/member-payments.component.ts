@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { forkJoin, of } from 'rxjs';
@@ -15,6 +16,7 @@ import { EmptyStateComponent } from '../shared/empty-state/empty-state.component
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { printReceipt } from './payment-receipt';
+import { Campaign, CampaignService } from '../../Services/campaign.service';
 
 interface Wallet {
   method: PaymentMethod;
@@ -39,6 +41,11 @@ export class MemberPaymentsComponent implements OnInit {
   private api = inject(PaymentService);
   private lang = inject(LanguageService);
   private snackbar = inject(SnackbarService);
+  private campaignsApi = inject(CampaignService);
+  private route = inject(ActivatedRoute);
+
+  /** Campaigns open for donations (for the optional "towards" picker). */
+  campaigns: Campaign[] = [];
 
   readonly Purpose = PaymentPurpose;
   readonly Status = PaymentStatus;
@@ -63,10 +70,12 @@ export class MemberPaymentsComponent implements OnInit {
     forkJoin({
       settings: this.api.settings(),
       history: this.api.mine().pipe(catchError(() => of([] as Payment[]))),
+      campaigns: this.campaignsApi.list().pipe(catchError(() => of([] as Campaign[]))),
     }).subscribe({
-      next: ({ settings, history }) => {
+      next: ({ settings, history, campaigns }) => {
         this.settings = settings;
         this.history = history;
+        this.campaigns = campaigns.filter(c => c.isOpen);
         this.wallets = ([
           [PaymentMethod.Bkash, settings.bkashNumber],
           [PaymentMethod.Nagad, settings.nagadNumber],
@@ -75,7 +84,14 @@ export class MemberPaymentsComponent implements OnInit {
           .filter(([, n]) => !!n)
           .map(([method, number]) => ({ method, name: METHOD_NAMES[method], number: number! }));
         if (!this.wallets.some(w => w.method === this.form.method)) this.form.method = this.wallets[0]?.method ?? PaymentMethod.Bkash;
-        this.pickPurpose(settings.membershipDue ? PaymentPurpose.Membership : PaymentPurpose.Donation);
+        // Arriving from a campaign's "Donate" button: that campaign, as a donation.
+        const fromCampaign = Number(this.route.snapshot.queryParamMap.get('campaign'));
+        if (this.campaigns.some(c => c.id === fromCampaign)) {
+          this.pickPurpose(PaymentPurpose.Donation);
+          this.form.campaignId = fromCampaign;
+        } else {
+          this.pickPurpose(settings.membershipDue ? PaymentPurpose.Membership : PaymentPurpose.Donation);
+        }
         this.loading = false;
       },
       error: () => { this.loading = false; this.loadError = true; }
@@ -137,6 +153,8 @@ export class MemberPaymentsComponent implements OnInit {
       senderNumber: f.senderNumber,
       transactionId: f.transactionId,
       note: f.note.trim() || undefined,
+      campaignId: f.purpose === PaymentPurpose.Donation ? f.campaignId : null,
+      showDonorName: f.purpose === PaymentPurpose.Donation && !!f.campaignId && f.showDonorName,
     }).subscribe({
       next: p => {
         this.submitting = false;
@@ -195,6 +213,8 @@ export class MemberPaymentsComponent implements OnInit {
       senderNumber: '',
       transactionId: '',
       note: '',
+      campaignId: null as number | null,
+      showDonorName: false,
     };
   }
 }

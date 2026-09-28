@@ -49,7 +49,7 @@ export async function mockApi(page: Page): Promise<{ url: string; body: any }[]>
     const batch = path.match(/^member\/PublicBatch\/(\d+)$/i);
     if (batch) {
       const inBatch = MEMBERS.filter(m => m.batch === Number(batch[1]));
-      return json(route, { batch: Number(batch[1]), alumniCount: inBatch.length, representatives: inBatch.slice(0, 1) });
+      return json(route, { batch: Number(batch[1]), alumniCount: inBatch.length });
     }
     const profile = path.match(/^member\/PublicProfile\/(\d+)$/i);
     if (profile) {

@@ -85,6 +85,7 @@
 
         <dl class="pay__facts">
           <div><dt>{{ 'payments.purposeLabel' | translate }}</dt><dd>{{ purposeKey(p.purpose) | translate }}</dd></div>
+          <div *ngIf="p.campaignTitle"><dt>{{ 'payments.campaignLabel' | translate }}</dt><dd>{{ p.campaignTitle }}</dd></div>
           <div><dt>{{ 'payments.methodLabel' | translate }}</dt><dd><span class="brand" [ngClass]="'brand--' + p.method">{{ methodNames[p.method] }}</span></dd></div>
           <div><dt>{{ 'paymentAdmin.from' | translate }}</dt><dd class="mono">{{ p.senderNumber }}</dd></div>
           <div>

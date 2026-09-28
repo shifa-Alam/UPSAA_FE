@@ -38,6 +38,9 @@ export interface Payment {
   reviewedAt: string | null;
   reviewNote: string | null;
   reviewedByName: string | null;
+  campaignId?: number | null;
+  campaignTitle?: string | null;
+  showDonorName?: boolean;
   /** Only whoever approved/rejected it may undo that decision. */
   canUndo?: boolean;
 }
@@ -49,6 +52,10 @@ export interface PaymentSubmit {
   senderNumber: string;
   transactionId: string;
   note?: string;
+  /** A donation towards this campaign. */
+  campaignId?: number | null;
+  /** List my name (and batch, never the amount) on the campaign page. */
+  showDonorName?: boolean;
 }
 
 export interface PaymentList {

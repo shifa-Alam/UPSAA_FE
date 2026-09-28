@@ -13,7 +13,7 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 
 const PAGE_SIZE = 20;
 /** Display order, most privileged first; any other role the server returns goes last. */
-const ROLE_ORDER = ['SuperAdmin', 'Admin', 'Representative', 'Member'];
+const ROLE_ORDER = ['SuperAdmin', 'Admin', 'Member'];
 
 /** SuperAdmin only: every login account, with a per-row role picker. */
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
@@ -154,7 +154,6 @@ export class UserRolesComponent implements OnInit, OnDestroy {
     switch (role) {
       case 'SuperAdmin': return 'dashboard.roleSuperAdmin';
       case 'Admin': return 'dashboard.roleAdmin';
-      case 'Representative': return 'dashboard.roleRepresentative';
       case 'Member': return 'dashboard.roleMember';
       default: return 'userRoles.noRole';
     }
@@ -164,7 +163,6 @@ export class UserRolesComponent implements OnInit, OnDestroy {
     switch (role) {
       case 'SuperAdmin': return 'pill--gold';
       case 'Admin': return 'pill--navy';
-      case 'Representative': return 'pill--info';
       case 'Member': return 'pill--neutral';
       default: return 'pill--danger';
     }

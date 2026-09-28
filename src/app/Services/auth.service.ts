@@ -89,7 +89,7 @@ export class AuthService {
     return this.userSubject.value;
   }
   hasRole(role: string): boolean {
-    const roles = this.getRoles(); // e.g., ['Admin', 'Representative']
+    const roles = this.getRoles(); // e.g., ['Admin']
     return roles.includes(role);
   }
   /** True for SuperAdmin or Admin — the two roles that manage the back office. */
@@ -100,7 +100,7 @@ export class AuthService {
     const user = this.getCurrentUser();
     if (!user) return [];
 
-    // If role is a comma-separated string (like "Admin,Representative")
+    // If role is a comma-separated string (like "Admin,Member")
     if (user.role) {
       return user.role.split(',').map(r => r.trim());
     }

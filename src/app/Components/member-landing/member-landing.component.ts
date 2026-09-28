@@ -157,10 +157,6 @@ onTabChange(event: any) {
     );
   }
 
-  isRepresentative(): boolean {
-    return this.authService.hasRole('Representative');
-  }
-
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
   }
@@ -208,20 +204,6 @@ onTabChange(event: any) {
   private confirmContinue(action: () => void): void {
     this.confirmService.ask({ message: this.languageService.translate('memberLanding.confirmContinue') }).subscribe(ok => {
       if (ok) action();
-    });
-  }
-
-  sendActiveReq(memberId: number) {
-    this.confirmContinue(() => {
-      this.memberService.requestActivation(memberId).subscribe({
-        next: (res) => {
-          console.log(res);
-          this.loadMembers();
-        },
-        error: (err) => {
-          console.log("Error:", JSON.stringify(err.error, null, 2));
-        }
-      });
     });
   }
 

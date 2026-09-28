@@ -1,0 +1,124 @@
+// One campaign: story + donors on the left, progress and the give button on the right.
+
+.campaign-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+.campaign-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-4);
+  min-height: 40px;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.9;
+  text-decoration: none;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  &:hover { opacity: 1; text-decoration: underline; }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--space-7, 40px);
+  align-items: start;
+
+  @media (max-width: 860px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    .layout__side { order: -1; }
+  }
+}
+
+.story {
+  margin: 0 0 var(--space-6);
+  font-size: var(--font-size-md);
+  line-height: 1.8;
+  white-space: pre-line;
+  color: var(--color-ink-700);
+}
+
+.give {
+  position: sticky;
+  top: calc(var(--header-height, 64px) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--color-ink-100);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.give__btn {
+  justify-content: center;
+  width: 100%;
+}
+
+.give__offline,
+.give__how,
+.give__closed {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.donors__title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg, 20px);
+}
+
+.donors__empty,
+.donors__anon {
+  margin: var(--space-3) 0 0;
+  color: var(--color-ink-600);
+}
+
+.donors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: var(--space-2) var(--space-4);
+}
+
+.donor {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2) 0;
+}
+
+.donor__avatar {
+  grid-row: 1 / span 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--gradient-hero);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.donor__name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.donor__batch {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}

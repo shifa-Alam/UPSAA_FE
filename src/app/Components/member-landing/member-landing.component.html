@@ -94,7 +94,7 @@
                   <th class="col-city">{{ 'memberLanding.colCity' | translate }}</th>
                   <th class="col-blood">{{ 'memberLanding.colBloodGroup' | translate }}</th>
                   <th class="num" *ngIf="isSuperAdmin()">{{ 'memberLanding.colTotal' | translate }}</th>
-                  <th class="col-manage" *ngIf="isSuperAdmin() || isRepresentative()">{{ 'memberLanding.colManage' | translate }}</th>
+                  <th class="col-manage" *ngIf="isSuperAdmin()">{{ 'memberLanding.colManage' | translate }}</th>
                   <th class="text-right">{{ 'memberLanding.colAction' | translate }}</th>
                 </tr>
               </thead>
@@ -112,22 +112,12 @@
                   <td class="col-blood" [attr.data-label]="'memberLanding.colBloodGroup' | translate">{{ member.bloodGroup }}</td>
                   <td class="num" *ngIf="isSuperAdmin()" [attr.data-label]="'memberLanding.colTotal' | translate">{{ member.fees | memberFeeAmount:'Total' }}</td>
 
-                  <td class="col-manage rt-wide" *ngIf="isSuperAdmin() || isRepresentative()" [attr.data-label]="'memberLanding.colManage' | translate">
+                  <td class="col-manage rt-wide" *ngIf="isSuperAdmin()" [attr.data-label]="'memberLanding.colManage' | translate">
                     <div class="manage">
-                      <!-- Representative: request activation for own batch -->
-                      <button type="button" class="icon-btn icon-btn--request"
-                        *ngIf="isRepresentative() && (member.statusId == 0 || member.statusId == null) && (member.batch == batch)"
-                        (click)="sendActiveReq(member.id)"
-                        [attr.aria-label]="'memberLanding.activationRequestTooltip' | translate" [title]="'memberLanding.activationRequestTooltip' | translate">
-                        <mat-icon>send</mat-icon>
-                      </button>
-                      <span class="pill pill--attention" *ngIf="isRepresentative() && member.statusId == 'Pending'">
-                        {{ 'memberLanding.memberPending' | translate }}
-                      </span>
 
                       <!-- SuperAdmin: accept pending request -->
                       <ng-container *ngIf="isSuperAdmin() && member.statusId == 'Pending'">
-                        <span class="pill pill--attention" *ngIf="!isRepresentative()">{{ 'memberLanding.memberPending' | translate }}</span>
+                        <span class="pill pill--attention">{{ 'memberLanding.memberPending' | translate }}</span>
                         <button type="button" class="icon-btn icon-btn--accept" (click)="approveRequest(member.id)"
                           [attr.aria-label]="'memberLanding.acceptTooltip' | translate" [title]="'memberLanding.acceptTooltip' | translate">
                           <mat-icon>check_circle</mat-icon>

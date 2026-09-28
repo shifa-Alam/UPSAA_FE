@@ -8,20 +8,18 @@ import { MemberService, PublicBatchDetail } from '../../../Services/member.servi
 import { LanguageService } from '../../../Services/language.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
 import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
-import { RevealDirective } from '../../shared/reveal/reveal.directive';
 import { DirectoryComponent } from '../directory/directory.component';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
-import { SizedImagePipe, SizedSrcsetPipe } from '../../../Pipes/sized-image.pipe';
 
 /**
  * One batch's own page (/batches/2009, or /portal/batches/2009): the year and how many
- * alumni it has, its representatives, then the directory locked to that batch.
+ * alumni it has, then the directory locked to that batch.
  */
 @Component({
   selector: 'app-batch-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule, PageHeaderComponent, EmptyStateComponent, RevealDirective,
-    DirectoryComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [CommonModule, RouterLink, MatIconModule, PageHeaderComponent, EmptyStateComponent,
+    DirectoryComponent, TranslatePipe],
   templateUrl: './batch-page.component.html',
   styleUrl: './batch-page.component.scss'
 })
@@ -34,7 +32,6 @@ export class BatchPageComponent implements OnInit {
 
   readonly inPortal = this.router.url.startsWith('/portal');
   readonly batchesLink = this.inPortal ? '/portal/batches' : '/batches';
-  readonly profileBase = this.inPortal ? '/portal/members' : '/members';
 
   year = 0;
   detail: PublicBatchDetail | null = null;
@@ -77,7 +74,4 @@ export class BatchPageComponent implements OnInit {
     return new Intl.NumberFormat(locale, { useGrouping: !plain }).format(value);
   }
 
-  initials(name: string): string {
-    return name ? name.trim().charAt(0).toUpperCase() : '?';
-  }
 }

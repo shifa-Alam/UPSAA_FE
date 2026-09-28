@@ -86,26 +86,8 @@ hidePassword = true; // default hide
   close() {
     this.dialogRef.close();
   }
-  isRepresentative(): boolean {
-    return this.authService.hasRole('Representative');
-  }
-
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
-  }
-
-  requestActivation(): void {
-    this.isLoading = true;
-    this.memberService.requestActivation(this.member.id).subscribe({
-      next: () => {
-        this.isLoading = false;
-        alert(this.languageService.translate('memberDetails.activationRequestSuccess'));
-      },
-      error: () => {
-        this.isLoading = false;
-        alert(this.languageService.translate('memberDetails.activationRequestError'));
-      }
-    });
   }
 
   approveActivation(): void {

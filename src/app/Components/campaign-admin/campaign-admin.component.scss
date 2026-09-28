@@ -1,0 +1,92 @@
+// Campaign management: create/edit form, then each campaign with its progress.
+
+@import '../../../styles/admin-kit';
+
+.camp-admin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: clamp(var(--space-3), 2.2vw, var(--space-6));
+  max-width: 1080px;
+}
+
+.camp-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.camp-form__full { grid-column: 1 / -1; }
+
+.camp-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-weight: 600;
+  cursor: pointer;
+
+  input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--color-primary-600); }
+}
+
+.camps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.camp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+
+  & + & { border-top: 1px solid var(--color-ink-100); }
+}
+
+.camp--editing {
+  background: var(--color-primary-50);
+}
+
+.camp__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.camp__title {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.camp__split {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.camp__pending {
+  color: var(--pill-warning-fg);
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.camp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}

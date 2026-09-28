@@ -1,0 +1,159 @@
+<div class="reports">
+
+  <app-admin-header [title]="'reports.title' | translate" [subtitle]="'reports.subtitle' | translate"></app-admin-header>
+
+  <div class="filters">
+    <label class="field filters__months">
+      <span>{{ 'reports.periodLabel' | translate }}</span>
+      <select name="months" [(ngModel)]="months" (ngModelChange)="load()">
+        <option *ngFor="let m of monthOptions" [ngValue]="m">{{ num(m) }} {{ 'reports.months' | translate }}</option>
+      </select>
+    </label>
+  </div>
+
+  <app-skeleton *ngIf="loading && !data" variant="cards" [count]="4" [label]="'reports.loading' | translate"></app-skeleton>
+  <app-empty-state *ngIf="!loading && loadError" icon="wifi_off" [title]="'reports.errorTitle' | translate"
+    [message]="'reports.errorMessage' | translate"></app-empty-state>
+
+  <ng-container *ngIf="data">
+
+    <!-- ===== KPIs ===== -->
+    <div class="kpis" [class.is-busy]="loading">
+      <ng-container *ngFor="let k of kpis">
+        <a *ngIf="k.route; else plainKpi" class="kpi" [class.kpi--attention]="k.attention" [routerLink]="k.route">
+          <span class="kpi__value">{{ k.value }}</span>
+          <span class="kpi__label">{{ k.labelKey | translate }}</span>
+          <span class="kpi__hint" *ngIf="k.hintKey">{{ k.hintKey | translate }}</span>
+        </a>
+        <ng-template #plainKpi>
+          <div class="kpi">
+            <span class="kpi__value">{{ k.value }}</span>
+            <span class="kpi__label">{{ k.labelKey | translate }}</span>
+            <span class="kpi__hint" *ngIf="k.hintKey">{{ k.hintKey | translate }}</span>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+
+    <div class="grid">
+      <!-- ===== Online collections ===== -->
+      <app-section-card icon="payments" [title]="'reports.collectionsTitle' | translate" [subtitle]="'reports.collectionsSub' | translate">
+        <app-simple-chart *ngIf="collectionsChart" [config]="collectionsChart" [ariaLabel]="'reports.collectionsTitle' | translate"></app-simple-chart>
+        <table class="table">
+          <caption class="sr-only">{{ 'reports.collectionsTitle' | translate }}</caption>
+          <thead><tr>
+            <th scope="col">{{ 'reports.purpose' | translate }}</th>
+            <th scope="col" class="num">{{ 'reports.periodTotal' | translate }}</th>
+          </tr></thead>
+          <tbody>
+            <tr><th scope="row">{{ 'payments.purposeMembership' | translate }}</th><td class="num">{{ money(periodTotals.membership) }}</td></tr>
+            <tr><th scope="row">{{ 'payments.purposeAnnual' | translate }}</th><td class="num">{{ money(periodTotals.annual) }}</td></tr>
+            <tr><th scope="row">{{ 'payments.purposeDonation' | translate }}</th><td class="num">{{ money(periodTotals.donation) }}</td></tr>
+            <tr class="table__total"><th scope="row">{{ 'reports.total' | translate }}</th><td class="num">{{ money(data.collectedInPeriod) }}</td></tr>
+          </tbody>
+        </table>
+        <details class="by-month">
+          <summary>{{ 'reports.showByMonth' | translate }}</summary>
+          <table class="table">
+            <thead><tr>
+              <th scope="col">{{ 'reports.month' | translate }}</th>
+              <th scope="col" class="num">{{ 'payments.purposeMembership' | translate }}</th>
+              <th scope="col" class="num">{{ 'payments.purposeAnnual' | translate }}</th>
+              <th scope="col" class="num">{{ 'payments.purposeDonation' | translate }}</th>
+            </tr></thead>
+            <tbody>
+              <tr *ngFor="let m of data.collections">
+                <th scope="row">{{ monthLabel(m.month) }}</th>
+                <td class="num">{{ money(m.membership) }}</td>
+                <td class="num">{{ money(m.annual) }}</td>
+                <td class="num">{{ money(m.donation) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </details>
+      </app-section-card>
+
+      <!-- ===== Membership fee status ===== -->
+      <app-section-card icon="badge" [title]="'reports.feeTitle' | translate">
+        <p class="fee__big">{{ num(feePaidPercent) }}%</p>
+        <p class="fee__line">{{ 'reports.feeLine' | translate }}</p>
+        <div class="fee__track" role="img" [attr.aria-label]="num(data.membershipPaid) + ' / ' + num(data.membershipPaid + data.membershipDue)">
+          <span class="fee__fill" [style.width.%]="feePaidPercent"></span>
+        </div>
+        <dl class="fee__split">
+          <div><dt>{{ 'reports.feePaid' | translate }}</dt><dd>{{ num(data.membershipPaid) }}</dd></div>
+          <div><dt>{{ 'reports.feeDue' | translate }}</dt><dd>{{ num(data.membershipDue) }}</dd></div>
+        </dl>
+      </app-section-card>
+    </div>
+
+    <!-- ===== Event turnout ===== -->
+    <app-section-card icon="how_to_reg" [title]="'reports.turnoutTitle' | translate" [subtitle]="'reports.turnoutSub' | translate">
+      <app-empty-state *ngIf="!turnoutChart" icon="event" [title]="'reports.noEventsTitle' | translate"
+        [message]="'reports.noEventsMessage' | translate"></app-empty-state>
+      <ng-container *ngIf="turnoutChart">
+        <app-simple-chart [config]="turnoutChart" [ariaLabel]="'reports.turnoutTitle' | translate"></app-simple-chart>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr>
+              <th scope="col">{{ 'reports.event' | translate }}</th>
+              <th scope="col" class="num">{{ 'reports.saidGoing' | translate }}</th>
+              <th scope="col" class="num">{{ 'reports.arrived' | translate }}</th>
+              <th scope="col" class="num">{{ 'reports.walkIns' | translate }}</th>
+              <th scope="col"><span class="sr-only">{{ 'reports.download' | translate }}</span></th>
+            </tr></thead>
+            <tbody>
+              <tr *ngFor="let e of data.events">
+                <th scope="row">{{ e.title }}<span class="table__sub">{{ eventDate(e.eventDate) }}</span></th>
+                <td class="num">{{ num(e.going) }}</td>
+                <td class="num">{{ num(e.arrived) }}</td>
+                <td class="num">{{ num(e.walkIns) }}</td>
+                <td class="table__action">
+                  <button type="button" class="icon-btn" [disabled]="downloading === 'event-' + e.id" (click)="exportAttendance(e.id)"
+                    [attr.aria-label]="('reports.downloadAttendance' | translate) + ': ' + e.title" [attr.title]="'reports.downloadAttendance' | translate">
+                    <mat-icon>{{ downloading === 'event-' + e.id ? 'hourglass_top' : 'download' }}</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </app-section-card>
+  </ng-container>
+
+  <!-- ===== Exports ===== -->
+  <app-section-card icon="download" [title]="'reports.exportTitle' | translate" [subtitle]="'reports.exportSub' | translate">
+    <div class="exports">
+      <div class="export">
+        <div class="export__text">
+          <b>{{ 'reports.exportMembers' | translate }}</b>
+          <span>{{ 'reports.exportMembersHint' | translate }}</span>
+        </div>
+        <button type="button" class="btn btn--outline" [disabled]="!!downloading" (click)="export('Members')">
+          <mat-icon>{{ downloading === 'Members' ? 'hourglass_top' : 'download' }}</mat-icon> {{ 'reports.download' | translate }}
+        </button>
+      </div>
+
+      <div class="export export--range">
+        <div class="export__text">
+          <b>{{ 'reports.exportLedgerPayments' | translate }}</b>
+          <span>{{ 'reports.exportRangeHint' | translate }}</span>
+        </div>
+        <div class="export__range">
+          <label class="field"><span>{{ 'reports.from' | translate }}</span><input type="date" name="from" [(ngModel)]="range.from" /></label>
+          <label class="field"><span>{{ 'reports.to' | translate }}</span><input type="date" name="to" [(ngModel)]="range.to" /></label>
+        </div>
+        <div class="export__buttons">
+          <button type="button" class="btn btn--outline" [disabled]="!!downloading" (click)="export('Ledger', true)">
+            <mat-icon>{{ downloading === 'Ledger' ? 'hourglass_top' : 'download' }}</mat-icon> {{ 'reports.exportLedger' | translate }}
+          </button>
+          <button type="button" class="btn btn--outline" [disabled]="!!downloading" (click)="export('Payments', true)">
+            <mat-icon>{{ downloading === 'Payments' ? 'hourglass_top' : 'download' }}</mat-icon> {{ 'reports.exportPayments' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <p class="exports__note"><mat-icon>lock</mat-icon>{{ 'reports.privacyNote' | translate }}</p>
+  </app-section-card>
+</div>

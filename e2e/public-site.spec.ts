@@ -34,12 +34,12 @@ test.describe('public site', () => {
     await expect(page.locator('.contact-locked')).toBeVisible();
   });
 
-  test('batch list opens a batch page with its representative and alumni', async ({ page }) => {
+  test('batch list opens a batch page with its alumni', async ({ page }) => {
     await page.goto('/batches');
     await page.locator('button.year', { hasText: '২০০৯' }).click();
     await expect(page).toHaveURL(/\/batches\/2009$/);
     await expect(page.locator('h1')).toContainText('ব্যাচ ২০০৯');
-    await expect(page.locator('.pp-person')).toContainText('Helen Nipa');
+    await expect(page.locator('.pp-person')).toHaveCount(0); // no batch representatives any more
     // The directory is locked to 2009: only that batch's alumni, no batch field.
     await expect(page.locator('a.member')).toHaveCount(1);
     await expect(page.locator('input[name="batch"]')).toHaveCount(0);

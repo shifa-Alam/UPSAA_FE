@@ -14,7 +14,7 @@ import { HomeComponent } from './Components/pages/home/home.component';
 // Every public route carries shellRedirectGuard: signed-in members are kept inside
 // /portal (never the public site), and staff open the community pages in /dashboard.
 
-const MEMBER_ROLES = ['Representative', 'Member'];
+const MEMBER_ROLES = ['Member'];
 const STAFF_ROLES = ['SuperAdmin', 'Admin'];
 const ALL_ROLES = [...STAFF_ROLES, ...MEMBER_ROLES];
 
@@ -27,6 +27,8 @@ const directory = () => import('./Components/pages/directory/directory.component
 const memberProfile = () => import('./Components/pages/member-profile/member-profile.component').then(m => m.MemberProfileComponent);
 const batches = () => import('./Components/pages/batches/batches.component').then(m => m.BatchesComponent);
 const batchPage = () => import('./Components/pages/batch-page/batch-page.component').then(m => m.BatchPageComponent);
+const campaigns = () => import('./Components/pages/campaigns/campaigns.component').then(m => m.CampaignsComponent);
+const campaignDetail = () => import('./Components/pages/campaigns/campaign-detail.component').then(m => m.CampaignDetailComponent);
 const achievements = () => import('./Components/pages/achievements/achievements.component').then(m => m.AchievementsComponent);
 const teachers = () => import('./Components/pages/teachers/teachers.component').then(m => m.TeachersComponent);
 const committee = () => import('./Components/pages/committee/committee.component').then(m => m.CommitteeComponent);
@@ -71,6 +73,8 @@ export const routes: Routes = [
       { path: 'members/:id', loadComponent: memberProfile, title: 'pageTitles.members' },
       { path: 'batches', loadComponent: batches, title: 'pageTitles.batches' },
       { path: 'batches/:year', loadComponent: batchPage, title: 'pageTitles.batches' },
+      { path: 'campaigns', loadComponent: campaigns, title: 'pageTitles.campaigns' },
+      { path: 'campaigns/:id', loadComponent: campaignDetail, title: 'pageTitles.campaigns' },
       { path: 'events', loadComponent: events, title: 'pageTitles.events' },
       { path: 'notices', loadComponent: notices, title: 'pageTitles.notices' },
       { path: 'gallery', loadComponent: gallery, title: 'pageTitles.gallery' },
@@ -187,6 +191,14 @@ export const routes: Routes = [
         loadComponent: () => import('./Components/event-checkin/event-checkin.component').then(m => m.EventCheckinComponent)
       },
       {
+        path: 'campaigns', title: 'pageTitles.campaignAdmin',
+        loadComponent: () => import('./Components/campaign-admin/campaign-admin.component').then(m => m.CampaignAdminComponent)
+      },
+      {
+        path: 'reports', title: 'pageTitles.reports',
+        loadComponent: () => import('./Components/reports/reports.component').then(m => m.ReportsComponent)
+      },
+      {
         path: 'payments', title: 'pageTitles.paymentAdmin',
         loadComponent: () => import('./Components/payment-admin/payment-admin.component').then(m => m.PaymentAdminComponent)
       },
@@ -229,6 +241,9 @@ export const routes: Routes = [
   // Public — batch year + active alumni count, linking into /members?batch=YYYY.
   { path: 'batches', loadComponent: batches, title: 'pageTitles.batches', canActivate: [shellRedirectGuard] },
   { path: 'batches/:year', loadComponent: batchPage, title: 'pageTitles.batches', canActivate: [shellRedirectGuard] },
+  // Public — fundraising campaigns and their progress; members donate from /portal/payments.
+  { path: 'campaigns', loadComponent: campaigns, title: 'pageTitles.campaigns', canActivate: [shellRedirectGuard] },
+  { path: 'campaigns/:id', loadComponent: campaignDetail, title: 'pageTitles.campaigns', canActivate: [shellRedirectGuard] },
   { path: 'achievements', loadComponent: achievements, title: 'pageTitles.achievements', canActivate: [shellRedirectGuard] },
   { path: 'teachers', loadComponent: teachers, title: 'pageTitles.teachers', canActivate: [shellRedirectGuard] },
   { path: 'committee', loadComponent: committee, title: 'pageTitles.committee', canActivate: [shellRedirectGuard] },
