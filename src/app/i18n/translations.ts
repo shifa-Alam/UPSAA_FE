@@ -7,6 +7,7 @@ import { errorLogI18n } from './sections/errorLog.i18n';
 import { campaignsI18n } from './sections/campaigns.i18n';
 import { reportsI18n } from './sections/reports.i18n';
 import { helpI18n } from './sections/help.i18n';
+import { smsI18n } from './sections/sms.i18n';
 import { footerI18n } from './sections/footer.i18n';
 import { homeI18n } from './sections/home.i18n';
 import { aboutI18n } from './sections/about.i18n';
@@ -113,6 +114,7 @@ const sections = [
   campaignsI18n,
   reportsI18n,
   helpI18n,
+  smsI18n,
   achievementAdminI18n,
   achievementsI18n,
   teacherAdminI18n,

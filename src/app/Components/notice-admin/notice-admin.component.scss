@@ -310,3 +310,15 @@
     transition: none;
   }
 }
+
+.notice-form__sms-hint {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.notice-form__sms-hint--warn {
+  color: #92600a;
+  font-weight: 600;
+}

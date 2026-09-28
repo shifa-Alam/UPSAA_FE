@@ -13,6 +13,7 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { SmsService } from '../../Services/sms.service';
 @Component({
   selector: 'app-notice-admin',
   standalone: true,
@@ -29,7 +30,13 @@ export class NoticeAdminComponent implements OnInit {
   content = '';
   publishedDate = this.formatDateTime(new Date());
   alumniOnly = false;
+  /** Also text every active member (see the SMS screen for the monthly cap). */
+  sendSms = false;
+  /** Members an SMS would reach, and SMS left this month — null if SMS status couldn't load. */
+  smsAudience: number | null = null;
+  smsLeft: number | null = null;
   posting = false;
+  private smsApi = inject(SmsService);
 
   editingId: number | null = null;
   editTitle = '';
@@ -44,6 +51,11 @@ export class NoticeAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadNotices();
+    this.smsApi.status().pipe(catchError(() => of(null))).subscribe(s => {
+      if (!s || !s.gatewayEnabled) return;
+      this.smsAudience = s.audience;
+      this.smsLeft = Math.max(0, s.smsMonthlyLimit - s.usedThisMonth);
+    });
   }
 
   submit(): void {
@@ -57,7 +69,7 @@ export class NoticeAdminComponent implements OnInit {
     }
 
     this.posting = true;
-    this.noticeService.create(this.title.trim(), this.content.trim(), this.publishedDate || null, this.alumniOnly).pipe(
+    this.noticeService.create(this.title.trim(), this.content.trim(), this.publishedDate || null, this.alumniOnly, this.sendSms).pipe(
       catchError(err => {
         this.snackbar.showError(err?.error?.message || this.languageService.translate('noticeAdmin.postFailedError'));
         return of(null);
@@ -66,7 +78,9 @@ export class NoticeAdminComponent implements OnInit {
       this.posting = false;
       if (!result) return;
 
-      this.snackbar.showSuccess(this.languageService.translate('noticeAdmin.postSuccess'));
+      this.snackbar.showSuccess(this.languageService.translate(this.sendSms ? 'noticeAdmin.postSuccessSms' : 'noticeAdmin.postSuccess'));
+      if (this.sendSms && this.smsLeft !== null && this.smsAudience !== null) this.smsLeft = Math.max(0, this.smsLeft - this.smsAudience);
+      this.sendSms = false;
       this.title = '';
       this.content = '';
       this.publishedDate = this.formatDateTime(new Date());

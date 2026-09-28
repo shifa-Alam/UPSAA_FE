@@ -25,6 +25,15 @@
         <span>{{ 'noticeAdmin.alumniOnlyLabel' | translate }}</span>
       </label>
 
+      <label class="switch-field notice-form__switch" *ngIf="smsAudience !== null">
+        <input type="checkbox" [(ngModel)]="sendSms" name="sendSms" [disabled]="smsAudience > (smsLeft ?? 0)" />
+        <span>
+          {{ 'noticeAdmin.sendSmsLabel' | translate }} ({{ smsAudience }} {{ 'noticeAdmin.smsPeople' | translate }})
+          <small class="notice-form__sms-hint" *ngIf="smsAudience <= (smsLeft ?? 0)">{{ 'noticeAdmin.smsLeft' | translate }}: {{ smsLeft }}</small>
+          <small class="notice-form__sms-hint notice-form__sms-hint--warn" *ngIf="smsAudience > (smsLeft ?? 0)">{{ 'noticeAdmin.smsNotEnough' | translate }}</small>
+        </span>
+      </label>
+
       <div class="form-actions notice-form__full">
         <button type="submit" class="btn btn--solid" [disabled]="posting">
           <mat-icon>{{ posting ? 'hourglass_top' : 'campaign' }}</mat-icon>

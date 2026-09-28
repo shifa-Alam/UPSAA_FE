@@ -117,6 +117,47 @@ test.describe('portal and back office', () => {
     expect(recorded.transactionId).toBeUndefined();
   });
 
+  test('SMS screen shows usage and saves the switches; a notice can also go by SMS', async ({ page }) => {
+    await signInAs(page, 'Admin');
+    let saved: any = null;
+    let notice: any = null;
+    const status = { gatewayEnabled: true, smsPaymentReceipts: true, smsEventReminders: true, smsMonthlyLimit: 500, usedThisMonth: 20, audience: 435 };
+    await page.route(/\/api\/Sms\/Status$/, r => r.fulfill(json(status)));
+    await page.route(/\/api\/Sms\/Log/, r => r.fulfill(json([
+      { id: 2, createdDate: new Date().toISOString(), kind: 'payment', phone: '01955123456', message: 'UPSAA: আপনার ৳100 পাওয়া গেছে।', status: 'sent', error: null, memberName: 'আব্দুল করিম' },
+      { id: 1, createdDate: new Date().toISOString(), kind: 'test', phone: '0123', message: 'test', status: 'failed', error: 'Not a Bangladesh mobile number', memberName: null },
+    ])));
+    await page.route(/\/api\/Sms\/Settings$/, r => { saved = r.request().postDataJSON(); return r.fulfill(json({ ...status, ...saved })); });
+
+    await page.goto('/dashboard/sms');
+    await expect(page.locator('.usage__big')).toContainText('২০');
+    await expect(page.locator('.log__row')).toHaveCount(2);
+    await expect(page.locator('.log__row').first()).toContainText('আব্দুল করিম');
+    await page.locator('input[name="events"]').uncheck();
+    await page.locator('input[name="limit"]').fill('300');
+    await page.locator('.settings button[type="submit"]').click();
+    await expect.poll(() => saved).toMatchObject({ smsPaymentReceipts: true, smsEventReminders: false, smsMonthlyLimit: 300 });
+
+    await page.route(/\/api\/Notice\/Create$/, r => {
+      notice = r.request().postDataJSON();
+      return r.fulfill(json({ id: 9, title: notice.title, content: notice.content, publishedDate: new Date().toISOString(), createdDate: new Date().toISOString(), createdById: null, createdByName: 'Admin', alumniOnly: false }));
+    });
+    await page.goto('/dashboard/notices');
+    const smsBox = page.locator('input[name="sendSms"]');
+    await expect(page.locator('label', { has: smsBox })).toContainText('435');
+    await page.locator('#noticeTitle').fill('সাধারণ সভা');
+    await page.locator('#noticeContent').fill('শুক্রবার বিকেল ৪টায়');
+    await smsBox.check();
+    await page.locator('.notice-form button[type="submit"]').click();
+    await expect.poll(() => notice).toMatchObject({ title: 'সাধারণ সভা', sendSms: true });
+
+    // Not enough SMS left this month: the tick can't be ticked, and says why.
+    status.usedThisMonth = 400;
+    await page.goto('/dashboard/notices');
+    await expect(page.locator('input[name="sendSms"]')).toBeDisabled();
+    await expect(page.locator('.notice-form__sms-hint--warn')).toBeVisible();
+  });
+
   test('treasurer undoes a mistaken approval', async ({ page }) => {
     await signInAs(page, 'Admin');
     let undone = false;

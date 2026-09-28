@@ -105,6 +105,7 @@ export class DashboardComponent {
       icon: 'activity',
       expanded: false,
       children: [
+        { labelKey: 'dashboard.itemSms', route: '/dashboard/sms', icon: 'megaphone' },
         { labelKey: 'dashboard.itemErrorLog', route: '/dashboard/error-log', icon: 'activity', roles: ['SuperAdmin'] }
       ]
     }

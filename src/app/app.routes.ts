@@ -205,6 +205,10 @@ export const routes: Routes = [
         loadComponent: () => import('./Components/payment-admin/payment-admin.component').then(m => m.PaymentAdminComponent)
       },
       {
+        path: 'sms', title: 'pageTitles.sms',
+        loadComponent: () => import('./Components/sms-admin/sms-admin.component').then(m => m.SmsAdminComponent)
+      },
+      {
         path: 'error-log', title: 'pageTitles.errorLog',
         loadComponent: () => import('./Components/error-log/error-log.component').then(m => m.ErrorLogComponent),
         canActivate: [RoleGuard], data: { roles: ['SuperAdmin'] } // SuperAdmin only, also enforced by the API

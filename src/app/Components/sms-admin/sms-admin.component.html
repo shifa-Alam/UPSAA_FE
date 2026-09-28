@@ -1,0 +1,90 @@
+<div class="sms">
+
+  <app-admin-header [title]="'smsAdmin.title' | translate" [subtitle]="'smsAdmin.subtitle' | translate"></app-admin-header>
+
+  <app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'smsAdmin.loading' | translate"></app-skeleton>
+  <app-empty-state *ngIf="!loading && loadError" icon="wifi_off" [title]="'smsAdmin.errorTitle' | translate"
+    [message]="'smsAdmin.errorMessage' | translate"></app-empty-state>
+
+  <ng-container *ngIf="status as s">
+
+    <p class="gateway gateway--off" *ngIf="!s.gatewayEnabled" role="status">
+      <mat-icon>sms_failed</mat-icon>{{ 'smsAdmin.gatewayOff' | translate }}
+    </p>
+
+    <!-- ===== This month ===== -->
+    <app-section-card icon="sms" [title]="'smsAdmin.usageTitle' | translate">
+      <p class="usage__big">{{ num(s.usedThisMonth) }} <span>/ {{ num(s.smsMonthlyLimit) }}</span></p>
+      <div class="usage__track" role="img" [attr.aria-label]="num(s.usedThisMonth) + ' / ' + num(s.smsMonthlyLimit)">
+        <span class="usage__fill" [class.usage__fill--high]="usedPercent >= 90" [style.width.%]="usedPercent"></span>
+      </div>
+      <p class="usage__note">{{ 'smsAdmin.usageNote' | translate }}</p>
+    </app-section-card>
+
+    <!-- ===== Settings ===== -->
+    <app-section-card icon="tune" [title]="'smsAdmin.settingsTitle' | translate">
+      <form class="settings" (ngSubmit)="save()">
+        <label class="switch">
+          <input type="checkbox" name="receipts" [(ngModel)]="s.smsPaymentReceipts" />
+          <span>
+            <b>{{ 'smsAdmin.receipts' | translate }}</b>
+            <small>{{ 'smsAdmin.receiptsExample' | translate }}</small>
+          </span>
+        </label>
+        <label class="switch">
+          <input type="checkbox" name="events" [(ngModel)]="s.smsEventReminders" />
+          <span>
+            <b>{{ 'smsAdmin.events' | translate }}</b>
+            <small>{{ 'smsAdmin.eventsExample' | translate }}</small>
+          </span>
+        </label>
+        <p class="settings__notice">
+          <mat-icon>campaign</mat-icon>
+          <span>{{ 'smsAdmin.noticeHint' | translate }} ({{ num(s.audience) }} {{ 'smsAdmin.members' | translate }})</span>
+        </p>
+        <label class="field settings__limit">
+          <span>{{ 'smsAdmin.limitLabel' | translate }}</span>
+          <input type="number" name="limit" min="0" step="10" [(ngModel)]="s.smsMonthlyLimit" />
+          <small class="field__hint">{{ 'smsAdmin.limitHint' | translate }}</small>
+        </label>
+        <div>
+          <button type="submit" class="btn btn--solid" [disabled]="saving">
+            <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'smsAdmin.save' | translate }}
+          </button>
+        </div>
+      </form>
+    </app-section-card>
+
+    <!-- ===== Test ===== -->
+    <app-section-card icon="send_to_mobile" [title]="'smsAdmin.testTitle' | translate">
+      <form class="test" (ngSubmit)="sendTest()">
+        <label class="field test__field">
+          <span>{{ 'smsAdmin.testLabel' | translate }}</span>
+          <input type="tel" name="testPhone" inputmode="tel" [(ngModel)]="testPhone" placeholder="01XXXXXXXXX" />
+        </label>
+        <button type="submit" class="btn btn--outline" [disabled]="testing || !testPhone.trim()">
+          <mat-icon>{{ testing ? 'hourglass_top' : 'send' }}</mat-icon> {{ 'smsAdmin.testSend' | translate }}
+        </button>
+      </form>
+    </app-section-card>
+
+    <!-- ===== Log ===== -->
+    <app-section-card icon="history" [title]="'smsAdmin.logTitle' | translate" [noPadding]="true">
+      <app-empty-state *ngIf="log.length === 0" icon="sms" [title]="'smsAdmin.logEmptyTitle' | translate"
+        [message]="'smsAdmin.logEmptyMessage' | translate"></app-empty-state>
+      <ul class="log" *ngIf="log.length">
+        <li class="log__row" *ngFor="let l of log">
+          <div class="log__main">
+            <span class="log__who">{{ l.memberName || l.phone }}<small *ngIf="l.memberName"> · {{ l.phone }}</small></span>
+            <span class="log__msg">{{ l.message }}</span>
+            <span class="log__err" *ngIf="l.error">{{ l.error }}</span>
+          </div>
+          <div class="log__side">
+            <span class="pill" [ngClass]="statusPill(l.status)">{{ ('smsAdmin.status_' + l.status) | translate }}</span>
+            <small>{{ ('smsAdmin.kind_' + l.kind) | translate }} · {{ when(l.createdDate) }}</small>
+          </div>
+        </li>
+      </ul>
+    </app-section-card>
+  </ng-container>
+</div>

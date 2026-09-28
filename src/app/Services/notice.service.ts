@@ -41,8 +41,9 @@ export class NoticeService {
   }
 
   /** SuperAdmin/Admin only. publishedDate omitted defaults to now. */
-  create(title: string, content: string, publishedDate?: string | null, alumniOnly = false): Observable<Notice> {
-    return this.http.post<Notice>(`${this.apiUrl}/Create`, { title, content, publishedDate, alumniOnly });
+  /** sendSms: also text every active member now (counts against the monthly SMS cap). */
+  create(title: string, content: string, publishedDate?: string | null, alumniOnly = false, sendSms = false): Observable<Notice> {
+    return this.http.post<Notice>(`${this.apiUrl}/Create`, { title, content, publishedDate, alumniOnly, sendSms });
   }
 
   /** SuperAdmin/Admin only. publishedDate omitted leaves the existing value unchanged. */
