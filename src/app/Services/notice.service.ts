@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ListPage, listParams, toListPage } from './list-page';
+import { FacebookPostable } from './facebook-page.service';
 
-export interface Notice {
+/** Facebook fields are only filled for admins. */
+export interface Notice extends FacebookPostable {
   id: number;
   title: string;
   content: string;
@@ -42,13 +44,15 @@ export class NoticeService {
 
   /** SuperAdmin/Admin only. publishedDate omitted defaults to now. */
   /** sendSms: also text every active member now (counts against the monthly SMS cap). */
-  create(title: string, content: string, publishedDate?: string | null, alumniOnly = false, sendSms = false): Observable<Notice> {
-    return this.http.post<Notice>(`${this.apiUrl}/Create`, { title, content, publishedDate, alumniOnly, sendSms });
+  /** postToFacebook: also post on the Facebook page when it's due (ignored for alumni-only). */
+  create(title: string, content: string, publishedDate?: string | null, alumniOnly = false, sendSms = false, postToFacebook = false): Observable<Notice> {
+    return this.http.post<Notice>(`${this.apiUrl}/Create`, { title, content, publishedDate, alumniOnly, sendSms, postToFacebook });
   }
 
   /** SuperAdmin/Admin only. publishedDate omitted leaves the existing value unchanged. */
-  update(id: number, title: string, content: string, publishedDate?: string | null, alumniOnly = false): Observable<Notice> {
-    return this.http.put<Notice>(`${this.apiUrl}/${id}`, { title, content, publishedDate, alumniOnly });
+  /** postToFacebook omitted/null leaves the choice unchanged. */
+  update(id: number, title: string, content: string, publishedDate?: string | null, alumniOnly = false, postToFacebook: boolean | null = null): Observable<Notice> {
+    return this.http.put<Notice>(`${this.apiUrl}/${id}`, { title, content, publishedDate, alumniOnly, postToFacebook });
   }
 
   /** SuperAdmin/Admin only. */

@@ -4,6 +4,29 @@
     {
       "name": "upsaa-dev",
       "url": "http://localhost:4200"
+    },
+    {
+      "name": "upsaa-prod-build",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "4300",
+        "--directory",
+        "dist/browser"
+      ],
+      "port": 4300
+    },
+    {
+      "name": "upsaa-dev-4201",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "ng",
+        "serve",
+        "--port",
+        "4201"
+      ],
+      "port": 4201
     }
   ]
 }

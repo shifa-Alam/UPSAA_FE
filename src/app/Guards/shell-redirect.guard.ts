@@ -6,6 +6,7 @@ import { AuthService } from '../Services/auth.service';
 const MEMBER_PORTAL_PAGES = new Set([
   'about', 'contact', 'committee', 'events', 'notices', 'gallery', 'members', 'batches', 'campaigns', 'help',
   'achievements', 'teachers', 'jobs', 'blood-donors', 'constitution', 'profile',
+  'memories', 'businesses', 'alumni-map',
 ]);
 
 /** Community pages staff open inside the back office, at /dashboard/<page>. */

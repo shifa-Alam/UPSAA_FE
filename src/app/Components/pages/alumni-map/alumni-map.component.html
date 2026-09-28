@@ -1,0 +1,47 @@
+<div class="am-page">
+  <app-page-header variant="plain" [eyebrow]="'alumniMap.eyebrow' | translate" [title]="'alumniMap.title' | translate"
+    [subtitle]="'alumniMap.subtitle' | translate"></app-page-header>
+
+  <div class="upsaa-container am-body">
+    <!-- Summary -->
+    <div class="am-stats" *ngIf="!loading">
+      <div class="am-stat"><strong>{{ num(total) }}</strong><span>{{ 'alumniMap.statAlumni' | translate }}</span></div>
+      <div class="am-stat"><strong>{{ num(spots.length + unplaced.length) }}</strong><span>{{ 'alumniMap.statPlaces' | translate }}</span></div>
+      <div class="am-stat"><strong>{{ num(abroad) }}</strong><span>{{ 'alumniMap.statAbroad' | translate }}</span></div>
+    </div>
+
+    <div class="am-layout">
+      <div class="am-map-card">
+        <div class="am-map-tools" role="group" [attr.aria-label]="'alumniMap.viewLabel' | translate">
+          <button type="button" class="am-toggle" [class.am-toggle--on]="view === 'bd'" (click)="setView('bd')">{{ 'alumniMap.viewBd' | translate }}</button>
+          <button type="button" class="am-toggle" [class.am-toggle--on]="view === 'world'" (click)="setView('world')">{{ 'alumniMap.viewWorld' | translate }}</button>
+        </div>
+        <div #mapEl class="am-map" role="region" [attr.aria-label]="'alumniMap.title' | translate">
+          <p class="am-map__loading" *ngIf="loading">{{ 'alumniMap.loading' | translate }}</p>
+        </div>
+        <p class="am-note">{{ 'alumniMap.privacyNote' | translate }}</p>
+      </div>
+
+      <aside class="am-side" *ngIf="!loading">
+        <h2 class="am-side__title">{{ 'alumniMap.topTitle' | translate }}</h2>
+        <ol class="am-rank">
+          <li *ngFor="let s of topSpots">
+            <button type="button" class="am-rank__row" (click)="focus(s)">
+              <span class="am-rank__name">{{ placeName(s.place) }}</span>
+              <span class="am-rank__bar"><span [style.width.%]="100 * s.count / maxCount"></span></span>
+              <span class="am-rank__count">{{ num(s.count) }}</span>
+            </button>
+          </li>
+        </ol>
+        <p class="am-empty" *ngIf="!spots.length">{{ 'alumniMap.empty' | translate }}</p>
+
+        <details class="am-other" *ngIf="unplaced.length">
+          <summary>{{ 'alumniMap.otherPlaces' | translate }} ({{ num(unplaced.length) }})</summary>
+          <ul>
+            <li *ngFor="let c of unplaced">{{ c.city }} <span>{{ num(c.count) }}</span></li>
+          </ul>
+        </details>
+      </aside>
+    </div>
+  </div>
+</div>

@@ -36,6 +36,10 @@ const teachers = () => import('./Components/pages/teachers/teachers.component').
 const committee = () => import('./Components/pages/committee/committee.component').then(m => m.CommitteeComponent);
 const gallery = () => import('./Components/pages/gallery/gallery.component').then(m => m.GalleryComponent);
 const jobs = () => import('./Components/pages/jobs/jobs.component').then(m => m.JobsComponent);
+const bloodRequests = () => import('./Components/pages/blood-requests/blood-requests.component').then(m => m.BloodRequestsComponent);
+const memories = () => import('./Components/pages/memories/memories.component').then(m => m.MemoriesComponent);
+const businesses = () => import('./Components/pages/businesses/businesses.component').then(m => m.BusinessesComponent);
+const alumniMap = () => import('./Components/pages/alumni-map/alumni-map.component').then(m => m.AlumniMapComponent);
 const bloodDonors = () => import('./Components/pages/blood-donors/blood-donors.component').then(m => m.BloodDonorsComponent);
 const constitution = () => import('./Components/pages/constitution/constitution.component').then(m => m.ConstitutionComponent);
 const profile = () => import('./Components/profile/profile.component').then(m => m.ProfileComponent);
@@ -88,6 +92,10 @@ export const routes: Routes = [
       { path: 'contact', loadComponent: contact, title: 'pageTitles.contact' },
       { path: 'jobs', loadComponent: jobs, title: 'pageTitles.jobs' },
       { path: 'blood-donors', loadComponent: bloodDonors, title: 'pageTitles.bloodDonors' },
+      { path: 'blood-requests', loadComponent: bloodRequests, title: 'pageTitles.bloodRequests' },
+      { path: 'memories', loadComponent: memories, title: 'pageTitles.memories' },
+      { path: 'businesses', loadComponent: businesses, title: 'pageTitles.businesses' },
+      { path: 'alumni-map', loadComponent: alumniMap, title: 'pageTitles.alumniMap' },
       { path: 'constitution', loadComponent: constitution, title: 'pageTitles.constitution' },
       {
         path: 'payments', title: 'pageTitles.payments',
@@ -220,6 +228,11 @@ export const routes: Routes = [
       },
       { path: 'jobs', loadComponent: jobs, title: 'pageTitles.jobs' },
       { path: 'blood-donors', loadComponent: bloodDonors, title: 'pageTitles.bloodDonors' },
+      { path: 'blood-requests', loadComponent: bloodRequests, title: 'pageTitles.bloodRequests' },
+      {
+        path: 'approvals', title: 'pageTitles.approvals',
+        loadComponent: () => import('./Components/approvals/approvals.component').then(m => m.ApprovalsComponent)
+      },
       {
         // Staff manage the document here; members read it at /portal/constitution.
         path: 'constitution', title: 'pageTitles.constitutionAdmin',
@@ -268,6 +281,9 @@ export const routes: Routes = [
   },
   // Public to browse; posting/editing/deleting requires login (component and backend gate that).
   { path: 'jobs', loadComponent: jobs, title: 'pageTitles.jobs', canActivate: [shellRedirectGuard] },
+  { path: 'memories', loadComponent: memories, title: 'pageTitles.memories', canActivate: [shellRedirectGuard] },
+  { path: 'businesses', loadComponent: businesses, title: 'pageTitles.businesses', canActivate: [shellRedirectGuard] },
+  { path: 'alumni-map', loadComponent: alumniMap, title: 'pageTitles.alumniMap', canActivate: [shellRedirectGuard] },
   { path: 'gallery', loadComponent: gallery, title: 'pageTitles.gallery', canActivate: [shellRedirectGuard] },
   {
     path: 'congratulations', title: 'pageTitles.congratulations', canActivate: [shellRedirectGuard],

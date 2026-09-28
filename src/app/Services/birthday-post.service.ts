@@ -10,6 +10,9 @@ export interface FacebookSettings {
   hasAccessToken: boolean;
   postTime: string;
   emailEnabled: boolean;
+  /** New notices / events start with "also post on the Facebook page" ticked. */
+  autoPostNotices: boolean;
+  autoPostEvents: boolean;
   /** False when the server's SMTP settings are incomplete — emails can't go out. */
   emailConfigured: boolean;
   /** Wording in effect (saved, or the default). Placeholders: {name} {batch} {position} {card}. */
@@ -25,6 +28,8 @@ export interface FacebookSettingsUpdate {
   pageAccessToken?: string | null;
   postTime: string;
   emailEnabled: boolean;
+  autoPostNotices?: boolean;
+  autoPostEvents?: boolean;
   /** Blank or identical to the default = use the built-in wording. */
   emailSubject: string;
   emailBody: string;

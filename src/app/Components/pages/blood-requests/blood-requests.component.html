@@ -1,0 +1,171 @@
+<div class="cm-page">
+  <app-page-header variant="plain" [eyebrow]="'bloodRequests.eyebrow' | translate" [title]="'bloodRequests.title' | translate"
+    [subtitle]="'bloodRequests.subtitle' | translate"></app-page-header>
+
+  <div class="upsaa-container cm-body">
+    <!-- Toolbar -->
+    <div class="cm-tools">
+      <div class="cm-tools__left" role="group" [attr.aria-label]="'bloodRequests.filterLabel' | translate">
+        <button type="button" class="cm-chip" [class.cm-chip--active]="!includeClosed" [attr.aria-pressed]="!includeClosed"
+          (click)="toggleClosed(false)">{{ 'bloodRequests.openOnly' | translate }}</button>
+        <button type="button" class="cm-chip" [class.cm-chip--active]="includeClosed" [attr.aria-pressed]="includeClosed"
+          (click)="toggleClosed(true)">{{ 'bloodRequests.recentAll' | translate }}</button>
+      </div>
+      <div class="cm-tools__action">
+        <button type="button" class="pp-btn pp-btn--solid br-cta" *ngIf="canPost && !showForm" (click)="openForm()">
+          <mat-icon>bloodtype</mat-icon> {{ 'bloodRequests.post' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="cm-main br-main">
+      <!-- Post form -->
+      <form class="cm-form" *ngIf="showForm" (ngSubmit)="submit()">
+        <div class="cm-form__head">
+          <h2 class="cm-form__title">{{ 'bloodRequests.formTitle' | translate }}</h2>
+          <p class="cm-form__hint"><mat-icon inline>notifications_active</mat-icon> {{ 'bloodRequests.formHint' | translate }}</p>
+        </div>
+
+        <div class="form-field cm-form__full">
+          <label>{{ 'bloodRequests.group' | translate }} <span class="required">*</span></label>
+          <div class="br-groups" role="radiogroup" [attr.aria-label]="'bloodRequests.group' | translate">
+            <button type="button" *ngFor="let g of groups" class="br-group" role="radio"
+              [class.br-group--active]="form.bloodGroup === g" [attr.aria-checked]="form.bloodGroup === g"
+              (click)="form.bloodGroup = g">{{ g }}</button>
+          </div>
+        </div>
+
+        <div class="cm-form__grid">
+          <div class="form-field">
+            <label for="br-hospital">{{ 'bloodRequests.hospital' | translate }} <span class="required">*</span></label>
+            <input id="br-hospital" name="hospital" [(ngModel)]="form.hospital" [placeholder]="'bloodRequests.hospitalPh' | translate" />
+          </div>
+          <div class="form-field">
+            <label for="br-city">{{ 'bloodRequests.city' | translate }}</label>
+            <input id="br-city" name="city" [(ngModel)]="form.city" [placeholder]="'bloodRequests.cityPh' | translate" />
+          </div>
+          <div class="form-field">
+            <label for="br-when">{{ 'bloodRequests.neededBy' | translate }} <span class="required">*</span></label>
+            <input id="br-when" type="datetime-local" name="neededBy" [(ngModel)]="form.neededBy" />
+          </div>
+          <div class="form-field">
+            <label for="br-units">{{ 'bloodRequests.units' | translate }}</label>
+            <input id="br-units" type="number" min="1" max="10" name="units" [(ngModel)]="form.units" />
+          </div>
+          <div class="form-field">
+            <label for="br-phone">{{ 'bloodRequests.phone' | translate }} <span class="required">*</span></label>
+            <input id="br-phone" type="tel" name="phone" [(ngModel)]="form.contactPhone" placeholder="01XXXXXXXXX" />
+          </div>
+          <div class="form-field">
+            <label for="br-patient">{{ 'bloodRequests.patient' | translate }}</label>
+            <input id="br-patient" name="patient" [(ngModel)]="form.patientName" />
+          </div>
+          <div class="form-field cm-form__full">
+            <label for="br-note">{{ 'bloodRequests.note' | translate }}</label>
+            <textarea id="br-note" rows="3" maxlength="500" name="note" [(ngModel)]="form.note"
+              [placeholder]="'bloodRequests.notePh' | translate"></textarea>
+          </div>
+        </div>
+
+        <div class="cm-form__actions">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="showForm = false" [disabled]="saving">{{ 'bloodRequests.cancel' | translate }}</button>
+          <button type="submit" class="pp-btn pp-btn--solid br-cta" [disabled]="saving">
+            <mat-icon>send</mat-icon> {{ (saving ? 'bloodRequests.posting' : 'bloodRequests.submit') | translate }}
+          </button>
+        </div>
+      </form>
+
+      <app-skeleton *ngIf="loading" variant="list" [count]="3"></app-skeleton>
+
+      <app-empty-state *ngIf="!loading && !requests.length" icon="favorite" [title]="'bloodRequests.emptyTitle' | translate"
+        [message]="'bloodRequests.emptyMessage' | translate"></app-empty-state>
+
+      <!-- Requests -->
+      <ul class="br-list" *ngIf="!loading && requests.length">
+        <li *ngFor="let r of requests" class="br-card" [id]="'blood-' + r.id" [class.br-card--target]="targetId === r.id"
+          [class.br-card--closed]="r.status !== 'Open'">
+          <div class="br-card__group" [class.br-card__group--urgent]="isUrgent(r)">
+            <span class="br-card__type">{{ r.bloodGroup }}</span>
+            <span class="br-card__units">{{ num(r.units) }} {{ 'bloodRequests.bags' | translate }}</span>
+          </div>
+
+          <div class="br-card__body">
+            <div class="br-card__top">
+              <span class="br-urgent" *ngIf="isUrgent(r)"><mat-icon>priority_high</mat-icon>{{ 'bloodRequests.urgent' | translate }}</span>
+              <span class="cm-status" [ngClass]="'cm-status--' + r.status" *ngIf="r.status !== 'Open'">{{ ('bloodRequests.status' + r.status) | translate }}</span>
+              <span class="br-can" *ngIf="r.canIDonate && r.status === 'Open' && !r.isMine"><mat-icon>check_circle</mat-icon>{{ 'bloodRequests.youMatch' | translate }}</span>
+            </div>
+
+            <h3 class="br-card__hospital">{{ r.hospital }}<ng-container *ngIf="r.city">, {{ r.city }}</ng-container></h3>
+            <ul class="br-card__meta">
+              <li><mat-icon>schedule</mat-icon>{{ 'bloodRequests.neededBy' | translate }}: <strong>{{ when(r) }}</strong></li>
+              <li *ngIf="r.patientName"><mat-icon>person</mat-icon>{{ r.patientName }}</li>
+              <li><mat-icon>call</mat-icon><a [href]="'tel:' + r.contactPhone">{{ r.contactPhone }}</a></li>
+            </ul>
+            <p class="br-card__note" *ngIf="r.note">{{ r.note }}</p>
+
+            <div class="br-card__foot">
+              <span class="cm-who">
+                <img *ngIf="r.requester.photo; else reqInitial" class="cm-who__avatar" [src]="r.requester.photo | sizedImage:400" alt="" />
+                <ng-template #reqInitial><span class="cm-who__avatar">{{ initials(r.requester.fullName) }}</span></ng-template>
+                <span class="cm-who__text">
+                  <span class="cm-who__name">{{ r.requester.fullName }}</span>
+                  <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ r.requester.batch }}</span>
+                </span>
+              </span>
+
+              <span class="br-count" *ngIf="r.responseCount">
+                <mat-icon>volunteer_activism</mat-icon>{{ num(r.responseCount) }} {{ 'bloodRequests.willing' | translate }}
+              </span>
+
+              <div class="br-card__actions">
+                <button type="button" *ngIf="!r.isMine && r.status === 'Open' && canPost" class="pp-btn br-donate"
+                  [class.br-donate--on]="r.iResponded" [disabled]="busyId === r.id" (click)="respond(r)">
+                  <mat-icon>{{ r.iResponded ? 'check' : 'volunteer_activism' }}</mat-icon>
+                  {{ (r.iResponded ? 'bloodRequests.youResponded' : 'bloodRequests.canDonate') | translate }}
+                </button>
+
+                <ng-container *ngIf="r.isMine || auth.isStaff()">
+                  <button type="button" class="pp-btn pp-btn--outline" (click)="toggleResponders(r)">
+                    <mat-icon>groups</mat-icon> {{ 'bloodRequests.showWilling' | translate }}
+                  </button>
+                  <ng-container *ngIf="r.status === 'Open'">
+                    <button type="button" class="pp-btn pp-btn--outline" [disabled]="busyId === r.id" (click)="close(r, 'Fulfilled')">
+                      <mat-icon>task_alt</mat-icon> {{ 'bloodRequests.markFulfilled' | translate }}
+                    </button>
+                    <button type="button" class="pp-btn pp-btn--outline br-cancel" [disabled]="busyId === r.id" (click)="close(r, 'Cancelled')">
+                      {{ 'bloodRequests.cancelRequest' | translate }}
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- Volunteers (requester / staff) -->
+            <div class="br-responders" *ngIf="responders[r.id]">
+              <p *ngIf="responders[r.id] === 'loading'">{{ 'bloodRequests.loading' | translate }}</p>
+              <ng-container *ngIf="respondersOf(r) as list">
+                <p *ngIf="!list.length" class="br-responders__empty">{{ 'bloodRequests.noneYet' | translate }}</p>
+                <ul *ngIf="list.length">
+                  <li *ngFor="let v of list">
+                    <span class="cm-who">
+                      <img *ngIf="v.member.photo; else vInitial" class="cm-who__avatar" [src]="v.member.photo | sizedImage:400" alt="" />
+                      <ng-template #vInitial><span class="cm-who__avatar">{{ initials(v.member.fullName) }}</span></ng-template>
+                      <span class="cm-who__text">
+                        <span class="cm-who__name">{{ v.member.fullName }}</span>
+                        <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ v.member.batch }}<ng-container *ngIf="v.bloodGroup"> · {{ v.bloodGroup }}</ng-container></span>
+                      </span>
+                    </span>
+                    <a *ngIf="v.phone" class="pp-btn pp-btn--solid br-call" [href]="'tel:' + v.phone"><mat-icon>call</mat-icon> {{ v.phone }}</a>
+                  </li>
+                </ul>
+              </ng-container>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <p class="br-staff-note" *ngIf="!canPost && auth.isStaff()">{{ 'bloodRequests.staffNote' | translate }}</p>
+    </div>
+  </div>
+</div>

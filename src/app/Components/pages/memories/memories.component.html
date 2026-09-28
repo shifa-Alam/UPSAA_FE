@@ -1,0 +1,110 @@
+<div class="cm-page">
+  <app-page-header variant="plain" [eyebrow]="'memories.eyebrow' | translate" [title]="'memories.title' | translate"
+    [subtitle]="'memories.subtitle' | translate"></app-page-header>
+
+  <div class="upsaa-container cm-body">
+    <div class="cm-tools">
+      <p class="cm-tools__intro"><mat-icon inline>auto_stories</mat-icon> {{ 'memories.intro' | translate }}</p>
+      <div class="cm-tools__action">
+        <button type="button" class="pp-btn pp-btn--solid" *ngIf="canShare && !showForm" (click)="showForm = true">
+          <mat-icon>add_a_photo</mat-icon> {{ 'memories.share' | translate }}
+        </button>
+        <a class="pp-btn pp-btn--outline" routerLink="/login" *ngIf="!auth.isLoggedIn()">
+          <mat-icon>login</mat-icon> {{ 'memories.loginToShare' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="cm-main">
+      <!-- Share form -->
+      <form class="cm-form mw-form" *ngIf="showForm" (ngSubmit)="submit()">
+        <div class="cm-form__head">
+          <h2 class="cm-form__title">{{ 'memories.formTitle' | translate }}</h2>
+          <p class="cm-form__hint">{{ 'memories.formHint' | translate }}</p>
+        </div>
+        <div class="mw-form__grid">
+          <label class="cm-photo">
+            <input type="file" accept="image/*" (change)="onFile($event)" [attr.aria-label]="'memories.photo' | translate" />
+            <img *ngIf="preview" [src]="preview" alt="" />
+            <span class="cm-photo__empty" *ngIf="!preview"><mat-icon>add_a_photo</mat-icon>{{ 'memories.photo' | translate }}</span>
+          </label>
+          <div class="mw-form__fields">
+            <div class="form-field">
+              <label for="mw-story">{{ 'memories.story' | translate }} <span class="required">*</span></label>
+              <textarea id="mw-story" rows="6" name="story" [(ngModel)]="story" [maxlength]="maxStory"
+                [placeholder]="'memories.storyPh' | translate"></textarea>
+              <small>{{ story.length }} / {{ maxStory }}</small>
+            </div>
+            <div class="form-field mw-year">
+              <label for="mw-year">{{ 'memories.year' | translate }}</label>
+              <input id="mw-year" type="number" min="1950" max="2100" name="year" [(ngModel)]="year" placeholder="2005" />
+            </div>
+          </div>
+        </div>
+        <div class="cm-form__actions">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="showForm = false" [disabled]="saving">{{ 'memories.cancel' | translate }}</button>
+          <button type="submit" class="pp-btn pp-btn--solid" [disabled]="saving">
+            <mat-icon>send</mat-icon> {{ (saving ? 'memories.sending' : 'memories.submit') | translate }}
+          </button>
+        </div>
+      </form>
+
+      <!-- My submissions still waiting (or rejected) -->
+      <div class="cm-mine" *ngIf="mine.length">
+        <h3>{{ 'memories.mineTitle' | translate }}</h3>
+        <ul>
+          <li *ngFor="let m of mine">
+            <span class="cm-status" [ngClass]="'cm-status--' + m.status">{{ ('memories.status' + m.status) | translate }}</span>
+            <span class="mw-mine__text">{{ m.story | slice: 0 : 80 }}{{ m.story.length > 80 ? '…' : '' }}</span>
+            <button type="button" class="mw-link" (click)="remove(m)">{{ 'memories.delete' | translate }}</button>
+            <span class="cm-mine__note" *ngIf="m.reviewNote">{{ 'memories.reviewNote' | translate }}: {{ m.reviewNote }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <app-skeleton *ngIf="loading" variant="cards" [count]="6"></app-skeleton>
+
+      <app-empty-state *ngIf="!loading && !memories.length" icon="auto_stories" [title]="'memories.emptyTitle' | translate"
+        [message]="'memories.emptyMessage' | translate"></app-empty-state>
+
+      <!-- The wall -->
+      <div class="mw-wall" *ngIf="memories.length" appReveal>
+        <article class="mw-card" *ngFor="let m of memories">
+          <div class="mw-card__photo" *ngIf="m.photoUrl">
+            <img [src]="m.photoUrl | sizedImage:800" [attr.srcset]="m.photoUrl | sizedSrcset" sizes="(max-width: 640px) 100vw, 380px"
+              alt="" loading="lazy" />
+            <span class="mw-card__year" *ngIf="m.year">{{ num(m.year, true) }}</span>
+          </div>
+          <div class="mw-card__body">
+            <span class="mw-card__year mw-card__year--inline" *ngIf="m.year && !m.photoUrl">{{ num(m.year, true) }}</span>
+            <mat-icon class="mw-card__quote" aria-hidden="true">format_quote</mat-icon>
+            <p class="mw-card__story" [class.mw-card__story--clamped]="isLong(m) && !expanded.has(m.id)">{{ m.story }}</p>
+            <button type="button" class="mw-link" *ngIf="isLong(m)" (click)="toggle(m)">
+              {{ (expanded.has(m.id) ? 'memories.less' : 'memories.more') | translate }}
+            </button>
+
+            <div class="mw-card__foot">
+              <span class="cm-who">
+                <img *ngIf="m.member.photo; else mInitial" class="cm-who__avatar" [src]="m.member.photo | sizedImage:400" alt="" />
+                <ng-template #mInitial><span class="cm-who__avatar">{{ initials(m.member.fullName) }}</span></ng-template>
+                <span class="cm-who__text">
+                  <span class="cm-who__name">{{ m.member.fullName }}</span>
+                  <span class="cm-who__batch">{{ 'memories.batch' | translate }} {{ num(m.member.batch, true) }}</span>
+                </span>
+              </span>
+              <button type="button" class="mw-remember" [class.mw-remember--on]="m.iRemember" [disabled]="busyId === m.id"
+                (click)="remember(m)" [attr.aria-pressed]="m.iRemember">
+                <mat-icon>favorite</mat-icon>
+                {{ 'memories.remember' | translate }}<ng-container *ngIf="m.rememberCount"> · {{ num(m.rememberCount) }}</ng-container>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="mw-more" *ngIf="memories.length < total">
+        <button type="button" class="pp-btn pp-btn--outline" (click)="loadMore()" [disabled]="loadingMore">{{ 'memories.loadMore' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

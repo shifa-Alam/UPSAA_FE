@@ -456,3 +456,47 @@
     transition: none;
   }
 }
+
+// ---- Facebook page post ----
+.ev-fb {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+  cursor: pointer;
+
+  input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: var(--color-primary-600);
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: var(--font-size-sm);
+    color: var(--color-ink-900);
+  }
+
+  small {
+    font-size: var(--font-size-xs);
+    color: var(--color-ink-600);
+  }
+}
+
+.ev-fb-off {
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.ev__fb {
+  margin-top: 6px;
+}

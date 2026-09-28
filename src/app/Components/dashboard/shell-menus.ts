@@ -50,6 +50,7 @@ const ADMIN_MENU: MenuGroup[] = [
     icon: 'folder',
     expanded: false,
     children: [
+      { labelKey: 'dashboard.itemApprovals', route: '/dashboard/approvals', icon: 'check-square' },
       { labelKey: 'dashboard.itemGallery', route: '/dashboard/gallery', icon: 'image' },
       { labelKey: 'dashboard.itemNotices', route: '/dashboard/notices', icon: 'megaphone' },
       { labelKey: 'dashboard.itemBirthdayAutomation', route: '/dashboard/birthday-automation', icon: 'gift' },
@@ -79,6 +80,7 @@ const ADMIN_MENU: MenuGroup[] = [
     children: [
       { labelKey: 'dashboard.itemJobBoard', route: '/dashboard/jobs', icon: 'briefcase' },
       { labelKey: 'dashboard.itemBloodDonors', route: '/dashboard/blood-donors', icon: 'droplet' },
+      { labelKey: 'dashboard.itemBloodRequests', route: '/dashboard/blood-requests', icon: 'droplet' },
       { labelKey: 'dashboard.itemConstitutionLink', route: '/dashboard/constitution', icon: 'book' }
     ]
   },
@@ -113,7 +115,9 @@ const MEMBER_MENU: MenuGroup[] = [
       { labelKey: 'dashboard.itemDirectory', route: '/portal/members', icon: 'users' },
       { labelKey: 'dashboard.itemBatches', route: '/portal/batches', icon: 'graduation-cap' },
       { labelKey: 'dashboard.itemAchievements', route: '/portal/achievements', icon: 'award' },
-      { labelKey: 'dashboard.itemTeachers', route: '/portal/teachers', icon: 'graduation-cap' }
+      { labelKey: 'dashboard.itemTeachers', route: '/portal/teachers', icon: 'graduation-cap' },
+      { labelKey: 'dashboard.itemMemories', route: '/portal/memories', icon: 'image' },
+      { labelKey: 'dashboard.itemAlumniMap', route: '/portal/alumni-map', icon: 'map' }
     ]
   },
   {
@@ -138,6 +142,8 @@ const MEMBER_MENU: MenuGroup[] = [
     children: [
       { labelKey: 'dashboard.itemJobBoard', route: '/portal/jobs', icon: 'briefcase' },
       { labelKey: 'dashboard.itemBloodDonors', route: '/portal/blood-donors', icon: 'droplet' },
+      { labelKey: 'dashboard.itemBloodRequests', route: '/portal/blood-requests', icon: 'droplet' },
+      { labelKey: 'dashboard.itemBusinesses', route: '/portal/businesses', icon: 'briefcase' },
       { labelKey: 'dashboard.itemConstitutionLink', route: '/portal/constitution', icon: 'book' }
     ]
   }

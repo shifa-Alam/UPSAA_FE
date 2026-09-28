@@ -63,6 +63,13 @@ import { shareI18n } from './sections/share.i18n';
 import { notFoundI18n } from './sections/notFound.i18n';
 import { testimonialAdminI18n } from './sections/testimonialAdmin.i18n';
 import { memberCardI18n } from './sections/memberCard.i18n';
+import { facebookPageI18n } from './sections/facebookPage.i18n';
+import { bloodRequestsI18n } from './sections/bloodRequests.i18n';
+import { memoriesI18n } from './sections/memories.i18n';
+import { businessesI18n } from './sections/businesses.i18n';
+import { alumniMapI18n } from './sections/alumniMap.i18n';
+import { achievementSubmitI18n } from './sections/achievementSubmit.i18n';
+import { approvalsI18n } from './sections/approvals.i18n';
 
 // Every entry here is a section file's export. Each one owns a single,
 // unique top-level namespace key (see i18n.types.ts) — that's what makes
@@ -71,6 +78,13 @@ import { memberCardI18n } from './sections/memberCard.i18n';
 // keys can silently clobber anybody else's.
 const sections = [
   navI18n,
+  facebookPageI18n,
+  bloodRequestsI18n,
+  memoriesI18n,
+  businessesI18n,
+  alumniMapI18n,
+  achievementSubmitI18n,
+  approvalsI18n,
   footerI18n,
   homeI18n,
   aboutI18n,

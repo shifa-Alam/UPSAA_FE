@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
   /** Routes grouped under the desktop nav's "Alumni" and "Community" dropdowns —
    *  used to highlight the dropdown trigger itself when a child route is active,
    *  the way routerLinkActive would for a plain link. */
-  private readonly alumniRoutes = ['/members', '/batches', '/achievements', '/teachers', '/campaigns'];
+  private readonly alumniRoutes = ['/members', '/batches', '/achievements', '/teachers', '/campaigns', '/memories', '/businesses', '/alumni-map'];
   private readonly communityRoutes = ['/blood-donors', '/constitution'];
   isAlumniSectionActive = false;
   isCommunitySectionActive = false;

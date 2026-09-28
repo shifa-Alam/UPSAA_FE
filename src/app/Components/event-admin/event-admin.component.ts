@@ -20,10 +20,12 @@ const emptyForm = (): EventSave => ({
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { RouterLink } from '@angular/router';
+import { BirthdayPostService } from '../../Services/birthday-post.service';
+import { FbPostStatusComponent } from '../shared/fb-post-status/fb-post-status.component';
 @Component({
   selector: 'app-event-admin',
   standalone: true,
-  imports: [RouterLink, SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe],
+  imports: [RouterLink, SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe, FbPostStatusComponent],
   templateUrl: './event-admin.component.html',
   styleUrl: './event-admin.component.scss'
 })
@@ -47,6 +49,14 @@ export class EventAdminComponent implements OnInit {
 
   deletingId: number | null = null;
 
+  /** The Facebook page is set up (page id + token) — null while unknown. */
+  fbConnected: boolean | null = null;
+  /** Settings default for new events. */
+  private fbDefault = false;
+  /** Editing an event that's already on Facebook — the choice no longer applies. */
+  editingPosted = false;
+  private fbSettings = inject(BirthdayPostService);
+
   constructor(
     private eventService: EventService,
     private snackbar: SnackbarService,
@@ -55,6 +65,10 @@ export class EventAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEvents();
+    this.fbSettings.getSettings().pipe(catchError(() => of(null))).subscribe(s => {
+      this.fbConnected = !!s && !!s.pageId && s.hasAccessToken;
+      this.fbDefault = !!s?.autoPostEvents;
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -103,7 +117,8 @@ export class EventAdminComponent implements OnInit {
   openAddForm(): void {
     this.editMode = false;
     this.editingId = null;
-    this.form = emptyForm();
+    this.form = { ...emptyForm(), postToFacebook: !!this.fbConnected && this.fbDefault };
+    this.editingPosted = false;
     this.resetPhoto();
     this.showForm = true;
   }
@@ -118,8 +133,10 @@ export class EventAdminComponent implements OnInit {
       endDate: ev.endDate ? this.toLocalInput(ev.endDate) : null,
       venue: ev.venue ?? '',
       organizerName: ev.organizerName ?? '',
-      registrationUrl: ev.registrationUrl ?? ''
+      registrationUrl: ev.registrationUrl ?? '',
+      postToFacebook: !!ev.postToFacebook
     };
+    this.editingPosted = !!ev.facebookPostId;
     this.resetPhoto();
     this.showForm = true;
   }
@@ -134,6 +151,9 @@ export class EventAdminComponent implements OnInit {
       this.snackbar.showError(this.languageService.translate('eventAdmin.requiredError'));
       return;
     }
+
+    // Only send the Facebook choice when it can still matter (connected, not yet posted).
+    if (!this.fbConnected || this.editingPosted) this.form.postToFacebook = null;
 
     this.saving = true;
     const request = this.editMode && this.editingId != null

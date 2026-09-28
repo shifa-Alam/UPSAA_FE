@@ -1,0 +1,92 @@
+<div class="adm">
+  <app-admin-header [title]="'approvals.title' | translate" [subtitle]="'approvals.subtitle' | translate"></app-admin-header>
+
+  <div class="ap-tabs" role="tablist">
+    <button type="button" role="tab" class="ap-tab" [class.ap-tab--on]="tab === 'achievements'" [attr.aria-selected]="tab === 'achievements'"
+      (click)="tab = 'achievements'">
+      <mat-icon>military_tech</mat-icon>{{ 'approvals.tabAchievements' | translate }}
+      <span class="ap-badge" *ngIf="count('achievements')">{{ count('achievements') }}</span>
+    </button>
+    <button type="button" role="tab" class="ap-tab" [class.ap-tab--on]="tab === 'memories'" [attr.aria-selected]="tab === 'memories'"
+      (click)="tab = 'memories'">
+      <mat-icon>auto_stories</mat-icon>{{ 'approvals.tabMemories' | translate }}
+      <span class="ap-badge" *ngIf="count('memories')">{{ count('memories') }}</span>
+    </button>
+    <button type="button" role="tab" class="ap-tab" [class.ap-tab--on]="tab === 'businesses'" [attr.aria-selected]="tab === 'businesses'"
+      (click)="tab = 'businesses'">
+      <mat-icon>storefront</mat-icon>{{ 'approvals.tabBusinesses' | translate }}
+      <span class="ap-badge" *ngIf="count('businesses')">{{ count('businesses') }}</span>
+    </button>
+  </div>
+
+  <app-skeleton *ngIf="loading" variant="list" [count]="3"></app-skeleton>
+
+  <ng-container *ngIf="!loading">
+    <app-empty-state *ngIf="!count(tab)" icon="task_alt" [title]="'approvals.emptyTitle' | translate"
+      [message]="'approvals.emptyMessage' | translate"></app-empty-state>
+
+    <!-- Achievements -->
+    <ul class="ap-list" *ngIf="tab === 'achievements'">
+      <li class="ap-item" *ngFor="let a of achievements">
+        <img *ngIf="a.photoUrl; else aNoPhoto" class="ap-thumb" [src]="a.photoUrl | sizedImage:400" alt="" />
+        <ng-template #aNoPhoto><span class="ap-thumb ap-thumb--initial">{{ initials(a.fullName) }}</span></ng-template>
+        <div class="ap-body">
+          <strong class="ap-title">{{ a.title }}</strong>
+          <span class="ap-meta">{{ a.fullName }}<ng-container *ngIf="a.batch"> · {{ 'approvals.batch' | translate }} {{ a.batch }}</ng-container>
+            <ng-container *ngIf="a.profession || a.organization"> · {{ a.profession }} {{ a.organization }}</ng-container> · {{ date(a.createdDate) }}</span>
+          <p class="ap-text" *ngIf="a.description">{{ a.description }}</p>
+        </div>
+        <div class="ap-actions">
+          <button type="button" class="btn btn--solid" [disabled]="isBusy('Achievement', a.id)" (click)="review('Achievement', a.id, true)">
+            <mat-icon>check</mat-icon>{{ 'approvals.approve' | translate }}</button>
+          <button type="button" class="btn btn--outline" [disabled]="isBusy('Achievement', a.id)" (click)="review('Achievement', a.id, false)">
+            {{ 'approvals.reject' | translate }}</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Memories -->
+    <ul class="ap-list" *ngIf="tab === 'memories'">
+      <li class="ap-item" *ngFor="let m of memories">
+        <img *ngIf="m.photoUrl; else mNoPhoto" class="ap-thumb" [src]="m.photoUrl | sizedImage:400" alt="" />
+        <ng-template #mNoPhoto><span class="ap-thumb ap-thumb--initial"><mat-icon>auto_stories</mat-icon></span></ng-template>
+        <div class="ap-body">
+          <span class="ap-meta">{{ m.member.fullName }} · {{ 'approvals.batch' | translate }} {{ m.member.batch }}
+            <ng-container *ngIf="m.year"> · {{ m.year }}</ng-container> · {{ date(m.createdDate) }}</span>
+          <p class="ap-text ap-text--story">{{ m.story }}</p>
+        </div>
+        <div class="ap-actions">
+          <button type="button" class="btn btn--solid" [disabled]="isBusy('Memory', m.id)" (click)="review('Memory', m.id, true)">
+            <mat-icon>check</mat-icon>{{ 'approvals.approve' | translate }}</button>
+          <button type="button" class="btn btn--outline" [disabled]="isBusy('Memory', m.id)" (click)="review('Memory', m.id, false)">
+            {{ 'approvals.reject' | translate }}</button>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Businesses -->
+    <ul class="ap-list" *ngIf="tab === 'businesses'">
+      <li class="ap-item" *ngFor="let b of businesses">
+        <img *ngIf="b.logoUrl; else bNoLogo" class="ap-thumb ap-thumb--logo" [src]="b.logoUrl | sizedImage:400" alt="" />
+        <ng-template #bNoLogo><span class="ap-thumb ap-thumb--initial">{{ initials(b.name) }}</span></ng-template>
+        <div class="ap-body">
+          <strong class="ap-title">{{ b.name }}</strong>
+          <span class="ap-meta">{{ b.category }}<ng-container *ngIf="b.city"> · {{ b.city }}</ng-container> ·
+            {{ b.owner.fullName }} ({{ 'approvals.batch' | translate }} {{ b.owner.batch }})</span>
+          <p class="ap-text">{{ b.description }}</p>
+          <span class="ap-meta ap-contact">
+            <span *ngIf="b.phone"><mat-icon inline>call</mat-icon> {{ b.phone }}</span>
+            <a *ngIf="b.website" [href]="b.website" target="_blank" rel="noopener nofollow"><mat-icon inline>open_in_new</mat-icon> {{ b.website }}</a>
+            <span *ngIf="b.alumniOffer"><mat-icon inline>local_offer</mat-icon> {{ b.alumniOffer }}</span>
+          </span>
+        </div>
+        <div class="ap-actions">
+          <button type="button" class="btn btn--solid" [disabled]="isBusy('Business', b.id)" (click)="review('Business', b.id, true)">
+            <mat-icon>check</mat-icon>{{ 'approvals.approve' | translate }}</button>
+          <button type="button" class="btn btn--outline" [disabled]="isBusy('Business', b.id)" (click)="review('Business', b.id, false)">
+            {{ 'approvals.reject' | translate }}</button>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+</div>

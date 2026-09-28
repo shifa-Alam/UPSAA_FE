@@ -32,6 +32,8 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
 
   enabled = false;
   emailEnabled = false;
+  autoPostNotices = false;
+  autoPostEvents = false;
   pageId = '';
   pageAccessToken = '';
   postTime = '09:00';
@@ -89,6 +91,8 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       pageAccessToken: this.pageAccessToken.trim() || null,
       postTime: this.postTime,
       emailEnabled: this.emailEnabled,
+      autoPostNotices: this.autoPostNotices,
+      autoPostEvents: this.autoPostEvents,
       emailSubject: this.emailSubject,
       emailBody: this.emailBody
     }).pipe(
@@ -253,6 +257,8 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     this.settings = settings;
     this.enabled = settings.enabled;
     this.emailEnabled = settings.emailEnabled;
+    this.autoPostNotices = settings.autoPostNotices ?? false;
+    this.autoPostEvents = settings.autoPostEvents ?? false;
     this.pageId = settings.pageId ?? '';
     this.postTime = settings.postTime;
     this.emailSubject = settings.emailSubject ?? settings.defaultEmailSubject ?? '';

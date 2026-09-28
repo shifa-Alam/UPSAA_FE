@@ -16,6 +16,10 @@ export interface Achievement {
   createdDate: string;
   createdById: string | null;
   createdByName: string | null;
+  /** Member submissions wait for staff approval. */
+  status?: 'Pending' | 'Approved' | 'Rejected';
+  reviewNote?: string | null;
+  submittedByMemberId?: number | null;
 }
 
 export interface AchievementSave {
@@ -44,6 +48,27 @@ export class AchievementService {
   getPage(query: { skip?: number; take?: number }): Observable<ListPage<Achievement>> {
     return this.http.get<Achievement[]>(`${this.apiUrl}/GetAll`, { params: listParams(query), observe: 'response' })
       .pipe(map(res => toListPage(res)));
+  }
+
+  /** A member submits an achievement about themselves (published after staff approval). */
+  submit(data: { title: string; description: string; profession: string; organization: string }, file?: File | null): Observable<Achievement> {
+    const form = new FormData();
+    form.append('Title', data.title);
+    form.append('Description', data.description);
+    form.append('Profession', data.profession);
+    form.append('Organization', data.organization);
+    if (file) form.append('File', file);
+    return this.http.post<Achievement>(`${this.apiUrl}/Submit`, form);
+  }
+
+  /** The signed-in member's own submissions, with their review status. */
+  mine(): Observable<Achievement[]> {
+    return this.http.get<Achievement[]>(`${this.apiUrl}/Mine`);
+  }
+
+  /** SuperAdmin/Admin — submissions waiting for a decision. */
+  pending(): Observable<Achievement[]> {
+    return this.http.get<Achievement[]>(`${this.apiUrl}/Pending`);
   }
 
   /** SuperAdmin/Admin only. */

@@ -1,0 +1,63 @@
+<section class="as" *ngIf="isMember">
+  <div class="upsaa-container">
+    <div class="as__band" *ngIf="!open">
+      <span class="as__icon" aria-hidden="true"><mat-icon>military_tech</mat-icon></span>
+      <div class="as__text">
+        <strong>{{ 'achievementSubmit.bandTitle' | translate }}</strong>
+        <span>{{ 'achievementSubmit.bandText' | translate }}</span>
+      </div>
+      <button type="button" class="pp-btn pp-btn--solid" (click)="open = true">
+        <mat-icon>add</mat-icon> {{ 'achievementSubmit.open' | translate }}
+      </button>
+    </div>
+
+    <form class="cm-form" *ngIf="open" (ngSubmit)="submit()">
+      <div class="cm-form__head">
+        <h2 class="cm-form__title">{{ 'achievementSubmit.formTitle' | translate }}</h2>
+        <p class="cm-form__hint">{{ 'achievementSubmit.formHint' | translate }}</p>
+      </div>
+      <div class="as__grid">
+        <label class="cm-photo">
+          <input type="file" accept="image/*" (change)="onFile($event)" [attr.aria-label]="'achievementSubmit.photo' | translate" />
+          <img *ngIf="preview" [src]="preview" alt="" />
+          <span class="cm-photo__empty" *ngIf="!preview"><mat-icon>add_a_photo</mat-icon>{{ 'achievementSubmit.photo' | translate }}</span>
+        </label>
+        <div class="cm-form__grid">
+          <div class="form-field cm-form__full">
+            <label for="as-title">{{ 'achievementSubmit.title' | translate }} <span class="required">*</span></label>
+            <input id="as-title" name="title" maxlength="200" [(ngModel)]="title" [placeholder]="'achievementSubmit.titlePh' | translate" />
+          </div>
+          <div class="form-field">
+            <label for="as-prof">{{ 'achievementSubmit.profession' | translate }}</label>
+            <input id="as-prof" name="profession" [(ngModel)]="profession" />
+          </div>
+          <div class="form-field">
+            <label for="as-org">{{ 'achievementSubmit.organization' | translate }}</label>
+            <input id="as-org" name="organization" [(ngModel)]="organization" />
+          </div>
+          <div class="form-field cm-form__full">
+            <label for="as-desc">{{ 'achievementSubmit.description' | translate }}</label>
+            <textarea id="as-desc" rows="3" maxlength="1000" name="description" [(ngModel)]="description"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="cm-form__actions">
+        <button type="button" class="pp-btn pp-btn--outline" (click)="open = false" [disabled]="saving">{{ 'achievementSubmit.cancel' | translate }}</button>
+        <button type="submit" class="pp-btn pp-btn--solid" [disabled]="saving">
+          <mat-icon>send</mat-icon> {{ (saving ? 'achievementSubmit.sending' : 'achievementSubmit.submit') | translate }}
+        </button>
+      </div>
+    </form>
+
+    <div class="cm-mine" *ngIf="mine.length">
+      <h3>{{ 'achievementSubmit.mineTitle' | translate }}</h3>
+      <ul>
+        <li *ngFor="let a of mine">
+          <span class="cm-status" [ngClass]="'cm-status--' + (a.status || 'Approved')">{{ ('achievementSubmit.status' + (a.status || 'Approved')) | translate }}</span>
+          <span>{{ a.title }}</span>
+          <span class="cm-mine__note" *ngIf="a.reviewNote && a.status === 'Rejected'">{{ 'achievementSubmit.reviewNote' | translate }}: {{ a.reviewNote }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>

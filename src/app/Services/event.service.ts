@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ListPage, listParams, toListPage } from './list-page';
+import { FacebookPostable } from './facebook-page.service';
 
-export interface EventItem {
+/** Facebook fields are only filled for admins. */
+export interface EventItem extends FacebookPostable {
   id: number;
   title: string;
   description: string | null;
@@ -33,6 +35,8 @@ export interface EventSave {
   venue: string;
   organizerName: string;
   registrationUrl: string;
+  /** Also post on the Facebook page. Null/omitted on update = unchanged. */
+  postToFacebook?: boolean | null;
 }
 
 @Injectable({
@@ -83,6 +87,7 @@ export class EventService {
     formData.append('Venue', data.venue);
     formData.append('OrganizerName', data.organizerName);
     formData.append('RegistrationUrl', data.registrationUrl);
+    if (data.postToFacebook != null) formData.append('PostToFacebook', String(data.postToFacebook));
     if (file) formData.append('File', file);
     return formData;
   }

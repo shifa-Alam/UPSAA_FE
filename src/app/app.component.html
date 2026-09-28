@@ -54,6 +54,15 @@
       <a mat-button (click)="sidenav.close()" routerLink="/campaigns" routerLinkActive="active-link">
         <mat-icon>volunteer_activism</mat-icon><span>{{ 'nav.campaigns' | translate }}</span>
       </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/memories" routerLinkActive="active-link">
+        <mat-icon>auto_stories</mat-icon><span>{{ 'nav.memories' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/businesses" routerLinkActive="active-link">
+        <mat-icon>storefront</mat-icon><span>{{ 'nav.businesses' | translate }}</span>
+      </a>
+      <a mat-button (click)="sidenav.close()" routerLink="/alumni-map" routerLinkActive="active-link">
+        <mat-icon>map</mat-icon><span>{{ 'nav.alumniMap' | translate }}</span>
+      </a>
       <a mat-button (click)="sidenav.close()" routerLink="/gallery" routerLinkActive="active-link">
         <mat-icon>photo_library</mat-icon><span>{{ 'nav.gallery' | translate }}</span>
       </a>
@@ -175,6 +184,15 @@
               </a>
               <a mat-menu-item routerLink="/campaigns">
                 <mat-icon>volunteer_activism</mat-icon><span>{{ 'nav.campaigns' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/memories">
+                <mat-icon>auto_stories</mat-icon><span>{{ 'nav.memories' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/businesses">
+                <mat-icon>storefront</mat-icon><span>{{ 'nav.businesses' | translate }}</span>
+              </a>
+              <a mat-menu-item routerLink="/alumni-map">
+                <mat-icon>map</mat-icon><span>{{ 'nav.alumniMap' | translate }}</span>
               </a>
             </mat-menu>
 

@@ -1,0 +1,324 @@
+@import '../../../../styles/community';
+
+// Blood red, used sparingly: the call-to-action, the group badge, the urgent tag.
+:host {
+  --blood: #c62828;
+  --blood-soft: rgba(198, 40, 40, 0.1);
+}
+
+:host-context([data-theme='dark']) {
+  --blood: #ef5350;
+  --blood-soft: rgba(239, 83, 80, 0.14);
+}
+
+.br-main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.br-cta {
+  background: var(--blood) !important;
+  border-color: var(--blood) !important;
+  color: #fff !important;
+}
+
+.br-groups {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.br-group {
+  height: 46px;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink-900);
+  font: 800 var(--font-size-md) var(--font-base);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--blood);
+  }
+}
+
+.br-group--active {
+  border-color: var(--blood);
+  background: var(--blood);
+  color: #fff;
+}
+
+.br-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.br-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-left: 4px solid var(--blood);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+
+.br-card--closed {
+  border-left-color: var(--color-ink-200);
+  opacity: 0.8;
+}
+
+.br-card--target {
+  box-shadow: 0 0 0 3px var(--blood-soft), var(--shadow-md);
+}
+
+.br-card__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 92px;
+  border-radius: var(--radius-lg);
+  background: var(--blood-soft);
+  color: var(--blood);
+}
+
+.br-card__group--urgent {
+  background: var(--blood);
+  color: #fff;
+}
+
+.br-card__type {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.br-card__units {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.br-card__body {
+  min-width: 0;
+}
+
+.br-card__top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: 4px;
+}
+
+.br-urgent,
+.br-can {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 10px 2px 6px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.br-urgent {
+  background: var(--blood-soft);
+  color: var(--blood);
+}
+
+.br-can {
+  background: rgba(76, 175, 80, 0.14);
+  color: #2e7d32;
+}
+
+:host-context([data-theme='dark']) .br-can {
+  color: #86d08a;
+}
+
+.br-card__hospital {
+  margin: var(--space-2) 0;
+  font-size: var(--font-size-lg);
+  line-height: 1.35;
+}
+
+.br-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--color-ink-400);
+  }
+
+  a {
+    color: var(--color-link, var(--color-primary-700));
+    font-weight: 700;
+  }
+}
+
+.br-card__note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+  white-space: pre-line;
+}
+
+.br-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+.br-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: #2e7d32;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+:host-context([data-theme='dark']) .br-count {
+  color: #86d08a;
+}
+
+.br-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-left: auto;
+
+  .pp-btn {
+    min-height: 38px;
+    padding: 0 var(--space-4);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}
+
+.br-donate {
+  border: 1px solid var(--blood);
+  background: var(--blood);
+  color: #fff;
+}
+
+.br-donate--on {
+  border-color: #2e7d32;
+  background: rgba(76, 175, 80, 0.14);
+  color: #2e7d32;
+}
+
+.br-cancel {
+  color: var(--color-ink-600) !important;
+}
+
+.br-responders {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+}
+
+.br-call {
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.br-staff-note {
+  margin-top: var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .br-groups {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .br-card {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .br-card__group {
+    height: 64px;
+  }
+
+  .br-card__type {
+    font-size: 20px;
+  }
+
+  .br-card__actions {
+    width: 100%;
+    margin-left: 0;
+
+    .pp-btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+}

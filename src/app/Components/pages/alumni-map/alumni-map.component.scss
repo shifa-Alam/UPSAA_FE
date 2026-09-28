@@ -1,0 +1,274 @@
+// Unencapsulated (Leaflet builds its own DOM) — every rule is scoped under .am-page or am-*.
+@import 'leaflet/dist/leaflet';
+
+.am-page {
+  background: var(--color-surface);
+  overflow-x: hidden;
+}
+
+.am-body {
+  padding-bottom: clamp(32px, 5vw, 56px);
+}
+
+.am-page .am-stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: calc(-1 * var(--space-6));
+  margin-bottom: var(--space-5);
+}
+
+.am-page .am-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+
+  strong {
+    font-size: clamp(22px, 2.6vw, 30px);
+    font-weight: 800;
+    color: var(--color-primary-800);
+    line-height: 1.1;
+  }
+
+  span {
+    font-size: var(--font-size-sm);
+    color: var(--color-ink-600);
+  }
+}
+
+[data-theme='dark'] .am-page .am-stat strong {
+  color: var(--color-primary-300);
+}
+
+.am-page .am-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.am-page .am-map-card {
+  position: relative;
+}
+
+.am-page .am-map-tools {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 500;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.am-page .am-toggle {
+  padding: 8px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink-700);
+  font: 700 var(--font-size-xs) var(--font-base);
+  cursor: pointer;
+}
+
+.am-page .am-toggle--on {
+  background: #0b3a82;
+  color: #fff;
+}
+
+.am-page .am-map {
+  position: relative;
+  height: min(70vh, 560px);
+  min-height: 380px;
+  overflow: hidden;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-alt);
+  box-shadow: var(--shadow-sm);
+}
+
+.am-page .am-map__loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  margin: 0;
+  color: var(--color-ink-600);
+}
+
+.am-page .am-note {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+// ---- Bubbles ----
+.am-bubble-wrap {
+  background: none;
+  border: 0;
+}
+
+.am-bubble {
+  display: grid;
+  place-items: center;
+  border: 2px solid #f2c94c;
+  border-radius: 50%;
+  background: rgba(11, 58, 130, 0.88);
+  color: #fff;
+  font: 800 13px/1 var(--font-base);
+  box-shadow: 0 4px 14px rgba(5, 20, 48, 0.35);
+  transition: transform 150ms ease;
+
+  &:hover {
+    transform: scale(1.12);
+  }
+}
+
+.am-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+  font-family: var(--font-base);
+
+  strong {
+    font-size: 15px;
+  }
+
+  span {
+    color: #475569;
+  }
+
+  a {
+    margin-top: 6px;
+    color: #0b3a82;
+    font-weight: 700;
+  }
+}
+
+// ---- Side list ----
+.am-page .am-side {
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.am-page .am-side__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+}
+
+.am-page .am-rank {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.am-page .am-rank__row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-ink-900);
+  font: 600 var(--font-size-sm) var(--font-base);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-surface-alt);
+  }
+}
+
+.am-page .am-rank__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.am-page .am-rank__bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--color-ink-100);
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #0b3a82, #3c80ef);
+  }
+}
+
+.am-page .am-rank__count {
+  font-weight: 800;
+  color: var(--color-primary-700);
+}
+
+[data-theme='dark'] .am-page .am-rank__count {
+  color: var(--color-primary-300);
+}
+
+.am-page .am-empty {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.am-page .am-other {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+
+  summary {
+    color: var(--color-link, var(--color-primary-700));
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  ul {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-4);
+    color: var(--color-ink-700);
+  }
+
+  li span {
+    color: var(--color-ink-600);
+  }
+}
+
+@media (max-width: 900px) {
+  .am-page .am-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .am-page .am-map {
+    height: 60vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .am-page .am-stat {
+    padding: var(--space-3) var(--space-2);
+
+    span {
+      font-size: var(--font-size-xs);
+      text-align: center;
+    }
+  }
+}

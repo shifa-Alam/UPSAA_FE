@@ -4,6 +4,9 @@
     [subtitle]="'achievements.hero.subtitle' | translate">
   </app-page-header>
 
+  <!-- Members: submit your own achievement (published after staff approval). -->
+  <app-achievement-submit></app-achievement-submit>
+
   <app-skeleton *ngIf="loading" variant="cards" [count]="3" [contained]="true" [label]="'achievements.loading' | translate"></app-skeleton>
 
   <section class="pp-section" *ngIf="!loading && (loadError || achievements.length === 0)">

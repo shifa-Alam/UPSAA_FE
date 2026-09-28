@@ -80,6 +80,19 @@
           <input type="time" id="fbPostTime" [(ngModel)]="postTime" name="postTime" />
         </div>
 
+        <fieldset class="page-posts">
+          <legend>{{ 'birthdayAutomation.pagePostsTitle' | translate }}</legend>
+          <p class="field-hint">{{ 'birthdayAutomation.pagePostsHint' | translate }}</p>
+          <label class="switch-field">
+            <input type="checkbox" [(ngModel)]="autoPostNotices" name="autoPostNotices" />
+            <span>{{ 'birthdayAutomation.autoPostNoticesLabel' | translate }}</span>
+          </label>
+          <label class="switch-field">
+            <input type="checkbox" [(ngModel)]="autoPostEvents" name="autoPostEvents" />
+            <span>{{ 'birthdayAutomation.autoPostEventsLabel' | translate }}</span>
+          </label>
+        </fieldset>
+
         <div class="form-actions settings-form__actions">
           <button type="submit" class="btn btn--solid" [disabled]="saving">
             <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>

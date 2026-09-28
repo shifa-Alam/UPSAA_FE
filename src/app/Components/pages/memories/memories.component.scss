@@ -1,0 +1,182 @@
+@import '../../../../styles/community';
+
+.mw-form__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: var(--space-5);
+
+  .cm-photo {
+    min-height: 220px;
+  }
+}
+
+.mw-form__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.mw-year {
+  max-width: 180px;
+}
+
+.mw-mine__text {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-ink-700);
+}
+
+.mw-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link, var(--color-primary-700));
+  font: 700 var(--font-size-sm) var(--font-base);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+// Masonry wall: CSS columns keep cards of different heights tightly packed.
+.mw-wall {
+  column-count: 3;
+  column-gap: var(--space-5);
+}
+
+.mw-card {
+  display: inline-block;
+  width: 100%;
+  margin: 0 0 var(--space-5);
+  overflow: hidden;
+  break-inside: avoid;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(7, 29, 64, 0.06), 0 8px 24px rgba(7, 29, 64, 0.08);
+}
+
+.mw-card__photo {
+  position: relative;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    // Old photos: a touch of warmth.
+    filter: sepia(0.12) saturate(0.95);
+  }
+}
+
+.mw-card__year {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(5, 20, 48, 0.78);
+  color: #fff;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+}
+
+.mw-card__year--inline {
+  position: static;
+  display: inline-block;
+  margin-bottom: var(--space-2);
+}
+
+.mw-card__body {
+  padding: var(--space-4);
+}
+
+.mw-card__quote {
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+  color: var(--color-heritage-500);
+}
+
+.mw-card__story {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: var(--color-ink-800, var(--color-ink-900));
+  white-space: pre-line;
+}
+
+.mw-card__story--clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mw-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+.mw-remember {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+  height: 34px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-700);
+  font: 700 var(--font-size-xs) var(--font-base);
+  cursor: pointer;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+
+  &:hover {
+    border-color: #e57373;
+  }
+}
+
+.mw-remember--on {
+  border-color: #e57373;
+  background: rgba(229, 115, 115, 0.12);
+  color: #c62828;
+}
+
+:host-context([data-theme='dark']) .mw-remember--on {
+  color: #ef9a9a;
+}
+
+.mw-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+
+@media (max-width: 1000px) {
+  .mw-wall {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .mw-wall {
+    column-count: 1;
+  }
+
+  .mw-form__grid {
+    grid-template-columns: 1fr;
+  }
+}

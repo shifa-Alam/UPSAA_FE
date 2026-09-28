@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { AchievementSubmitComponent } from './achievement-submit/achievement-submit.component';
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -15,7 +16,7 @@ import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 @Component({
   selector: 'app-achievements',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [AchievementSubmitComponent, SkeletonComponent, CommonModule, MatIconModule, RouterLink, PageHeaderComponent, EmptyStateComponent, RevealDirective, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './achievements.component.html',
   styleUrl: './achievements.component.scss'
 })

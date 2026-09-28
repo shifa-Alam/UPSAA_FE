@@ -1,0 +1,148 @@
+<div class="cm-page">
+  <app-page-header variant="plain" [eyebrow]="'businesses.eyebrow' | translate" [title]="'businesses.title' | translate"
+    [subtitle]="'businesses.subtitle' | translate"></app-page-header>
+
+  <div class="upsaa-container cm-body">
+    <div class="cm-tools">
+      <label class="cm-search">
+        <mat-icon>search</mat-icon>
+        <input type="search" name="search" [(ngModel)]="search" (ngModelChange)="onSearch()"
+          [placeholder]="'businesses.searchPh' | translate" [attr.aria-label]="'businesses.searchPh' | translate" />
+      </label>
+      <div class="cm-tools__action">
+        <button type="button" class="pp-btn pp-btn--solid" *ngIf="canAdd && !showForm" (click)="openAdd()">
+          <mat-icon>add</mat-icon> {{ 'businesses.add' | translate }}
+        </button>
+        <a class="pp-btn pp-btn--outline" routerLink="/login" *ngIf="!auth.isLoggedIn()">
+          <mat-icon>login</mat-icon> {{ 'businesses.loginToAdd' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <div class="cm-main">
+      <!-- Category chips -->
+      <div class="bz-cats" *ngIf="categories.length" role="group" [attr.aria-label]="'businesses.category' | translate">
+        <button type="button" class="cm-chip" [class.cm-chip--active]="!category" (click)="setCategory('')">{{ 'businesses.all' | translate }}</button>
+        <button type="button" class="cm-chip" *ngFor="let c of categories" [class.cm-chip--active]="category === c.name"
+          [attr.aria-pressed]="category === c.name" (click)="setCategory(c.name)">{{ c.name }} <small>{{ c.count }}</small></button>
+      </div>
+
+      <!-- Add / edit form -->
+      <form class="cm-form" *ngIf="showForm" (ngSubmit)="submit()">
+        <div class="cm-form__head">
+          <h2 class="cm-form__title">{{ (editingId ? 'businesses.editTitle' : 'businesses.formTitle') | translate }}</h2>
+          <p class="cm-form__hint">{{ 'businesses.formHint' | translate }}</p>
+        </div>
+        <div class="bz-form">
+          <label class="cm-photo bz-logo-pick">
+            <input type="file" accept="image/*" (change)="onFile($event)" [attr.aria-label]="'businesses.logo' | translate" />
+            <img *ngIf="preview" [src]="preview" alt="" />
+            <span class="cm-photo__empty" *ngIf="!preview"><mat-icon>add_photo_alternate</mat-icon>{{ 'businesses.logo' | translate }}</span>
+          </label>
+          <div class="cm-form__grid">
+            <div class="form-field">
+              <label for="bz-name">{{ 'businesses.name' | translate }} <span class="required">*</span></label>
+              <input id="bz-name" name="name" [(ngModel)]="form.name" />
+            </div>
+            <div class="form-field">
+              <label for="bz-cat">{{ 'businesses.category' | translate }} <span class="required">*</span></label>
+              <input id="bz-cat" name="category" [(ngModel)]="form.category" list="bz-cat-list" [placeholder]="'businesses.categoryPh' | translate" />
+              <datalist id="bz-cat-list"><option *ngFor="let c of categoryOptions" [value]="c"></option></datalist>
+            </div>
+            <div class="form-field cm-form__full">
+              <label for="bz-desc">{{ 'businesses.description' | translate }} <span class="required">*</span></label>
+              <textarea id="bz-desc" rows="3" maxlength="1000" name="description" [(ngModel)]="form.description"
+                [placeholder]="'businesses.descriptionPh' | translate"></textarea>
+            </div>
+            <div class="form-field">
+              <label for="bz-phone">{{ 'businesses.phone' | translate }}</label>
+              <input id="bz-phone" type="tel" name="phone" [(ngModel)]="form.phone" />
+            </div>
+            <div class="form-field">
+              <label for="bz-web">{{ 'businesses.website' | translate }}</label>
+              <input id="bz-web" name="website" [(ngModel)]="form.website" placeholder="facebook.com/..." />
+            </div>
+            <div class="form-field">
+              <label for="bz-city">{{ 'businesses.city' | translate }}</label>
+              <input id="bz-city" name="city" [(ngModel)]="form.city" />
+            </div>
+            <div class="form-field">
+              <label for="bz-address">{{ 'businesses.address' | translate }}</label>
+              <input id="bz-address" name="address" [(ngModel)]="form.address" />
+            </div>
+            <div class="form-field cm-form__full">
+              <label for="bz-offer">{{ 'businesses.offer' | translate }}</label>
+              <input id="bz-offer" name="offer" maxlength="150" [(ngModel)]="form.alumniOffer" [placeholder]="'businesses.offerPh' | translate" />
+            </div>
+          </div>
+        </div>
+        <div class="cm-form__actions">
+          <button type="button" class="pp-btn pp-btn--outline" (click)="showForm = false" [disabled]="saving">{{ 'businesses.cancel' | translate }}</button>
+          <button type="submit" class="pp-btn pp-btn--solid" [disabled]="saving">
+            <mat-icon>send</mat-icon> {{ (saving ? 'businesses.sending' : 'businesses.submit') | translate }}
+          </button>
+        </div>
+      </form>
+
+      <!-- My listings -->
+      <div class="cm-mine" *ngIf="mine.length">
+        <h3>{{ 'businesses.mineTitle' | translate }}</h3>
+        <ul>
+          <li *ngFor="let b of mine">
+            <span class="cm-status" [ngClass]="'cm-status--' + b.status">{{ ('businesses.status' + b.status) | translate }}</span>
+            <strong>{{ b.name }}</strong>
+            <span class="bz-mine__actions">
+              <button type="button" class="bz-link" (click)="edit(b)">{{ 'businesses.edit' | translate }}</button>
+              <button type="button" class="bz-link" (click)="remove(b)">{{ 'businesses.delete' | translate }}</button>
+            </span>
+            <span class="cm-mine__note" *ngIf="b.reviewNote && b.status === 'Rejected'">{{ 'businesses.reviewNote' | translate }}: {{ b.reviewNote }}</span>
+          </li>
+        </ul>
+      </div>
+
+      <app-skeleton *ngIf="loading" variant="cards" [count]="6"></app-skeleton>
+
+      <app-empty-state *ngIf="!loading && !items.length" icon="storefront"
+        [title]="((search || category) ? 'businesses.noMatchTitle' : 'businesses.emptyTitle') | translate"
+        [message]="((search || category) ? 'businesses.noMatchMessage' : 'businesses.emptyMessage') | translate"></app-empty-state>
+
+      <div class="bz-grid" *ngIf="!loading && items.length">
+        <article class="bz-card" *ngFor="let b of items">
+          <div class="bz-card__head">
+            <img *ngIf="b.logoUrl; else logoInitial" class="bz-card__logo" [src]="b.logoUrl | sizedImage:400" alt="" loading="lazy" />
+            <ng-template #logoInitial><span class="bz-card__logo bz-card__logo--initial" aria-hidden="true">{{ initials(b.name) }}</span></ng-template>
+            <div class="bz-card__title">
+              <h3>{{ b.name }}</h3>
+              <span class="bz-card__cat">{{ b.category }}<ng-container *ngIf="b.city"> · {{ b.city }}</ng-container></span>
+            </div>
+          </div>
+
+          <p class="bz-card__offer" *ngIf="b.alumniOffer"><mat-icon>local_offer</mat-icon>{{ b.alumniOffer }}</p>
+          <p class="bz-card__desc">{{ b.description }}</p>
+          <p class="bz-card__address" *ngIf="b.address"><mat-icon>place</mat-icon>{{ b.address }}</p>
+
+          <div class="bz-card__foot">
+            <span class="cm-who">
+              <img *ngIf="b.owner.photo; else oInitial" class="cm-who__avatar" [src]="b.owner.photo | sizedImage:400" alt="" />
+              <ng-template #oInitial><span class="cm-who__avatar">{{ initials(b.owner.fullName) }}</span></ng-template>
+              <span class="cm-who__text">
+                <span class="cm-who__name">{{ b.owner.fullName }}</span>
+                <span class="cm-who__batch">{{ 'businesses.batch' | translate }} {{ b.owner.batch }}</span>
+              </span>
+            </span>
+            <span class="bz-card__contact">
+              <a *ngIf="b.phone" class="bz-icon-btn" [href]="'tel:' + b.phone" [attr.aria-label]="'businesses.call' | translate"
+                [attr.title]="b.phone"><mat-icon>call</mat-icon></a>
+              <a *ngIf="b.website" class="bz-icon-btn" [href]="b.website" target="_blank" rel="noopener nofollow"
+                [attr.aria-label]="'businesses.visit' | translate" [attr.title]="shortUrl(b.website)"><mat-icon>open_in_new</mat-icon></a>
+            </span>
+          </div>
+        </article>
+      </div>
+
+      <div class="bz-more" *ngIf="items.length < total">
+        <button type="button" class="pp-btn pp-btn--outline" (click)="loadMore()" [disabled]="loadingMore">{{ 'businesses.loadMore' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

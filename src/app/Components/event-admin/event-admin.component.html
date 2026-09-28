@@ -56,6 +56,17 @@
               <label class="field__label" for="evDescription">{{ 'eventAdmin.formDescription' | translate }}</label>
               <textarea id="evDescription" rows="3" [(ngModel)]="form.description" name="description"></textarea>
             </div>
+            <label class="field field--full ev-fb" *ngIf="fbConnected && !editingPosted">
+              <input type="checkbox" [(ngModel)]="form.postToFacebook" name="postToFacebook" />
+              <span>
+                <strong>{{ 'facebookPage.postLabel' | translate }}</strong>
+                <small>{{ 'facebookPage.eventHint' | translate }}</small>
+              </span>
+            </label>
+            <p class="field field--full ev-fb-off" *ngIf="fbConnected === false">
+              {{ 'facebookPage.notConnected' | translate }}
+              <a routerLink="/dashboard/birthday-automation">{{ 'facebookPage.connectLink' | translate }}</a>
+            </p>
           </div>
         </div>
 
@@ -101,6 +112,8 @@
                 {{ ev.venue || '—' }}
               </span>
             </span>
+            <app-fb-post-status class="ev__fb" *ngIf="fbConnected && (ev.facebookPostId || ev.postToFacebook || eventStatus(ev) !== 'ended')"
+              kind="event" [item]="ev"></app-fb-post-status>
           </div>
 
           <div class="ev__side">

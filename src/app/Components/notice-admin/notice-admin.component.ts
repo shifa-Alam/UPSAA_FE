@@ -14,10 +14,13 @@ import { LanguageService } from '../../Services/language.service';
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { SmsService } from '../../Services/sms.service';
+import { BirthdayPostService } from '../../Services/birthday-post.service';
+import { FbPostStatusComponent } from '../shared/fb-post-status/fb-post-status.component';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-notice-admin',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, FbPostStatusComponent, RouterLink],
   templateUrl: './notice-admin.component.html',
   styleUrl: './notice-admin.component.scss'
 })
@@ -38,11 +41,19 @@ export class NoticeAdminComponent implements OnInit {
   posting = false;
   private smsApi = inject(SmsService);
 
+  /** The Facebook page is set up (page id + token) — null while unknown. */
+  fbConnected: boolean | null = null;
+  /** Settings default for new notices. */
+  private fbDefault = false;
+  postToFacebook = false;
+  private fbSettings = inject(BirthdayPostService);
+
   editingId: number | null = null;
   editTitle = '';
   editContent = '';
   editPublishedDate = '';
   editAlumniOnly = false;
+  editPostToFacebook = false;
   saving = false;
 
   deletingId: number | null = null;
@@ -55,6 +66,11 @@ export class NoticeAdminComponent implements OnInit {
       if (!s || !s.gatewayEnabled) return;
       this.smsAudience = s.audience;
       this.smsLeft = Math.max(0, s.smsMonthlyLimit - s.usedThisMonth);
+    });
+    this.fbSettings.getSettings().pipe(catchError(() => of(null))).subscribe(s => {
+      this.fbConnected = !!s && !!s.pageId && s.hasAccessToken;
+      this.fbDefault = !!s?.autoPostNotices;
+      this.postToFacebook = this.fbConnected && this.fbDefault;
     });
   }
 
@@ -69,7 +85,8 @@ export class NoticeAdminComponent implements OnInit {
     }
 
     this.posting = true;
-    this.noticeService.create(this.title.trim(), this.content.trim(), this.publishedDate || null, this.alumniOnly, this.sendSms).pipe(
+    this.noticeService.create(this.title.trim(), this.content.trim(), this.publishedDate || null, this.alumniOnly, this.sendSms,
+      !!this.fbConnected && this.postToFacebook && !this.alumniOnly).pipe(
       catchError(err => {
         this.snackbar.showError(err?.error?.message || this.languageService.translate('noticeAdmin.postFailedError'));
         return of(null);
@@ -85,6 +102,7 @@ export class NoticeAdminComponent implements OnInit {
       this.content = '';
       this.publishedDate = this.formatDateTime(new Date());
       this.alumniOnly = false;
+      this.postToFacebook = !!this.fbConnected && this.fbDefault;
       this.notices.unshift(result);
       this.notices.sort((a, b) => new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime());
     });
@@ -96,6 +114,7 @@ export class NoticeAdminComponent implements OnInit {
     this.editContent = notice.content;
     this.editPublishedDate = this.formatDateTime(notice.publishedDate);
     this.editAlumniOnly = notice.alumniOnly;
+    this.editPostToFacebook = !!notice.postToFacebook;
   }
 
   cancelEdit(): void {
@@ -113,7 +132,9 @@ export class NoticeAdminComponent implements OnInit {
     }
 
     this.saving = true;
-    this.noticeService.update(notice.id, this.editTitle.trim(), this.editContent.trim(), this.editPublishedDate || null, this.editAlumniOnly).pipe(
+    // Only send the Facebook choice when it can still matter (connected, not yet posted).
+    const fbChoice = this.fbConnected && !notice.facebookPostId ? this.editPostToFacebook && !this.editAlumniOnly : null;
+    this.noticeService.update(notice.id, this.editTitle.trim(), this.editContent.trim(), this.editPublishedDate || null, this.editAlumniOnly, fbChoice).pipe(
       catchError(err => {
         this.snackbar.showError(err?.error?.message || this.languageService.translate('noticeAdmin.editFailedError'));
         return of(null);

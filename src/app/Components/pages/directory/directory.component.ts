@@ -73,6 +73,11 @@ export class DirectoryComponent implements OnInit, OnDestroy {
     if (nameParam) {
       this.filters.name = nameParam;
     }
+    // …and from the alumni map: /members?city=Dhaka.
+    const cityParam = this.route.snapshot.queryParamMap.get('city');
+    if (cityParam) {
+      this.filters.city = cityParam;
+    }
     const professionParam = this.route.snapshot.queryParamMap.get('profession');
     if (professionParam) {
       this.filters.profession = professionParam;

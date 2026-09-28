@@ -25,6 +25,18 @@
         <span>{{ 'noticeAdmin.alumniOnlyLabel' | translate }}</span>
       </label>
 
+      <label class="switch-field notice-form__switch" *ngIf="fbConnected">
+        <input type="checkbox" [(ngModel)]="postToFacebook" name="postToFacebook" [disabled]="alumniOnly" />
+        <span>
+          {{ 'facebookPage.postLabel' | translate }}
+          <small class="notice-form__sms-hint">{{ (alumniOnly ? 'facebookPage.alumniOnlyNote' : 'facebookPage.noticeHint') | translate }}</small>
+        </span>
+      </label>
+      <p class="notice-form__fb-off notice-form__full" *ngIf="fbConnected === false">
+        {{ 'facebookPage.notConnected' | translate }}
+        <a routerLink="/dashboard/birthday-automation">{{ 'facebookPage.connectLink' | translate }}</a>
+      </p>
+
       <label class="switch-field notice-form__switch" *ngIf="smsAudience !== null">
         <input type="checkbox" [(ngModel)]="sendSms" name="sendSms" [disabled]="smsAudience > (smsLeft ?? 0)" />
         <span>
@@ -73,6 +85,7 @@
               {{ notice.publishedDate | date:'medium' }}
               <ng-container *ngIf="notice.createdByName"> &middot; {{ 'noticeAdmin.postedBy' | translate }} {{ notice.createdByName }}</ng-container>
             </span>
+            <app-fb-post-status class="notice__fb" *ngIf="fbConnected" kind="notice" [item]="notice" [disabled]="notice.alumniOnly"></app-fb-post-status>
           </div>
 
           <div class="notice__actions">
@@ -105,6 +118,10 @@
           <label class="switch-field notice-form__switch">
             <input type="checkbox" [(ngModel)]="editAlumniOnly" name="editAlumniOnly-{{ notice.id }}" />
             <span>{{ 'noticeAdmin.alumniOnlyLabel' | translate }}</span>
+          </label>
+          <label class="switch-field notice-form__switch" *ngIf="fbConnected && !notice.facebookPostId">
+            <input type="checkbox" [(ngModel)]="editPostToFacebook" name="editPostToFacebook-{{ notice.id }}" [disabled]="editAlumniOnly" />
+            <span>{{ 'facebookPage.postLabel' | translate }}</span>
           </label>
           <div class="form-actions notice-form__full">
             <button type="button" class="btn btn--solid" [disabled]="saving" (click)="submitEdit(notice)">

@@ -1,0 +1,46 @@
+import { I18nSection } from '../i18n.types';
+
+export const facebookPageI18n: I18nSection = {
+  bn: {
+    facebookPage: {
+      postLabel: 'Facebook পেজেও পোস্ট করুন',
+      noticeHint: 'সেভ করার এক মিনিটের মধ্যে পেজে যাবে; পরের তারিখের নোটিশ সেই সময়ে।',
+      eventHint: 'সেভ করার এক মিনিটের মধ্যে ছবি, সময়, স্থান ও লিংকসহ পেজে যাবে।',
+      alumniOnlyNote: 'শুধু-অ্যালামনাই নোটিশ Facebook-এ যায় না।',
+      notConnected: 'Facebook পেজ এখনো যুক্ত করা হয়নি।',
+      connectLink: 'Page ID ও Token দিন →',
+      posted: 'Facebook-এ পোস্ট হয়েছে',
+      pending: 'Facebook-এ যাওয়ার অপেক্ষায়',
+      failed: 'Facebook পোস্ট ব্যর্থ',
+      postNow: 'Facebook-এ পোস্ট করুন',
+      retry: 'আবার চেষ্টা করুন',
+      posting: 'পোস্ট হচ্ছে...',
+      postedSuccess: 'Facebook পেজে পোস্ট হয়েছে।',
+      postFailed: 'Facebook-এ পোস্ট করা যায়নি।',
+      confirmTitle: 'Facebook পেজে পোস্ট করবেন?',
+      confirmMessage: 'এটি এখনই পেজে সবার জন্য প্রকাশ হবে।',
+      confirmButton: 'পোস্ট করুন',
+    },
+  },
+  en: {
+    facebookPage: {
+      postLabel: 'Also post on the Facebook page',
+      noticeHint: 'Goes to the page within a minute of saving; a notice dated later goes at that time.',
+      eventHint: 'Goes to the page within a minute of saving, with the photo, time, venue and link.',
+      alumniOnlyNote: 'Alumni-only notices never go to Facebook.',
+      notConnected: "The Facebook page isn't connected yet.",
+      connectLink: 'Add the Page ID and token →',
+      posted: 'Posted on Facebook',
+      pending: 'Waiting to go to Facebook',
+      failed: 'Facebook post failed',
+      postNow: 'Post on Facebook',
+      retry: 'Try again',
+      posting: 'Posting...',
+      postedSuccess: 'Posted on the Facebook page.',
+      postFailed: "Couldn't post to Facebook.",
+      confirmTitle: 'Post on the Facebook page?',
+      confirmMessage: 'This will be published on the page for everyone right away.',
+      confirmButton: 'Post',
+    },
+  },
+};

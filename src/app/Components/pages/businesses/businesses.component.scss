@@ -1,0 +1,223 @@
+@import '../../../../styles/community';
+
+.bz-cats {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding-bottom: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.bz-form {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.bz-logo-pick {
+  aspect-ratio: 1;
+  min-height: 0;
+
+  img {
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+    background: #fff;
+  }
+}
+
+.bz-mine__actions {
+  display: inline-flex;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.bz-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link, var(--color-primary-700));
+  font: 700 var(--font-size-sm) var(--font-base);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.bz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-5);
+}
+
+.bz-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: 0 1px 2px rgba(7, 29, 64, 0.06), 0 8px 24px rgba(7, 29, 64, 0.08);
+  transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-primary-200);
+    box-shadow: 0 18px 40px rgba(7, 29, 64, 0.14);
+  }
+}
+
+.bz-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.bz-card__logo {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: #fff;
+  object-fit: contain;
+}
+
+.bz-card__logo--initial {
+  border: 0;
+  background: linear-gradient(135deg, var(--color-primary-700), #0b3a82);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.bz-card__title {
+  min-width: 0;
+
+  h3 {
+    margin: 0;
+    font-size: var(--font-size-md);
+    line-height: 1.3;
+    color: var(--color-ink-900);
+  }
+}
+
+.bz-card__cat {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-ink-600);
+}
+
+.bz-card__offer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  background: var(--color-heritage-soft);
+  color: var(--color-heritage-text, #8a6a22);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+.bz-card__desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-ink-700);
+}
+
+.bz-card__address {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+
+  mat-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.bz-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-200);
+}
+
+.bz-card__contact {
+  display: flex;
+  flex-shrink: 0;
+  gap: var(--space-2);
+}
+
+.bz-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--color-ink-200);
+  border-radius: 50%;
+  color: var(--color-primary-700);
+  text-decoration: none;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  &:hover {
+    border-color: var(--color-primary-300);
+    background: var(--color-primary-50);
+  }
+}
+
+:host-context([data-theme='dark']) .bz-icon-btn {
+  color: var(--color-primary-300);
+}
+
+.bz-more {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+
+@media (max-width: 640px) {
+  .bz-form {
+    grid-template-columns: 1fr;
+  }
+
+  .bz-logo-pick {
+    width: 140px;
+  }
+}
