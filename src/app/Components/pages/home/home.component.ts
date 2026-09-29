@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Component, DestroyRef, Inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { ApplicationRef, Component, DestroyRef, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from "@angular/material/icon";
 import { Router, RouterLink } from '@angular/router';
@@ -24,14 +24,12 @@ import { AlumniVoicesComponent } from './alumni-voices/alumni-voices.component';
 import { CountdownComponent } from '../../shared/countdown/countdown.component';
 
 /** Set to a campus photo (e.g. 'images/campus.jpg' in /public) to pin the hero
- *  image; while null the hero crossfades through gallery photos — the ones an admin
- *  filed under a hero category first, otherwise the newest — then falls back to a
- *  plain gradient. */
+ *  image; while null the hero shows one fixed gallery photo — the one an admin filed
+ *  under a hero category, otherwise the newest — then falls back to a plain gradient.
+ *  No slideshow: gallery photos come in every shape, and one steady image reads better. */
 const HERO_IMAGE: string | null = null;
-/** Gallery categories that pick the hero photos (Gallery admin → category). */
+/** Gallery categories that pick the hero photo (Gallery admin → category). */
 const HERO_CATEGORIES = ['Hero', 'প্রচ্ছদ'];
-const HERO_SLIDES = 5;
-const HERO_SLIDE_MS = 7000;
 
 const EVENTS_COUNT = 3;
 const NOTICES_COUNT = 4;
@@ -86,14 +84,12 @@ interface HomeStat {
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   readonly imageAt = imageAt;
   readonly imageSrcset = imageSrcset;
 
-  /** Hero photos in order; only the current and next one ever get a background URL. */
+  /** The hero photo (one at most). */
   heroImages: string[] = HERO_IMAGE ? [HERO_IMAGE] : [];
-  heroIndex = 0;
-  private heroTimer?: ReturnType<typeof setInterval>;
   private readonly isBrowser: boolean;
 
   /** Alumni across all batches — for the closing "join us" band. */
@@ -135,7 +131,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly appRef = inject(ApplicationRef);
-  private readonly zone = inject(NgZone);
   /** True when this page was served as the prerendered homepage (build-time HTML + data). */
   private readonly prerendered: boolean;
 
@@ -251,12 +246,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     forkJoin({
-      newest: this.galleryService.getPage({ take: HERO_SLIDES }).pipe(catchError(() => of(noRows))),
+      newest: this.galleryService.getPage({ take: 1 }).pipe(catchError(() => of(noRows))),
       picked: forkJoin(HERO_CATEGORIES.map(category =>
-        this.galleryService.getPage({ category, take: HERO_SLIDES }).pipe(catchError(() => of(noRows))))),
+        this.galleryService.getPage({ category, take: 1 }).pipe(catchError(() => of(noRows))))),
     }).subscribe(({ newest, picked }) => {
       const chosen = picked.flatMap(p => p.items);
-      this.setHero((chosen.length ? chosen : newest.items).slice(0, HERO_SLIDES));
+      this.setHero((chosen.length ? chosen : newest.items).slice(0, 1));
     });
   }
 
@@ -271,24 +266,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (HERO_IMAGE || !photos.length) return;
     // Screen-sized copies — a phone gets ~800px wide, not the full-resolution original.
     const width = backgroundWidth();
-    const urls = photos.slice(0, HERO_SLIDES).map(p => imageAt(p.imageUrl, width));
-    if (urls.join() !== this.heroImages.join()) {
-      this.heroImages = urls;
-      this.heroIndex = 0;
-    }
-    this.startHeroSlides();
+    const urls = photos.slice(0, 1).map(p => imageAt(p.imageUrl, width));
+    if (urls.join() !== this.heroImages.join()) this.heroImages = urls;
     if (this.isBrowser) {
       try { localStorage.setItem(HERO_CACHE_KEY, JSON.stringify(urls)); } catch { /* storage off */ }
     }
   }
 
-  /** Last visit's hero photos, so the first slide is requested before any API call returns. */
+  /** Last visit's hero photo, so it is requested before any API call returns. */
   private restoreHero(): void {
     // The prerendered page already carries its hero photos.
     if (HERO_IMAGE || !this.isBrowser || this.prerendered) return;
     try {
       const saved = JSON.parse(localStorage.getItem(HERO_CACHE_KEY) ?? 'null');
-      if (Array.isArray(saved) && saved.length && saved.every(u => typeof u === 'string')) this.heroImages = saved;
+      if (Array.isArray(saved) && saved.length && saved.every(u => typeof u === 'string')) this.heroImages = saved.slice(0, 1);
     } catch { /* storage off or bad data */ }
   }
 
@@ -359,32 +350,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private asYear(q: string): number | null {
     const latin = q.replace(/[০-৯]/g, d => String('০১২৩৪৫৬৭৮৯'.indexOf(d)));
     return /^(19|20)\d{2}$/.test(latin) ? Number(latin) : null;
-  }
-
-  ngOnDestroy(): void {
-    clearInterval(this.heroTimer);
-  }
-
-  /** Image for slide i. Only the visible slide, the one fading out and the next one
-   *  get a src, so phones never download the whole set up front. */
-  heroSrc(i: number): string | null {
-    const n = this.heroImages.length;
-    const near = [this.heroIndex, (this.heroIndex + 1) % n, (this.heroIndex - 1 + n) % n];
-    return near.includes(i) ? this.heroImages[i] : null;
-  }
-
-  private startHeroSlides(): void {
-    clearInterval(this.heroTimer);
-    const reduced = this.isBrowser && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    if (!this.isBrowser || reduced || this.heroImages.length < 2) return;
-    // Outside Angular's zone: an endless zone timer would keep the app from ever becoming
-    // "stable", which hydration clean-up and the data refresh wait for.
-    this.zone.runOutsideAngular(() => {
-      this.heroTimer = setInterval(() => {
-        if (document.hidden) return; // don't burn data or battery in a background tab
-        this.zone.run(() => this.heroIndex = (this.heroIndex + 1) % this.heroImages.length);
-      }, HERO_SLIDE_MS);
-    });
   }
 
   /** About-section photo: the one chosen in the gallery, else a recent memory. */

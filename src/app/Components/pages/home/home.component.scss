@@ -34,22 +34,7 @@
   background-position: center;
 }
 
-// Photo slides stack and crossfade; the active one drifts (slow Ken Burns).
-// The plain gradient fallback stays still.
-.hero__bg--photo {
-  opacity: 0;
-  transition: opacity 1600ms ease;
-}
-
-.hero__bg--active {
-  opacity: 1;
-  animation: hero-drift 24s ease-in-out infinite alternate;
-}
-
-@keyframes hero-drift {
-  from { transform: scale(1.04); }
-  to { transform: scale(1.12) translate(-1%, -1%); }
-}
+// One steady photo (no slideshow or drift); the plain gradient is the fallback.
 
 .hero__overlay {
   position: absolute;
@@ -812,7 +797,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero__bg--active,
   .hero__content {
     animation: none;
   }

@@ -18,9 +18,8 @@
   <!-- ===== Hero ===== -->
   <section class="hero">
     <div class="hero__bg" *ngIf="!heroImages.length"></div>
-    <img class="hero__bg hero__bg--photo" *ngFor="let img of heroImages; let i = index" alt="" aria-hidden="true"
-      [class.hero__bg--active]="i === heroIndex" [attr.src]="heroSrc(i)" decoding="async"
-      [attr.fetchpriority]="i === 0 ? 'high' : 'low'" />
+    <img class="hero__bg hero__bg--photo" *ngIf="heroImages[0] as heroImage" alt="" aria-hidden="true"
+      [src]="heroImage" decoding="async" fetchpriority="high" />
     <div class="hero__overlay"></div>
 
     <div class="hero__content upsaa-container">
