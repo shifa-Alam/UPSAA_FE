@@ -22,6 +22,7 @@ const ALL_ROLES = [...STAFF_ROLES, ...MEMBER_ROLES];
 // ---- lazy page loaders (shared by the public, portal and back-office routes) ----
 const about = () => import('./Components/pages/about/about.component').then(m => m.AboutComponent);
 const contact = () => import('./Components/pages/contact/contact.component').then(m => m.ContactComponent);
+const privacy = () => import('./Components/pages/privacy/privacy.component').then(m => m.PrivacyComponent);
 const events = () => import('./Components/pages/events/events.component').then(m => m.EventsComponent);
 const notices = () => import('./Components/pages/notices/notices.component').then(m => m.NoticesComponent);
 const directory = () => import('./Components/pages/directory/directory.component').then(m => m.DirectoryComponent);
@@ -295,6 +296,9 @@ export const routes: Routes = [
     loadComponent: () => import('./Components/congratulations/congratulations.component').then(m => m.CongratulationsComponent)
   },
   { path: 'contact', loadComponent: contact, title: 'pageTitles.contact', canActivate: [shellRedirectGuard] },
+  // Public for everyone, signed in or not (the Facebook app's privacy and data-deletion links point here).
+  { path: 'privacy', loadComponent: privacy, title: 'pageTitles.privacy' },
+  { path: 'data-deletion', loadComponent: privacy, title: 'pageTitles.dataDeletion', data: { section: 'data-deletion' } },
   {
     path: 'unauthorized', title: 'pageTitles.unauthorized',
     loadComponent: () => import('./Components/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)

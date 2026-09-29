@@ -5,6 +5,8 @@ export const pageTitlesI18n: I18nSection = {
   bn: {
     pageTitles: {
       about: 'আমাদের সম্পর্কে',
+      privacy: 'গোপনীয়তা নীতি',
+      dataDeletion: 'তথ্য মুছে ফেলার নির্দেশনা',
       events: 'ইভেন্ট',
       notices: 'নোটিশ',
       register: 'সদস্য নিবন্ধন',
@@ -67,6 +69,8 @@ export const pageTitlesI18n: I18nSection = {
   en: {
     pageTitles: {
       about: 'About Us',
+      privacy: 'Privacy Policy',
+      dataDeletion: 'Data deletion instructions',
       events: 'Events',
       notices: 'Notices',
       register: 'Register',

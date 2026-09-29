@@ -1,0 +1,30 @@
+<div class="privacy-page" *ngIf="text() as t">
+  <app-page-header [title]="t.title" [subtitle]="t.subtitle" variant="plain"></app-page-header>
+
+  <div class="upsaa-container privacy">
+    <p class="privacy__intro">{{ t.intro }}</p>
+
+    <!-- Contents — jump links, since the page scrolls inside the app shell -->
+    <nav class="privacy__toc" [attr.aria-label]="t.contentsLabel">
+      <span class="privacy__toc-label">{{ t.contentsLabel }}</span>
+      <ol>
+        <li *ngFor="let s of t.sections; let i = index">
+          <a [href]="'#' + sectionId(s, i)" (click)="$event.preventDefault(); anchor(sectionId(s, i))">{{ s.title }}</a>
+        </li>
+      </ol>
+    </nav>
+
+    <section class="privacy__section" *ngFor="let s of t.sections; let i = index" [id]="sectionId(s, i)"
+      [class.privacy__section--highlight]="s.id === 'data-deletion'">
+      <h2>{{ i + 1 }}. {{ s.title }}</h2>
+      <p *ngFor="let p of s.paragraphs">{{ p }}</p>
+      <ul *ngIf="s.items">
+        <li *ngFor="let item of s.items">{{ item }}</li>
+      </ul>
+      <ol *ngIf="s.steps" class="privacy__steps">
+        <li *ngFor="let step of s.steps">{{ step }}</li>
+      </ol>
+      <p *ngFor="let p of s.after" class="privacy__note">{{ p }}</p>
+    </section>
+  </div>
+</div>

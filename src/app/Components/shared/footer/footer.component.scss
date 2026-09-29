@@ -208,6 +208,13 @@
 }
 
 // ---------------------------- Bottom bar ----------------------------
+.site-footer__legal {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+
+  &:hover { color: #fff; text-decoration: underline; }
+}
+
 .site-footer__bottom {
   display: flex;
   align-items: center;
