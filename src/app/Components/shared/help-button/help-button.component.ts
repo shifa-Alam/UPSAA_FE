@@ -2,6 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, DestroyRef, ElementRef, NgZone, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { NavigationEnd, Router } from '@angular/router';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { HelpSheetComponent } from './help-sheet.component';
 
@@ -62,6 +63,7 @@ export class HelpButtonComponent implements OnInit {
   private host = inject(ElementRef<HTMLElement>);
   private zone = inject(NgZone);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
   private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   /** Gap kept between the button and the top of the band / footer. */
@@ -76,12 +78,23 @@ export class HelpButtonComponent implements OnInit {
       };
       document.addEventListener('scroll', schedule, { capture: true, passive: true });
       window.addEventListener('resize', schedule, { passive: true });
-      // Route changes swap the page (and its height) without a scroll event.
+      // Route changes swap the page (and its height) without a scroll event. Inside the app
+      // shell the body keeps its size, so also re-measure after each navigation — once the new
+      // page (loaded lazily) has had time to render — or a lift from the last page sticks.
       const observer = new ResizeObserver(schedule);
       observer.observe(document.body);
+      let settle: ReturnType<typeof setTimeout> | undefined;
+      const navigations = this.router.events.subscribe(e => {
+        if (!(e instanceof NavigationEnd)) return;
+        schedule();
+        clearTimeout(settle);
+        settle = setTimeout(schedule, 400);
+      });
       schedule();
       this.destroyRef.onDestroy(() => {
         cancelAnimationFrame(frame);
+        clearTimeout(settle);
+        navigations.unsubscribe();
         document.removeEventListener('scroll', schedule, { capture: true });
         window.removeEventListener('resize', schedule);
         observer.disconnect();
