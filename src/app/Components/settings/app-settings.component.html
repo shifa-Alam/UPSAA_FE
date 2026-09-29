@@ -1,0 +1,150 @@
+<div class="app-settings">
+  <app-admin-header [title]="'appSettings.title' | translate" [subtitle]="'appSettings.subtitle' | translate"></app-admin-header>
+
+  <div class="page-tabs" role="tablist" [attr.aria-label]="'appSettings.title' | translate">
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'facebook'" [attr.aria-selected]="tab === 'facebook'" (click)="selectTab('facebook')">
+      <mat-icon>share</mat-icon>{{ 'appSettings.tabFacebook' | translate }}
+      <span class="page-tab__dot" *ngIf="settings && !fbConnected" [title]="'birthdayAutomation.notConnectedDot' | translate"></span>
+    </button>
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'email'" [attr.aria-selected]="tab === 'email'" (click)="selectTab('email')">
+      <mat-icon>mail</mat-icon>{{ 'appSettings.tabEmail' | translate }}
+      <span class="page-tab__dot" *ngIf="settings && !settings.emailConfigured" [title]="'birthdayAutomation.emailNotConfigured' | translate"></span>
+    </button>
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'sms'" [attr.aria-selected]="tab === 'sms'" (click)="selectTab('sms')">
+      <mat-icon>sms</mat-icon>{{ 'appSettings.tabSms' | translate }}
+    </button>
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'payment'" [attr.aria-selected]="tab === 'payment'" (click)="selectTab('payment')">
+      <mat-icon>payments</mat-icon>{{ 'appSettings.tabPayment' | translate }}
+    </button>
+    <button type="button" role="tab" class="page-tab" *ngIf="isSuperAdmin" [class.page-tab--on]="tab === 'general'" [attr.aria-selected]="tab === 'general'" (click)="selectTab('general')">
+      <mat-icon>tune</mat-icon>{{ 'appSettings.tabGeneral' | translate }}
+    </button>
+  </div>
+
+  <!-- SMS and payment settings have their own data and save — each is its own component. -->
+  <app-settings-sms *ngIf="tab === 'sms'"></app-settings-sms>
+  <app-settings-payment *ngIf="tab === 'payment'"></app-settings-payment>
+
+  <!-- General: site address, the cards' contact line, error-alert recipients (SuperAdmin) -->
+  <div class="settings-grid settings-grid--single" *ngIf="tab === 'general' && isSuperAdmin">
+    <app-config-fields group="general" icon="tune" titleKey="appConfig.generalTitle" hintKey="appConfig.generalHint"></app-config-fields>
+  </div>
+
+  <app-skeleton *ngIf="loading && (tab === 'facebook' || tab === 'email')" variant="list" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
+
+  <!-- ===== Facebook page: connection | what goes to it ===== -->
+  <form class="settings-grid" *ngIf="!loading && tab === 'facebook'" (ngSubmit)="saveFacebook()">
+    <app-section-card icon="link" [title]="'appSettings.fbConnectionTitle' | translate">
+      <div class="settings-form">
+        <div class="mail-status" [class.mail-status--ok]="fbConnected">
+          <mat-icon>{{ fbConnected ? 'check_circle' : 'link_off' }}</mat-icon>
+          <span>{{ (fbConnected ? 'appSettings.fbConnected' : 'appSettings.fbNotConnected') | translate }}</span>
+        </div>
+
+        <div class="form-field">
+          <label for="fbPageId">{{ 'birthdayAutomation.pageIdLabel' | translate }}</label>
+          <input type="text" id="fbPageId" class="mono" [placeholder]="'birthdayAutomation.pageIdPlaceholder' | translate" [(ngModel)]="pageId" name="pageId" />
+          <span class="field-hint">{{ 'appSettings.pageIdHint' | translate }}</span>
+        </div>
+
+        <div class="form-field">
+          <label for="fbToken">
+            {{ 'birthdayAutomation.tokenLabel' | translate }}
+            <span class="saved-pill" *ngIf="settings?.hasAccessToken"><mat-icon>check</mat-icon>{{ 'birthdayAutomation.tokenSaved' | translate }}</span>
+          </label>
+          <input type="password" id="fbToken" [placeholder]="settings?.hasAccessToken ? (settings?.pageAccessTokenMasked || '') : ('birthdayAutomation.tokenPlaceholder' | translate)"
+            [(ngModel)]="pageAccessToken" name="pageAccessToken" autocomplete="new-password" />
+          <span class="field-hint">{{ (settings?.hasAccessToken ? 'birthdayAutomation.tokenHint' : 'appSettings.tokenNeedHint') | translate }}</span>
+        </div>
+
+        <a class="help-link" href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noopener">
+          <mat-icon>open_in_new</mat-icon> {{ 'appSettings.tokenHelpLink' | translate }}
+        </a>
+      </div>
+    </app-section-card>
+
+    <app-section-card icon="share" [title]="'birthdayAutomation.pagePostsTitle' | translate">
+      <p class="field-hint kinds-intro">{{ 'birthdayAutomation.kindsIntro' | translate }}</p>
+      <div class="kind-tiles">
+        <label class="kind-tile" *ngFor="let k of autoPostKinds" [class.kind-tile--on]="autoPost[k.key]">
+          <span class="kind-tile__icon" aria-hidden="true"><mat-icon>{{ k.icon }}</mat-icon></span>
+          <span class="kind-tile__text">
+            <strong>{{ ('birthdayAutomation.kind.' + k.kind) | translate }}</strong>
+            <small>{{ ('birthdayAutomation.tileHint.' + k.key) | translate }}</small>
+          </span>
+          <input type="checkbox" class="kind-tile__switch" [(ngModel)]="autoPost[k.key]" [name]="'autoPost-' + k.key" />
+        </label>
+      </div>
+    </app-section-card>
+
+    <div class="save-bar">
+      <span class="field-hint">{{ 'appSettings.fbSaveHint' | translate }}</span>
+      <button type="submit" class="btn btn--solid" [disabled]="saving">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+        {{ (saving ? 'birthdayAutomation.saving' : 'birthdayAutomation.saveButton') | translate }}
+      </button>
+    </div>
+  </form>
+
+  <!-- ===== Email: who mail comes from, the sender name, a test ===== -->
+  <div class="settings-grid" *ngIf="!loading && tab === 'email'">
+  <app-config-fields *ngIf="isSuperAdmin" group="email" icon="dns" titleKey="appConfig.smtpTitle" hintKey="appConfig.smtpHint"
+    (saved)="reloadSettings()"></app-config-fields>
+  <form class="settings-col" (ngSubmit)="saveEmail()">
+    <app-section-card icon="mail" [title]="'birthdayAutomation.emailSettingsTitle' | translate">
+      <div class="settings-form">
+        <div class="mail-status" [class.mail-status--ok]="settings?.emailConfigured">
+          <mat-icon>{{ settings?.emailConfigured ? 'check_circle' : 'error_outline' }}</mat-icon>
+          <span>{{ (settings?.emailConfigured ? 'birthdayAutomation.emailReady' : 'birthdayAutomation.emailNotConfigured') | translate }}</span>
+        </div>
+
+        <dl class="mail-facts">
+          <div>
+            <dt>{{ 'birthdayAutomation.emailFromAddress' | translate }}</dt>
+            <dd class="mono">{{ settings?.emailFromAddress || '—' }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'birthdayAutomation.emailServer' | translate }}</dt>
+            <dd class="mono">{{ settings?.emailServer || '—' }}</dd>
+          </div>
+        </dl>
+        <p class="field-hint">{{ (isSuperAdmin ? 'appConfig.emailFactsHintSuper' : 'appConfig.emailFactsHint') | translate }}</p>
+
+        <div class="form-field">
+          <label for="emailFromName">{{ 'birthdayAutomation.emailFromName' | translate }}</label>
+          <input type="text" id="emailFromName" name="emailFromName" maxlength="100" [(ngModel)]="emailFromName"
+            [placeholder]="settings?.defaultEmailFromName || ''" />
+          <span class="field-hint">
+            {{ 'birthdayAutomation.emailFromNameHint' | translate }}
+            <span class="mono">{{ emailFromName || settings?.defaultEmailFromName }} &lt;{{ settings?.emailFromAddress || '…' }}&gt;</span>
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="testEmailTo">{{ 'birthdayAutomation.testEmailLabel' | translate }}</label>
+          <div class="test-mail">
+            <input type="email" id="testEmailTo" name="testEmailTo" [(ngModel)]="testEmailTo" placeholder="you@example.com"
+              (keydown.enter)="$event.preventDefault(); sendTestEmail()" />
+            <button type="button" class="btn btn--outline" [disabled]="sendingTest || !settings?.emailConfigured" (click)="sendTestEmail()">
+              <mat-icon>{{ sendingTest ? 'hourglass_top' : 'forward_to_inbox' }}</mat-icon>
+              {{ (sendingTest ? 'birthdayAutomation.testEmailSending' : 'birthdayAutomation.testEmailButton') | translate }}
+            </button>
+          </div>
+          <p class="test-result" *ngIf="testResult" [class.test-result--ok]="testResult.ok" role="status">
+            <mat-icon>{{ testResult.ok ? 'check_circle' : 'error_outline' }}</mat-icon>
+            <span>{{ testResult.message }}</span>
+          </p>
+        </div>
+      </div>
+    </app-section-card>
+
+    <div class="save-bar">
+      <span class="field-hint">{{ 'appSettings.emailSaveHint' | translate }}</span>
+      <button type="submit" class="btn btn--solid" [disabled]="saving">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+        {{ (saving ? 'birthdayAutomation.saving' : 'birthdayAutomation.saveButton') | translate }}
+      </button>
+    </div>
+  </form>
+  </div>
+</div>

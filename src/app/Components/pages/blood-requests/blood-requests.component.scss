@@ -11,9 +11,237 @@
   --blood-soft: rgba(239, 83, 80, 0.14);
 }
 
-.br-main {
-  max-width: 900px;
-  margin: 0 auto;
+// Requests on the left, a quiet guide on the right; one column on narrower screens
+// (the guide then follows the list).
+.br-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.br-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.br-aside {
+  position: sticky;
+  top: calc(var(--header-height, 64px) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+:host-context(.shell-content) .br-aside {
+  top: var(--space-4);
+}
+
+@media (max-width: 1100px) {
+  .br-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .br-aside {
+    position: static;
+  }
+}
+
+// ---- Side panel ----
+.br-panel {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.br-panel__title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md);
+  font-weight: 800;
+  color: var(--color-ink-900);
+}
+
+.br-panel__note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.br-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    line-height: 1.5;
+    color: var(--color-ink-700);
+  }
+
+  strong {
+    display: block;
+    color: var(--color-ink-900);
+  }
+}
+
+.br-steps__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--blood-soft);
+  color: var(--blood);
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.br-compat {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+
+  th,
+  td {
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--color-ink-100, var(--color-ink-200));
+    text-align: left;
+  }
+
+  thead th {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-ink-600);
+  }
+
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  td {
+    color: var(--color-ink-700);
+  }
+}
+
+.br-compat__group {
+  display: inline-block;
+  min-width: 42px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--blood-soft);
+  color: var(--blood);
+  font-weight: 800;
+  text-align: center;
+}
+
+.br-panel--link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  > mat-icon:first-child {
+    color: var(--blood);
+  }
+
+  span {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    font-size: var(--font-size-sm);
+    color: var(--color-ink-900);
+  }
+
+  small {
+    font-size: var(--font-size-xs);
+    color: var(--color-ink-600);
+  }
+
+  &:hover {
+    border-color: var(--blood);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.br-panel__arrow {
+  color: var(--color-ink-400);
+}
+
+// ---- Nothing open ----
+.br-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: clamp(var(--space-8), 6vw, 64px) var(--space-5);
+  border: 1px dashed var(--color-ink-200);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, var(--blood-soft), transparent 70%);
+  text-align: center;
+
+  .br-cta {
+    margin-top: var(--space-3);
+  }
+}
+
+.br-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--blood);
+  box-shadow: 0 0 0 8px var(--blood-soft);
+
+  mat-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+  }
+}
+
+.br-empty__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-ink-900);
+}
+
+.br-empty__text {
+  max-width: 420px;
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+// "(৫ ঘণ্টার মধ্যে)" next to the needed-by time
+.br-left {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.br-left--urgent {
+  color: var(--blood);
+  font-weight: 700;
 }
 
 .br-cta {
@@ -320,5 +548,37 @@
       flex: 1;
       justify-content: center;
     }
+  }
+}
+
+// Consent to also post it on the Facebook page (the phone number goes public).
+.br-share {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    accent-color: #c62828;
+  }
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: var(--font-size-sm);
+    color: var(--color-ink-900);
+  }
+
+  small {
+    font-size: var(--font-size-xs);
+    color: var(--color-ink-600);
   }
 }

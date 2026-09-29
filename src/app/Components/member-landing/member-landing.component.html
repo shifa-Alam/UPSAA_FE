@@ -97,6 +97,7 @@
                   <th class="col-phone">{{ 'memberLanding.colMemberCode' | translate }}</th>
                   <th class="col-city">{{ 'memberLanding.colCity' | translate }}</th>
                   <th class="col-blood">{{ 'memberLanding.colBloodGroup' | translate }}</th>
+                  <th class="col-dob">{{ 'memberLanding.colDob' | translate }}</th>
                   <th class="num" *ngIf="isSuperAdmin()">{{ 'memberLanding.colTotal' | translate }}</th>
                   <th class="col-manage" *ngIf="isSuperAdmin()">{{ 'memberLanding.colManage' | translate }}</th>
                   <th class="text-right">{{ 'memberLanding.colAction' | translate }}</th>
@@ -114,6 +115,32 @@
                   <td class="col-phone mono" [attr.data-label]="'memberLanding.colMemberCode' | translate">{{ member.memberCode }}</td>
                   <td class="col-city" [attr.data-label]="'memberLanding.colCity' | translate">{{ member.currentCity }}</td>
                   <td class="col-blood" [attr.data-label]="'memberLanding.colBloodGroup' | translate">{{ member.bloodGroup }}</td>
+                  <td class="col-dob" [attr.data-label]="'memberLanding.colDob' | translate">
+                    <span class="dob" *ngIf="editingDobId !== member.id; else dobEditor">
+                      <span [class.dob__empty]="!member.dob">{{ dobLabel(member) }}</span>
+                      <mat-icon class="dob__today" *ngIf="isBirthdayToday(member)" [title]="'memberLanding.birthdayToday' | translate"
+                        [attr.aria-label]="'memberLanding.birthdayToday' | translate">cake</mat-icon>
+                      <button type="button" class="icon-btn dob__edit" *ngIf="canEditDob()" (click)="startDobEdit(member)"
+                        [attr.aria-label]="'memberLanding.editDob' | translate" [title]="'memberLanding.editDob' | translate">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                    </span>
+                    <ng-template #dobEditor>
+                      <span class="dob-edit">
+                        <input type="date" [(ngModel)]="dobDraft" min="1930-01-01" [max]="todayIso"
+                          [attr.aria-label]="'memberLanding.colDob' | translate"
+                          (keydown.enter)="saveDob(member)" (keydown.escape)="cancelDobEdit()" />
+                        <button type="button" class="icon-btn icon-btn--accept" [disabled]="savingDob" (click)="saveDob(member)"
+                          [attr.aria-label]="'memberLanding.dobSave' | translate" [title]="'memberLanding.dobSave' | translate">
+                          <mat-icon>{{ savingDob ? 'hourglass_top' : 'check' }}</mat-icon>
+                        </button>
+                        <button type="button" class="icon-btn" [disabled]="savingDob" (click)="cancelDobEdit()"
+                          [attr.aria-label]="'memberLanding.dobCancel' | translate" [title]="'memberLanding.dobCancel' | translate">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </span>
+                    </ng-template>
+                  </td>
                   <td class="num" *ngIf="isSuperAdmin()" [attr.data-label]="'memberLanding.colTotal' | translate">{{ member.fees | memberFeeAmount:'Total' }}</td>
 
                   <td class="col-manage rt-wide" *ngIf="isSuperAdmin()" [attr.data-label]="'memberLanding.colManage' | translate">

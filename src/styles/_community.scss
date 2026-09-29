@@ -36,6 +36,12 @@
   box-shadow: var(--shadow-lg);
 }
 
+// Inside the portal / back office the page header is compact — sit the toolbar below it
+// instead of floating it over the subtitle (the public pages keep the overlap).
+:host-context(.shell-content) .cm-tools {
+  margin-top: var(--space-5);
+}
+
 .cm-tools__left {
   display: flex;
   flex-wrap: wrap;

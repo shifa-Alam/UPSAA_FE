@@ -307,6 +307,12 @@ export class MemberService {
       .pipe(tap(() => this.clearProfileCache()));
   }
 
+  /** Admin/SuperAdmin: set just a member's date of birth — "yyyy-MM-dd", or null to clear it.
+   *  Sent as a plain date string (never toISOString) so it can't shift a day with the time zone. */
+  setDateOfBirth(memberId: number, dob: string | null): Observable<{ dob: string | null }> {
+    return this.http.put<{ dob: string | null }>(`${this.apiUrl}/${memberId}/DateOfBirth`, { dob });
+  }
+
   // Education records — members manage their own; the API takes the member from the token.
   addEducation(dto: MemberEducationDto): Observable<MemberEducationDto> {
     return this.http.post<MemberEducationDto>(`${environment.baseUrl}/MemberEducation`, dto)

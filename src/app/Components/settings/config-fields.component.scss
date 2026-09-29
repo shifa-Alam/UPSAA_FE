@@ -1,0 +1,122 @@
+@import '../../../styles/admin-kit';
+
+:host {
+  display: block;
+}
+
+.cfg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cfg__intro {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+}
+
+.cfg__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  > input {
+    width: 100%;
+    height: 42px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--color-ink-200);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
+    font: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary-400, var(--color-primary-600));
+      box-shadow: 0 0 0 3px var(--color-primary-100);
+    }
+
+    &:disabled {
+      opacity: 0.55;
+    }
+  }
+}
+
+.cfg__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+
+  label {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-ink-900);
+  }
+}
+
+// Where the value comes from.
+.cfg__source {
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cfg__source--db { background: rgba(22, 163, 74, 0.12); color: #15803d; }
+.cfg__source--file { background: var(--color-ink-100); color: var(--color-ink-700); }
+.cfg__source--none { background: rgba(224, 147, 15, 0.14); color: #8a5a00; }
+.cfg__source--unreadable,
+.cfg__source--reset { background: rgba(198, 40, 40, 0.12); color: #b71c1c; }
+
+:host-context([data-theme='dark']) {
+  .cfg__source--db { color: #4ade80; }
+  .cfg__source--none { color: #ffcc80; }
+  .cfg__source--unreadable, .cfg__source--reset { color: #ef9a9a; }
+}
+
+.cfg__switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+
+  input {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary-600);
+  }
+}
+
+.cfg__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-600);
+}
+
+.cfg__warn {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: #b71c1c;
+}
+
+.cfg__reset {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link, var(--color-primary-700));
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cfg__actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-200);
+}

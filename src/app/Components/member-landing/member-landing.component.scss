@@ -284,6 +284,80 @@
   box-shadow: inset 3px 0 0 var(--color-heritage-500);
 }
 
+// ---- Date of birth: shown in the row, edited in place by staff ----
+.col-dob {
+  white-space: nowrap;
+}
+
+.dob {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.dob__empty {
+  color: var(--color-ink-400);
+}
+
+.dob__today {
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: #e91e63;
+}
+
+// The pencil stays quiet until the row is hovered or it has focus.
+.dob__edit {
+  width: 30px;
+  height: 30px;
+  opacity: 0.45;
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+tr:hover .dob__edit,
+.dob__edit:focus-visible {
+  opacity: 1;
+}
+
+.dob-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  input {
+    height: 34px;
+    padding: 0 8px;
+    border: 1px solid var(--color-primary-300, var(--color-ink-200));
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
+    font: inherit;
+    font-size: var(--font-size-sm);
+  }
+
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+:host-context([data-theme='dark']) .dob-edit input {
+  color-scheme: dark;
+}
+
+// Phones: the pencil can't rely on hover.
+@media (hover: none) {
+  .dob__edit {
+    opacity: 1;
+  }
+}
+
 // ---------------------------- Pagination ----------------------------
 .pager {
   display: flex;

@@ -123,7 +123,7 @@
 // ---------------------------- Stat tiles ----------------------------
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-4);
 }
 
@@ -266,6 +266,26 @@
   .field-hint {
     margin: 0;
   }
+
+  .page-posts__sub {
+    margin-top: var(--space-2);
+  }
+}
+
+.kind-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-50);
+  color: var(--color-primary-700);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+:host-context([data-theme='dark']) .kind-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-primary-300);
 }
 
 .form-field > label {
@@ -625,6 +645,182 @@
   }
 }
 
+// ---- Birthdays: pick a day ----
+.bday-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-ink-200);
+
+  .field-hint {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+
+.bday-tools__date {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink-600);
+
+  input {
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--color-ink-900);
+    font: inherit;
+  }
+}
+
+:host-context([data-theme='dark']) .bday-tools__date input {
+  color-scheme: dark;
+}
+
+.review-btn {
+  white-space: nowrap;
+}
+
+// ---- Review and post by hand ----
+.compose {
+  width: min(980px, 100%);
+  align-items: stretch;
+}
+
+.compose__batch {
+  font-weight: 500;
+  color: var(--color-ink-600);
+}
+
+.compose__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 380px);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.compose__visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+// The admin's own picture keeps its shape — no square crop.
+.card-preview__image--free {
+  aspect-ratio: auto;
+  background: var(--color-surface-sunken);
+
+  img {
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+}
+
+.compose__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    resize: vertical;
+  }
+}
+
+.compose__label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-ink-900);
+}
+
+.compose__label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.compose__photo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+
+  label.btn {
+    cursor: pointer;
+  }
+}
+
+.compose__file {
+  overflow-wrap: anywhere;
+}
+
+.compose__asis {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+  cursor: pointer;
+
+  input {
+    margin-top: 3px;
+    accent-color: var(--color-primary-600);
+  }
+}
+
+.compose__posted {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(76, 175, 80, 0.12);
+  color: #2e7d32;
+  font-size: var(--font-size-sm);
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+  }
+}
+
+:host-context([data-theme='dark']) .compose__posted {
+  color: #86d08a;
+}
+
+.compose__post {
+  justify-content: center;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link, var(--color-primary-700));
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 820px) {
+  .compose__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 // ---------------------------- Birthday email wording ----------------------------
 .email-form {
   display: grid;
@@ -749,5 +945,109 @@
 
   .email-preview {
     position: static;
+  }
+}
+
+// ---- Facebook post message preview ----
+.fb-preview__post {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+// The caption keeps its line breaks, as Facebook shows it.
+.fb-preview__text {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--color-ink-900);
+}
+
+@import '../../../styles/page-tabs';
+
+.tab-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+// ---- Automatic posting, right above the list ----
+.auto-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+
+  .switch-field {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .field-hint {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+
+.auto-bar__time {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-ink-700);
+
+  input {
+    height: 38px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--color-ink-200);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-ink-900);
+    font: inherit;
+  }
+}
+
+.auto-bar__save {
+  margin-left: auto;
+}
+
+// Facebook page not connected — say so where it matters, with the way to fix it.
+.connect-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(224, 147, 15, 0.12);
+  color: #8a5a00;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+:host-context([data-theme='dark']) .connect-note {
+  color: #ffcc80;
+}
+
+@media (max-width: 900px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .auto-bar__save {
+    margin-left: 0;
   }
 }

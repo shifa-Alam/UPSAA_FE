@@ -34,7 +34,7 @@
       </label>
       <p class="notice-form__fb-off notice-form__full" *ngIf="fbConnected === false">
         {{ 'facebookPage.notConnected' | translate }}
-        <a routerLink="/dashboard/birthday-automation">{{ 'facebookPage.connectLink' | translate }}</a>
+        <a routerLink="/dashboard/settings/facebook">{{ 'facebookPage.connectLink' | translate }}</a>
       </p>
 
       <label class="switch-field notice-form__switch" *ngIf="smsAudience !== null">

@@ -1,0 +1,43 @@
+<app-section-card [icon]="icon" [title]="titleKey | translate">
+  <app-skeleton *ngIf="loading" variant="list" [count]="3"></app-skeleton>
+
+  <form class="cfg" *ngIf="!loading" (ngSubmit)="save()">
+    <p class="cfg__intro" *ngIf="hintKey">{{ hintKey | translate }}</p>
+
+    <div class="cfg__field" *ngFor="let item of items" [class.cfg__field--reset]="reset.has(item.key)">
+      <div class="cfg__head">
+        <label [for]="'cfg-' + item.key">{{ label(item) }}</label>
+        <span class="cfg__source" [ngClass]="'cfg__source--' + (reset.has(item.key) ? 'reset' : item.source)">
+          {{ sourceKey(item) | translate }}
+        </span>
+      </div>
+
+      <label class="cfg__switch" *ngIf="item.kind === 'bool'; else textInput">
+        <input type="checkbox" [id]="'cfg-' + item.key" [name]="item.key"
+          [ngModel]="draft[item.key] === 'true'" (ngModelChange)="draft[item.key] = $event ? 'true' : 'false'"
+          [disabled]="reset.has(item.key)" />
+        <span>{{ (draft[item.key] === 'true' ? 'appConfig.on' : 'appConfig.off') | translate }}</span>
+      </label>
+
+      <ng-template #textInput>
+        <input [id]="'cfg-' + item.key" [name]="item.key" [(ngModel)]="draft[item.key]" [disabled]="reset.has(item.key)"
+          [type]="item.isSecret ? 'password' : item.kind === 'number' ? 'number' : item.kind === 'url' ? 'url' : item.kind === 'email' ? 'email' : 'text'"
+          [attr.autocomplete]="item.isSecret ? 'new-password' : 'off'"
+          [placeholder]="item.isSecret ? (item.hasValue ? (item.masked || '') + ' — ' + ('appConfig.secretKeep' | translate) : ('appConfig.secretEnter' | translate)) : ''" />
+      </ng-template>
+
+      <small class="cfg__hint" *ngIf="hint(item)">{{ hint(item) }}</small>
+      <small class="cfg__warn" *ngIf="item.source === 'unreadable'">{{ 'appConfig.unreadableHint' | translate }}</small>
+      <button type="button" class="cfg__reset" *ngIf="item.source === 'db'" (click)="toggleReset(item)">
+        {{ (reset.has(item.key) ? 'appConfig.undoReset' : 'appConfig.useFileValue') | translate }}
+      </button>
+    </div>
+
+    <div class="cfg__actions">
+      <button type="submit" class="btn btn--solid" [disabled]="saving || !dirty">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+        {{ (saving ? 'appConfig.saving' : 'appConfig.save') | translate }}
+      </button>
+    </div>
+  </form>
+</app-section-card>

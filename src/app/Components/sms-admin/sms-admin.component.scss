@@ -64,53 +64,27 @@
   color: var(--color-ink-600);
 }
 
-// ---------------------------- Settings ----------------------------
-.settings {
+// ---------------------------- Link to Settings › SMS ----------------------------
+.to-settings {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.switch {
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-ink-200);
-  border-radius: var(--radius-md);
-  cursor: pointer;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink-900);
+  font-weight: 600;
+  text-decoration: none;
 
-  input { margin-top: 4px; width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--color-primary-600); }
-  span { display: flex; flex-direction: column; gap: 2px; }
-  small { font-size: var(--font-size-sm); color: var(--color-ink-600); }
+  > mat-icon:first-child { color: var(--color-link); }
+  span { flex: 1; }
+
+  &:hover { border-color: var(--color-primary-300, var(--color-ink-400)); }
 }
 
-.settings__notice {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-ink-700);
-
-  mat-icon { flex-shrink: 0; font-size: 20px; width: 20px; height: 20px; color: var(--color-link); }
-}
-
-.settings__limit {
-  max-width: 280px;
-}
-
-// ---------------------------- Test ----------------------------
-.test {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: var(--space-3);
-}
-
-.test__field {
-  flex: 1;
-  min-width: 200px;
+.to-settings__arrow {
+  color: var(--color-ink-400);
 }
 
 // ---------------------------- Log ----------------------------

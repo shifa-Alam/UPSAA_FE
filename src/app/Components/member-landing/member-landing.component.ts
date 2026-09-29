@@ -21,6 +21,7 @@ import { LanguageService } from '../../Services/language.service';
 
 import { CountUpDirective } from '../shared/count-up/count-up.directive';
 import { RouterLink } from '@angular/router';
+import { SnackbarService } from '../../Services/snackbar.service';
 @Component({
 
   selector: 'app-member-landing',
@@ -44,7 +45,16 @@ import { RouterLink } from '@angular/router';
 })
 export class MemberLandingComponent implements OnInit {
   private confirmService = inject(ConfirmService);
+  private snackbar = inject(SnackbarService);
   members: Member[] = [];
+
+  /** Date of birth being edited in its row (staff only). */
+  editingDobId: number | null = null;
+  /** The date input's value — "yyyy-MM-dd", or '' to clear. */
+  dobDraft = '';
+  savingDob = false;
+  /** Latest selectable date for the date picker (today, local). */
+  readonly todayIso = MemberLandingComponent.isoDate(new Date());
   totalItems = 0;
   totalPages = 0;
   pageNumber = 1;
@@ -160,6 +170,69 @@ onTabChange(event: any) {
 
   isSuperAdmin(): boolean {
     return this.authService.hasRole('SuperAdmin');
+  }
+
+  // ---------------------------------------------------------------- date of birth
+
+  /** Admin or SuperAdmin — they can correct a member's date of birth right in the list. */
+  canEditDob(): boolean {
+    return this.authService.isStaff();
+  }
+
+  /** "১৪ মে ২০০১" / "14 May 2001", or — when not set. Read as a calendar date, so no time-zone shift. */
+  dobLabel(m: Member): string {
+    const d = MemberLandingComponent.parseDob(m.dob);
+    if (!d) return '—';
+    const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+  }
+
+  isBirthdayToday(m: Member): boolean {
+    const d = MemberLandingComponent.parseDob(m.dob);
+    const today = new Date();
+    return !!d && d.getDate() === today.getDate() && d.getMonth() === today.getMonth();
+  }
+
+  startDobEdit(m: Member): void {
+    this.editingDobId = m.id;
+    this.dobDraft = m.dob ? m.dob.slice(0, 10) : '';
+  }
+
+  cancelDobEdit(): void {
+    this.editingDobId = null;
+  }
+
+  saveDob(m: Member): void {
+    if (this.savingDob) return;
+    const value = this.dobDraft.trim() || null;
+    if (value === (m.dob ? m.dob.slice(0, 10) : null)) {
+      this.cancelDobEdit();
+      return;
+    }
+    this.savingDob = true;
+    this.memberService.setDateOfBirth(m.id, value).subscribe({
+      next: res => {
+        this.savingDob = false;
+        m.dob = res.dob as string;
+        this.editingDobId = null;
+        this.snackbar.showSuccess(this.languageService.translate('memberLanding.dobSaved'));
+      },
+      error: err => {
+        this.savingDob = false;
+        this.snackbar.showError(err?.error?.message || this.languageService.translate('memberLanding.dobSaveFailed'));
+      }
+    });
+  }
+
+  /** "yyyy-MM-dd…" → a local Date at midnight (null when missing/invalid). */
+  private static parseDob(dob: string | null | undefined): Date | null {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(dob ?? '');
+    return match ? new Date(+match[1], +match[2] - 1, +match[3]) : null;
+  }
+
+  private static isoDate(d: Date): string {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   }
 
 

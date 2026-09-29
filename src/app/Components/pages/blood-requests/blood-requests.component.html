@@ -18,7 +18,8 @@
       </div>
     </div>
 
-    <div class="cm-main br-main">
+    <div class="cm-main br-layout">
+     <div class="br-col">
       <!-- Post form -->
       <form class="cm-form" *ngIf="showForm" (ngSubmit)="submit()">
         <div class="cm-form__head">
@@ -65,6 +66,13 @@
             <textarea id="br-note" rows="3" maxlength="500" name="note" [(ngModel)]="form.note"
               [placeholder]="'bloodRequests.notePh' | translate"></textarea>
           </div>
+          <label class="br-share cm-form__full">
+            <input type="checkbox" name="shareOnFacebook" [(ngModel)]="form.shareOnFacebook" />
+            <span>
+              <strong>{{ 'bloodRequests.shareOnFacebook' | translate }}</strong>
+              <small>{{ 'bloodRequests.shareOnFacebookHint' | translate }}</small>
+            </span>
+          </label>
         </div>
 
         <div class="cm-form__actions">
@@ -77,8 +85,15 @@
 
       <app-skeleton *ngIf="loading" variant="list" [count]="3"></app-skeleton>
 
-      <app-empty-state *ngIf="!loading && !requests.length" icon="favorite" [title]="'bloodRequests.emptyTitle' | translate"
-        [message]="'bloodRequests.emptyMessage' | translate"></app-empty-state>
+      <!-- Nothing open: say so warmly, and make asking one tap away -->
+      <div class="br-empty" *ngIf="!loading && !requests.length">
+        <span class="br-empty__icon" aria-hidden="true"><mat-icon>bloodtype</mat-icon></span>
+        <h2 class="br-empty__title">{{ (includeClosed ? 'bloodRequests.emptyAllTitle' : 'bloodRequests.emptyTitle') | translate }}</h2>
+        <p class="br-empty__text">{{ 'bloodRequests.emptyMessage' | translate }}</p>
+        <button type="button" class="pp-btn pp-btn--solid br-cta" *ngIf="canPost && !showForm" (click)="openForm()">
+          <mat-icon>bloodtype</mat-icon> {{ 'bloodRequests.post' | translate }}
+        </button>
+      </div>
 
       <!-- Requests -->
       <ul class="br-list" *ngIf="!loading && requests.length">
@@ -98,7 +113,8 @@
 
             <h3 class="br-card__hospital">{{ r.hospital }}<ng-container *ngIf="r.city">, {{ r.city }}</ng-container></h3>
             <ul class="br-card__meta">
-              <li><mat-icon>schedule</mat-icon>{{ 'bloodRequests.neededBy' | translate }}: <strong>{{ when(r) }}</strong></li>
+              <li><mat-icon>schedule</mat-icon>{{ 'bloodRequests.neededBy' | translate }}: <strong>{{ when(r) }}</strong>
+                <span class="br-left" *ngIf="r.status === 'Open'" [class.br-left--urgent]="isUrgent(r)">({{ timeLeft(r) }})</span></li>
               <li *ngIf="r.patientName"><mat-icon>person</mat-icon>{{ r.patientName }}</li>
               <li><mat-icon>call</mat-icon><a [href]="'tel:' + r.contactPhone">{{ r.contactPhone }}</a></li>
             </ul>
@@ -110,7 +126,7 @@
                 <ng-template #reqInitial><span class="cm-who__avatar">{{ initials(r.requester.fullName) }}</span></ng-template>
                 <span class="cm-who__text">
                   <span class="cm-who__name">{{ r.requester.fullName }}</span>
-                  <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ r.requester.batch }}</span>
+                  <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ year(r.requester.batch) }}</span>
                 </span>
               </span>
 
@@ -153,7 +169,7 @@
                       <ng-template #vInitial><span class="cm-who__avatar">{{ initials(v.member.fullName) }}</span></ng-template>
                       <span class="cm-who__text">
                         <span class="cm-who__name">{{ v.member.fullName }}</span>
-                        <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ v.member.batch }}<ng-container *ngIf="v.bloodGroup"> · {{ v.bloodGroup }}</ng-container></span>
+                        <span class="cm-who__batch">{{ 'bloodRequests.batch' | translate }} {{ year(v.member.batch) }}<ng-container *ngIf="v.bloodGroup"> · {{ v.bloodGroup }}</ng-container></span>
                       </span>
                     </span>
                     <a *ngIf="v.phone" class="pp-btn pp-btn--solid br-call" [href]="'tel:' + v.phone"><mat-icon>call</mat-icon> {{ v.phone }}</a>
@@ -166,6 +182,56 @@
       </ul>
 
       <p class="br-staff-note" *ngIf="!canPost && auth.isStaff()">{{ 'bloodRequests.staffNote' | translate }}</p>
+     </div>
+
+      <!-- Side panel: how it works + who can give to whom -->
+      <aside class="br-aside">
+        <section class="br-panel">
+          <h2 class="br-panel__title">{{ 'bloodRequests.howTitle' | translate }}</h2>
+          <ol class="br-steps">
+            <li>
+              <span class="br-steps__icon" aria-hidden="true"><mat-icon>bloodtype</mat-icon></span>
+              <span><strong>{{ 'bloodRequests.step1Title' | translate }}</strong>{{ 'bloodRequests.step1Text' | translate }}</span>
+            </li>
+            <li>
+              <span class="br-steps__icon" aria-hidden="true"><mat-icon>notifications_active</mat-icon></span>
+              <span><strong>{{ 'bloodRequests.step2Title' | translate }}</strong>{{ 'bloodRequests.step2Text' | translate }}</span>
+            </li>
+            <li>
+              <span class="br-steps__icon" aria-hidden="true"><mat-icon>call</mat-icon></span>
+              <span><strong>{{ 'bloodRequests.step3Title' | translate }}</strong>{{ 'bloodRequests.step3Text' | translate }}</span>
+            </li>
+          </ol>
+        </section>
+
+        <section class="br-panel">
+          <h2 class="br-panel__title">{{ 'bloodRequests.compatTitle' | translate }}</h2>
+          <table class="br-compat">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'bloodRequests.compatGroup' | translate }}</th>
+                <th scope="col">{{ 'bloodRequests.compatGivesTo' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let g of groups">
+                <th scope="row"><span class="br-compat__group">{{ g }}</span></th>
+                <td>{{ givesTo(g) }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="br-panel__note">{{ 'bloodRequests.compatNote' | translate }}</p>
+        </section>
+
+        <a class="br-panel br-panel--link" routerLink="../blood-donors">
+          <mat-icon aria-hidden="true">groups</mat-icon>
+          <span>
+            <strong>{{ 'bloodRequests.donorsLink' | translate }}</strong>
+            <small>{{ 'bloodRequests.donorsLinkHint' | translate }}</small>
+          </span>
+          <mat-icon class="br-panel__arrow" aria-hidden="true">chevron_right</mat-icon>
+        </a>
+      </aside>
     </div>
   </div>
 </div>

@@ -50,134 +50,169 @@
     <ng-template #statPending><span class="stat__skeleton"></span></ng-template>
   </section>
 
-  <div class="columns">
+  <!-- ===== Tabs ===== -->
+  <div class="page-tabs" role="tablist" [attr.aria-label]="'birthdayAutomation.title' | translate">
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'birthdays'" [attr.aria-selected]="tab === 'birthdays'" (click)="selectTab('birthdays')">
+      <mat-icon>cake</mat-icon>{{ 'birthdayAutomation.tabBirthdays' | translate }}
+      <span class="page-tab__count" *ngIf="!birthdaysLoading && birthdays.length">{{ birthdays.length }}</span>
+    </button>
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'messages'" [attr.aria-selected]="tab === 'messages'" (click)="selectTab('messages')">
+      <mat-icon>edit_note</mat-icon>{{ 'birthdayAutomation.tabMessages' | translate }}
+    </button>
+    <button type="button" role="tab" class="page-tab" [class.page-tab--on]="tab === 'history'" [attr.aria-selected]="tab === 'history'" (click)="selectTab('history')">
+      <mat-icon>history</mat-icon>{{ 'birthdayAutomation.tabHistory' | translate }}
+      <span class="page-tab__count page-tab__count--bad" *ngIf="!logsLoading && failedLogCount > 0">{{ failedLogCount }}</span>
+    </button>
+  </div>
 
-    <!-- ===== Settings ===== -->
-    <app-section-card icon="settings" [title]="'birthdayAutomation.settingsCardTitle' | translate">
-      <form class="settings-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
-        <label class="switch-field">
-          <input type="checkbox" [(ngModel)]="enabled" name="enabled" />
-          <span>{{ 'birthdayAutomation.enabledLabel' | translate }}</span>
-        </label>
+  <!-- ===== Birthdays ===== -->
+  <ng-container *ngIf="tab === 'birthdays'">
+    <div class="connect-note" *ngIf="settings && !fbConnected">
+      <mat-icon>link_off</mat-icon>
+      {{ 'birthdayAutomation.fbNotConnected' | translate }}
+      <a routerLink="/dashboard/settings/facebook">{{ 'birthdayAutomation.connectInSettings' | translate }}</a>
+    </div>
 
+    <!-- Automatic posting: on/off and time, right where the day's list is -->
+    <div class="auto-bar" *ngIf="!settingsLoading">
+      <label class="switch-field">
+        <input type="checkbox" [(ngModel)]="enabled" />
+        <span>{{ 'birthdayAutomation.enabledLabel' | translate }}</span>
+      </label>
+      <label class="auto-bar__time">
+        <span>{{ 'birthdayAutomation.postTimeShort' | translate }}</span>
+        <input type="time" [(ngModel)]="postTime" />
+      </label>
+      <button type="button" class="btn btn--solid btn--sm auto-bar__save" [disabled]="saving || !automationChanged" (click)="saveSettings()">
+        <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
+        {{ (saving ? 'birthdayAutomation.saving' : 'birthdayAutomation.saveButton') | translate }}
+      </button>
+      <p class="field-hint">{{ 'birthdayAutomation.enabledHint' | translate }}</p>
+    </div>
+  <!-- ===== Today's birthdays ===== -->
+  <app-section-card icon="cake" [title]="(isToday ? 'birthdayAutomation.todayCardTitle' : 'birthdayAutomation.dayCardTitle') | translate" [noPadding]="true">
+
+    <div class="bday-tools">
+      <label class="bday-tools__date">
+        <mat-icon aria-hidden="true">event</mat-icon>
+        <span class="sr-only">{{ 'birthdayAutomation.pickDate' | translate }}</span>
+        <input type="date" [(ngModel)]="birthdayDate" (change)="onBirthdayDateChange()" [attr.aria-label]="'birthdayAutomation.pickDate' | translate" />
+      </label>
+      <button type="button" class="btn btn--outline btn--sm" *ngIf="!isToday" (click)="showToday()">{{ 'birthdayAutomation.backToToday' | translate }}</button>
+      <span class="field-hint">{{ 'birthdayAutomation.reviewHint' | translate }}</span>
+    </div>
+
+    <app-skeleton *ngIf="birthdaysLoading" variant="people" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
+
+    <app-empty-state *ngIf="!birthdaysLoading && birthdays.length === 0" icon="cake"
+      [title]="'birthdayAutomation.noBirthdaysTitle' | translate" [message]="'birthdayAutomation.noBirthdaysMessage' | translate"></app-empty-state>
+
+    <div class="table-wrapper" *ngIf="!birthdaysLoading && birthdays.length > 0">
+      <table class="data-table rt">
+        <thead>
+          <tr>
+            <th>{{ 'birthdayAutomation.colName' | translate }}</th>
+            <th class="num">{{ 'birthdayAutomation.colBatch' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colEmail' | translate }}</th>
+            <th class="actions-col"><span class="sr-only">{{ 'birthdayAutomation.colActions' | translate }}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of birthdays">
+            <td class="rt-title">
+              <span class="person">
+                <img *ngIf="member.photo" [src]="member.photo | sizedImage:400" [alt]="member.fullName" class="avatar" />
+                <span *ngIf="!member.photo" class="avatar avatar--initials" aria-hidden="true">{{ member.fullName.charAt(0) }}</span>
+                <span class="person__name">{{ member.fullName }}</span>
+              </span>
+            </td>
+            <td class="num" [attr.data-label]="'birthdayAutomation.colBatch' | translate">{{ member.batch }}</td>
+            <td [attr.data-label]="'birthdayAutomation.colStatus' | translate">
+              <span class="status-pill" [ngClass]="{
+                'status-pill--success': member.status === 'Success',
+                'status-pill--failed': member.status === 'Failed',
+                'status-pill--pending': !member.status
+              }">
+                {{ member.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate)
+                   : member.status === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
+                   : ('birthdayAutomation.statusPending' | translate) }}
+              </span>
+            </td>
+            <td [attr.data-label]="'birthdayAutomation.colEmail' | translate">
+              <span class="status-pill" [attr.title]="member.emailError" [ngClass]="{
+                'status-pill--success': member.emailStatus === 'Success',
+                'status-pill--failed': member.emailStatus === 'Failed' || !member.hasEmail,
+                'status-pill--pending': !member.emailStatus && member.hasEmail
+              }">
+                {{ !member.hasEmail ? ('birthdayAutomation.emailNone' | translate)
+                   : member.emailStatus === 'Success' ? ('birthdayAutomation.emailStatusSent' | translate)
+                   : member.emailStatus === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
+                   : ('birthdayAutomation.statusPending' | translate) }}
+              </span>
+            </td>
+            <td class="rt-actions">
+              <span class="row-actions">
+                <button type="button" class="btn btn--outline btn--sm review-btn" (click)="openPreview(member)"
+                  [attr.aria-label]="('birthdayAutomation.reviewAndPost' | translate) + ': ' + member.fullName">
+                  <mat-icon>edit_note</mat-icon> {{ 'birthdayAutomation.reviewAndPost' | translate }}
+                </button>
+                <button type="button" class="icon-btn" (click)="sendEmail(member)"
+                  *ngIf="member.hasEmail && member.emailStatus !== 'Success'" [disabled]="sendingEmailId === member.memberId"
+                  [attr.aria-label]="'birthdayAutomation.sendEmailNow' | translate" [title]="'birthdayAutomation.sendEmailNow' | translate">
+                  <mat-icon>{{ sendingEmailId === member.memberId ? 'hourglass_top' : 'forward_to_inbox' }}</mat-icon>
+                </button>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section-card>
+  </ng-container>
+
+  <!-- ===== Messages ===== -->
+  <div class="tab-stack" *ngIf="tab === 'messages'">
+  <!-- ===== Facebook birthday post message ===== -->
+  <app-section-card icon="chat" [title]="'birthdayAutomation.postMessageCardTitle' | translate">
+    <form class="email-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
+      <div class="email-form__editor">
         <div class="form-field">
-          <label for="fbPageId">{{ 'birthdayAutomation.pageIdLabel' | translate }}</label>
-          <input type="text" id="fbPageId" class="mono" [placeholder]="'birthdayAutomation.pageIdPlaceholder' | translate" [(ngModel)]="pageId" name="pageId" />
+          <label for="postMessage">{{ 'birthdayAutomation.postMessageLabel' | translate }}</label>
+          <textarea #postInput id="postMessage" name="postMessage" rows="9" [(ngModel)]="postMessage" [maxlength]="maxPostMessageLength"></textarea>
+          <div class="chips" role="group" [attr.aria-label]="'birthdayAutomation.insertPlaceholder' | translate">
+            <button type="button" class="chip" *ngFor="let p of placeholders.slice(0, 3)" (click)="insertPlaceholder(p.token, postInput, 'post')"
+              [title]="p.labelKey | translate">{{ p.token }}</button>
+          </div>
+          <span class="field-hint">{{ 'birthdayAutomation.postMessageHint' | translate }}</span>
         </div>
-
-        <div class="form-field">
-          <label for="fbToken">
-            {{ 'birthdayAutomation.tokenLabel' | translate }}
-            <span class="saved-pill" *ngIf="settings?.hasAccessToken"><mat-icon>check</mat-icon>{{ 'birthdayAutomation.tokenSaved' | translate }}</span>
-          </label>
-          <input type="password" id="fbToken" [placeholder]="settings?.hasAccessToken ? (settings?.pageAccessTokenMasked || '') : ('birthdayAutomation.tokenPlaceholder' | translate)"
-            [(ngModel)]="pageAccessToken" name="pageAccessToken" autocomplete="new-password" />
-          <span class="field-hint" *ngIf="settings?.hasAccessToken">{{ 'birthdayAutomation.tokenHint' | translate }}</span>
-        </div>
-
-        <div class="form-field form-field--narrow">
-          <label for="fbPostTime">{{ 'birthdayAutomation.postTimeLabel' | translate }}</label>
-          <input type="time" id="fbPostTime" [(ngModel)]="postTime" name="postTime" />
-        </div>
-
-        <fieldset class="page-posts">
-          <legend>{{ 'birthdayAutomation.pagePostsTitle' | translate }}</legend>
-          <p class="field-hint">{{ 'birthdayAutomation.pagePostsHint' | translate }}</p>
-          <label class="switch-field">
-            <input type="checkbox" [(ngModel)]="autoPostNotices" name="autoPostNotices" />
-            <span>{{ 'birthdayAutomation.autoPostNoticesLabel' | translate }}</span>
-          </label>
-          <label class="switch-field">
-            <input type="checkbox" [(ngModel)]="autoPostEvents" name="autoPostEvents" />
-            <span>{{ 'birthdayAutomation.autoPostEventsLabel' | translate }}</span>
-          </label>
-        </fieldset>
 
         <div class="form-actions settings-form__actions">
+          <button type="button" class="btn btn--outline" (click)="resetPostMessage()" [disabled]="postMessageIsDefault">
+            <mat-icon>restart_alt</mat-icon> {{ 'birthdayAutomation.resetWording' | translate }}
+          </button>
           <button type="submit" class="btn btn--solid" [disabled]="saving">
             <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon>
             {{ saving ? ('birthdayAutomation.saving' | translate) : ('birthdayAutomation.saveButton' | translate) }}
           </button>
         </div>
-      </form>
-
-      <app-skeleton *ngIf="settingsLoading" variant="list" [count]="2" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
-    </app-section-card>
-
-    <!-- ===== Today's birthdays ===== -->
-    <app-section-card icon="cake" [title]="'birthdayAutomation.todayCardTitle' | translate" [noPadding]="true">
-
-      <app-skeleton *ngIf="birthdaysLoading" variant="people" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
-
-      <app-empty-state *ngIf="!birthdaysLoading && birthdays.length === 0" icon="cake"
-        [title]="'birthdayAutomation.noBirthdaysTitle' | translate" [message]="'birthdayAutomation.noBirthdaysMessage' | translate"></app-empty-state>
-
-      <div class="table-wrapper" *ngIf="!birthdaysLoading && birthdays.length > 0">
-        <table class="data-table rt">
-          <thead>
-            <tr>
-              <th>{{ 'birthdayAutomation.colName' | translate }}</th>
-              <th class="num">{{ 'birthdayAutomation.colBatch' | translate }}</th>
-              <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
-              <th>{{ 'birthdayAutomation.colEmail' | translate }}</th>
-              <th class="actions-col"><span class="sr-only">{{ 'birthdayAutomation.colActions' | translate }}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let member of birthdays">
-              <td class="rt-title">
-                <span class="person">
-                  <img *ngIf="member.photo" [src]="member.photo | sizedImage:400" [alt]="member.fullName" class="avatar" />
-                  <span *ngIf="!member.photo" class="avatar avatar--initials" aria-hidden="true">{{ member.fullName.charAt(0) }}</span>
-                  <span class="person__name">{{ member.fullName }}</span>
-                </span>
-              </td>
-              <td class="num" [attr.data-label]="'birthdayAutomation.colBatch' | translate">{{ member.batch }}</td>
-              <td [attr.data-label]="'birthdayAutomation.colStatus' | translate">
-                <span class="status-pill" [ngClass]="{
-                  'status-pill--success': member.status === 'Success',
-                  'status-pill--failed': member.status === 'Failed',
-                  'status-pill--pending': !member.status
-                }">
-                  {{ member.status === 'Success' ? ('birthdayAutomation.statusPosted' | translate)
-                     : member.status === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
-                     : ('birthdayAutomation.statusPending' | translate) }}
-                </span>
-              </td>
-              <td [attr.data-label]="'birthdayAutomation.colEmail' | translate">
-                <span class="status-pill" [attr.title]="member.emailError" [ngClass]="{
-                  'status-pill--success': member.emailStatus === 'Success',
-                  'status-pill--failed': member.emailStatus === 'Failed' || !member.hasEmail,
-                  'status-pill--pending': !member.emailStatus && member.hasEmail
-                }">
-                  {{ !member.hasEmail ? ('birthdayAutomation.emailNone' | translate)
-                     : member.emailStatus === 'Success' ? ('birthdayAutomation.emailStatusSent' | translate)
-                     : member.emailStatus === 'Failed' ? ('birthdayAutomation.statusFailed' | translate)
-                     : ('birthdayAutomation.statusPending' | translate) }}
-                </span>
-              </td>
-              <td class="rt-actions">
-                <span class="row-actions">
-                  <button type="button" class="icon-btn" (click)="openPreview(member)"
-                    [attr.aria-label]="'birthdayAutomation.previewCard' | translate" [title]="'birthdayAutomation.previewCard' | translate">
-                    <mat-icon>image</mat-icon>
-                  </button>
-                  <button type="button" class="icon-btn" (click)="sendEmail(member)"
-                    *ngIf="member.hasEmail && member.emailStatus !== 'Success'" [disabled]="sendingEmailId === member.memberId"
-                    [attr.aria-label]="'birthdayAutomation.sendEmailNow' | translate" [title]="'birthdayAutomation.sendEmailNow' | translate">
-                    <mat-icon>{{ sendingEmailId === member.memberId ? 'hourglass_top' : 'forward_to_inbox' }}</mat-icon>
-                  </button>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-    </app-section-card>
 
-  </div>
+      <!-- Live preview with a sample member -->
+      <aside class="email-preview fb-preview" [attr.aria-label]="'birthdayAutomation.postPreview' | translate">
+        <span class="email-preview__label">{{ 'birthdayAutomation.postPreview' | translate }}</span>
+        <div class="fb-preview__post">
+          <p class="fb-preview__text">{{ previewPostMessage }}</p>
+          <div class="email-preview__card">
+            <mat-icon>image</mat-icon> {{ 'birthdayAutomation.phCard' | translate }}
+          </div>
+        </div>
+      </aside>
+    </form>
 
-  <!-- ===== Birthday email: on/off, subject and body ===== -->
+    <app-skeleton *ngIf="settingsLoading" variant="list" [count]="3" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
+  </app-section-card>
+
   <app-section-card icon="mail" [title]="'birthdayAutomation.emailCardTitle' | translate">
     <form class="email-form" (ngSubmit)="saveSettings()" *ngIf="!settingsLoading">
       <div class="email-form__editor">
@@ -188,6 +223,7 @@
         <span class="field-hint field-hint--warn" *ngIf="settings && !settings.emailConfigured">
           {{ 'birthdayAutomation.emailNotConfigured' | translate }}
         </span>
+        <a class="field-hint" routerLink="/dashboard/settings/email">{{ 'birthdayAutomation.emailSenderLink' | translate }}</a>
 
         <div class="form-field">
           <label for="emailSubject">{{ 'birthdayAutomation.emailSubjectLabel' | translate }}</label>
@@ -239,8 +275,43 @@
 
     <app-skeleton *ngIf="settingsLoading" variant="list" [count]="3" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
   </app-section-card>
+  </div>
 
-  <!-- ===== Post history ===== -->
+  <!-- ===== History ===== -->
+  <div class="tab-stack" *ngIf="tab === 'history'">
+  <!-- ===== Everything on the Facebook page ===== -->
+  <app-section-card icon="share" [title]="'birthdayAutomation.recentCardTitle' | translate" [noPadding]="true">
+    <app-skeleton *ngIf="recentLoading" variant="table" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
+
+    <app-empty-state *ngIf="!recentLoading && recentPosts.length === 0" icon="share"
+      [title]="'birthdayAutomation.recentEmptyTitle' | translate" [message]="'birthdayAutomation.recentEmptyMessage' | translate"></app-empty-state>
+
+    <div class="table-wrapper" *ngIf="!recentLoading && recentPosts.length > 0">
+      <table class="data-table data-table--wide rt">
+        <thead>
+          <tr>
+            <th>{{ 'birthdayAutomation.colKind' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colItem' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colDate' | translate }}</th>
+            <th>{{ 'birthdayAutomation.colFacebook' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of recentPosts">
+            <td [attr.data-label]="'birthdayAutomation.colKind' | translate">
+              <span class="kind-pill">{{ ('birthdayAutomation.kind.' + row.kind) | translate }}</span>
+            </td>
+            <td class="strong-cell rt-title">{{ row.title }}</td>
+            <td class="date-cell" [attr.data-label]="'birthdayAutomation.colDate' | translate">{{ asUtc(row.when) | date:'medium' }}</td>
+            <td [attr.data-label]="'birthdayAutomation.colFacebook' | translate">
+              <app-fb-post-status [kind]="row.kind" [item]="row"></app-fb-post-status>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </app-section-card>
+
   <app-section-card icon="history" [title]="'birthdayAutomation.logsCardTitle' | translate" [noPadding]="true">
 
     <app-skeleton *ngIf="logsLoading" variant="table" [count]="4" [label]="'birthdayAutomation.loading' | translate"></app-skeleton>
@@ -277,24 +348,72 @@
       </table>
     </div>
   </app-section-card>
+  </div>
 
-  <!-- ===== Card preview ===== -->
-  <div class="card-preview" *ngIf="preview" role="dialog" aria-modal="true" [attr.aria-label]="'birthdayAutomation.previewCard' | translate"
+  <!-- ===== Review and post by hand ===== -->
+  <div class="card-preview" *ngIf="compose as c" role="dialog" aria-modal="true" [attr.aria-label]="'birthdayAutomation.reviewAndPost' | translate"
     (click)="closePreview()">
-    <div class="card-preview__box" (click)="$event.stopPropagation()">
+    <div class="card-preview__box compose" (click)="$event.stopPropagation()">
       <div class="card-preview__head">
-        <strong>{{ preview.member.fullName }}</strong>
+        <strong>{{ c.member.fullName }} <small class="compose__batch">· {{ 'birthdayAutomation.colBatch' | translate }} {{ c.member.batch }}</small></strong>
         <button type="button" class="icon-btn" (click)="closePreview()" [attr.aria-label]="'birthdayAutomation.close' | translate">
           <mat-icon>close</mat-icon>
         </button>
       </div>
-      <div class="card-preview__image">
-        <img *ngIf="preview.url; else cardLoading" [src]="preview.url" [alt]="preview.member.fullName" />
-        <ng-template #cardLoading><div class="card-preview__loading"><mat-icon>autorenew</mat-icon></div></ng-template>
+
+      <div class="compose__grid">
+        <div class="compose__visual">
+          <div class="card-preview__image" [class.card-preview__image--free]="c.asIs && c.photoUrl">
+            <img *ngIf="composeImage && !(c.loadingCard && !c.asIs); else cardLoading" [src]="composeImage" [alt]="c.member.fullName" />
+            <ng-template #cardLoading><div class="card-preview__loading"><mat-icon>autorenew</mat-icon></div></ng-template>
+          </div>
+          <a *ngIf="composeImage" class="btn btn--outline btn--sm" [href]="composeImage"
+            [download]="'UPSAA-birthday-' + c.member.memberId + (c.asIs && c.photoUrl ? '.jpg' : '.png')">
+            <mat-icon>download</mat-icon> {{ 'birthdayAutomation.downloadCard' | translate }}
+          </a>
+        </div>
+
+        <div class="compose__form">
+          <p class="compose__posted" *ngIf="c.member.status === 'Success'">
+            <mat-icon>info</mat-icon> {{ 'birthdayAutomation.composeAlreadyPosted' | translate }}
+          </p>
+
+          <div class="form-field">
+            <span class="compose__label">{{ 'birthdayAutomation.composePhoto' | translate }}</span>
+            <div class="compose__photo">
+              <label class="btn btn--outline btn--sm">
+                <mat-icon>add_photo_alternate</mat-icon> {{ (c.photo ? 'birthdayAutomation.composeChangePhoto' : 'birthdayAutomation.composeChoosePhoto') | translate }}
+                <input type="file" accept="image/*" hidden (change)="onComposePhoto($event)" />
+              </label>
+              <button type="button" class="btn btn--ghost btn--sm" *ngIf="c.photo" (click)="clearComposePhoto()">
+                {{ 'birthdayAutomation.composeUseProfilePhoto' | translate }}
+              </button>
+            </div>
+            <span class="field-hint" *ngIf="!c.photo">{{ 'birthdayAutomation.composePhotoHint' | translate }}</span>
+            <span class="field-hint compose__file" *ngIf="c.photo">{{ c.photo.name }}</span>
+            <label class="compose__asis" *ngIf="c.photo">
+              <input type="checkbox" [(ngModel)]="c.asIs" name="asIs" />
+              <span>{{ 'birthdayAutomation.composeAsIs' | translate }}</span>
+            </label>
+          </div>
+
+          <div class="form-field">
+            <span class="compose__label-row">
+              <label class="compose__label" for="composeCaption">{{ 'birthdayAutomation.composeMessage' | translate }}</label>
+              <button type="button" class="link-btn" (click)="resetComposeCaption()" *ngIf="c.caption !== c.member.wishText">
+                {{ 'birthdayAutomation.composeResetMessage' | translate }}
+              </button>
+            </span>
+            <textarea id="composeCaption" rows="8" maxlength="5000" [(ngModel)]="c.caption" name="caption"></textarea>
+          </div>
+
+          <button type="button" class="btn btn--solid compose__post" [disabled]="c.posting || (c.loadingCard && !c.asIs)" (click)="postCompose()">
+            <mat-icon>{{ c.posting ? 'hourglass_top' : 'send' }}</mat-icon>
+            {{ (c.posting ? 'birthdayAutomation.composePosting'
+                : c.member.status === 'Success' ? 'birthdayAutomation.composePostAgain' : 'birthdayAutomation.composePost') | translate }}
+          </button>
+        </div>
       </div>
-      <a *ngIf="preview.url" class="btn btn--outline" [href]="preview.url" [download]="'UPSAA-birthday-' + preview.member.memberId + '.png'">
-        <mat-icon>download</mat-icon> {{ 'birthdayAutomation.downloadCard' | translate }}
-      </a>
     </div>
   </div>
 

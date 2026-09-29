@@ -1,0 +1,162 @@
+// Shared by the SMS and Payment tabs of Settings.
+
+@import '../../../styles/admin-kit';
+
+:host {
+  display: block;
+}
+
+.tab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.tab-grid--single {
+  grid-template-columns: minmax(0, 860px);
+}
+
+.tab-grid__full {
+  grid-column: 1 / -1;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+
+  mat-icon { flex-shrink: 0; }
+}
+
+.banner--warn {
+  background: var(--pill-warning-bg);
+  color: var(--pill-warning-fg);
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+
+  input { margin-top: 4px; width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--color-primary-600); }
+  span { display: flex; flex-direction: column; gap: 2px; }
+  small { font-size: var(--font-size-sm); color: var(--color-ink-600); }
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+
+  mat-icon { flex-shrink: 0; font-size: 20px; width: 20px; height: 20px; color: var(--color-link); }
+}
+
+.narrow {
+  max-width: 280px;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+.grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.form-grid__full {
+  grid-column: 1 / -1;
+}
+
+.link-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-link, var(--color-primary-700));
+
+  mat-icon { width: 18px; height: 18px; font-size: 18px; }
+}
+
+.save-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ---- Usage ----
+.usage__big {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 700;
+  color: var(--color-ink-900);
+  font-variant-numeric: tabular-nums;
+
+  span { font-size: 0.55em; color: var(--color-ink-600); font-weight: 600; }
+}
+
+.usage__track {
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-ink-100);
+  overflow: hidden;
+}
+
+.usage__fill {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 999px;
+  background: var(--color-chart-1);
+}
+
+.usage__fill--high {
+  background: var(--pill-warning-fg);
+}
+
+@media (max-width: 900px) {
+  .tab-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

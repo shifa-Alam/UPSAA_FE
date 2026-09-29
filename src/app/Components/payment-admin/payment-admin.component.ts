@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import {
   METHOD_NAMES, Payment, PaymentPurpose, PaymentService, PaymentSettings, PaymentStatus
 } from '../../Services/payment.service';
@@ -25,7 +26,7 @@ import { printReceipt } from '../member-payments/payment-receipt';
 @Component({
   selector: 'app-payment-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, PaymentRecordComponent, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
+  imports: [RouterLink, CommonModule, FormsModule, MatIconModule, PaymentRecordComponent, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
     SkeletonComponent, TranslatePipe],
   templateUrl: './payment-admin.component.html',
   styleUrl: './payment-admin.component.scss'
@@ -52,16 +53,12 @@ export class PaymentAdminComponent implements OnInit {
   copiedId: number | null = null;
 
   settings: PaymentSettings = { bkashNumber: '', nagadNumber: '', rocketNumber: '', instructions: '', membershipFee: 100, annualFee: 0 };
-  savingSettings = false;
-  settingsOpen = false;
 
   ngOnInit(): void {
     this.load();
     this.api.settings().subscribe({
       next: s => {
         this.settings = { ...s };
-        // Nothing to receive money on yet: open the settings so that's the first thing seen.
-        this.settingsOpen = !s.bkashNumber && !s.nagadNumber && !s.rocketNumber;
       }
     });
   }
@@ -149,18 +146,6 @@ export class PaymentAdminComponent implements OnInit {
       this.copiedId = p.id;
       setTimeout(() => this.copiedId = null, 2000);
     } catch { /* clipboard blocked — the ID is on screen anyway */ }
-  }
-
-  saveSettings(): void {
-    this.savingSettings = true;
-    this.api.saveSettings({
-      ...this.settings,
-      membershipFee: Number(this.settings.membershipFee) || 0,
-      annualFee: Number(this.settings.annualFee) || 0,
-    }).subscribe({
-      next: s => { this.savingSettings = false; this.settings = { ...s }; this.snackbar.showSuccess(this.lang.translate('paymentAdmin.settingsSaved')); },
-      error: err => { this.savingSettings = false; this.snackbar.showError(err?.error?.message ?? this.lang.translate('paymentAdmin.failed')); }
-    });
   }
 
   tabKey(s: PaymentStatus): string {

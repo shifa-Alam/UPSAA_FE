@@ -2,54 +2,19 @@
 
   <app-admin-header [title]="'paymentAdmin.title' | translate" [subtitle]="'paymentAdmin.subtitle' | translate"></app-admin-header>
 
-  <!-- ===== Receiving numbers & fees ===== -->
-  <details class="settings" [open]="settingsOpen" (toggle)="settingsOpen = $any($event.target).open">
-    <summary class="settings__summary">
-      <mat-icon>settings</mat-icon>
-      <span>{{ 'paymentAdmin.settingsTitle' | translate }}</span>
-      <span class="settings__numbers">
-        <ng-container *ngIf="settings.bkashNumber">bKash {{ settings.bkashNumber }}</ng-container>
-        <ng-container *ngIf="settings.nagadNumber"> · Nagad {{ settings.nagadNumber }}</ng-container>
-        <ng-container *ngIf="settings.rocketNumber"> · Rocket {{ settings.rocketNumber }}</ng-container>
-        <ng-container *ngIf="!settings.bkashNumber && !settings.nagadNumber && !settings.rocketNumber">{{ 'paymentAdmin.noNumbers' | translate }}</ng-container>
-      </span>
-      <mat-icon class="settings__chevron">expand_more</mat-icon>
-    </summary>
-    <form class="settings__form" (ngSubmit)="saveSettings()">
-      <label class="field">
-        <span>bKash</span>
-        <input type="tel" name="bkash" inputmode="tel" [(ngModel)]="settings.bkashNumber" placeholder="01XXXXXXXXX" />
-      </label>
-      <label class="field">
-        <span>Nagad</span>
-        <input type="tel" name="nagad" inputmode="tel" [(ngModel)]="settings.nagadNumber" placeholder="01XXXXXXXXX" />
-      </label>
-      <label class="field">
-        <span>Rocket</span>
-        <input type="tel" name="rocket" inputmode="tel" [(ngModel)]="settings.rocketNumber" placeholder="01XXXXXXXXXX" />
-      </label>
-      <label class="field">
-        <span>{{ 'paymentAdmin.membershipFee' | translate }}</span>
-        <input type="number" name="membershipFee" min="0" [(ngModel)]="settings.membershipFee" />
-      </label>
-      <label class="field">
-        <span>{{ 'paymentAdmin.annualFee' | translate }}</span>
-        <input type="number" name="annualFee" min="0" [(ngModel)]="settings.annualFee" />
-        <small class="field__hint">{{ 'paymentAdmin.annualFeeHint' | translate }}</small>
-      </label>
-      <label class="field settings__full">
-        <span>{{ 'paymentAdmin.instructions' | translate }}</span>
-        <textarea name="instructions" rows="2" maxlength="1000" [(ngModel)]="settings.instructions"
-          [placeholder]="'paymentAdmin.instructionsPlaceholder' | translate"></textarea>
-      </label>
-      <p class="settings__hint settings__full">{{ 'paymentAdmin.settingsHint' | translate }}</p>
-      <div class="settings__full">
-        <button type="submit" class="btn btn--solid" [disabled]="savingSettings">
-          <mat-icon>{{ savingSettings ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'paymentAdmin.saveSettings' | translate }}
-        </button>
-      </div>
-    </form>
-  </details>
+  <!-- ===== Receiving numbers (set under Settings › Payment) ===== -->
+  <a class="settings" routerLink="/dashboard/settings/payment">
+    <mat-icon>settings</mat-icon>
+    <span>{{ 'paymentAdmin.settingsTitle' | translate }}</span>
+    <span class="settings__numbers">
+      <ng-container *ngIf="settings.bkashNumber">bKash {{ settings.bkashNumber }}</ng-container>
+      <ng-container *ngIf="settings.nagadNumber"> · Nagad {{ settings.nagadNumber }}</ng-container>
+      <ng-container *ngIf="settings.rocketNumber"> · Rocket {{ settings.rocketNumber }}</ng-container>
+      <ng-container *ngIf="!settings.bkashNumber && !settings.nagadNumber && !settings.rocketNumber">{{ 'paymentAdmin.noNumbers' | translate }}</ng-container>
+    </span>
+    <span class="settings__change">{{ 'appSettings.changeInSettings' | translate }}</span>
+    <mat-icon class="settings__chevron">chevron_right</mat-icon>
+  </a>
 
   <!-- ===== Record for a member (cash, or a TrxID told on the phone) ===== -->
   <app-section-card icon="point_of_sale" [title]="'paymentRecord.title' | translate" [subtitle]="'paymentRecord.subtitle' | translate">

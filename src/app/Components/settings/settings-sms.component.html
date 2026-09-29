@@ -1,0 +1,68 @@
+<app-skeleton *ngIf="loading" variant="list" [count]="3" [label]="'smsAdmin.loading' | translate"></app-skeleton>
+
+<div class="tab-grid" *ngIf="status as s">
+  <p class="banner banner--warn tab-grid__full" *ngIf="!s.gatewayEnabled" role="status">
+    <mat-icon>sms_failed</mat-icon>{{ (isSuperAdmin ? 'appConfig.smsOffSuper' : 'smsAdmin.gatewayOff') | translate }}
+  </p>
+
+  <app-config-fields class="tab-grid__full" *ngIf="isSuperAdmin" group="sms" icon="sms"
+    titleKey="appConfig.smsGatewayTitle" hintKey="appConfig.smsGatewayHint" (saved)="reloadStatus()"></app-config-fields>
+
+  <!-- Which SMS go out by themselves, and the monthly cap -->
+  <app-section-card icon="tune" [title]="'smsAdmin.settingsTitle' | translate">
+    <form class="stack" (ngSubmit)="save()">
+      <label class="check-row">
+        <input type="checkbox" name="receipts" [(ngModel)]="s.smsPaymentReceipts" />
+        <span>
+          <b>{{ 'smsAdmin.receipts' | translate }}</b>
+          <small>{{ 'smsAdmin.receiptsExample' | translate }}</small>
+        </span>
+      </label>
+      <label class="check-row">
+        <input type="checkbox" name="events" [(ngModel)]="s.smsEventReminders" />
+        <span>
+          <b>{{ 'smsAdmin.events' | translate }}</b>
+          <small>{{ 'smsAdmin.eventsExample' | translate }}</small>
+        </span>
+      </label>
+      <p class="note">
+        <mat-icon>campaign</mat-icon>
+        <span>{{ 'smsAdmin.noticeHint' | translate }} ({{ num(s.audience) }} {{ 'smsAdmin.members' | translate }})</span>
+      </p>
+      <label class="field narrow">
+        <span>{{ 'smsAdmin.limitLabel' | translate }}</span>
+        <input type="number" name="limit" min="0" step="10" [(ngModel)]="s.smsMonthlyLimit" />
+        <small class="field__hint">{{ 'smsAdmin.limitHint' | translate }}</small>
+      </label>
+      <div class="actions">
+        <button type="submit" class="btn btn--solid" [disabled]="saving">
+          <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon> {{ 'smsAdmin.save' | translate }}
+        </button>
+      </div>
+    </form>
+  </app-section-card>
+
+  <div class="stack">
+    <!-- This month against the cap -->
+    <app-section-card icon="sms" [title]="'smsAdmin.usageTitle' | translate">
+      <p class="usage__big">{{ num(s.usedThisMonth) }} <span>/ {{ num(s.smsMonthlyLimit) }}</span></p>
+      <div class="usage__track" role="img" [attr.aria-label]="num(s.usedThisMonth) + ' / ' + num(s.smsMonthlyLimit)">
+        <span class="usage__fill" [class.usage__fill--high]="usedPercent >= 90" [style.width.%]="usedPercent"></span>
+      </div>
+      <a class="link-row" routerLink="/dashboard/sms"><mat-icon>history</mat-icon> {{ 'appSettings.smsLogLink' | translate }}</a>
+    </app-section-card>
+
+    <!-- A test -->
+    <app-section-card icon="send_to_mobile" [title]="'smsAdmin.testTitle' | translate">
+      <form class="inline-form" (ngSubmit)="sendTest()">
+        <label class="field grow">
+          <span>{{ 'smsAdmin.testLabel' | translate }}</span>
+          <input type="tel" name="testPhone" inputmode="tel" [(ngModel)]="testPhone" placeholder="01XXXXXXXXX" />
+        </label>
+        <button type="submit" class="btn btn--outline" [disabled]="testing || !testPhone.trim()">
+          <mat-icon>{{ testing ? 'hourglass_top' : 'send' }}</mat-icon> {{ 'smsAdmin.testSend' | translate }}
+        </button>
+      </form>
+    </app-section-card>
+  </div>
+</div>

@@ -229,6 +229,11 @@ export const routes: Routes = [
       { path: 'jobs', loadComponent: jobs, title: 'pageTitles.jobs' },
       { path: 'blood-donors', loadComponent: bloodDonors, title: 'pageTitles.bloodDonors' },
       { path: 'blood-requests', loadComponent: bloodRequests, title: 'pageTitles.bloodRequests' },
+      { path: 'settings', redirectTo: 'settings/facebook', pathMatch: 'full' },
+      {
+        path: 'settings/:tab', title: 'pageTitles.settings',
+        loadComponent: () => import('./Components/settings/app-settings.component').then(m => m.AppSettingsComponent)
+      },
       {
         path: 'approvals', title: 'pageTitles.approvals',
         loadComponent: () => import('./Components/approvals/approvals.component').then(m => m.ApprovalsComponent)

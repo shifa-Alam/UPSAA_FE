@@ -16,13 +16,26 @@ export interface FacebookPostable {
   facebookGaveUp?: boolean | null;
 }
 
-export type FacebookPostKind = 'notice' | 'event';
+export type FacebookPostKind = 'notice' | 'event' | 'achievement' | 'memory' | 'business' | 'job' | 'campaign' | 'blood';
+
+/** One row of the admin's "recent Facebook posts" list — every kind together. */
+export interface PagePostRow extends FacebookPostable {
+  kind: FacebookPostKind;
+  title: string;
+  /** Last change (UTC). */
+  when: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class FacebookPageService {
   private apiUrl = environment.baseUrl + '/FacebookPage';
 
   constructor(private http: HttpClient) { }
+
+  /** Admin: the latest items ticked for, tried on, or posted to the page. */
+  recent(take = 40): Observable<PagePostRow[]> {
+    return this.http.get<PagePostRow[]>(`${this.apiUrl}/recent`, { params: { take } });
+  }
 
   /** Admin: post it on the page now (older items, or ones whose automatic tries failed). */
   postNow(kind: FacebookPostKind, id: number): Observable<{ postId: string | null }> {

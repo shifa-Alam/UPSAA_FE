@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { catchError, of } from 'rxjs';
@@ -10,18 +10,26 @@ import {
   BirthdayPostLog
 } from '../../Services/birthday-post.service';
 import { SnackbarService } from '../../Services/snackbar.service';
+import { ConfirmService } from '../../Services/confirm.service';
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { AdminHeaderComponent } from '../shared/admin-header/admin-header.component';
 import { SectionCardComponent } from '../shared/section-card/section-card.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 import { SizedImagePipe, SizedSrcsetPipe } from '../../Pipes/sized-image.pipe';
+import { FacebookPageService, PagePostRow } from '../../Services/facebook-page.service';
+import { todayDateOnly } from '../../Utils/date-utils';
+import { FbPostStatusComponent } from '../shared/fb-post-status/fb-post-status.component';
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
+import { RouterLink } from '@angular/router';
+type BirthdayTab = 'birthdays' | 'messages' | 'history';
+const TAB_KEY = 'upsaa.birthdayAutomation.tab';
+
 @Component({
   selector: 'app-birthday-automation',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
+  imports: [RouterLink, FbPostStatusComponent, SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, SizedImagePipe, SizedSrcsetPipe],
   templateUrl: './birthday-automation.component.html',
   styleUrl: './birthday-automation.component.scss'
 })
@@ -32,10 +40,14 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
 
   enabled = false;
   emailEnabled = false;
-  autoPostNotices = false;
-  autoPostEvents = false;
-  pageId = '';
-  pageAccessToken = '';
+  /** The page is split into tabs — the birthday list first, the everyday job. */
+  tab: BirthdayTab = 'birthdays';
+
+  /** What has gone (or is about to go) to the Facebook page — every kind together. */
+  recentPosts: PagePostRow[] = [];
+  recentLoading = true;
+  private facebookPage = inject(FacebookPageService);
+  private confirmService = inject(ConfirmService);
   postTime = '09:00';
 
   // Birthday email wording (keep limits in sync with BirthdayEmailTemplate on the server).
@@ -43,6 +55,10 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
   emailBody = '';
   readonly maxSubjectLength = 300;
   readonly maxBodyLength = 5000;
+
+  // Facebook birthday post message (limit in sync with BirthdayEmailTemplate.MaxPostMessageLength).
+  postMessage = '';
+  readonly maxPostMessageLength = 5000;
   readonly placeholders = [
     { token: '{name}', labelKey: 'birthdayAutomation.phName' },
     { token: '{batch}', labelKey: 'birthdayAutomation.phBatch' },
@@ -50,8 +66,26 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     { token: '{card}', labelKey: 'birthdayAutomation.phCard' },
   ];
 
-  /** Card preview overlay. */
-  preview: { member: BirthdayMember; url: string | null } | null = null;
+  /** The day whose birthdays are listed ("yyyy-MM-dd") — today, or an earlier day to post a missed one. */
+  birthdayDate = todayDateOnly();
+
+  /**
+   * Review-and-post panel for one member: the card (or the admin's own picture) and the wish,
+   * both editable, then posted by hand.
+   */
+  compose: {
+    member: BirthdayMember;
+    /** The card as it would be posted (object URL). */
+    cardUrl: string | null;
+    loadingCard: boolean;
+    /** A picture chosen for this post, and its object URL. */
+    photo: File | null;
+    photoUrl: string | null;
+    /** Post the chosen picture on its own instead of a card. */
+    asIs: boolean;
+    caption: string;
+    posting: boolean;
+  } | null = null;
   sendingEmailId: number | null = null;
 
   birthdays: BirthdayMember[] = [];
@@ -68,14 +102,32 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     private languageService: LanguageService
   ) { }
 
+  selectTab(tab: BirthdayTab): void {
+    this.tab = tab;
+    try { localStorage.setItem(TAB_KEY, tab); } catch { /* private mode — just don't remember it */ }
+  }
+
   ngOnInit(): void {
+    try {
+      const saved = localStorage.getItem(TAB_KEY) as BirthdayTab | null;
+      if (saved && ['birthdays', 'messages', 'history'].includes(saved)) this.tab = saved;
+    } catch { /* ignore */ }
     this.loadSettings();
     this.loadBirthdays();
     this.loadLogs();
+    this.loadRecentPosts();
+  }
+
+  loadRecentPosts(): void {
+    this.recentLoading = true;
+    this.facebookPage.recent().pipe(catchError(() => of([] as PagePostRow[]))).subscribe(rows => {
+      this.recentLoading = false;
+      this.recentPosts = rows;
+    });
   }
 
   saveSettings(): void {
-    if (this.enabled && !this.pageId.trim()) {
+    if (this.enabled && !this.fbConnected) {
       this.snackbar.showError(this.languageService.translate('birthdayAutomation.pageIdRequiredError'));
       return;
     }
@@ -83,18 +135,19 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       this.snackbar.showError(this.languageService.translate('birthdayAutomation.emailTooLongError'));
       return;
     }
+    if (this.postMessage.length > this.maxPostMessageLength) {
+      this.snackbar.showError(this.languageService.translate('birthdayAutomation.postMessageTooLong'));
+      return;
+    }
 
     this.saving = true;
     this.birthdayPostService.updateSettings({
       enabled: this.enabled,
-      pageId: this.pageId.trim() || null,
-      pageAccessToken: this.pageAccessToken.trim() || null,
       postTime: this.postTime,
       emailEnabled: this.emailEnabled,
-      autoPostNotices: this.autoPostNotices,
-      autoPostEvents: this.autoPostEvents,
       emailSubject: this.emailSubject,
-      emailBody: this.emailBody
+      emailBody: this.emailBody,
+      postMessage: this.postMessage
     }).pipe(
       catchError(err => {
         this.snackbar.showError(err?.error?.message || this.languageService.translate('birthdayAutomation.saveFailedError'));
@@ -105,22 +158,53 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       if (!result) return;
 
       this.applySettings(result);
-      this.pageAccessToken = '';
       this.snackbar.showSuccess(this.languageService.translate('birthdayAutomation.saveSuccess'));
+      this.loadBirthdays(); // the review panel starts from the saved message
     });
   }
 
-  /** Insert a placeholder at the cursor of the subject input or body textarea. */
-  insertPlaceholder(token: string, field: HTMLInputElement | HTMLTextAreaElement, target: 'subject' | 'body'): void {
-    const value = target === 'subject' ? this.emailSubject : this.emailBody;
+  /** Insert a placeholder at the cursor of the subject input, the email body or the Facebook message. */
+  insertPlaceholder(token: string, field: HTMLInputElement | HTMLTextAreaElement, target: 'subject' | 'body' | 'post'): void {
+    const value = target === 'subject' ? this.emailSubject : target === 'body' ? this.emailBody : this.postMessage;
     const start = field.selectionStart ?? value.length;
     const end = field.selectionEnd ?? value.length;
     const next = value.slice(0, start) + token + value.slice(end);
-    if (target === 'subject') this.emailSubject = next; else this.emailBody = next;
+    if (target === 'subject') this.emailSubject = next;
+    else if (target === 'body') this.emailBody = next;
+    else this.postMessage = next;
     setTimeout(() => {
       field.focus();
       field.setSelectionRange(start + token.length, start + token.length);
     });
+  }
+
+  /** API times are UTC; some come with the "Z", some without — add it only when missing. */
+  asUtc(value: string): string {
+    return /(Z|[+-]\d\d:\d\d)$/.test(value) ? value : value + 'Z';
+  }
+
+  /** The page id and token are set (on the Settings page) — posting can work. */
+  get fbConnected(): boolean {
+    return !!this.settings?.pageId && !!this.settings?.hasAccessToken;
+  }
+
+  /** The automatic-posting bar has unsaved changes. */
+  get automationChanged(): boolean {
+    return !!this.settings && (this.enabled !== this.settings.enabled || this.postTime.slice(0, 5) !== (this.settings.postTime ?? '').slice(0, 5));
+  }
+
+  resetPostMessage(): void {
+    if (this.settings) this.postMessage = this.settings.defaultPostMessage;
+  }
+
+  get postMessageIsDefault(): boolean {
+    return !!this.settings && this.postMessage.replace(/\r\n/g, '\n').trim() === this.settings.defaultPostMessage;
+  }
+
+  /** The Facebook message as it would read for the sample member. */
+  get previewPostMessage(): string {
+    const text = (this.postMessage.trim() || this.settings?.defaultPostMessage || '').replace(/\r\n/g, '\n');
+    return this.fill(text).replace(/\{card\}/g, '').trim();
   }
 
   resetEmailWording(): void {
@@ -191,24 +275,128 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     });
   }
 
+  get isToday(): boolean {
+    return this.birthdayDate === todayDateOnly();
+  }
+
+  onBirthdayDateChange(): void {
+    if (!this.birthdayDate) this.birthdayDate = todayDateOnly();
+    this.loadBirthdays();
+  }
+
+  showToday(): void {
+    this.birthdayDate = todayDateOnly();
+    this.loadBirthdays();
+  }
+
+  // ---------------------------------------------------------------- review and post by hand
+
   openPreview(member: BirthdayMember): void {
     this.closePreview();
-    this.preview = { member, url: null };
-    this.birthdayPostService.getCard(member.memberId).pipe(catchError(() => of(null))).subscribe(blob => {
-      if (!this.preview || this.preview.member !== member) return;
+    this.compose = {
+      member, cardUrl: null, loadingCard: true, photo: null, photoUrl: null, asIs: false,
+      caption: member.wishText || '', posting: false
+    };
+    this.refreshCard();
+  }
+
+  /** The picture shown in the panel — the admin's own when posting it as it is, otherwise the card. */
+  get composeImage(): string | null {
+    const c = this.compose;
+    if (!c) return null;
+    return c.asIs && c.photoUrl ? c.photoUrl : c.cardUrl;
+  }
+
+  onComposePhoto(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    input.value = '';
+    if (!file || !this.compose) return;
+    if (file.size > 10 * 1024 * 1024) {
+      this.snackbar.showError(this.languageService.translate('birthdayAutomation.composePhotoTooBig'));
+      return;
+    }
+    if (this.compose.photoUrl) URL.revokeObjectURL(this.compose.photoUrl);
+    this.compose.photo = file;
+    this.compose.photoUrl = URL.createObjectURL(file);
+    this.refreshCard();
+  }
+
+  clearComposePhoto(): void {
+    const c = this.compose;
+    if (!c) return;
+    if (c.photoUrl) URL.revokeObjectURL(c.photoUrl);
+    c.photo = null;
+    c.photoUrl = null;
+    c.asIs = false;
+    this.refreshCard();
+  }
+
+  resetComposeCaption(): void {
+    if (this.compose) this.compose.caption = this.compose.member.wishText || '';
+  }
+
+  /** Redraw the card (with the chosen picture, if any). */
+  private refreshCard(): void {
+    const c = this.compose;
+    if (!c) return;
+    c.loadingCard = true;
+    this.birthdayPostService.previewCard(c.member.memberId, c.photo).pipe(catchError(() => of(null))).subscribe(blob => {
+      if (this.compose !== c) return;
+      c.loadingCard = false;
       if (!blob) {
         this.snackbar.showError(this.languageService.translate('birthdayAutomation.cardFailedError'));
-        this.closePreview();
         return;
       }
-      this.preview.url = URL.createObjectURL(blob);
+      if (c.cardUrl) URL.revokeObjectURL(c.cardUrl);
+      c.cardUrl = URL.createObjectURL(blob);
+    });
+  }
+
+  postCompose(force = false): void {
+    const c = this.compose;
+    if (!c || c.posting) return;
+    const ask = force || c.member.status === 'Success'
+      ? { message: this.languageService.translate('birthdayAutomation.composeRepostConfirm') }
+      : {
+        title: this.languageService.translate('birthdayAutomation.composeConfirmTitle'),
+        message: this.languageService.translate('birthdayAutomation.composeConfirmMessage'),
+        confirmText: this.languageService.translate('birthdayAutomation.composePost')
+      };
+    this.confirmService.ask(ask).subscribe(ok => {
+      if (!ok || this.compose !== c) return;
+      c.posting = true;
+      this.birthdayPostService.postManual(c.member.memberId, {
+        caption: c.caption, photo: c.photo, photoAsIs: c.asIs, force: force || c.member.status === 'Success', date: this.birthdayDate
+      }).subscribe({
+        next: () => {
+          c.posting = false;
+          c.member.status = 'Success';
+          this.snackbar.showSuccess(this.languageService.translate('birthdayAutomation.composePosted'));
+          this.closePreview();
+          this.loadLogs();
+        },
+        error: err => {
+          c.posting = false;
+          if (err?.status === 409) {
+            c.member.status = 'Success';
+            this.postCompose(true);
+            return;
+          }
+          c.member.status = 'Failed';
+          this.snackbar.showError(err?.error?.message || this.languageService.translate('birthdayAutomation.composeFailed'));
+          this.loadLogs();
+        }
+      });
     });
   }
 
   @HostListener('document:keydown.escape')
   closePreview(): void {
-    if (this.preview?.url) URL.revokeObjectURL(this.preview.url);
-    this.preview = null;
+    const c = this.compose;
+    if (c?.cardUrl) URL.revokeObjectURL(c.cardUrl);
+    if (c?.photoUrl) URL.revokeObjectURL(c.photoUrl);
+    this.compose = null;
   }
 
   ngOnDestroy(): void {
@@ -257,17 +445,15 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     this.settings = settings;
     this.enabled = settings.enabled;
     this.emailEnabled = settings.emailEnabled;
-    this.autoPostNotices = settings.autoPostNotices ?? false;
-    this.autoPostEvents = settings.autoPostEvents ?? false;
-    this.pageId = settings.pageId ?? '';
     this.postTime = settings.postTime;
     this.emailSubject = settings.emailSubject ?? settings.defaultEmailSubject ?? '';
     this.emailBody = settings.emailBody ?? settings.defaultEmailBody ?? '';
+    this.postMessage = settings.postMessage ?? settings.defaultPostMessage ?? '';
   }
 
   private loadBirthdays(): void {
     this.birthdaysLoading = true;
-    this.birthdayPostService.getTodaysBirthdays().pipe(catchError(() => of([]))).subscribe(birthdays => {
+    this.birthdayPostService.getTodaysBirthdays(this.isToday ? undefined : this.birthdayDate).pipe(catchError(() => of([]))).subscribe(birthdays => {
       this.birthdaysLoading = false;
       this.birthdays = birthdays;
     });

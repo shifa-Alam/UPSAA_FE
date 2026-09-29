@@ -1,0 +1,47 @@
+<app-skeleton *ngIf="loading" variant="list" [count]="3"></app-skeleton>
+
+<form class="tab-grid tab-grid--single" *ngIf="settings as s" (ngSubmit)="save()">
+  <app-section-card icon="payments" [title]="'paymentAdmin.settingsTitle' | translate">
+    <div class="stack">
+      <div class="form-grid">
+        <label class="field">
+          <span>bKash</span>
+          <input type="tel" name="bkash" inputmode="tel" [(ngModel)]="s.bkashNumber" placeholder="01XXXXXXXXX" />
+        </label>
+        <label class="field">
+          <span>Nagad</span>
+          <input type="tel" name="nagad" inputmode="tel" [(ngModel)]="s.nagadNumber" placeholder="01XXXXXXXXX" />
+        </label>
+        <label class="field">
+          <span>Rocket</span>
+          <input type="tel" name="rocket" inputmode="tel" [(ngModel)]="s.rocketNumber" placeholder="01XXXXXXXXXX" />
+        </label>
+        <label class="field">
+          <span>{{ 'paymentAdmin.membershipFee' | translate }}</span>
+          <input type="number" name="membershipFee" min="0" [(ngModel)]="s.membershipFee" />
+        </label>
+        <label class="field">
+          <span>{{ 'paymentAdmin.annualFee' | translate }}</span>
+          <input type="number" name="annualFee" min="0" [(ngModel)]="s.annualFee" />
+          <small class="field__hint">{{ 'paymentAdmin.annualFeeHint' | translate }}</small>
+        </label>
+        <label class="field form-grid__full">
+          <span>{{ 'paymentAdmin.instructions' | translate }}</span>
+          <textarea name="instructions" rows="3" maxlength="1000" [(ngModel)]="s.instructions"
+            [placeholder]="'paymentAdmin.instructionsPlaceholder' | translate"></textarea>
+        </label>
+      </div>
+      <p class="note">
+        <mat-icon>lock</mat-icon>
+        <span>{{ 'paymentAdmin.settingsHint' | translate }}</span>
+      </p>
+      <a class="link-row" routerLink="/dashboard/payments"><mat-icon>receipt_long</mat-icon> {{ 'appSettings.paymentsLink' | translate }}</a>
+    </div>
+  </app-section-card>
+
+  <div class="save-row">
+    <button type="submit" class="btn btn--solid" [disabled]="saving">
+      <mat-icon>{{ saving ? 'hourglass_top' : 'save' }}</mat-icon> {{ 'paymentAdmin.saveSettings' | translate }}
+    </button>
+  </div>
+</form>

@@ -8,7 +8,7 @@ export type NavIconName =
   | 'layers' | 'calendar' | 'tag' | 'user-check' | 'clock' | 'users'
   | 'folder' | 'image' | 'megaphone' | 'dollar' | 'gift' | 'award' | 'graduation-cap'
   | 'briefcase' | 'droplet' | 'book' | 'quote' | 'card' | 'activity' | 'heart' | 'bar-chart'
-  | 'check-square' | 'map'
+  | 'check-square' | 'map' | 'settings' | 'mail' | 'facebook'
   | 'collapse' | 'sun' | 'moon' | 'logout' | 'dashboard';
 
 @Component({

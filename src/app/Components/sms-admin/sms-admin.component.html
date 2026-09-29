@@ -21,52 +21,11 @@
       <p class="usage__note">{{ 'smsAdmin.usageNote' | translate }}</p>
     </app-section-card>
 
-    <!-- ===== Settings ===== -->
-    <app-section-card icon="tune" [title]="'smsAdmin.settingsTitle' | translate">
-      <form class="settings" (ngSubmit)="save()">
-        <label class="switch">
-          <input type="checkbox" name="receipts" [(ngModel)]="s.smsPaymentReceipts" />
-          <span>
-            <b>{{ 'smsAdmin.receipts' | translate }}</b>
-            <small>{{ 'smsAdmin.receiptsExample' | translate }}</small>
-          </span>
-        </label>
-        <label class="switch">
-          <input type="checkbox" name="events" [(ngModel)]="s.smsEventReminders" />
-          <span>
-            <b>{{ 'smsAdmin.events' | translate }}</b>
-            <small>{{ 'smsAdmin.eventsExample' | translate }}</small>
-          </span>
-        </label>
-        <p class="settings__notice">
-          <mat-icon>campaign</mat-icon>
-          <span>{{ 'smsAdmin.noticeHint' | translate }} ({{ num(s.audience) }} {{ 'smsAdmin.members' | translate }})</span>
-        </p>
-        <label class="field settings__limit">
-          <span>{{ 'smsAdmin.limitLabel' | translate }}</span>
-          <input type="number" name="limit" min="0" step="10" [(ngModel)]="s.smsMonthlyLimit" />
-          <small class="field__hint">{{ 'smsAdmin.limitHint' | translate }}</small>
-        </label>
-        <div>
-          <button type="submit" class="btn btn--solid" [disabled]="saving">
-            <mat-icon>{{ saving ? 'hourglass_top' : 'check' }}</mat-icon> {{ 'smsAdmin.save' | translate }}
-          </button>
-        </div>
-      </form>
-    </app-section-card>
-
-    <!-- ===== Test ===== -->
-    <app-section-card icon="send_to_mobile" [title]="'smsAdmin.testTitle' | translate">
-      <form class="test" (ngSubmit)="sendTest()">
-        <label class="field test__field">
-          <span>{{ 'smsAdmin.testLabel' | translate }}</span>
-          <input type="tel" name="testPhone" inputmode="tel" [(ngModel)]="testPhone" placeholder="01XXXXXXXXX" />
-        </label>
-        <button type="submit" class="btn btn--outline" [disabled]="testing || !testPhone.trim()">
-          <mat-icon>{{ testing ? 'hourglass_top' : 'send' }}</mat-icon> {{ 'smsAdmin.testSend' | translate }}
-        </button>
-      </form>
-    </app-section-card>
+    <a class="to-settings" routerLink="/dashboard/settings/sms">
+      <mat-icon>settings</mat-icon>
+      <span>{{ 'appSettings.smsSettingsLink' | translate }}</span>
+      <mat-icon class="to-settings__arrow">chevron_right</mat-icon>
+    </a>
 
     <!-- ===== Log ===== -->
     <app-section-card icon="history" [title]="'smsAdmin.logTitle' | translate" [noPadding]="true">

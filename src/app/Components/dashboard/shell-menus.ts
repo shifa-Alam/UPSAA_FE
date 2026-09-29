@@ -92,6 +92,17 @@ const ADMIN_MENU: MenuGroup[] = [
       { labelKey: 'dashboard.itemSms', route: '/dashboard/sms', icon: 'megaphone' },
       { labelKey: 'dashboard.itemErrorLog', route: '/dashboard/error-log', icon: 'activity', roles: ['SuperAdmin'] }
     ]
+  },
+  {
+    labelKey: 'dashboard.menuSettings',
+    icon: 'settings',
+    expanded: false,
+    children: [
+      { labelKey: 'dashboard.itemFacebookSettings', route: '/dashboard/settings/facebook', icon: 'facebook' },
+      { labelKey: 'dashboard.itemEmailSettings', route: '/dashboard/settings/email', icon: 'mail' },
+      { labelKey: 'dashboard.itemSmsSettings', route: '/dashboard/settings/sms', icon: 'megaphone' },
+      { labelKey: 'dashboard.itemPaymentSettings', route: '/dashboard/settings/payment', icon: 'card' }
+    ]
   }
 ];
 

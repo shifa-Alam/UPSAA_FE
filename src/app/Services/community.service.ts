@@ -17,6 +17,19 @@ export type ModerationStatus = 'Pending' | 'Approved' | 'Rejected';
 // ---------------------------------------------------------------- blood requests
 
 export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'] as const;
+export type BloodGroup = (typeof BLOOD_GROUPS)[number];
+
+/** Who each blood group can give red cells to — the same table the API notifies donors by. */
+export const CAN_GIVE_TO: Record<BloodGroup, readonly BloodGroup[]> = {
+  'O-': BLOOD_GROUPS,
+  'O+': ['O+', 'A+', 'B+', 'AB+'],
+  'A-': ['A-', 'A+', 'AB-', 'AB+'],
+  'A+': ['A+', 'AB+'],
+  'B-': ['B-', 'B+', 'AB-', 'AB+'],
+  'B+': ['B+', 'AB+'],
+  'AB-': ['AB-', 'AB+'],
+  'AB+': ['AB+'],
+};
 
 export interface BloodRequest {
   id: number;
@@ -47,6 +60,8 @@ export interface BloodRequestSave {
   neededBy: string;
   contactPhone: string;
   note: string;
+  /** The requester agrees to it going on UPSAA's Facebook page (phone number included). */
+  shareOnFacebook: boolean;
 }
 
 export interface BloodResponder {

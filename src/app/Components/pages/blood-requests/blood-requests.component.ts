@@ -3,9 +3,11 @@ import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
-import { BLOOD_GROUPS, BloodRequest, BloodRequestSave, BloodResponder, CommunityService } from '../../../Services/community.service';
+import {
+  BLOOD_GROUPS, BloodGroup, BloodRequest, BloodRequestSave, BloodResponder, CAN_GIVE_TO, CommunityService
+} from '../../../Services/community.service';
 import { AuthService } from '../../../Services/auth.service';
 import { ConfirmService } from '../../../Services/confirm.service';
 import { LanguageService } from '../../../Services/language.service';
@@ -13,11 +15,10 @@ import { SnackbarService } from '../../../Services/snackbar.service';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { SizedImagePipe } from '../../../Pipes/sized-image.pipe';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
-import { EmptyStateComponent } from '../../shared/empty-state/empty-state.component';
 import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 
 const emptyForm = (): BloodRequestSave => ({
-  bloodGroup: '', units: 1, patientName: '', hospital: '', city: '', neededBy: '', contactPhone: '', note: ''
+  bloodGroup: '', units: 1, patientName: '', hospital: '', city: '', neededBy: '', contactPhone: '', note: '', shareOnFacebook: true
 });
 
 /**
@@ -28,7 +29,7 @@ const emptyForm = (): BloodRequestSave => ({
 @Component({
   selector: 'app-blood-requests',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, TranslatePipe, SizedImagePipe, PageHeaderComponent, EmptyStateComponent, SkeletonComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, RouterLink, TranslatePipe, SizedImagePipe, PageHeaderComponent, SkeletonComponent],
   templateUrl: './blood-requests.component.html',
   styleUrl: './blood-requests.component.scss'
 })
@@ -183,9 +184,37 @@ export class BloodRequestsComponent implements OnInit {
     return this.lang.lang() === 'bn' ? 'bn-BD' : 'en-GB';
   }
 
+  /** "সোম, ২৮ সেপ, সকাল ১০:৩০" — in Bangla the time of day is a word, not AM/PM. */
   when(r: BloodRequest): string {
-    return new Intl.DateTimeFormat(this.locale, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })
-      .format(new Date(r.neededBy));
+    const d = new Date(r.neededBy);
+    if (this.lang.lang() !== 'bn') {
+      return new Intl.DateTimeFormat(this.locale, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }).format(d);
+    }
+    const date = new Intl.DateTimeFormat('bn-BD', { weekday: 'short', day: 'numeric', month: 'short' }).format(d);
+    const h = d.getHours();
+    const part = h >= 4 && h < 12 ? 'সকাল' : h >= 12 && h < 15 ? 'দুপুর' : h >= 15 && h < 18 ? 'বিকাল' : h >= 18 && h < 20 ? 'সন্ধ্যা' : 'রাত';
+    const minutes = new Intl.NumberFormat('bn-BD', { minimumIntegerDigits: 2 }).format(d.getMinutes());
+    return `${date}, ${part} ${this.num(h % 12 || 12)}:${minutes}`;
+  }
+
+  /** "৫ ঘণ্টার মধ্যে" / "২ দিন পর" / "সময় পেরিয়ে গেছে" — how long is left. */
+  timeLeft(r: BloodRequest): string {
+    const hours = (new Date(r.neededBy).getTime() - Date.now()) / 3600e3;
+    if (hours < 0) return this.lang.translate('bloodRequests.leftOverdue');
+    if (hours < 1) return this.lang.translate('bloodRequests.leftUnderHour');
+    if (hours < 24) return this.lang.translate('bloodRequests.leftHours').replace('{n}', this.num(Math.ceil(hours)));
+    return this.lang.translate('bloodRequests.leftDays').replace('{n}', this.num(Math.round(hours / 24)));
+  }
+
+  /** A batch year without a thousands separator (২০১২, not ২,০১২). */
+  year(n: number): string {
+    return new Intl.NumberFormat(this.locale, { useGrouping: false }).format(n);
+  }
+
+  /** The groups a donor of `group` can give to, for the side panel. */
+  givesTo(group: BloodGroup): string {
+    const to = CAN_GIVE_TO[group];
+    return to.length === BLOOD_GROUPS.length ? this.lang.translate('bloodRequests.compatEveryone') : to.join(', ');
   }
 
   /** Needed within 24 hours (or overdue). */

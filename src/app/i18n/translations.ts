@@ -64,6 +64,8 @@ import { notFoundI18n } from './sections/notFound.i18n';
 import { testimonialAdminI18n } from './sections/testimonialAdmin.i18n';
 import { memberCardI18n } from './sections/memberCard.i18n';
 import { facebookPageI18n } from './sections/facebookPage.i18n';
+import { appSettingsI18n } from './sections/appSettings.i18n';
+import { appConfigI18n } from './sections/appConfig.i18n';
 import { bloodRequestsI18n } from './sections/bloodRequests.i18n';
 import { memoriesI18n } from './sections/memories.i18n';
 import { businessesI18n } from './sections/businesses.i18n';
@@ -79,6 +81,8 @@ import { approvalsI18n } from './sections/approvals.i18n';
 const sections = [
   navI18n,
   facebookPageI18n,
+  appSettingsI18n,
+  appConfigI18n,
   bloodRequestsI18n,
   memoriesI18n,
   businessesI18n,
