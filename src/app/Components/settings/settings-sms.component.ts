@@ -3,7 +3,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { SmsLogRow, SmsService, SmsStatus } from '../../Services/sms.service';
+import { SmsLogRow, SmsService, SmsStatus, minutesToTime, timeToMinutes } from '../../Services/sms.service';
 import { LanguageService } from '../../Services/language.service';
 import { SnackbarService } from '../../Services/snackbar.service';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
@@ -36,10 +36,13 @@ export class SettingsSmsComponent implements OnInit {
 
   /** After the gateway changes: is SMS on now? */
   reloadStatus(): void {
-    this.api.status().subscribe({ next: s => this.status = { ...s } });
+    this.api.status().subscribe({ next: s => (this.status = { ...s }, this.syncTimes(s)) });
   }
 
   status: SmsStatus | null = null;
+  /** "HH:mm" for the time inputs (the API keeps minutes after midnight). */
+  birthdayTime = '00:00';
+  eventTime = '09:00';
   loading = true;
   saving = false;
   testPhone = '';
@@ -47,7 +50,7 @@ export class SettingsSmsComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.status().subscribe({
-      next: s => { this.status = { ...s }; this.loading = false; },
+      next: s => { (this.status = { ...s }, this.syncTimes(s)); this.loading = false; },
       error: () => { this.loading = false; this.snackbar.showError(this.lang.translate('smsAdmin.errorMessage')); }
     });
   }
@@ -61,8 +64,10 @@ export class SettingsSmsComponent implements OnInit {
       smsBirthdayWishes: this.status.smsBirthdayWishes,
       smsBirthdayMessage: (this.status.smsBirthdayMessage ?? '').trim(),
       smsMonthlyLimit: Number(this.status.smsMonthlyLimit) || 0,
+      birthdaySmsMinute: timeToMinutes(this.birthdayTime),
+      eventReminderMinute: timeToMinutes(this.eventTime),
     }).subscribe({
-      next: s => { this.saving = false; this.status = { ...s }; this.snackbar.showSuccess(this.lang.translate('smsAdmin.saved')); },
+      next: s => { this.saving = false; (this.status = { ...s }, this.syncTimes(s)); this.snackbar.showSuccess(this.lang.translate('smsAdmin.saved')); },
       error: err => { this.saving = false; this.snackbar.showError(err?.error?.message ?? this.lang.translate('smsAdmin.failed')); }
     });
   }
@@ -93,7 +98,7 @@ export class SettingsSmsComponent implements OnInit {
         this.testing = false;
         const msg = this.lang.translate('smsAdmin.testResult_' + r.status);
         r.status === 'sent' ? this.snackbar.showSuccess(msg) : this.snackbar.showError(r.error ? `${msg} (${r.error})` : msg);
-        this.api.status().subscribe({ next: s => this.status = { ...s } });
+        this.api.status().subscribe({ next: s => (this.status = { ...s }, this.syncTimes(s)) });
       },
       error: err => { this.testing = false; this.snackbar.showError(err?.error?.message ?? this.lang.translate('smsAdmin.failed')); }
     });
@@ -110,4 +115,9 @@ export class SettingsSmsComponent implements OnInit {
 
   // Keeps SmsLogRow referenced for the status type used by the test result keys.
   protected readonly _statusType?: SmsLogRow['status'];
+
+  private syncTimes(s: SmsStatus): void {
+    this.birthdayTime = minutesToTime(s.birthdaySmsMinute ?? 0);
+    this.eventTime = minutesToTime(s.eventReminderMinute ?? 540);
+  }
 }

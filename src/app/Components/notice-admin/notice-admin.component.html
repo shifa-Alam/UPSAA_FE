@@ -86,6 +86,9 @@
               <ng-container *ngIf="notice.createdByName"> &middot; {{ 'noticeAdmin.postedBy' | translate }} {{ notice.createdByName }}</ng-container>
             </span>
             <app-fb-post-status class="notice__fb" *ngIf="fbConnected" kind="notice" [item]="notice" [disabled]="notice.alumniOnly"></app-fb-post-status>
+            <!-- Send by SMS now, like "post on Facebook now" (shown when SMS is switched on). -->
+            <app-sms-send-button class="notice__sms" *ngIf="smsAudience !== null" kind="notice" [itemId]="notice.id"
+              [status]="smsStatus[notice.id] ?? null"></app-sms-send-button>
           </div>
 
           <div class="notice__actions">

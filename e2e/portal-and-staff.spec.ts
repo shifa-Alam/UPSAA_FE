@@ -133,10 +133,9 @@ test.describe('portal and back office', () => {
     await expect(page.locator('.usage__big')).toContainText('২০');
     await expect(page.locator('.log__row')).toHaveCount(2);
     await expect(page.locator('.log__row').first()).toContainText('আব্দুল করিম');
-    await page.locator('input[name="events"]').uncheck();
-    await page.locator('input[name="limit"]').fill('300');
-    await page.locator('.settings button[type="submit"]').click();
-    await expect.poll(() => saved).toMatchObject({ smsPaymentReceipts: true, smsEventReminders: false, smsMonthlyLimit: 300 });
+    // The switches and the monthly cap live in Settings › SMS now; this page links there.
+    await expect(page.locator('a.to-settings')).toHaveAttribute('href', '/dashboard/settings/sms');
+    expect(saved).toBeNull();
 
     await page.route(/\/api\/Notice\/Create$/, r => {
       notice = r.request().postDataJSON();
@@ -156,6 +155,95 @@ test.describe('portal and back office', () => {
     await page.goto('/dashboard/notices');
     await expect(page.locator('input[name="sendSms"]')).toBeDisabled();
     await expect(page.locator('.notice-form__sms-hint--warn')).toBeVisible();
+  });
+
+  test('admin writes an SMS to one batch, and re-sends a notice by SMS only after confirming', async ({ page }) => {
+    await signInAs(page, 'Admin');
+    let sent: any = null;
+    let item: string | null = null;
+    const status = { gatewayEnabled: true, smsPaymentReceipts: true, smsEventReminders: true, smsBirthdayWishes: true,
+      smsBirthdayMessage: '', defaultBirthdayMessage: '', smsMonthlyLimit: 500, usedThisMonth: 20, audience: 435 };
+    await page.route(/\/api\/Sms\/Status$/, r => r.fulfill(json(status)));
+    await page.route(/\/api\/Sms\/Log/, r => r.fulfill(json([])));
+    await page.route(/\/api\/Sms\/Audience$/, r => {
+      const b = r.request().postDataJSON();
+      return r.fulfill(json({ count: b.target === 'batch' ? 12 : 435, left: 480 }));
+    });
+    await page.route(/\/api\/Sms\/Send$/, r => { sent = r.request().postDataJSON(); return r.fulfill(json({ queued: 12, ref: 'manual:1' })); });
+
+    await page.goto('/dashboard/sms');
+    await page.locator('app-sms-compose textarea[name="message"]').fill('UPSAA: ২০০৯ ব্যাচের আড্ডা শুক্রবার বিকেলে।');
+    await expect(page.locator('.compose__count')).toContainText('১ টি SMS');
+    await page.locator('app-sms-compose .choice', { hasText: 'একটা ব্যাচ' }).click();
+    await page.locator('app-sms-compose select[name="batch"]').selectOption({ index: 1 });
+    await expect(page.locator('.reach')).toContainText('১২');
+    await page.locator('app-sms-compose button[type="submit"]').click();
+    await page.locator('mat-dialog-container button', { hasText: 'পাঠান' }).click();
+    await expect.poll(() => sent).toMatchObject({ target: 'batch', message: 'UPSAA: ২০০৯ ব্যাচের আড্ডা শুক্রবার বিকেলে।' });
+    expect(typeof sent.batch).toBe('number');
+
+    // Notice row: already went by SMS → "SMS again" asks first, then sends with again=true.
+    await page.route(/\/api\/Notice\/GetAll/, r => r.fulfill(json([
+      { id: 7, title: 'বার্ষিক সাধারণ সভা', content: 'শুক্রবার', publishedDate: new Date().toISOString(), createdDate: new Date().toISOString(), createdById: null, createdByName: 'Admin', alumniOnly: false },
+    ])));
+    await page.route(/\/api\/Sms\/ItemStatus/, r => r.fulfill(json({ 7: { sent: 430, failed: 5, last: new Date().toISOString() } })));
+    await page.route(/\/api\/Sms\/Item\/notice\/7/, r => { item = r.request().url(); return r.fulfill(json({ queued: 435, ref: 'notice:7' })); });
+    await page.goto('/dashboard/notices');
+    const row = page.locator('app-sms-send-button');
+    await expect(row).toContainText('৪৩০');
+    await row.locator('button').click();
+    await expect(page.locator('mat-dialog-container')).toContainText('আবার');
+    await page.locator('mat-dialog-container button', { hasText: 'পাঠান' }).click();
+    await expect.poll(() => item).toContain('again=true');
+  });
+
+  test('birthday: send the wish by SMS now with edited text; a notice SMS can be set for later', async ({ page }) => {
+    await signInAs(page, 'SuperAdmin');
+    let birthdayBody: any = null;
+    let itemBody: any = null;
+    const status = { gatewayEnabled: true, smsPaymentReceipts: true, smsEventReminders: true, smsBirthdayWishes: true,
+      smsBirthdayMessage: 'শুভ জন্মদিন, {name}! — UPSAA', defaultBirthdayMessage: 'শুভ জন্মদিন, {name}! — UPSAA',
+      smsMonthlyLimit: 500, usedThisMonth: 20, birthdaySmsMinute: 480, eventReminderMinute: 540, audience: 435 };
+    await page.route(/\/api\/Sms\/Status$/, r => r.fulfill(json(status)));
+    await page.route(/\/api\/Sms\/BirthdayStatus/, r => r.fulfill(json({})));
+    await page.route(/\/api\/BirthdayPost\/settings$/, r => r.fulfill(json({
+      enabled: true, pageId: null, pageAccessTokenMasked: null, hasAccessToken: false, postTime: '00:05', emailEnabled: false,
+      autoPostNotices: false, autoPostEvents: false, autoPostAchievements: false, autoPostMemories: false, autoPostBusinesses: false,
+      autoPostJobs: false, autoPostCampaigns: false, autoPostBloodRequests: false, emailConfigured: false, emailFromAddress: null,
+      emailServer: null, emailFromName: 'UPSAA', defaultEmailFromName: 'UPSAA', emailSubject: '', defaultEmailSubject: '',
+      emailBody: '', defaultEmailBody: '', postMessage: '', defaultPostMessage: '',
+    })));
+    await page.route(/\/api\/BirthdayPost\/logs/, r => r.fulfill(json([])));
+    await page.route(/\/api\/BirthdayPost\/today/, r => r.fulfill(json([
+      { memberId: 301, fullName: 'সালমা খাতুন', batch: 2006, photo: null, status: null, hasEmail: false, wishText: '', emailStatus: null, emailError: null },
+    ])));
+    await page.route(/\/api\/Sms\/Birthday\/301/, r => { birthdayBody = r.request().postDataJSON(); return r.fulfill(json({ queued: 1, text: birthdayBody.message })); });
+
+    await page.goto('/dashboard/birthday-automation');
+    const btn = page.locator('button', { hasText: 'এখনই SMS দিন' });
+    await btn.click();
+    const box = page.locator('app-sms-send-dialog textarea');
+    await expect(box).toHaveValue('শুভ জন্মদিন, সালমা খাতুন! — UPSAA');
+    await box.fill('শুভ জন্মদিন আপা! — UPSAA');
+    await page.locator('app-sms-send-dialog .dlg__ok').click();
+    await expect.poll(() => birthdayBody).toMatchObject({ message: 'শুভ জন্মদিন আপা! — UPSAA' });
+    await expect(page.locator('button', { hasText: 'আবার SMS দিন' })).toBeVisible();
+
+    // Notice row: "later" with a time → scheduled, and the row says when.
+    await page.route(/\/api\/Notice\/GetAll/, r => r.fulfill(json([
+      { id: 8, title: 'সাধারণ সভা', content: 'x', publishedDate: new Date().toISOString(), createdDate: new Date().toISOString(), createdById: null, createdByName: 'Admin', alumniOnly: false },
+    ])));
+    await page.route(/\/api\/Sms\/ItemStatus/, r => r.fulfill(json({})));
+    await page.route(/\/api\/Sms\/Audience$/, r => r.fulfill(json({ count: 435, left: 480 })));
+    await page.route(/\/api\/Sms\/Item\/notice\/8/, r => { itemBody = r.request().postDataJSON(); return r.fulfill(json({ scheduled: 3, sendAt: itemBody.sendAt + ':00', reach: 435 })); });
+    await page.goto('/dashboard/notices');
+    await page.locator('app-sms-send-button button', { hasText: 'এখনই SMS দিন' }).click();
+    await page.locator('app-sms-send-dialog .dlg__opt', { hasText: 'পরে' }).click();
+    const at = page.locator('app-sms-send-dialog input[type="datetime-local"]');
+    await expect(at).toBeVisible();
+    await page.locator('app-sms-send-dialog .dlg__ok').click();
+    await expect.poll(() => itemBody?.sendAt).toMatch(/^\d{4}-\d\d-\d\dT\d\d:\d\d$/);
+    await expect(page.locator('.sms-btn__wait')).toBeVisible();
   });
 
   test('treasurer undoes a mistaken approval', async ({ page }) => {

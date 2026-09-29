@@ -115,6 +115,7 @@
             <th class="num">{{ 'birthdayAutomation.colBatch' | translate }}</th>
             <th>{{ 'birthdayAutomation.colStatus' | translate }}</th>
             <th>{{ 'birthdayAutomation.colEmail' | translate }}</th>
+            <th>{{ 'smsBirthday.col' | translate }}</th>
             <th class="actions-col"><span class="sr-only">{{ 'birthdayAutomation.colActions' | translate }}</span></th>
           </tr>
         </thead>
@@ -151,6 +152,17 @@
                    : ('birthdayAutomation.statusPending' | translate) }}
               </span>
             </td>
+            <td [attr.data-label]="'smsBirthday.col' | translate">
+              <span class="status-pill" [attr.title]="smsStatus[member.memberId]?.error" [ngClass]="{
+                'status-pill--success': smsStatus[member.memberId]?.status === 'sent',
+                'status-pill--failed': smsStatus[member.memberId] && smsStatus[member.memberId]?.status !== 'sent',
+                'status-pill--pending': !smsStatus[member.memberId]
+              }">
+                {{ smsStatus[member.memberId]?.status === 'sent' ? ('smsBirthday.sent' | translate)
+                   : smsStatus[member.memberId] ? ('birthdayAutomation.statusFailed' | translate)
+                   : ('birthdayAutomation.statusPending' | translate) }}
+              </span>
+            </td>
             <td class="rt-actions">
               <span class="row-actions">
                 <button type="button" class="btn btn--outline btn--sm review-btn" (click)="openPreview(member)"
@@ -161,6 +173,13 @@
                   *ngIf="member.hasEmail && member.emailStatus !== 'Success'" [disabled]="sendingEmailId === member.memberId"
                   [attr.aria-label]="'birthdayAutomation.sendEmailNow' | translate" [title]="'birthdayAutomation.sendEmailNow' | translate">
                   <mat-icon>{{ sendingEmailId === member.memberId ? 'hourglass_top' : 'forward_to_inbox' }}</mat-icon>
+                </button>
+                <!-- The wish by SMS now — like "post on Facebook now"; today's birthdays only. -->
+                <button type="button" class="btn btn--outline btn--sm" *ngIf="isToday && smsOn" (click)="sendBirthdaySms(member)"
+                  [disabled]="sendingSmsId === member.memberId"
+                  [attr.aria-label]="('smsBirthday.sendNow' | translate) + ': ' + member.fullName">
+                  <mat-icon>{{ sendingSmsId === member.memberId ? 'hourglass_top' : 'send_to_mobile' }}</mat-icon>
+                  {{ (smsStatus[member.memberId]?.status === 'sent' ? 'smsBirthday.sendAgain' : 'smsBirthday.sendNow') | translate }}
                 </button>
               </span>
             </td>

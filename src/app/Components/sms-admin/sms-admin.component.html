@@ -21,6 +21,16 @@
       <p class="usage__note">{{ 'smsAdmin.usageNote' | translate }}</p>
     </app-section-card>
 
+    <!-- ===== Write an SMS (by hand) ===== -->
+    <app-section-card icon="edit_note" [title]="'smsCompose.title' | translate" [subtitle]="'smsCompose.subtitle' | translate">
+      <app-sms-compose (sent)="load(); scheduledList?.load()"></app-sms-compose>
+    </app-section-card>
+
+    <!-- ===== Waiting to go ===== -->
+    <app-section-card icon="schedule_send" [title]="'smsScheduled.title' | translate" [noPadding]="true">
+      <app-sms-scheduled-list #scheduledList></app-sms-scheduled-list>
+    </app-section-card>
+
     <a class="to-settings" routerLink="/dashboard/settings/sms">
       <mat-icon>settings</mat-icon>
       <span>{{ 'appSettings.smsSettingsLink' | translate }}</span>

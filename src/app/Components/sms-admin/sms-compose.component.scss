@@ -1,0 +1,143 @@
+// Write-an-SMS form: message, recipients, reach vs this month's allowance.
+
+@import '../../../styles/admin-kit';
+
+.compose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.compose__count {
+  font-variant-numeric: tabular-nums;
+}
+
+.compose__narrow {
+  max-width: 320px;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend { width: 100%; margin-bottom: 6px; padding: 0; }
+}
+
+.choice {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  cursor: pointer;
+
+  input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+  &.is-on { border-color: var(--color-primary-600); background: var(--color-primary-50); color: var(--color-link); }
+  &:focus-within { box-shadow: var(--adm-focus); }
+}
+
+.compose__members {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.found {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-ink-100);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+
+  li + li { border-top: 1px solid var(--color-ink-100); }
+}
+
+.found__item {
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  background: var(--color-surface);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+
+  small { color: var(--color-ink-600); }
+  &:hover, &:focus-visible { background: var(--color-primary-50); outline: none; }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 999px;
+  background: var(--color-primary-50);
+  color: var(--color-link);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+
+  button {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover { background: rgba(0, 0, 0, 0.06); }
+  }
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+}
+
+.reach {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--pill-success-bg);
+  color: var(--pill-success-fg);
+  font-size: var(--font-size-sm);
+
+  mat-icon { flex-shrink: 0; font-size: 20px; width: 20px; height: 20px; }
+}
+
+.reach--short {
+  background: var(--pill-warning-bg);
+  color: var(--pill-warning-fg);
+}
+
+.compose__at {
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink-900);
+  font: inherit;
+}

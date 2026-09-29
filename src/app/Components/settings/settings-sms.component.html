@@ -25,12 +25,22 @@
           <small>{{ 'smsAdmin.eventsExample' | translate }}</small>
         </span>
       </label>
+      <label class="field narrow" *ngIf="s.smsEventReminders">
+        <span>{{ 'smsTimes.eventLabel' | translate }}</span>
+        <input type="time" name="eventTime" [ngModel]="eventTime" (ngModelChange)="eventTime = $event" />
+        <small class="field__hint">{{ 'smsTimes.eventHint' | translate }}</small>
+      </label>
       <label class="check-row">
         <input type="checkbox" name="birthday" [(ngModel)]="s.smsBirthdayWishes" />
         <span>
           <b>{{ 'smsAdmin.birthday' | translate }}</b>
           <small>{{ 'smsAdmin.birthdayExample' | translate }}</small>
         </span>
+      </label>
+      <label class="field narrow" *ngIf="s.smsBirthdayWishes">
+        <span>{{ 'smsTimes.birthdayLabel' | translate }}</span>
+        <input type="time" name="birthdayTime" [ngModel]="birthdayTime" (ngModelChange)="birthdayTime = $event" />
+        <small class="field__hint">{{ 'smsTimes.birthdayHint' | translate }}</small>
       </label>
       <label class="field birthday-text" *ngIf="s.smsBirthdayWishes">
         <span>{{ 'smsAdmin.birthdayMessageLabel' | translate }}</span>

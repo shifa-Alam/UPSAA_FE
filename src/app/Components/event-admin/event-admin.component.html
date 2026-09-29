@@ -114,6 +114,8 @@
             </span>
             <app-fb-post-status class="ev__fb" *ngIf="fbConnected && (ev.facebookPostId || ev.postToFacebook || eventStatus(ev) !== 'ended')"
               kind="event" [item]="ev"></app-fb-post-status>
+            <app-sms-send-button class="ev__sms" *ngIf="smsOn && eventStatus(ev) !== 'ended'" kind="event" [itemId]="ev.id"
+              [status]="smsStatus[ev.id] ?? null"></app-sms-send-button>
           </div>
 
           <div class="ev__side">

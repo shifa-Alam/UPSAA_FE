@@ -22,10 +22,12 @@ import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { RouterLink } from '@angular/router';
 import { BirthdayPostService } from '../../Services/birthday-post.service';
 import { FbPostStatusComponent } from '../shared/fb-post-status/fb-post-status.component';
+import { SmsItemStatus, SmsService } from '../../Services/sms.service';
+import { SmsSendButtonComponent } from '../shared/sms-send-button/sms-send-button.component';
 @Component({
   selector: 'app-event-admin',
   standalone: true,
-  imports: [RouterLink, SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe, FbPostStatusComponent],
+  imports: [RouterLink, SkeletonComponent, CommonModule, FormsModule, MatIconModule, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent, TranslatePipe, FbPostStatusComponent, SmsSendButtonComponent],
   templateUrl: './event-admin.component.html',
   styleUrl: './event-admin.component.scss'
 })
@@ -51,6 +53,10 @@ export class EventAdminComponent implements OnInit {
 
   /** The Facebook page is set up (page id + token) — null while unknown. */
   fbConnected: boolean | null = null;
+  /** SMS switched on (gateway enabled) — then rows offer "send SMS". */
+  smsOn = false;
+  smsStatus: Partial<Record<number, SmsItemStatus>> = {};
+  private smsApi = inject(SmsService);
   /** Settings default for new events. */
   private fbDefault = false;
   /** Editing an event that's already on Facebook — the choice no longer applies. */
@@ -65,6 +71,10 @@ export class EventAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadEvents();
+    this.smsApi.status().pipe(catchError(() => of(null))).subscribe(s => {
+      this.smsOn = !!s?.gatewayEnabled;
+      this.loadSmsStatus();
+    });
     this.fbSettings.getSettings().pipe(catchError(() => of(null))).subscribe(s => {
       this.fbConnected = !!s && !!s.pageId && s.hasAccessToken;
       this.fbDefault = !!s?.autoPostEvents;
@@ -241,6 +251,13 @@ export class EventAdminComponent implements OnInit {
       this.loading = false;
       this.events = events;
       this.calculatePages();
+      this.loadSmsStatus();
     });
+  }
+
+  private loadSmsStatus(): void {
+    if (!this.smsOn || !this.events.length) return;
+    this.smsApi.itemStatus('event', this.events.slice(0, 200).map(e => e.id)).pipe(catchError(() => of({})))
+      .subscribe(s => this.smsStatus = s);
   }
 }

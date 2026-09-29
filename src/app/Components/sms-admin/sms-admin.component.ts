@@ -11,6 +11,8 @@ import { SectionCardComponent } from '../shared/section-card/section-card.compon
 import { EmptyStateComponent } from '../shared/empty-state/empty-state.component';
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
 import { TranslatePipe } from '../../Pipes/translate.pipe';
+import { SmsComposeComponent } from './sms-compose.component';
+import { SmsScheduledListComponent } from './sms-scheduled-list.component';
 
 /**
  * SMS: this month's usage and the log. Which texts go out by themselves, the monthly cap and
@@ -20,7 +22,7 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
   selector: 'app-sms-admin',
   standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule, RouterLink, AdminHeaderComponent, SectionCardComponent, EmptyStateComponent,
-    SkeletonComponent, TranslatePipe],
+    SkeletonComponent, TranslatePipe, SmsComposeComponent, SmsScheduledListComponent],
   templateUrl: './sms-admin.component.html',
   styleUrl: './sms-admin.component.scss'
 })

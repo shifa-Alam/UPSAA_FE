@@ -26,6 +26,9 @@ import { RouterLink } from '@angular/router';
 type BirthdayTab = 'birthdays' | 'messages' | 'history';
 const TAB_KEY = 'upsaa.birthdayAutomation.tab';
 
+import { MatDialog } from '@angular/material/dialog';
+import { SmsService } from '../../Services/sms.service';
+import { SmsSendDialogComponent, SmsSendDialogData, SmsSendDialogResult } from '../shared/sms-send-button/sms-send-dialog.component';
 @Component({
   selector: 'app-birthday-automation',
   standalone: true,
@@ -48,6 +51,15 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
   recentLoading = true;
   private facebookPage = inject(FacebookPageService);
   private confirmService = inject(ConfirmService);
+  private smsApi = inject(SmsService);
+  private smsDialog = inject(MatDialog);
+  /** SMS switched on (gateway enabled) — then today's rows offer the wish by SMS. */
+  smsOn = false;
+  sendingSmsId: number | null = null;
+  /** Today's birthday SMS per member, from the SMS log. */
+  smsStatus: Partial<Record<number, { status: string; error: string | null; at: string }>> = {};
+  /** The Settings › SMS wording, to start the edit from. */
+  private smsTemplate = '';
   postTime = '09:00';
 
   // Birthday email wording (keep limits in sync with BirthdayEmailTemplate on the server).
@@ -108,6 +120,7 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.initSms();
     try {
       const saved = localStorage.getItem(TAB_KEY) as BirthdayTab | null;
       if (saved && ['birthdays', 'messages', 'history'].includes(saved)) this.tab = saved;
@@ -456,6 +469,7 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
     this.birthdayPostService.getTodaysBirthdays(this.isToday ? undefined : this.birthdayDate).pipe(catchError(() => of([]))).subscribe(birthdays => {
       this.birthdaysLoading = false;
       this.birthdays = birthdays;
+      this.loadSmsStatus();
     });
   }
 
@@ -465,5 +479,51 @@ export class BirthdayAutomationComponent implements OnInit, OnDestroy {
       this.logsLoading = false;
       this.logs = logs;
     });
+  }
+
+  /** Called once from ngOnInit: is SMS on, and the wording to start from. */
+  private initSms(): void {
+    this.smsApi.status().pipe(catchError(() => of(null))).subscribe(s => {
+      this.smsOn = !!s?.gatewayEnabled;
+      this.smsTemplate = (s?.smsBirthdayMessage || s?.defaultBirthdayMessage || '').trim();
+      this.loadSmsStatus();
+    });
+  }
+
+  private loadSmsStatus(): void {
+    if (!this.smsOn || !this.isToday || !this.birthdays.length) return;
+    this.smsApi.birthdayStatus(this.birthdays.map(b => b.memberId)).pipe(catchError(() => of({})))
+      .subscribe(s => this.smsStatus = s);
+  }
+
+  /** The wish as it will read for this member ({name}, {batch} filled in) — editable before sending. */
+  private smsTextFor(member: BirthdayMember): string {
+    const batch = member.batch ? String(member.batch).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[+d]) : '';
+    return this.smsTemplate.replace(/\{name\}/g, member.fullName.trim()).replace(/\{batch\}/g, batch);
+  }
+
+  sendBirthdaySms(member: BirthdayMember): void {
+    if (this.sendingSmsId) return;
+    const again = this.smsStatus[member.memberId]?.status === 'sent';
+    const data: SmsSendDialogData = {
+      title: `${this.languageService.translate('smsBirthday.dialogTitle')} — ${member.fullName}`,
+      reach: 1, left: null, text: this.smsTextFor(member), maxLength: 320, again,
+    };
+    this.smsDialog.open<SmsSendDialogComponent, SmsSendDialogData, SmsSendDialogResult>(SmsSendDialogComponent,
+      { data, width: '460px', maxWidth: '94vw' }).afterClosed().subscribe(r => {
+        if (!r) return;
+        this.sendingSmsId = member.memberId;
+        this.smsApi.birthday(member.memberId, r.text, again).subscribe({
+          next: () => {
+            this.sendingSmsId = null;
+            this.smsStatus = { ...this.smsStatus, [member.memberId]: { status: 'sent', error: null, at: new Date().toISOString() } };
+            this.snackbar.showSuccess(this.languageService.translate('smsBirthday.sentOk'));
+          },
+          error: err => {
+            this.sendingSmsId = null;
+            this.snackbar.showError(err?.error?.message || this.languageService.translate('smsSend.failed'));
+          }
+        });
+      });
   }
 }

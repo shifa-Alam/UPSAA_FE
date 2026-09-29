@@ -13,14 +13,15 @@ import { TranslatePipe } from '../../Pipes/translate.pipe';
 import { LanguageService } from '../../Services/language.service';
 
 import { SkeletonComponent } from '../shared/skeleton/skeleton.component';
-import { SmsService } from '../../Services/sms.service';
+import { SmsItemStatus, SmsService } from '../../Services/sms.service';
+import { SmsSendButtonComponent } from '../shared/sms-send-button/sms-send-button.component';
 import { BirthdayPostService } from '../../Services/birthday-post.service';
 import { FbPostStatusComponent } from '../shared/fb-post-status/fb-post-status.component';
 import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-notice-admin',
   standalone: true,
-  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, FbPostStatusComponent, RouterLink],
+  imports: [SkeletonComponent, CommonModule, FormsModule, MatIconModule, EmptyStateComponent, AdminHeaderComponent, SectionCardComponent, TranslatePipe, FbPostStatusComponent, RouterLink, SmsSendButtonComponent],
   templateUrl: './notice-admin.component.html',
   styleUrl: './notice-admin.component.scss'
 })
@@ -40,6 +41,8 @@ export class NoticeAdminComponent implements OnInit {
   smsLeft: number | null = null;
   posting = false;
   private smsApi = inject(SmsService);
+  /** Which notices went by SMS (from the SMS log), for the row buttons. */
+  smsStatus: Partial<Record<number, SmsItemStatus>> = {};
 
   /** The Facebook page is set up (page id + token) — null while unknown. */
   fbConnected: boolean | null = null;
@@ -66,6 +69,9 @@ export class NoticeAdminComponent implements OnInit {
       if (!s || !s.gatewayEnabled) return;
       this.smsAudience = s.audience;
       this.smsLeft = Math.max(0, s.smsMonthlyLimit - s.usedThisMonth);
+      if (this.notices.length)
+        this.smsApi.itemStatus('notice', this.notices.slice(0, 200).map(n => n.id)).pipe(catchError(() => of({})))
+          .subscribe(st => this.smsStatus = st);
     });
     this.fbSettings.getSettings().pipe(catchError(() => of(null))).subscribe(s => {
       this.fbConnected = !!s && !!s.pageId && s.hasAccessToken;
@@ -182,6 +188,9 @@ export class NoticeAdminComponent implements OnInit {
     this.noticeService.getAll().pipe(catchError(() => of([]))).subscribe(notices => {
       this.loading = false;
       this.notices = notices;
+      if (notices.length && this.smsAudience !== null)
+        this.smsApi.itemStatus('notice', notices.slice(0, 200).map(n => n.id)).pipe(catchError(() => of({})))
+          .subscribe(s => this.smsStatus = s);
     });
   }
 }

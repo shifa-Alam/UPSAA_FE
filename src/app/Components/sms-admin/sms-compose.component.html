@@ -1,0 +1,79 @@
+<form class="compose" (ngSubmit)="send()">
+
+  <label class="field">
+    <span>{{ 'smsCompose.messageLabel' | translate }}</span>
+    <textarea name="message" rows="4" [maxlength]="maxLength" [(ngModel)]="message"
+      [placeholder]="'smsCompose.messagePlaceholder' | translate"></textarea>
+    <small class="field__hint compose__count">
+      {{ num(message.length) }} {{ 'smsCompose.chars' | translate }} · {{ num(parts) }} {{ 'smsCompose.parts' | translate }}
+      <ng-container *ngIf="parts > 1"> — {{ 'smsCompose.longNote' | translate }}</ng-container>
+    </small>
+  </label>
+
+  <fieldset class="choices">
+    <legend class="field__label">{{ 'smsCompose.toLabel' | translate }}</legend>
+    <label class="choice" *ngFor="let t of targets" [class.is-on]="target === t">
+      <input type="radio" name="target" [value]="t" [ngModel]="target" (ngModelChange)="setTarget($event)" />
+      {{ ('smsCompose.target_' + t) | translate }}
+    </label>
+  </fieldset>
+
+  <label class="field compose__narrow" *ngIf="target === 'batch'">
+    <span>{{ 'smsCompose.batchLabel' | translate }}</span>
+    <select name="batch" [(ngModel)]="batch" (ngModelChange)="recount()">
+      <option [ngValue]="null">—</option>
+      <option *ngFor="let b of batches" [ngValue]="b.batch">{{ num(b.batch) }} ({{ num(b.alumniCount) }})</option>
+    </select>
+  </label>
+
+  <div *ngIf="target === 'members'" class="compose__members">
+    <label class="field">
+      <span>{{ 'smsCompose.findLabel' | translate }}</span>
+      <input type="search" name="q" autocomplete="off" [(ngModel)]="query" (ngModelChange)="onQuery()"
+        [placeholder]="'paymentRecord.findPlaceholder' | translate" />
+    </label>
+    <ul class="found" *ngIf="results.length">
+      <li *ngFor="let m of results">
+        <button type="button" class="found__item" (click)="pick(m)">
+          <b>{{ m.fullName }}</b><small>{{ m.memberCode }} · {{ m.phone }}</small>
+        </button>
+      </li>
+    </ul>
+    <div class="chips" *ngIf="picked.length">
+      <span class="chip" *ngFor="let m of picked">
+        {{ m.fullName }}
+        <button type="button" (click)="unpick(m)" [attr.aria-label]="('smsCompose.remove' | translate) + ' ' + m.fullName"><mat-icon>close</mat-icon></button>
+      </span>
+    </div>
+  </div>
+
+  <label class="field compose__narrow" *ngIf="target === 'phone'">
+    <span>{{ 'smsCompose.phoneLabel' | translate }}</span>
+    <input type="tel" name="phone" inputmode="tel" [(ngModel)]="phone" (ngModelChange)="recount()" placeholder="01XXXXXXXXX" />
+  </label>
+
+  <fieldset class="choices">
+    <legend class="field__label">{{ 'smsSend.whenLabel' | translate }}</legend>
+    <label class="choice" [class.is-on]="!later"><input type="radio" name="when" [value]="false" [(ngModel)]="later" /> {{ 'smsSend.now' | translate }}</label>
+    <label class="choice" [class.is-on]="later"><input type="radio" name="when" [value]="true" [(ngModel)]="later" /> {{ 'smsSend.later' | translate }}</label>
+    <input *ngIf="later" type="datetime-local" name="at" class="compose__at" [(ngModel)]="at" [min]="minAt" [attr.aria-label]="'smsSend.laterAt' | translate" />
+  </fieldset>
+
+  <!-- Reach & allowance -->
+  <p class="reach" *ngIf="reach" [class.reach--short]="!enough" role="status">
+    <mat-icon>{{ enough ? 'groups' : 'warning' }}</mat-icon>
+    <span>
+      <b>{{ num(reach.count) }}</b> {{ 'smsCompose.people' | translate }}
+      <ng-container *ngIf="parts > 1"> × {{ num(parts) }} = {{ num(total) }} SMS</ng-container>
+      · {{ 'smsCompose.left' | translate }} {{ num(reach.left) }}
+      <ng-container *ngIf="!enough"> — {{ 'smsCompose.notEnough' | translate }}</ng-container>
+    </span>
+  </p>
+  <p class="reach reach--short" *ngIf="reachError" role="alert"><mat-icon>error_outline</mat-icon><span>{{ reachError }}</span></p>
+
+  <div>
+    <button type="submit" class="btn btn--solid" [disabled]="!canSend">
+      <mat-icon>{{ sending ? 'hourglass_top' : later ? 'schedule_send' : 'send' }}</mat-icon> {{ (later ? 'smsSend.schedule' : 'smsCompose.send') | translate }}
+    </button>
+  </div>
+</form>
