@@ -5,7 +5,7 @@
 .reports {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
   padding: clamp(var(--space-3), 2.2vw, var(--space-6));
   max-width: 1280px;
 }

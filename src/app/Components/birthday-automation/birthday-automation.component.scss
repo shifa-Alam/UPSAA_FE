@@ -6,7 +6,7 @@
 .birthday-automation {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
   padding: clamp(var(--space-3), 2.2vw, var(--space-6));
   max-width: 1280px;
 }// Checkbox rendered as a switch — still a native, keyboard-operable checkbox.
@@ -124,26 +124,34 @@
 .stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
+// One compact row per figure: icon left, value over its label.
 .stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-3);
+  row-gap: 0;
   min-width: 0;
-  padding: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+
+  > :not(.stat__icon) {
+    grid-column: 2;
+  }
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
 }
 
 .stat__icon {
+  grid-row: 1 / span 2;
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
-  margin-bottom: var(--space-2);
+  margin-bottom: 0;
   border-radius: var(--radius-md);
   background: var(--color-primary-50);
   color: var(--color-primary-600);
@@ -163,9 +171,9 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 35px;
+  min-height: 28px;
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 24px;
   font-weight: 700;
   line-height: var(--line-height-tight);
   color: var(--color-ink-900);
@@ -173,7 +181,7 @@
 }
 
 .stat__value--text {
-  font-size: 24px;
+  font-size: 19px;
 }
 
 .stat__label {
@@ -518,15 +526,15 @@
   }
 
   .stat {
-    padding: var(--space-4);
+    padding: var(--space-3);
   }
 
   .stat__value {
-    font-size: 24px;
+    font-size: 21px;
   }
 
   .stat__value--text {
-    font-size: 20px;
+    font-size: 17px;
   }
 
   .form-field--narrow {

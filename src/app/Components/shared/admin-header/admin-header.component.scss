@@ -23,7 +23,7 @@
 }
 
 .admin-header h2 {
-  font-size: clamp(18px, 1.7vw, 21px);
+  font-size: clamp(17px, 1.5vw, 20px);
   font-weight: 700;
   color: var(--color-ink-900);
   line-height: var(--line-height-tight);
@@ -32,6 +32,7 @@
 
 .admin-header .sub {
   font-size: var(--font-size-sm);
+  line-height: 1.4;
   color: var(--color-ink-600);
   margin: 2px 0 0;
   max-width: 720px;
