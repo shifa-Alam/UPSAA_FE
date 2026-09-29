@@ -8,6 +8,10 @@ export interface SmsStatus {
   gatewayEnabled: boolean;
   smsPaymentReceipts: boolean;
   smsEventReminders: boolean;
+  /** A wish SMS at midnight to the member whose birthday it is. */
+  smsBirthdayWishes: boolean;
+  smsBirthdayMessage: string;
+  defaultBirthdayMessage: string;
   smsMonthlyLimit: number;
   usedThisMonth: number;
   /** Members a notice SMS would reach. */
@@ -17,7 +21,7 @@ export interface SmsStatus {
 export interface SmsLogRow {
   id: number;
   createdDate: string;
-  kind: 'payment' | 'event' | 'notice' | 'test';
+  kind: 'payment' | 'event' | 'notice' | 'test' | 'birthday';
   phone: string;
   message: string;
   status: 'sent' | 'failed' | 'limit' | 'disabled';
@@ -35,7 +39,7 @@ export class SmsService {
     return this.http.get<SmsStatus>(`${this.url}/Status`);
   }
 
-  save(data: Pick<SmsStatus, 'smsPaymentReceipts' | 'smsEventReminders' | 'smsMonthlyLimit'>): Observable<SmsStatus> {
+  save(data: Pick<SmsStatus, 'smsPaymentReceipts' | 'smsEventReminders' | 'smsBirthdayWishes' | 'smsBirthdayMessage' | 'smsMonthlyLimit'>): Observable<SmsStatus> {
     return this.http.put<SmsStatus>(`${this.url}/Settings`, data);
   }
 

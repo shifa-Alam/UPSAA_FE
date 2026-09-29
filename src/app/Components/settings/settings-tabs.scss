@@ -160,3 +160,36 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+// Birthday SMS wording: the text, its length in SMS, and how it will read.
+.birthday-text {
+  margin-top: calc(-1 * var(--space-1));
+  padding-left: var(--space-7);
+
+  textarea {
+    resize: vertical;
+    min-height: 72px;
+  }
+}
+
+.birthday-text__preview {
+  display: block;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-700);
+}
+
+.link-btn {
+  margin-left: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-link);
+  font: 600 var(--font-size-xs) / 1.4 var(--font-base);
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}

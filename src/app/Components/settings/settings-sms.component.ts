@@ -58,11 +58,31 @@ export class SettingsSmsComponent implements OnInit {
     this.api.save({
       smsPaymentReceipts: this.status.smsPaymentReceipts,
       smsEventReminders: this.status.smsEventReminders,
+      smsBirthdayWishes: this.status.smsBirthdayWishes,
+      smsBirthdayMessage: (this.status.smsBirthdayMessage ?? '').trim(),
       smsMonthlyLimit: Number(this.status.smsMonthlyLimit) || 0,
     }).subscribe({
       next: s => { this.saving = false; this.status = { ...s }; this.snackbar.showSuccess(this.lang.translate('smsAdmin.saved')); },
       error: err => { this.saving = false; this.snackbar.showError(err?.error?.message ?? this.lang.translate('smsAdmin.failed')); }
     });
+  }
+
+  /** The birthday text for a sample member, as it will be sent. */
+  birthdayPreview(text: string | null | undefined): string {
+    return (text ?? '').replace(/\{name\}/g, 'Rahim Uddin').replace(/\{batch\}/g, '২০১০');
+  }
+
+  /** How many SMS the text costs — Bangla (Unicode) fits 70 characters in one SMS, 67 per part beyond. */
+  smsParts(text: string): number {
+    const unicode = /[^\x00-\x7F]/.test(text);
+    const one = unicode ? 70 : 160, part = unicode ? 67 : 153;
+    return text.length <= one ? 1 : Math.ceil(text.length / part);
+  }
+
+  /** "120 characters · 2 SMS" under the birthday text. */
+  birthdayLength(text: string | null | undefined): string {
+    const preview = this.birthdayPreview(text);
+    return `${this.num(preview.length)} ${this.lang.translate('smsAdmin.smsParts').replace('{n}', this.num(this.smsParts(preview)))}`;
   }
 
   sendTest(): void {

@@ -25,6 +25,23 @@
           <small>{{ 'smsAdmin.eventsExample' | translate }}</small>
         </span>
       </label>
+      <label class="check-row">
+        <input type="checkbox" name="birthday" [(ngModel)]="s.smsBirthdayWishes" />
+        <span>
+          <b>{{ 'smsAdmin.birthday' | translate }}</b>
+          <small>{{ 'smsAdmin.birthdayExample' | translate }}</small>
+        </span>
+      </label>
+      <label class="field birthday-text" *ngIf="s.smsBirthdayWishes">
+        <span>{{ 'smsAdmin.birthdayMessageLabel' | translate }}</span>
+        <textarea name="birthdayMessage" rows="3" maxlength="320" [(ngModel)]="s.smsBirthdayMessage"></textarea>
+        <small class="field__hint">
+          {{ 'smsAdmin.birthdayMessageHint' | translate }} · {{ birthdayLength(s.smsBirthdayMessage) }}
+          <button type="button" class="link-btn" *ngIf="s.smsBirthdayMessage !== s.defaultBirthdayMessage"
+            (click)="s.smsBirthdayMessage = s.defaultBirthdayMessage">{{ 'smsAdmin.birthdayReset' | translate }}</button>
+        </small>
+        <small class="birthday-text__preview"><b>{{ 'smsAdmin.birthdayPreview' | translate }}</b> {{ birthdayPreview(s.smsBirthdayMessage) }}</small>
+      </label>
       <p class="note">
         <mat-icon>campaign</mat-icon>
         <span>{{ 'smsAdmin.noticeHint' | translate }} ({{ num(s.audience) }} {{ 'smsAdmin.members' | translate }})</span>
