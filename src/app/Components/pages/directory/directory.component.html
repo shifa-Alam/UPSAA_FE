@@ -84,15 +84,17 @@
               </ng-template>
             </div>
 
-            <h3 class="member__name">{{ m.fullName }}</h3>
-            <span class="member__batch" *ngIf="m.batch">{{ 'directory.batchPrefix' | translate }} {{ num(m.batch, true) }}</span>
+            <div class="member__body">
+              <h3 class="member__name">{{ m.fullName }}</h3>
+              <span class="member__batch" *ngIf="m.batch">{{ 'directory.batchPrefix' | translate }} {{ num(m.batch, true) }}</span>
 
-            <p class="member__role" *ngIf="m.currentDesignation">{{ m.currentDesignation }}</p>
-            <p class="member__employer" *ngIf="m.employer">{{ m.employer }}</p>
+              <p class="member__role" *ngIf="m.currentDesignation" [title]="m.currentDesignation">{{ m.currentDesignation }}</p>
+              <p class="member__employer" *ngIf="m.employer" [title]="m.employer">{{ m.employer }}</p>
 
-            <div class="member__tags" *ngIf="m.currentCity || m.bloodGroup">
-              <span class="member__tag" *ngIf="m.currentCity"><mat-icon>place</mat-icon>{{ m.currentCity }}</span>
-              <span class="member__tag member__tag--blood" *ngIf="m.bloodGroup"><mat-icon>bloodtype</mat-icon>{{ m.bloodGroup }}</span>
+              <div class="member__tags" *ngIf="m.currentCity || m.bloodGroup">
+                <span class="member__tag" *ngIf="m.currentCity"><mat-icon>place</mat-icon>{{ m.currentCity }}</span>
+                <span class="member__tag member__tag--blood" *ngIf="m.bloodGroup"><mat-icon>bloodtype</mat-icon>{{ m.bloodGroup }}</span>
+              </div>
             </div>
           </a>
         </div>

@@ -15,7 +15,7 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 .register-form__note {
@@ -49,16 +49,16 @@
 .reg-section__head {
   position: relative;
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-  padding: var(--space-5) var(--space-6) var(--space-4);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5) var(--space-3);
 
   // Gold rule under the heading, fading out to the right.
   &::after {
     content: '';
     position: absolute;
-    left: var(--space-6);
-    right: var(--space-6);
+    left: var(--space-5);
+    right: var(--space-5);
     bottom: 0;
     height: 1px;
     background: linear-gradient(90deg, var(--color-heritage-500), transparent 70%);
@@ -70,13 +70,13 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: var(--color-heritage-soft);
   border: 1px solid rgba(201, 162, 74, 0.45);
   font-family: var(--font-display);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 700;
   line-height: 1;
   color: var(--color-heritage-500);
@@ -84,26 +84,25 @@
 
 .reg-section__heading {
   min-width: 0;
-  padding-top: 2px;
 }
 
 .reg-section__title {
   margin: 0;
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-lg);
   font-weight: 700;
   line-height: var(--line-height-tight);
   color: var(--color-ink-900);
 }
 
 .reg-section__subtitle {
-  margin: var(--space-1) 0 0;
+  margin: 2px 0 0;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
   color: var(--color-ink-600);
 }
 
 .reg-section__body {
-  padding: var(--space-5) var(--space-6) var(--space-6);
+  padding: var(--space-4) var(--space-5) var(--space-5);
 }
 
 @media (max-width: 767px) {

@@ -14,6 +14,8 @@ export const achievementsI18n: I18nSection = {
       emptyTitle: 'এখনো কোনো অর্জন যোগ করা হয়নি',
       emptyMessage: 'শীঘ্রই আমাদের গর্বিত সদস্যদের অর্জন এখানে প্রদর্শিত হবে।',
       batchPrefix: 'ব্যাচ',
+      readMore: 'আরও পড়ুন',
+      readLess: 'কম দেখুন',
       spotlight: {
         eyebrow: 'বিশেষ সম্মাননা',
         title: 'গর্বের গল্প',
@@ -43,6 +45,8 @@ export const achievementsI18n: I18nSection = {
       emptyTitle: 'No achievements yet',
       emptyMessage: "Our proud alumni's achievements will show up here soon.",
       batchPrefix: 'Batch',
+      readMore: 'Read more',
+      readLess: 'Show less',
       spotlight: {
         eyebrow: 'In the Spotlight',
         title: 'A Story of Pride',

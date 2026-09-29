@@ -1,5 +1,6 @@
 // Public-site footer — deepest navy with a single heritage-gold hairline, so it
-// reads as its own band even directly under a blue closing CTA.
+// reads as its own band even directly under a blue closing CTA. One compact row:
+// brand, contact, follow — then a slim copyright bar.
 
 .site-footer {
   position: relative;
@@ -8,7 +9,6 @@
     radial-gradient(circle at 95% 100%, rgba(111, 165, 246, 0.1), transparent 40%),
     var(--color-primary-900);
   color: rgba(255, 255, 255, 0.72);
-  padding-top: clamp(var(--space-7), 3.2vw, 36px);
 
   // Gold band across the top, brightest in the middle.
   &::before {
@@ -22,15 +22,12 @@
   }
 }
 
-// ---------------------------- Brand ----------------------------
-.site-footer__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4) var(--space-7);
-  flex-wrap: wrap;
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+// ---------------------------- Columns ----------------------------
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.15fr) minmax(0, 0.8fr);
+  gap: var(--space-5) clamp(var(--space-6), 3vw, 40px);
+  padding: clamp(var(--space-6), 2.4vw, 28px) 0 var(--space-5);
 }
 
 .site-footer__brand {
@@ -43,23 +40,23 @@
 
 .site-footer__logo {
   flex-shrink: 0;
-  width: 52px;
-  height: 52px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: #fff;
-  padding: var(--space-1);
-  box-shadow: 0 0 0 2px var(--color-heritage-500), 0 8px 20px rgba(0, 0, 0, 0.35);
+  padding: 3px;
+  box-shadow: 0 0 0 2px var(--color-heritage-500), 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 .site-footer__brand-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 
 .site-footer__eyebrow {
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.2em;
   color: var(--color-heritage-500);
@@ -67,37 +64,28 @@
 
 .site-footer__name {
   font-family: var(--font-display);
-  font-size: clamp(16px, 1.6vw, 19px);
+  font-size: clamp(15px, 1.3vw, 17px);
   font-weight: 600;
-  line-height: var(--line-height-normal);
+  line-height: 1.3;
   color: #fff;
 }
 
 .site-footer__tagline {
-  margin: 0;
-  max-width: 420px;
+  margin: var(--space-3) 0 0;
+  max-width: 400px;
   font-family: var(--font-display);
   font-style: italic;
   font-size: var(--font-size-sm);
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-// ---------------------------- Columns ----------------------------
-.site-footer__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
-  max-width: 1100px;
-  gap: var(--space-6);
-  padding: var(--space-5) 0;
+  color: rgba(255, 255, 255, 0.66);
 }
 
 .site-footer__heading {
   position: relative;
   margin: 0 0 var(--space-3);
-  padding-bottom: var(--space-2);
+  padding-bottom: 6px;
   font-family: var(--font-display);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-base);
   font-weight: 600;
   color: #fff;
 
@@ -106,19 +94,20 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 28px;
+    width: 24px;
     height: 2px;
     background: var(--color-heritage-500);
   }
 }
 
+// ---------------------------- Contact rows ----------------------------
 .site-footer__rows {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 2px;
 }
 
 .site-footer__row {
@@ -129,6 +118,7 @@
   color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
   font-size: var(--font-size-sm);
+  line-height: 1.4;
   transition: color var(--transition-fast);
 
   &:hover,
@@ -165,30 +155,81 @@
   overflow-wrap: anywhere;
 }
 
+// "View on map" after the address.
+.site-footer__map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-heritage-500);
+  white-space: nowrap;
+
+  mat-icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+  }
+}
+
+// ---------------------------- Follow — round icon buttons ----------------------------
+.site-footer__social {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.site-footer__social-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 74, 0.45);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-heritage-500);
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast),
+    transform var(--transition-fast);
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-heritage-500);
+    border-color: var(--color-heritage-500);
+    color: var(--color-primary-900);
+    transform: translateY(-2px);
+  }
+}
+
 // ---------------------------- Bottom bar ----------------------------
 .site-footer__bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  flex-wrap: wrap;
-  padding: var(--space-3) 0;
+  padding: 6px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: var(--font-size-xs);
   color: rgba(255, 255, 255, 0.55);
 }
 
 .site-footer__top-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  min-height: 32px;
-  padding: 0 var(--space-3);
-  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
-  font: 600 var(--font-size-xs) / 1 var(--font-base);
   cursor: pointer;
   transition: border-color var(--transition-fast), color var(--transition-fast);
 
@@ -212,138 +253,66 @@ button:focus-visible {
   border-radius: var(--radius-sm);
 }
 
+.site-footer__social-btn:focus-visible,
+.site-footer__top-btn:focus-visible {
+  border-radius: 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer__social-btn:hover {
+    transform: none;
+  }
+}
+
 // ---------------------------- Responsive ----------------------------
+// Tablet: brand across the top, contact and follow side by side under it.
+@media (min-width: 641px) and (max-width: 900px) {
+  .site-footer__grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+
+  .site-footer__col--brand {
+    grid-column: 1 / -1;
+  }
+}
+
+// Phone: brand and the icon buttons centred, then the contact rows.
 @media (max-width: 640px) {
-  .site-footer__top {
+  .site-footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding: var(--space-6) 0 var(--space-4);
+  }
+
+  .site-footer__col--brand {
+    display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-bottom: var(--space-4);
   }
 
   .site-footer__brand {
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
-  .site-footer__tagline {
-    font-size: var(--font-size-sm);
+  .site-footer__col--follow {
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .site-footer__grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-    padding: var(--space-4) 0;
+  .site-footer__col--follow .site-footer__heading {
+    display: none;
   }
 
-  .site-footer__bottom {
-    flex-direction: column-reverse;
-    text-align: center;
-  }
-}
-
-// ---------------------------- Map ----------------------------
-.site-footer__map {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-
-  iframe {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
-}
-
-// A drawn "map" — road lines on navy — until someone asks for the real one.
-.site-footer__map-cover {
-  appearance: none;
-  border: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  color: #fff;
-  font: inherit;
-  background:
-    linear-gradient(115deg, transparent 46%, rgba(255, 255, 255, 0.12) 47%, rgba(255, 255, 255, 0.12) 49%, transparent 50%),
-    linear-gradient(25deg, transparent 60%, rgba(255, 255, 255, 0.08) 61%, rgba(255, 255, 255, 0.08) 62.5%, transparent 63.5%),
-    linear-gradient(90deg, transparent 30%, rgba(201, 162, 74, 0.25) 30.5%, rgba(201, 162, 74, 0.25) 31.5%, transparent 32%),
-    radial-gradient(circle at 70% 30%, rgba(111, 165, 246, 0.18), transparent 55%),
-    rgba(255, 255, 255, 0.04);
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--transition-base);
-
-  &:hover .site-footer__map-pin,
-  &:focus-visible .site-footer__map-pin {
-    transform: translateY(-3px);
+  .site-footer__col--contact {
+    order: 2;
+    justify-self: center;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-heritage-500);
-    outline-offset: -2px;
-  }
-}
-
-.site-footer__map-pin {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: var(--color-heritage-500);
-  color: #0a2a5e;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-  transition: transform var(--transition-base);
-}
-
-.site-footer__map-label {
-  font-weight: 700;
-  font-size: var(--font-size-sm);
-}
-
-.site-footer__map-sub {
-  font-size: var(--font-size-xs);
-  color: rgba(255, 255, 255, 0.72);
-}
-
-.site-footer__map-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
-  min-height: 36px;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--color-heritage-500);
-  text-decoration: none;
-
-  mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-  }
-}
-
-// Tablet: the two link columns side by side, the map under them.
-@media (min-width: 641px) and (max-width: 1024px) {
-  .site-footer__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .site-footer__grid > .site-footer__col:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .site-footer__map {
-    aspect-ratio: 21 / 8;
+  .site-footer__col--contact .site-footer__heading {
+    display: none;
   }
 }

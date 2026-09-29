@@ -15,6 +15,8 @@ interface CommitteeCard {
   photo: string | null;
   positionName: string;
   batch?: number | null;
+  /** The president — the larger, gold-ringed card in the middle of the top row. */
+  featured?: boolean;
 }
 
 interface CommitteeGroup {
@@ -23,7 +25,10 @@ interface CommitteeGroup {
   title?: string;
   eyebrowKey: string;
   cards: CommitteeCard[];
-  compact?: boolean;
+  /** 'grid' = round-photo cards, 'list' = photo-and-name rows (the long office-bearer roll). */
+  layout: 'grid' | 'list';
+  /** Hide the position under each name (it's the section title already). */
+  hidePosition?: boolean;
 }
 
 import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
@@ -38,9 +43,8 @@ export class CommitteeComponent implements OnInit {
   loading = true;
   loadError = false;
 
-  /** Priority 1 (President) — shown as the featured portrait. */
-  president: CommitteeCard | null = null;
-  /** Everyone else, bucketed into the page's sections below the president. */
+  /** Everyone, bucketed into the page's sections. The first holds the president (featured,
+   *  placed in the middle of the row) with the senior leadership either side. */
   groups: CommitteeGroup[] = [];
   electionDate: string | null = null;
   termLabel: string | null = null;
@@ -87,7 +91,6 @@ export class CommitteeComponent implements OnInit {
 
     if (!committee || !committee.positions || !committee.positions.length) {
       this.loadError = true;
-      this.president = null;
       this.groups = [];
       return;
     }
@@ -107,23 +110,30 @@ export class CommitteeComponent implements OnInit {
         positionName: pos.positionName,
       })));
 
-    const [first, ...rest] = flatten(positions.slice(0, 1));
-    this.president = first ?? null;
+    // The president sits in the middle of the top row, senior leadership either side
+    // (on phones CSS lifts the president to a row of their own).
+    const top = (leaders: CommitteeCard[]): CommitteeCard[] => {
+      const [first, ...rest] = flatten(positions.slice(0, 1));
+      const others = [...rest, ...leaders];
+      if (!first) return others;
+      const middle = Math.floor(others.length / 2);
+      return [...others.slice(0, middle), { ...first, featured: true }, ...others.slice(middle)];
+    };
 
-    // Too few positions to split meaningfully — everyone else is "leadership".
+    // Too few positions to split meaningfully — everyone is "leadership".
     if (positions.length <= 3) {
       this.groups = [
-        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: [...rest, ...flatten(positions.slice(1))] },
+        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: top(flatten(positions.slice(1))), layout: 'grid' },
       ];
     } else {
       // Next two positions are senior leadership; everything up to the last position
-      // is office bearers; the final (lowest-priority) position — typically Executive
-      // Members — gets its own compact section under its real name.
+      // is office bearers (a compact list); the final (lowest-priority) position —
+      // typically Executive Members — gets its own section under its real name.
       const last = positions[positions.length - 1];
       this.groups = [
-        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: [...rest, ...flatten(positions.slice(1, 3))] },
-        { titleKey: 'committee.sections.officeBearers', eyebrowKey: 'committee.sections.officeBearersEyebrow', cards: flatten(positions.slice(3, positions.length - 1)) },
-        { title: last.positionName, eyebrowKey: 'committee.sections.membersEyebrow', cards: flatten([last]), compact: true },
+        { titleKey: 'committee.sections.leadership', eyebrowKey: 'committee.sections.leadershipEyebrow', cards: top(flatten(positions.slice(1, 3))), layout: 'grid' },
+        { titleKey: 'committee.sections.officeBearers', eyebrowKey: 'committee.sections.officeBearersEyebrow', cards: flatten(positions.slice(3, positions.length - 1)), layout: 'list' },
+        { title: last.positionName, eyebrowKey: 'committee.sections.membersEyebrow', cards: flatten([last]), layout: 'grid', hidePosition: true },
       ];
     }
     this.groups = this.groups.filter(g => g.cards.length > 0);
@@ -133,6 +143,15 @@ export class CommitteeComponent implements OnInit {
     if (!this.electionDate) return '';
     const locale = this.languageService.lang() === 'bn' ? 'bn-BD' : 'en-GB';
     return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(this.electionDate));
+  }
+
+  hasFeatured(group: CommitteeGroup): boolean {
+    return group.cards.some(c => c.featured);
+  }
+
+  /** People in a section, for the count beside its title. */
+  count(group: CommitteeGroup): string {
+    return this.formatBatch(group.cards.length);
   }
 
   formatBatch(batch: number): string {

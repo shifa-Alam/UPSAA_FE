@@ -121,7 +121,7 @@
 // ---------------------------- Page hero (inner pages) ----------------------------
 .pp-hero {
   position: relative;
-  padding: clamp(22px, 3.2vw, 38px) 0 clamp(var(--space-6), 2.8vw, 34px);
+  padding: clamp(14px, 1.8vw, 22px) 0 clamp(12px, 1.6vw, 20px);
   background: var(--gradient-hero);
   color: #fff;
   text-align: center;
@@ -142,44 +142,45 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: pp-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: pp-rise 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 .pp-hero__eyebrow {
-  font-size: var(--font-size-xs);
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-heritage-500);
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
 }
 
 .pp-hero__title {
   color: #fff;
-  font-size: clamp(21px, 2.8vw, 40px);
+  font-size: clamp(19px, 2.1vw, 28px);
   font-weight: 700;
   line-height: 1.15;
-  max-width: 24ch;
-  margin: 0 0 var(--space-2);
+  max-width: 30ch;
+  margin: 0 0 var(--space-1);
 }
 
 .pp-hero__subtitle {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(13px, 1.4vw, 17px);
+  font-size: clamp(12.5px, 1.1vw, 15px);
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
 }
 
 @keyframes pp-rise {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: none; }
 }
 
 // ---------------------------- Sections ----------------------------
-// One vertical rhythm for every section.
+// One vertical rhythm for every section — compact, so content starts sooner.
+// The homepage keeps a roomier showcase rhythm (home.component.scss).
 .pp-section {
-  padding: clamp(28px, 3.8vw, 48px) 0;
+  padding: clamp(20px, 2.6vw, 32px) 0;
 }
 
 // Alternate backgrounds by position so sections hidden for lack of data
@@ -193,7 +194,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-5);
 }
 
 // Small gold label with a hairline on each side: ── আমাদের পরিচিতি ──
@@ -206,7 +207,7 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-heritage-text, var(--color-heritage-500));
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
 
   &::before,
   &::after {
@@ -219,7 +220,7 @@
 }
 
 .pp-section__title {
-  font-size: clamp(22px, 2.8vw, 36px);
+  font-size: clamp(19px, 2vw, 26px);
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -229,22 +230,22 @@
 // A short gold rule under each section title.
 .pp-section__rule {
   display: block;
-  width: 56px;
-  height: 3px;
-  margin: var(--space-3) auto 0;
+  width: 40px;
+  height: 2px;
+  margin: var(--space-2) auto 0;
   border-radius: 3px;
   background: var(--color-heritage-500);
 }
 
 .pp-section__subtitle {
-  margin: var(--space-3) 0 0;
-  font-size: var(--font-size-base);
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
 }
 
 .pp-section__cta {
   display: flex;
   justify-content: center;
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
 }
 
 .pp-narrow {
@@ -362,12 +363,15 @@
 }
 
 // ---------------------------- Join band ----------------------------
+// A slim closing strip: the message on the left, the button (or a group of
+// buttons) on the right; stacked on phones. The homepage keeps its big centred
+// band (home.component.scss).
 .pp-join {
   position: relative;
-  padding: clamp(22px, 3.4vw, 40px) 0;
+  padding: clamp(16px, 2vw, 22px) 0;
   background: var(--gradient-hero);
   color: #fff;
-  text-align: center;
+  text-align: left;
   overflow: hidden;
 
   &::before {
@@ -381,23 +385,50 @@
 
 .pp-join__inner {
   position: relative;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
+  max-width: 1080px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+  column-gap: var(--space-7);
+
+  > * {
+    grid-column: 1;
+  }
+
+  // The button, or the div holding a pair of them.
+  > .pp-btn,
+  > div {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    justify-self: end;
+  }
 }
 
 .pp-join__title {
   color: #fff;
-  font-size: clamp(20px, 2.6vw, 28px);
-  line-height: 1.2;
-  margin: 0 0 var(--space-3);
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: 1.25;
+  margin: 0 0 2px;
 }
 
 .pp-join__body {
   color: rgba(255, 255, 255, 0.8);
-  font-size: var(--font-size-base);
-  margin: 0 0 var(--space-5);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .pp-join__inner {
+    grid-template-columns: minmax(0, 1fr);
+
+    > .pp-btn,
+    > div {
+      grid-column: 1;
+      grid-row: auto;
+      justify-self: start;
+      margin-top: var(--space-3);
+    }
+  }
 }
 
 // Inside the sidebar shell the reader is already a signed-in member, so the

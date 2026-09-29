@@ -48,16 +48,13 @@
         <div class="decade" *ngFor="let d of decades">
           <h3 class="decade__label">{{ decadeLabel(d.start) }}</h3>
           <div class="decade__grid">
-            <button type="button" class="year" *ngFor="let b of d.batches" (click)="viewAlumni(b.batch)">
+            <button type="button" class="year" *ngFor="let b of d.batches" (click)="viewAlumni(b.batch)"
+              [title]="'batches.viewAlumni' | translate">
               <span class="year__eyebrow">{{ 'batches.batchLabel' | translate }}</span>
               <span class="year__number">{{ formatNumber(b.batch, true) }}</span>
-              <span class="year__rule"></span>
               <span class="year__count">
                 <mat-icon>groups</mat-icon>
                 {{ formatNumber(b.alumniCount) }} {{ 'batches.alumniSuffix' | translate }}
-              </span>
-              <span class="year__cta">
-                {{ 'batches.viewAlumni' | translate }} <mat-icon>arrow_forward</mat-icon>
               </span>
             </button>
           </div>

@@ -46,7 +46,10 @@
               <li *ngIf="f.profession"><mat-icon>work_outline</mat-icon>{{ f.profession }}</li>
               <li *ngIf="f.organization"><mat-icon>apartment</mat-icon>{{ f.organization }}</li>
             </ul>
-            <p class="spotlight__desc" *ngIf="f.description">{{ f.description }}</p>
+            <p class="spotlight__desc" *ngIf="f.description" [class.is-clamped]="isLong(f, true) && !expanded.has(f)">{{ f.description }}</p>
+            <button type="button" class="read-more" *ngIf="isLong(f, true)" (click)="toggle(f)" [attr.aria-expanded]="expanded.has(f)">
+              {{ (expanded.has(f) ? 'achievements.readLess' : 'achievements.readMore') | translate }}
+            </button>
           </div>
         </article>
       </div>
@@ -76,7 +79,10 @@
                 <li *ngIf="a.profession"><mat-icon>work_outline</mat-icon>{{ a.profession }}</li>
                 <li *ngIf="a.organization"><mat-icon>apartment</mat-icon>{{ a.organization }}</li>
               </ul>
-              <p class="honoree__desc" *ngIf="a.description">{{ a.description }}</p>
+              <p class="honoree__desc" *ngIf="a.description" [class.is-clamped]="isLong(a) && !expanded.has(a)">{{ a.description }}</p>
+              <button type="button" class="read-more" *ngIf="isLong(a)" (click)="toggle(a)" [attr.aria-expanded]="expanded.has(a)">
+                {{ (expanded.has(a) ? 'achievements.readLess' : 'achievements.readMore') | translate }}
+              </button>
             </div>
           </article>
         </div>

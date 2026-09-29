@@ -222,10 +222,11 @@
 }
 
 // ---------------------------- Member cards ----------------------------
+// Compact rows: the photo on the left, name / batch / work / tags beside it.
 .members {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: var(--space-3);
   transition: opacity var(--transition-base);
 }
 
@@ -236,14 +237,14 @@
 
 .member {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
+  gap: var(--space-3);
   min-width: 0;
   color: inherit;          // the card is a link to the profile
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
-  padding: var(--space-6) var(--space-4) var(--space-5);
-  text-align: center;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+  text-align: left;
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
@@ -256,9 +257,9 @@
   }
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: transparent;
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    border-color: var(--color-heritage-500);
+    box-shadow: var(--shadow-md);
 
     .member__avatar img { transform: scale(1.06); }
   }
@@ -270,10 +271,10 @@
 }
 
 .member__avatar {
-  width: 96px;
-  height: 96px;
+  width: 60px;
+  height: 60px;
   flex-shrink: 0;
-  margin-bottom: var(--space-4);
+  margin: 2px;
   border-radius: 50%;
   overflow: hidden;
   background: var(--color-ink-100);
@@ -295,15 +296,23 @@
   place-items: center;
   background: var(--gradient-hero);
   font-family: var(--font-display);
-  font-size: 38px;
+  font-size: 24px;
   color: rgba(255, 255, 255, 0.88);
+}
+
+.member__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
 }
 
 .member__name {
   margin: 0;
   max-width: 100%;
   font-family: var(--font-display);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-md);
   font-weight: 600;
   line-height: var(--line-height-normal);
   color: var(--color-ink-900);
@@ -311,7 +320,7 @@
 }
 
 .member__batch {
-  margin-top: var(--space-1);
+  margin-top: 1px;
   font-size: var(--font-size-xs);
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -321,27 +330,27 @@
 
 .member__role,
 .member__employer {
-  margin: var(--space-2) 0 0;
+  margin: var(--space-1) 0 0;
   max-width: 100%;
   font-size: var(--font-size-sm);
   line-height: var(--line-height-normal);
   color: var(--color-ink-700);
-  overflow-wrap: anywhere;
+  // One line each in the compact card; the full text is in the tooltip and on the profile.
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .member__employer {
-  margin-top: 2px;
+  margin-top: 0;
   color: var(--color-ink-400);
 }
 
 .member__tags {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
-  margin-top: auto;
-  padding-top: var(--space-4);
+  gap: var(--space-1);
+  margin-top: var(--space-2);
 }
 
 .member__tag {
@@ -349,7 +358,7 @@
   align-items: center;
   gap: 3px;
   max-width: 100%;
-  padding: 3px var(--space-3);
+  padding: 2px var(--space-2);
   border-radius: var(--radius-pill);
   background: var(--color-surface-sunken);
   font-size: var(--font-size-xs);
@@ -384,7 +393,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-4);
-  margin-top: var(--space-7);
+  margin-top: var(--space-5);
 }
 
 .pager__btn {
@@ -492,26 +501,17 @@
   }
 
   .members {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
-  }
-
-  .member {
-    padding: var(--space-5) var(--space-3) var(--space-4);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
   }
 
   .member__avatar {
-    width: 72px;
-    height: 72px;
-    margin-bottom: var(--space-3);
+    width: 52px;
+    height: 52px;
   }
 
   .member__initials {
-    font-size: 30px;
-  }
-
-  .member__name {
-    font-size: var(--font-size-md);
+    font-size: 21px;
   }
 
   .pager {

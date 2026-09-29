@@ -137,10 +137,10 @@
 
 // ---------------------------- Join ----------------------------
 .about-motto {
-  margin: 0 0 var(--space-6);
+  margin: var(--space-1) 0 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: clamp(17px, 2vw, 21px);
+  font-size: clamp(14px, 1.3vw, 16px);
   color: var(--color-heritage-500);
 }
 

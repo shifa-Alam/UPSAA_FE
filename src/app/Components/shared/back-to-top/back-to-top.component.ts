@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 
@@ -9,14 +9,17 @@ const SHOW_AFTER = 600;
 /**
  * Floating "back to top" button for the public pages. Watches the element that
  * actually scrolls (mat-sidenav-content) outside Angular's zone and only re-renders
- * when it crosses the threshold.
+ * when it crosses the threshold. Hidden again once the page's closing band or the site
+ * footer is in view — the footer has its own back-to-top button, and the help button
+ * rides up over that stretch (see HelpButtonComponent). With the help button in the same corner
+ * (`raised`), it sits just above it.
  */
 @Component({
   selector: 'app-back-to-top',
   standalone: true,
   imports: [CommonModule, MatIconModule, TranslatePipe],
   template: `
-    <button type="button" class="to-top" [class.to-top--shown]="shown" (click)="toTop()"
+    <button type="button" class="to-top" [class.to-top--shown]="shown" [class.to-top--raised]="raised" (click)="toTop()"
       [attr.aria-label]="'footer.backToTop' | translate" [attr.title]="'footer.backToTop' | translate"
       [attr.tabindex]="shown ? null : -1" [attr.aria-hidden]="shown ? null : 'true'">
       <mat-icon>arrow_upward</mat-icon>
@@ -48,6 +51,8 @@ const SHOW_AFTER = 600;
       pointer-events: auto;
       transform: none;
     }
+    /* Above the help button (46px tall at bottom 20px). */
+    .to-top--raised { bottom: 78px; }
     .to-top:hover { background: #0a2f6b; }
     .to-top:focus-visible { outline: 3px solid #f2c94c; outline-offset: 3px; }
     /* Phones: sit above the bottom tab bar. */
@@ -58,6 +63,9 @@ const SHOW_AFTER = 600;
         width: 42px;
         height: 42px;
       }
+      .to-top--raised {
+        bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom) + 70px);
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       .to-top { transition: none; }
@@ -66,6 +74,9 @@ const SHOW_AFTER = 600;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BackToTopComponent implements AfterViewInit, OnDestroy {
+  /** The help button shares this corner — sit above it. */
+  @Input() raised = false;
+
   shown = false;
 
   private scroller: HTMLElement | null = null;
@@ -75,7 +86,10 @@ export class BackToTopComponent implements AfterViewInit, OnDestroy {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly onScroll = () => {
-    const show = (this.scroller?.scrollTop ?? 0) > SHOW_AFTER;
+    const floor = Array.from(this.scroller?.querySelectorAll<HTMLElement>('.pp-join, app-footer .site-footer') ?? [])
+      .find(el => el.offsetHeight > 0);
+    const floorInView = !!floor && floor.getBoundingClientRect().top < window.innerHeight;
+    const show = (this.scroller?.scrollTop ?? 0) > SHOW_AFTER && !floorInView;
     if (show !== this.shown) {
       this.shown = show;
       this.cdr.detectChanges();

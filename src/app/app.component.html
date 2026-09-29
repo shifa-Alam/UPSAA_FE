@@ -279,7 +279,7 @@
         <router-outlet></router-outlet>
 
         <app-footer *ngIf="!isDashboardRoute"></app-footer>
-        <app-back-to-top *ngIf="!isDashboardRoute"></app-back-to-top>
+        <app-back-to-top *ngIf="!isDashboardRoute" [raised]="!authService.isStaff()"></app-back-to-top>
       </div>
 
       <!-- Installed-app pieces (phones): offline notice, tab bar, install suggestion. -->

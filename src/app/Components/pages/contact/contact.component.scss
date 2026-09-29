@@ -10,18 +10,29 @@
 .methods {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
+  gap: var(--space-4);
   max-width: 1040px;
   margin: 0 auto;
 }
 
+// Compact: the icon on the left, label / value / action beside it.
 .method {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-2);
-  padding: var(--space-7) var(--space-5) var(--space-6);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  column-gap: var(--space-3);
+  row-gap: 2px;
+  text-align: left;
+  padding: var(--space-4);
+
+  > :not(.method__icon) {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .pp-link {
+    padding-top: var(--space-1);
+  }
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
@@ -30,8 +41,8 @@
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
     border-color: var(--color-heritage-500);
     color: inherit;
 
@@ -46,19 +57,19 @@
 }
 
 .method__icon {
-  width: 64px;
-  height: 64px;
+  grid-row: 1 / span 3;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
-  margin-bottom: var(--space-3);
   border-radius: 50%;
   background: var(--color-heritage-soft);
   border: 1px solid rgba(201, 162, 74, 0.35);
 
   mat-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
     color: var(--color-heritage-500);
   }
 }
@@ -73,7 +84,7 @@
 
 .method__value {
   font-family: var(--font-display);
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-md);
   font-weight: 600;
   line-height: var(--line-height-normal);
   color: var(--color-ink-900);
@@ -93,8 +104,8 @@
 .channel {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-ink-200);
   border-radius: var(--radius-lg);
@@ -116,8 +127,8 @@
 
 .channel__icon {
   flex-shrink: 0;
-  width: 48px;
-  height: 48px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -168,11 +179,7 @@
   .methods {
     grid-template-columns: 1fr;
     max-width: 480px;
-    gap: var(--space-4);
-  }
-
-  .method {
-    padding: var(--space-6) var(--space-4) var(--space-5);
+    gap: var(--space-3);
   }
 }
 

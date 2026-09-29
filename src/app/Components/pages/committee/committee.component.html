@@ -10,19 +10,22 @@
         <ng-template #defaultTitle>{{ 'committee.hero.title' | translate }}</ng-template>
       </h1>
       <p class="pp-hero__subtitle">{{ 'committee.hero.subtitle' | translate }}</p>
-      <span class="committee__elected" *ngIf="electionDate">
-        <mat-icon>how_to_vote</mat-icon>{{ 'committee.electedOn' | translate }} {{ electedOn() }}
-      </span>
+      <!-- Election date and the term picker share one line. -->
+      <div class="committee__meta" *ngIf="electionDate || history.length > 1">
+        <span class="committee__elected" *ngIf="electionDate">
+          <mat-icon>how_to_vote</mat-icon>{{ 'committee.electedOn' | translate }} {{ electedOn() }}
+        </span>
 
-      <!-- Previous terms — only once more than one committee has been published. -->
-      <nav class="committee__terms" *ngIf="history.length > 1" [attr.aria-label]="'committee.termsLabel' | translate">
-        <button type="button" class="committee__term" *ngFor="let term of history"
-          [class.committee__term--active]="isSelected(term)" [attr.aria-pressed]="isSelected(term)"
-          (click)="selectTerm(term.id)">
-          {{ term.termLabel }}
-          <span class="committee__term-now" *ngIf="term.isCurrent">{{ 'committee.currentBadge' | translate }}</span>
-        </button>
-      </nav>
+        <!-- Previous terms — only once more than one committee has been published. -->
+        <nav class="committee__terms" *ngIf="history.length > 1" [attr.aria-label]="'committee.termsLabel' | translate">
+          <button type="button" class="committee__term" *ngFor="let term of history"
+            [class.committee__term--active]="isSelected(term)" [attr.aria-pressed]="isSelected(term)"
+            (click)="selectTerm(term.id)">
+            {{ term.termLabel }}
+            <span class="committee__term-now" *ngIf="term.isCurrent">{{ 'committee.currentBadge' | translate }}</span>
+          </button>
+        </nav>
+      </div>
     </div>
   </header>
 
@@ -43,46 +46,44 @@
 
   <ng-container *ngIf="!loading && !loadError">
 
-    <!-- ===== President — featured ===== -->
-    <section class="pp-section" *ngIf="president">
-      <div class="upsaa-container" appReveal>
-        <article class="lead">
-          <div class="lead__photo">
-            <img *ngIf="president.photo; else leadInitials" [src]="president.photo | sizedImage:800" [attr.srcset]="president.photo | sizedSrcset" sizes="(max-width: 768px) 72vw, 340px" [alt]="president.memberName" />
-            <ng-template #leadInitials><span class="pp-person__initials">{{ initials(president.memberName) }}</span></ng-template>
-            <span class="lead__badge"><mat-icon>military_tech</mat-icon></span>
-          </div>
-          <div class="lead__body">
-            <span class="pp-section__eyebrow">{{ president.positionName }}</span>
-            <h2 class="lead__name">{{ president.memberName }}</h2>
-            <span class="pp-section__rule lead__rule"></span>
-            <span class="lead__batch" *ngIf="president.batch">
-              {{ 'committee.batchPrefix' | translate }} {{ formatBatch(president.batch) }}
-            </span>
-            <p class="lead__note">{{ 'committee.presidentNote' | translate }}</p>
-          </div>
-        </article>
-      </div>
-    </section>
+    <!-- ===== Members, one block per section ===== -->
+    <section class="committee__body">
+      <div class="upsaa-container committee__blocks">
+        <div class="committee__block" *ngFor="let group of groups" appReveal>
+          <header class="committee__head">
+            <h2 class="committee__title">{{ group.titleKey ? (group.titleKey | translate) : group.title }}</h2>
+            <span class="committee__count">{{ count(group) }}</span>
+            <span class="committee__line" aria-hidden="true"></span>
+          </header>
 
-    <!-- ===== Remaining sections ===== -->
-    <section class="pp-section" *ngFor="let group of groups">
-      <div class="upsaa-container" appReveal>
-        <header class="pp-section__head">
-          <span class="pp-section__eyebrow">{{ group.eyebrowKey | translate }}</span>
-          <h2 class="pp-section__title">{{ group.titleKey ? (group.titleKey | translate) : group.title }}</h2>
-          <span class="pp-section__rule"></span>
-        </header>
-
-        <div class="pp-people" [class.committee__people--compact]="group.compact">
-          <div class="pp-person" *ngFor="let card of group.cards">
-            <div class="pp-person__photo">
-              <img *ngIf="card.photo; else cardInitials" [src]="card.photo | sizedImage:400" [attr.srcset]="card.photo | sizedSrcset" sizes="(max-width: 768px) 50vw, 240px" [alt]="card.memberName" loading="lazy" />
-              <ng-template #cardInitials><span class="pp-person__initials">{{ initials(card.memberName) }}</span></ng-template>
+          <!-- Round-photo cards: the top row (president in the middle) and the council members. -->
+          <div class="committee__grid" *ngIf="group.layout === 'grid'" [class.committee__grid--featured]="hasFeatured(group)">
+            <div class="c-card" *ngFor="let card of group.cards" [class.c-card--featured]="card.featured">
+              <div class="c-card__photo">
+                <img *ngIf="card.photo; else cardInitials" [src]="card.photo | sizedImage:400" [attr.srcset]="card.photo | sizedSrcset"
+                  [attr.sizes]="card.featured ? '160px' : '120px'" [alt]="card.memberName" loading="lazy" />
+                <ng-template #cardInitials><span class="c-card__initials">{{ initials(card.memberName) }}</span></ng-template>
+                <span class="c-card__badge" *ngIf="card.featured"><mat-icon>military_tech</mat-icon></span>
+              </div>
+              <span class="c-card__name">{{ card.memberName }}</span>
+              <span class="c-card__role" *ngIf="!group.hidePosition">{{ card.positionName }}</span>
+              <span class="c-card__batch" *ngIf="card.batch">{{ 'committee.batchPrefix' | translate }} {{ formatBatch(card.batch) }}</span>
             </div>
-            <span class="pp-person__name">{{ card.memberName }}</span>
-            <span class="pp-person__label" *ngIf="!group.compact">{{ card.positionName }}</span>
-            <span class="pp-person__meta" *ngIf="card.batch">{{ 'committee.batchPrefix' | translate }} {{ formatBatch(card.batch) }}</span>
+          </div>
+
+          <!-- Office bearers: photo-and-name rows, three across on a wide screen. -->
+          <div class="committee__list" *ngIf="group.layout === 'list'">
+            <div class="c-row" *ngFor="let card of group.cards">
+              <div class="c-row__photo">
+                <img *ngIf="card.photo; else rowInitials" [src]="card.photo | sizedImage:400" [alt]="card.memberName" loading="lazy" />
+                <ng-template #rowInitials><span class="c-card__initials">{{ initials(card.memberName) }}</span></ng-template>
+              </div>
+              <div class="c-row__text">
+                <span class="c-row__name">{{ card.memberName }}</span>
+                <span class="c-row__role">{{ card.positionName }}</span>
+                <span class="c-row__batch" *ngIf="card.batch">{{ 'committee.batchPrefix' | translate }} {{ formatBatch(card.batch) }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -22,6 +22,8 @@ import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 })
 export class AchievementsComponent implements OnInit {
   achievements: Achievement[] = [];
+  /** Descriptions opened past their clamp ("read more"). */
+  expanded = new Set<Achievement>();
   loading = true;
   loadError = false;
 
@@ -49,6 +51,16 @@ export class AchievementsComponent implements OnInit {
 
   get rest(): Achievement[] {
     return this.achievements.slice(1);
+  }
+
+  /** Long enough to be clamped (spotlight shows ~5 lines, cards ~3) — offer "read more". */
+  isLong(a: Achievement, spotlight = false): boolean {
+    return (a.description?.length ?? 0) > (spotlight ? 360 : 150);
+  }
+
+  toggle(a: Achievement): void {
+    if (this.expanded.has(a)) this.expanded.delete(a);
+    else this.expanded.add(a);
   }
 
   initials(name: string): string {

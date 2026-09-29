@@ -112,11 +112,18 @@
 }
 
 // ---------------------------- Tribute ----------------------------
+// The tribute band is a quote, not a call to action — centred, unlike the other strips.
+.pp-join__inner:has(.teachers-tribute__icon) {
+  max-width: 760px;
+  text-align: center;
+  justify-items: center;
+}
+
 .teachers-tribute__icon {
-  font-size: 36px;
-  width: 36px;
-  height: 36px;
-  margin-bottom: var(--space-4);
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  margin-bottom: var(--space-2);
   color: var(--color-heritage-500);
 }
 
@@ -124,8 +131,8 @@
   margin-bottom: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: var(--font-size-lg);
-  line-height: 1.7;
+  font-size: var(--font-size-md);
+  line-height: 1.6;
 }
 
 // ---------------------------- Responsive ----------------------------

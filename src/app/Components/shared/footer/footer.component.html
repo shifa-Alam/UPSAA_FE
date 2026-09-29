@@ -1,47 +1,22 @@
 <footer class="site-footer">
   <div class="upsaa-container">
 
-    <!-- ===== Brand ===== -->
-    <div class="site-footer__top">
-      <a routerLink="/" class="site-footer__brand" [attr.aria-label]="'footer.fullName' | translate">
-        <img src="logo.png" alt="" class="site-footer__logo" />
-        <span class="site-footer__brand-text">
-          <span class="site-footer__eyebrow">UPSAA</span>
-          <span class="site-footer__name">{{ 'footer.fullName' | translate }}</span>
-        </span>
-      </a>
-      <p class="site-footer__tagline">{{ 'footer.tagline' | translate }}</p>
-    </div>
-
     <div class="site-footer__grid">
 
-      <!-- ===== Follow us ===== -->
-      <div class="site-footer__col">
-        <h2 class="site-footer__heading">{{ 'footer.followUs' | translate }}</h2>
-        <ul class="site-footer__rows">
-          <li>
-            <a class="site-footer__row" href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener">
-              <span class="site-footer__icon"><mat-icon>thumb_up</mat-icon></span>
-              <span>{{ 'footer.facebookPage' | translate }}</span>
-            </a>
-          </li>
-          <li>
-            <a class="site-footer__row" href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener">
-              <span class="site-footer__icon"><mat-icon>groups_2</mat-icon></span>
-              <span>{{ 'footer.facebookGroup' | translate }}</span>
-            </a>
-          </li>
-          <li>
-            <a class="site-footer__row" href="https://wa.me/8801866293776" target="_blank" rel="noopener">
-              <span class="site-footer__icon"><mat-icon>chat</mat-icon></span>
-              <span>{{ 'footer.whatsapp' | translate }}</span>
-            </a>
-          </li>
-        </ul>
+      <!-- ===== Brand ===== -->
+      <div class="site-footer__col site-footer__col--brand">
+        <a routerLink="/" class="site-footer__brand" [attr.aria-label]="'footer.fullName' | translate">
+          <img src="logo.png" alt="" class="site-footer__logo" />
+          <span class="site-footer__brand-text">
+            <span class="site-footer__eyebrow">UPSAA</span>
+            <span class="site-footer__name">{{ 'footer.fullName' | translate }}</span>
+          </span>
+        </a>
+        <p class="site-footer__tagline">{{ 'footer.tagline' | translate }}</p>
       </div>
 
       <!-- ===== Contact ===== -->
-      <div class="site-footer__col">
+      <div class="site-footer__col site-footer__col--contact">
         <h2 class="site-footer__heading">{{ 'footer.contact' | translate }}</h2>
         <ul class="site-footer__rows">
           <li>
@@ -57,38 +32,44 @@
             </a>
           </li>
           <li>
-            <a class="site-footer__row" href="https://www.google.com/maps/search/?api=1&query=Thana+Road%2C+Jhenaigati%2C+Sherpur+2120"
-              target="_blank" rel="noopener">
+            <!-- The school on Google Maps, in a new tab — no embedded map to load on every page. -->
+            <a class="site-footer__row" [href]="mapsLink" target="_blank" rel="noopener">
               <span class="site-footer__icon"><mat-icon>place</mat-icon></span>
-              <span>Thana Road, Jhenaigati, Sherpur 2120</span>
+              <span>
+                Thana Road, Jhenaigati, Sherpur 2120
+                <span class="site-footer__map-link">{{ 'footer.mapView' | translate }} <mat-icon>open_in_new</mat-icon></span>
+              </span>
             </a>
           </li>
         </ul>
       </div>
 
-      <!-- ===== School on the map — click to load, so Google Maps isn't fetched on every page ===== -->
-      <div class="site-footer__col">
-        <h2 class="site-footer__heading">{{ 'footer.mapTitle' | translate }}</h2>
-        <div class="site-footer__map">
-          <iframe *ngIf="mapLoaded" [src]="mapUrl" [title]="'footer.mapTitle' | translate" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
-          <button *ngIf="!mapLoaded" type="button" class="site-footer__map-cover" (click)="mapLoaded = true">
-            <span class="site-footer__map-pin"><mat-icon>location_on</mat-icon></span>
-            <span class="site-footer__map-label">{{ 'footer.mapShow' | translate }}</span>
-            <span class="site-footer__map-sub">{{ 'footer.mapPlace' | translate }}</span>
-          </button>
+      <!-- ===== Follow us — round icon buttons ===== -->
+      <div class="site-footer__col site-footer__col--follow">
+        <h2 class="site-footer__heading">{{ 'footer.followUs' | translate }}</h2>
+        <div class="site-footer__social">
+          <a class="site-footer__social-btn" href="https://www.facebook.com/uttaranalumni/" target="_blank" rel="noopener"
+            [attr.aria-label]="'footer.facebookPage' | translate" [title]="'footer.facebookPage' | translate">
+            <mat-icon>thumb_up</mat-icon>
+          </a>
+          <a class="site-footer__social-btn" href="https://www.facebook.com/groups/24644376638521350/" target="_blank" rel="noopener"
+            [attr.aria-label]="'footer.facebookGroup' | translate" [title]="'footer.facebookGroup' | translate">
+            <mat-icon>groups_2</mat-icon>
+          </a>
+          <a class="site-footer__social-btn" href="https://wa.me/8801866293776" target="_blank" rel="noopener"
+            [attr.aria-label]="'footer.whatsapp' | translate" [title]="'footer.whatsapp' | translate">
+            <mat-icon>chat</mat-icon>
+          </a>
         </div>
-        <a class="site-footer__map-link" [href]="mapsLink" target="_blank" rel="noopener">
-          {{ 'footer.mapOpen' | translate }} <mat-icon>open_in_new</mat-icon>
-        </a>
       </div>
     </div>
 
     <!-- ===== Bottom bar ===== -->
     <div class="site-footer__bottom">
       <span>&copy; {{ year }} UPSAA{{ 'footer.rights' | translate }}</span>
-      <button type="button" class="site-footer__top-btn" (click)="backToTop()">
-        {{ 'footer.backToTop' | translate }} <mat-icon>arrow_upward</mat-icon>
+      <button type="button" class="site-footer__top-btn" (click)="backToTop()"
+        [attr.aria-label]="'footer.backToTop' | translate" [title]="'footer.backToTop' | translate">
+        <mat-icon>arrow_upward</mat-icon>
       </button>
     </div>
   </div>
