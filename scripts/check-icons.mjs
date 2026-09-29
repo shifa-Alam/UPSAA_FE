@@ -19,15 +19,17 @@ const navIcons = new Set([...readFileSync('src/app/Components/shared/nav-icon/na
   .matchAll(/'([a-z-]+)'/g)].map(m => m[1]));
 
 const found = new Set();
+// Written literally inside <mat-icon> — always a font icon, even when a drawn nav icon has the same name.
+const literal = new Set();
 for (const file of walk('src/app')) {
   if (!/\.(html|ts)$/.test(file) || file.endsWith('.spec.ts')) continue;
   const text = readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/<mat-icon[^>]*>\s*([a-z][a-z0-9_]+)\s*<\/mat-icon>/g)) found.add(m[1]);
+  for (const m of text.matchAll(/<mat-icon[^>]*>\s*([a-z][a-z0-9_]+)\s*<\/mat-icon>/g)) { found.add(m[1]); literal.add(m[1]); }
   for (const m of text.matchAll(/icon[A-Za-z]*\s*[:=]\s*['"]([a-z][a-z0-9_]+)['"]/g)) found.add(m[1]);
   for (const m of text.matchAll(/icon="([a-z][a-z0-9_]+)"/g)) found.add(m[1]);
 }
 
-const missing = [...found].filter(n => !subset.has(n) && !navIcons.has(n)).sort();
+const missing = [...found].filter(n => !subset.has(n) && (literal.has(n) || !navIcons.has(n))).sort();
 if (missing.length) {
   console.log(`Icons not in the index.html subset (${missing.length}):\n  ${missing.join('\n  ')}`);
   console.log('Add real icon names to icon_names=… (alphabetical) in src/index.html.');

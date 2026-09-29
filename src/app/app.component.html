@@ -72,6 +72,10 @@
       <a mat-button (click)="sidenav.close()" routerLink="/register" routerLinkActive="active-link">
         <mat-icon>app_registration</mat-icon><span>{{ 'nav.register' | translate }}</span>
       </a>
+      <!-- Install the app — hidden once it runs from the home screen. -->
+      <a mat-button *ngIf="!pwa.isStandalone()" class="menu-install" (click)="sidenav.close()" routerLink="/install" routerLinkActive="active-link">
+        <mat-icon>install_mobile</mat-icon><span>{{ 'pwa.install.menu' | translate }}</span>
+      </a>
 
       <!--
       <a mat-button (click)="sidenav.close()" routerLink="/nomination" routerLinkActive="active-link"
@@ -95,12 +99,10 @@
           <app-nav-icon class="mobile-nav-icon" [name]="item.icon"></app-nav-icon><span>{{ item.labelKey | translate }}</span>
         </a>
       </ng-container>
+      <a mat-button *ngIf="!pwa.isStandalone()" class="menu-install" (click)="sidenav.close()" routerLink="/install" routerLinkActive="active-link">
+        <mat-icon>install_mobile</mat-icon><span>{{ 'pwa.install.menu' | translate }}</span>
+      </a>
     </nav>
-
-    <!-- Install the app — hidden once it runs from the home screen. -->
-    <a class="install-app-mobile" *ngIf="!pwa.isStandalone()" routerLink="/install" (click)="sidenav.close()">
-      <mat-icon>install_mobile</mat-icon><span>{{ 'pwa.install.menu' | translate }}</span>
-    </a>
 
     <!-- Language and theme toggles live in the top header on phones/tablets. -->
     <app-push-toggle [compact]="true" class="push-toggle-mobile"></app-push-toggle>
