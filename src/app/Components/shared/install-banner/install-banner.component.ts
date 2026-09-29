@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 import { PwaService } from '../../../Services/pwa.service';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 
 /** Give people a moment with the site before suggesting they install it. */
-const SHOW_AFTER_MS = 20000;
+const SHOW_AFTER_MS = 8000;
 
 /**
  * "Install the UPSAA app" card for phones. Android/Chrome gets a real Install button
@@ -16,7 +17,7 @@ const SHOW_AFTER_MS = 20000;
 @Component({
   selector: 'app-install-banner',
   standalone: true,
-  imports: [CommonModule, MatIconModule, TranslatePipe],
+  imports: [CommonModule, MatIconModule, RouterLink, TranslatePipe],
   templateUrl: './install-banner.component.html',
   styleUrl: './install-banner.component.scss'
 })
@@ -25,7 +26,7 @@ export class InstallBannerComponent implements OnInit, OnDestroy {
   private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private ready = signal(false);
-  private closed = signal(false);
+  readonly closed = signal(false);
   private timer?: ReturnType<typeof setTimeout>;
 
   /** iPhone/iPad Safari — no install prompt exists, only the manual hint. */

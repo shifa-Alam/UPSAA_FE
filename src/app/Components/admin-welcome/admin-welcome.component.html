@@ -8,6 +8,9 @@
         {{ greetingKey | translate }}<ng-container *ngIf="displayName">, <span class="welcome__name">{{ displayName }}</span></ng-container>
       </h1>
       <p class="welcome__lead">{{ 'adminWelcome.lead' | translate }}</p>
+      <a class="welcome__guide" href="/guides/UPSAA-Admin-Manual.pdf" target="_blank" rel="noopener">
+        <app-nav-icon name="book"></app-nav-icon>{{ 'adminWelcome.manual' | translate }}
+      </a>
     </div>
     <span class="welcome__role">
       <app-nav-icon [name]="isSuperAdmin ? 'award' : 'user-check'"></app-nav-icon>

@@ -7,7 +7,7 @@ import { LanguageService } from '../../../Services/language.service';
 import { TranslatePipe } from '../../../Pipes/translate.pipe';
 import { HELP_PHONE_TEL, HELP_WHATSAPP, helpPhoneDisplay } from '../../../Utils/help-contact';
 
-/** What the help button opens: call, WhatsApp, or the payment guide. Big targets, few words. */
+/** What the help button opens: call, WhatsApp, the payment guide or the member manual (PDF). Big targets, few words. */
 @Component({
   selector: 'app-help-sheet',
   standalone: true,
@@ -30,6 +30,12 @@ import { HELP_PHONE_TEL, HELP_WHATSAPP, helpPhoneDisplay } from '../../../Utils/
       </a>
       <a class="help__row" [routerLink]="guideLink" (click)="close()">
         <mat-icon>account_balance_wallet</mat-icon><span>{{ 'help.payGuide' | translate }}</span><mat-icon class="help__go">chevron_right</mat-icon>
+      </a>
+      <a class="help__row" routerLink="/install" (click)="close()">
+        <mat-icon>install_mobile</mat-icon><span>{{ 'pwa.install.menu' | translate }}</span><mat-icon class="help__go">chevron_right</mat-icon>
+      </a>
+      <a class="help__row" [href]="manual" target="_blank" rel="noopener">
+        <mat-icon>menu_book</mat-icon><span>{{ 'help.manual' | translate }}</span><mat-icon class="help__go">open_in_new</mat-icon>
       </a>
 
       <button type="button" class="help__close" (click)="close()">{{ 'help.close' | translate }}</button>
@@ -68,6 +74,8 @@ export class HelpSheetComponent {
 
   readonly tel = HELP_PHONE_TEL;
   readonly whatsapp = HELP_WHATSAPP;
+  /** The member manual — Bangla and English with screenshots (public/guides). */
+  readonly manual = '/guides/UPSAA-Member-Manual.pdf';
   readonly guideLink = this.router.url.startsWith('/portal') ? '/portal/help/pay' : '/help/pay';
 
   get phone(): string {

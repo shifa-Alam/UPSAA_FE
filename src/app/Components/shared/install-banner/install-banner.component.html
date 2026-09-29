@@ -9,6 +9,7 @@
       <mat-icon class="install-card__share" aria-hidden="true">ios_share</mat-icon>
       {{ 'pwa.install.iosText' | translate }}
     </p>
+    <a class="install-card__how" routerLink="/install" (click)="closed.set(true)">{{ 'pwa.install.howTo' | translate }} →</a>
   </div>
 
   <div class="install-card__actions" *ngIf="!iosHint()">

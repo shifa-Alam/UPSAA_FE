@@ -6,6 +6,14 @@ export const pageTitlesI18n: I18nSection = {
     pageTitles: {
       about: 'আমাদের সম্পর্কে',
       privacy: 'গোপনীয়তা নীতি',
+      install: 'অ্যাপ ইনস্টল করুন',
+      descriptions: {
+        about: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশনের পরিচিতি, লক্ষ্য ও কার্যক্রম।',
+        contact: 'উত্তরণ পাবলিক স্কুল অ্যালামনাই অ্যাসোসিয়েশনের সাথে যোগাযোগ: ফোন, ইমেইল, ঠিকানা ও অনলাইন গ্রুপ।',
+        privacy: 'UPSAA কোন তথ্য রাখে, কেন রাখে, কার সাথে শেয়ার করে, আর কীভাবে তথ্য মুছে ফেলতে বলবেন।',
+        dataDeletion: 'UPSAA-তে আপনার অ্যাকাউন্ট ও ব্যক্তিগত তথ্য মুছে ফেলার নির্দেশনা।',
+        install: 'UPSAA অ্যাপ ফোন বা কম্পিউটারে ইনস্টল করুন — Play Store ছাড়াই, এক মিনিটে।',
+      },
       dataDeletion: 'তথ্য মুছে ফেলার নির্দেশনা',
       events: 'ইভেন্ট',
       notices: 'নোটিশ',
@@ -70,6 +78,14 @@ export const pageTitlesI18n: I18nSection = {
     pageTitles: {
       about: 'About Us',
       privacy: 'Privacy Policy',
+      install: 'Install the app',
+      descriptions: {
+        about: 'About the Uttaran Public School Alumni Association — who we are, our goals and activities.',
+        contact: 'Contact the Uttaran Public School Alumni Association: phone, email, address and online groups.',
+        privacy: 'What information UPSAA keeps, why, who it is shared with, and how to ask for it to be deleted.',
+        dataDeletion: 'How to have your UPSAA account and personal information deleted.',
+        install: 'Install the UPSAA app on your phone or computer — no Play Store, in a minute.',
+      },
       dataDeletion: 'Data deletion instructions',
       events: 'Events',
       notices: 'Notices',

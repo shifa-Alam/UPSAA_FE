@@ -77,6 +77,7 @@ export class MemberDashboardComponent implements OnInit {
     { icon: 'briefcase', labelKey: 'memberDashboard.linkJobs', hintKey: 'memberDashboard.hintJobs', route: '/portal/jobs' },
     { icon: 'droplet', labelKey: 'memberDashboard.linkBloodDonors', hintKey: 'memberDashboard.hintBloodDonors', route: '/portal/blood-donors' },
     { icon: 'book', labelKey: 'memberDashboard.linkConstitution', hintKey: 'memberDashboard.hintConstitution', route: '/portal/constitution' },
+    { icon: 'install', labelKey: 'memberDashboard.linkInstall', hintKey: 'memberDashboard.hintInstall', route: '/install' },
   ];
 
   constructor(

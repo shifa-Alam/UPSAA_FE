@@ -23,6 +23,7 @@ const ALL_ROLES = [...STAFF_ROLES, ...MEMBER_ROLES];
 const about = () => import('./Components/pages/about/about.component').then(m => m.AboutComponent);
 const contact = () => import('./Components/pages/contact/contact.component').then(m => m.ContactComponent);
 const privacy = () => import('./Components/pages/privacy/privacy.component').then(m => m.PrivacyComponent);
+const install = () => import('./Components/pages/install/install.component').then(m => m.InstallComponent);
 const events = () => import('./Components/pages/events/events.component').then(m => m.EventsComponent);
 const notices = () => import('./Components/pages/notices/notices.component').then(m => m.NoticesComponent);
 const directory = () => import('./Components/pages/directory/directory.component').then(m => m.DirectoryComponent);
@@ -49,7 +50,7 @@ const shell = () => import('./Components/dashboard/dashboard.component').then(m 
 export const routes: Routes = [
   { path: '', component: HomeComponent, canActivate: [shellRedirectGuard] },
   { path: 'home', redirectTo: '', pathMatch: 'full' },
-  { path: 'about', loadComponent: about, title: 'pageTitles.about', canActivate: [shellRedirectGuard] },
+  { path: 'about', loadComponent: about, title: 'pageTitles.about', data: { description: 'pageTitles.descriptions.about' }, canActivate: [shellRedirectGuard] },
   { path: 'events', loadComponent: events, title: 'pageTitles.events', canActivate: [shellRedirectGuard] },
   // Public — visitors see public notices; signed-in alumni also get alumni-only ones.
   { path: 'notices', loadComponent: notices, title: 'pageTitles.notices', canActivate: [shellRedirectGuard] },
@@ -295,10 +296,14 @@ export const routes: Routes = [
     path: 'congratulations', title: 'pageTitles.congratulations', canActivate: [shellRedirectGuard],
     loadComponent: () => import('./Components/congratulations/congratulations.component').then(m => m.CongratulationsComponent)
   },
-  { path: 'contact', loadComponent: contact, title: 'pageTitles.contact', canActivate: [shellRedirectGuard] },
+  { path: 'contact', loadComponent: contact, title: 'pageTitles.contact', data: { description: 'pageTitles.descriptions.contact' }, canActivate: [shellRedirectGuard] },
   // Public for everyone, signed in or not (the Facebook app's privacy and data-deletion links point here).
-  { path: 'privacy', loadComponent: privacy, title: 'pageTitles.privacy' },
-  { path: 'data-deletion', loadComponent: privacy, title: 'pageTitles.dataDeletion', data: { section: 'data-deletion' } },
+  { path: 'install', loadComponent: install, title: 'pageTitles.install', data: { description: 'pageTitles.descriptions.install' } },
+  { path: 'privacy', loadComponent: privacy, title: 'pageTitles.privacy', data: { description: 'pageTitles.descriptions.privacy' } },
+  {
+    path: 'data-deletion', loadComponent: privacy, title: 'pageTitles.dataDeletion',
+    data: { section: 'data-deletion', description: 'pageTitles.descriptions.dataDeletion' }
+  },
   {
     path: 'unauthorized', title: 'pageTitles.unauthorized',
     loadComponent: () => import('./Components/pages/unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)

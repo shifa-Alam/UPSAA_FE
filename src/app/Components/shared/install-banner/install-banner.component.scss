@@ -115,3 +115,12 @@
 @media (prefers-reduced-motion: reduce) {
   .install-card { animation: none; }
 }
+
+.install-card__how {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-link, var(--color-primary-700));
+  text-decoration: none;
+}

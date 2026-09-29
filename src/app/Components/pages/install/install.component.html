@@ -1,0 +1,65 @@
+<div class="install-page" *ngIf="text() as t">
+  <app-page-header [title]="t.title" [subtitle]="t.subtitle" variant="plain"></app-page-header>
+
+  <div class="upsaa-container install">
+
+    <!-- Already the installed app -->
+    <section class="install__status install__status--done" *ngIf="pwa.isStandalone(); else notInstalled">
+      <mat-icon>check_circle</mat-icon>
+      <div>
+        <strong>{{ t.installedTitle }}</strong>
+        <p>{{ t.installedText }}</p>
+      </div>
+    </section>
+
+    <ng-template #notInstalled>
+      <!-- Facebook/Messenger in-app browser can't install -->
+      <section class="install__status install__status--warn" *ngIf="inAppBrowser()">
+        <mat-icon>open_in_new</mat-icon>
+        <div>
+          <strong>{{ t.inAppTitle }}</strong>
+          <p>{{ t.inAppText }}</p>
+          <button type="button" class="install__btn install__btn--ghost" (click)="copyLink()">
+            <mat-icon>content_copy</mat-icon>{{ copied() ? t.copied : t.copyLink }}
+          </button>
+        </div>
+      </section>
+
+      <!-- The browser offers installation: one tap -->
+      <section class="install__status install__status--ready" *ngIf="pwa.canInstall()">
+        <img src="icons/icon-192.png" alt="" width="56" height="56" />
+        <div>
+          <strong>{{ t.readyTitle }}</strong>
+          <p>{{ t.readyText }}</p>
+          <button type="button" class="install__btn" (click)="install()">
+            <mat-icon>install_mobile</mat-icon>{{ t.installNow }}
+          </button>
+        </div>
+      </section>
+    </ng-template>
+
+    <!-- Why -->
+    <h2 class="install__heading">{{ t.whyTitle }}</h2>
+    <ul class="install__why">
+      <li *ngFor="let w of t.why"><mat-icon>{{ w.icon }}</mat-icon><span>{{ w.text }}</span></li>
+    </ul>
+
+    <!-- How, per device -->
+    <h2 class="install__heading">{{ t.howTitle }}</h2>
+    <div class="install__tabs" role="tablist">
+      <button type="button" role="tab" class="install__tab" *ngFor="let d of devices"
+        [class.install__tab--on]="device() === d" [attr.aria-selected]="device() === d" (click)="device.set(d)">
+        <mat-icon>{{ d === 'android' ? 'android' : d === 'ios' ? 'phone_iphone' : 'computer' }}</mat-icon>{{ t.tabs[d] }}
+      </button>
+    </div>
+    <div class="install__panel" role="tabpanel">
+      <ol class="install__steps">
+        <li *ngFor="let step of t.steps[device()]">{{ step }}</li>
+      </ol>
+      <p class="install__note">
+        <mat-icon>{{ device() === 'ios' ? 'ios_share' : device() === 'android' ? 'more_vert' : 'add_box' }}</mat-icon>
+        {{ t.notes[device()] }}
+      </p>
+    </div>
+  </div>
+</div>

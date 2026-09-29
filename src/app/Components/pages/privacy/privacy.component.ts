@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, computed, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AfterViewInit, Component, ElementRef, PLATFORM_ID, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LanguageService } from '../../../Services/language.service';
 import { PageHeaderComponent } from '../../shared/page-header/page-header.component';
@@ -214,12 +214,13 @@ export class PrivacyComponent implements AfterViewInit {
   private readonly language = inject(LanguageService);
   private readonly route = inject(ActivatedRoute);
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly text = computed(() => this.language.lang() === 'bn' ? BN : EN);
 
   ngAfterViewInit(): void {
     const section = this.route.snapshot.data['section'] as string | undefined;
-    if (!section) return;
+    if (!section || !this.isBrowser) return; // prerender: nothing to scroll
     // After the first paint, so the section is laid out before we scroll to it.
     setTimeout(() => (this.host.nativeElement as HTMLElement).querySelector(`#${section}`)?.scrollIntoView({ block: 'start' }));
   }

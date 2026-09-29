@@ -41,7 +41,7 @@ export const appConfig: ApplicationConfig = {
     // Registered once the app is idle so it never competes with the first page load.
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:8000'
     }),
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { maxWidth: '96vw', autoFocus: 'first-tabbable', hasBackdrop: true } },
   ]

@@ -9,6 +9,7 @@ export const adminWelcomeI18n: I18nSection = {
         evening: 'শুভ সন্ধ্যা',
       },
       lead: 'অ্যাডমিন প্যানেলে স্বাগতম। সংগঠনের সর্বশেষ অবস্থা এক নজরে দেখুন এবং বাম পাশের মেনু থেকে যেকোনো বিভাগে যান।',
+      manual: 'অ্যাডমিন প্যানেলের ব্যবহার নির্দেশিকা (PDF)',
       glance: 'এক নজরে',
       stats: {
         members: 'নিবন্ধিত সদস্য',
@@ -52,6 +53,7 @@ export const adminWelcomeI18n: I18nSection = {
         evening: 'Good evening',
       },
       lead: 'Welcome to the admin panel. See where the association stands at a glance, and jump into any area from the menu on the left.',
+      manual: 'Admin panel user manual (PDF)',
       glance: 'At a Glance',
       stats: {
         members: 'Registered Members',

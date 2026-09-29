@@ -1,0 +1,226 @@
+// Install-the-app page: status card (installed / one-tap install / in-app browser warning),
+// reasons, then per-device steps in tabs.
+
+.install-page {
+  background: var(--color-surface);
+}
+
+.install {
+  max-width: 760px;
+  padding-top: clamp(20px, 2.6vw, 32px);
+  padding-bottom: clamp(28px, 3.6vw, 44px);
+  color: var(--color-ink-700);
+}
+
+// ---------------------------- Status cards ----------------------------
+.install__status {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-alt);
+
+  > mat-icon {
+    flex-shrink: 0;
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  img {
+    flex-shrink: 0;
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  strong {
+    display: block;
+    font-size: var(--font-size-md);
+    color: var(--color-ink-900);
+  }
+
+  p {
+    margin: 2px 0 var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  > div > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.install__status--done {
+  border-color: rgba(46, 125, 50, 0.35);
+  background: rgba(76, 175, 80, 0.08);
+
+  > mat-icon { color: #2e7d32; }
+}
+
+.install__status--ready {
+  border-color: var(--color-heritage-500);
+  background: var(--color-heritage-soft);
+}
+
+.install__status--warn {
+  border-color: rgba(245, 166, 35, 0.5);
+  background: rgba(245, 166, 35, 0.1);
+
+  > mat-icon { color: #b26a00; }
+}
+
+.install__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary-800);
+  color: #fff;
+  font: 700 var(--font-size-md) / 1 var(--font-base);
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover { background: var(--color-primary-700); }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-heritage-500);
+    outline-offset: 2px;
+  }
+}
+
+.install__btn--ghost {
+  min-height: 38px;
+  border: 1px solid var(--color-ink-300, var(--color-ink-200));
+  background: var(--color-surface);
+  color: var(--color-ink-900);
+  font-size: var(--font-size-sm);
+
+  &:hover { background: var(--color-surface-alt); }
+}
+
+// ---------------------------- Why ----------------------------
+.install__heading {
+  margin: var(--space-5) 0 var(--space-3);
+  font-size: clamp(17px, 1.6vw, 20px);
+  color: var(--color-ink-900);
+}
+
+.install__why {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+  }
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--color-heritage-500);
+  }
+}
+
+// ---------------------------- How: device tabs ----------------------------
+.install__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.install__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-700);
+  font: 600 var(--font-size-sm) / 1 var(--font-base);
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-heritage-500);
+    outline-offset: 2px;
+  }
+}
+
+.install__tab--on {
+  border-color: var(--color-primary-800);
+  background: var(--color-primary-800);
+  color: #fff;
+}
+
+.install__panel {
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--color-ink-200);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.install__steps {
+  margin: 0 0 var(--space-3);
+  padding-left: 22px;
+  line-height: 1.6;
+
+  li {
+    margin-bottom: var(--space-2);
+  }
+
+  li::marker {
+    font-weight: 700;
+    color: var(--color-heritage-500);
+  }
+}
+
+.install__note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-ink-100);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-600);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: var(--color-ink-400);
+  }
+}
+
+@media (max-width: 640px) {
+  .install__panel {
+    padding: var(--space-3) var(--space-4);
+  }
+}

@@ -67,7 +67,9 @@
     <!-- ===== Bottom bar ===== -->
     <div class="site-footer__bottom">
       <span>&copy; {{ year }} UPSAA{{ 'footer.rights' | translate }}
-        · <a routerLink="/privacy" class="site-footer__legal">{{ 'footer.privacy' | translate }}</a></span>
+        · <a routerLink="/privacy" class="site-footer__legal">{{ 'footer.privacy' | translate }}</a>
+        · <a routerLink="/install" class="site-footer__legal">{{ 'pwa.install.menu' | translate }}</a>
+        · <a href="/guides/UPSAA-Member-Manual.pdf" target="_blank" rel="noopener" class="site-footer__legal">{{ 'footer.manual' | translate }}</a></span>
       <button type="button" class="site-footer__top-btn" (click)="backToTop()"
         [attr.aria-label]="'footer.backToTop' | translate" [title]="'footer.backToTop' | translate">
         <mat-icon>arrow_upward</mat-icon>

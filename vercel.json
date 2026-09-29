@@ -9,6 +9,10 @@
     { "source": "/share/:kind/:id", "destination": "https://sbfqa.lucidtech.website/api/Share/:kind/:id" },
     { "source": "/share-image/event/:file", "destination": "https://sbfqa.lucidtech.website/api/Event/GetImageFile/:file" },
     { "source": "/", "destination": "/index.html" },
+    { "source": "/about", "destination": "/about/index.html" },
+    { "source": "/contact", "destination": "/contact/index.html" },
+    { "source": "/privacy", "destination": "/privacy/index.html" },
+    { "source": "/data-deletion", "destination": "/data-deletion/index.html" },
     { "source": "/(.*)", "destination": "/index.csr.html" }
   ],
   "headers": [

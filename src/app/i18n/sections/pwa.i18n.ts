@@ -27,6 +27,8 @@ export const pwaI18n: I18nSection = {
         iosTitle: 'হোম স্ক্রিনে যোগ করুন',
         iosText: 'Safari-র নিচে শেয়ার বাটনে ট্যাপ করে “Add to Home Screen” বেছে নিন।',
         close: 'বন্ধ করুন',
+        menu: 'অ্যাপ ইনস্টল করুন',
+        howTo: 'কীভাবে ইনস্টল করবেন',
       },
       push: {
         title: 'নোটিফিকেশন',
@@ -70,6 +72,8 @@ export const pwaI18n: I18nSection = {
         iosTitle: 'Add to Home Screen',
         iosText: 'Tap the Share button in Safari, then choose “Add to Home Screen”.',
         close: 'Close',
+        menu: 'Install the app',
+        howTo: 'How to install',
       },
       push: {
         title: 'Notifications',

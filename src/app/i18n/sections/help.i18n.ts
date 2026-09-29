@@ -10,6 +10,7 @@ export const helpI18n: I18nSection = {
       call: 'এখনই কল করুন',
       whatsapp: 'WhatsApp-এ লিখুন',
       payGuide: 'বিকাশে কীভাবে টাকা পাঠাবেন',
+      manual: 'ব্যবহার নির্দেশিকা (PDF)',
       close: 'বন্ধ করুন',
     },
     payGuide: {
@@ -45,6 +46,7 @@ export const helpI18n: I18nSection = {
       call: 'Call now',
       whatsapp: 'Message on WhatsApp',
       payGuide: 'How to send money by bKash',
+      manual: 'User manual (PDF)',
       close: 'Close',
     },
     payGuide: {
